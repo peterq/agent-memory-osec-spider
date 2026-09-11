@@ -4,6 +4,7 @@
 ### repos
 - COMMON: `.` 本项目, 多个项目使用的工具类, rpc定义等. 同时用于管理 Agent 记忆和工作流
   - COMMON/agent-memory: 用于管理 Agent 记忆和工作流的目录, 由 Agent 自主维护
+  - 实际存放位置: 独立仓库 `/home/peterq/dev/projects/peterq/agent-memory-osec-spider` (COMMON 内的 AGENTS.md / CLAUDE.md / agent-memory 均为指向该仓库的软链接, 记忆变更需在该仓库内 commit)
 
 - STORAGE:  `../enfi-resource-storage` 存储服务, 主要负责爬取的资源的入库
 - API: `../osec-resource-api` 给前端和其他部门提供资源查询接口服务
