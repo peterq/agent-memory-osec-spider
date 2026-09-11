@@ -30,7 +30,7 @@ related:
 工作区根目录：`/home/peterq/dev/projects/1s/`
 
 ### COMMON —— `enfi-resource-common`（本仓库，主工作目录）
-- [事实] 2026-09-12 起 `AGENTS.md`/`CLAUDE.md`/`agent-memory/` 实体迁至独立仓库 `/home/peterq/dev/projects/peterq/agent-memory-osec-spider`（尚无远端），COMMON 内三者为绝对路径软链接；记忆变更须在该仓库内单独 commit，COMMON 不再随记忆变动。
+- [事实] 2026-09-12 起 `AGENTS.md`/`CLAUDE.md`/`agent-memory/`/`agent-tasks/` 实体迁至独立仓库 `/home/peterq/dev/projects/peterq/agent-memory-osec-spider`（尚无远端），COMMON 内四者为绝对路径软链接；记忆变更须在该仓库内单独 commit，COMMON 不再随记忆变动。
 - module：`github.com/1s/enfi-resource-common`
 - 职责：跨仓库共享的 gRPC 契约（`.proto` + 生成代码）、通用工具、Agent 记忆宿主
 - 关键目录：
