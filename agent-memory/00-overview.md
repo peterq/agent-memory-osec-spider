@@ -3,7 +3,7 @@ title: 项目总览
 type: overview
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T07:00:00+08:00
+updated_at: 2026-09-12T07:20:00+08:00
 priority: critical
 keywords:
   - 网盘资源爬取
@@ -284,6 +284,7 @@ related:
 - 输出语言：中文（对用户展示、代码注释、记忆文件全部中文）
 - 有价值的脚本要落盘进仓库并写文档，后续通过项目内路径调用以省 token
 - **[用户确认 2026-09-04] 编码/验收/合并都派 sonnet 子 Agent，主会话只把控全局**
+- **[用户确认 2026-09-12] 禁止使用 harness 记忆，只用 `agent-memory/`**；记忆实体在独立仓库，变更在该仓库 commit+push
 - 详见 `agent-memory/02-user-preferences.md`
 
 ## 5. 当前关键决策

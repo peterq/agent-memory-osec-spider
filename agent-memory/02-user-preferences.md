@@ -3,9 +3,9 @@ title: 用户偏好与协作约定
 type: preference
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-09T11:15:00+08:00
+updated_at: 2026-09-12T07:20:00+08:00
 priority: high
-keywords: [偏好, 中文, 脚本沉淀, token, 记忆维护, 子agent, sonnet, 模型选择, 任务简报, agent-tasks]
+keywords: [偏好, 中文, 脚本沉淀, token, 记忆维护, 子agent, sonnet, 模型选择, 任务简报, agent-tasks, harness记忆, 独立仓库, 软链接]
 summary: 用户对语言、脚本沉淀、记忆维护和 thinking 长度的明确要求
 load: always
 related:
@@ -20,7 +20,10 @@ related:
 2. **脚本沉淀**：为完成任务写的脚本，只要有复用价值就落盘进仓库并写文档；后续调用时用项目内路径调用，避免把脚本内容重复输出到对话里浪费 token。
 3. **记忆体系**：必须按 `AGENTS.md` 内嵌的 `agent-memory` 技能定义工作，严格遵循其"第 15 节 自主进化循环"。
 4. **thinking 控制**：开启思考模式时，thinking 只写主要思路和核心要点，不要和正文大量重复。
-5. **记忆目录归属**：记忆放在 COMMON 仓库的 `agent-memory/`，由 Agent 自主维护（创建/更新/整理/归档/重构）。
+5. **记忆目录归属**：记忆放在 `agent-memory/`，由 Agent 自主维护（创建/更新/整理/归档/重构）。
+   **[用户确认 2026-09-12] 实体在独立仓库** `/home/peterq/dev/projects/peterq/agent-memory-osec-spider`
+   （远端 `git@github.com:peterq/agent-memory-osec-spider.git`），COMMON 内的 `AGENTS.md`/`CLAUDE.md`/`agent-memory`/`agent-tasks`
+   是指向它的绝对路径软链接；记忆与任务简报的变更要在该仓库内 commit + push（push 属工作目录外发布，用户已授权）。
 6. **[用户确认 2026-09-04] 子 Agent 模型与分工**：编码、验收、合并这类执行性工作都派 **sonnet** 子 Agent
    （"尽量使用便宜但满足需求的模型"），主会话只负责规划、写规格、审查结果、把控全局。
    并发上限按用户当次指定（本次"最多 6 个"）。
@@ -31,6 +34,8 @@ related:
    做法见 `procedures/workflow-子agent任务简报.md`，模板正本 `agent-tasks/README.md`。
 8. **[用户确认 2026-09-04] 任务完成后 commit 并 push**（代码与 COMMON 记忆都算），不再停在"本地提交留给用户 push"。
    上线类任务 push 是第一步。被安全策略拦截时明确告知哪些没推。
+9. **[用户确认 2026-09-12] 禁止使用 harness 记忆**（Claude Code 自带的 `~/.claude/projects/*/memory/`），本项目一切记忆只写 `agent-memory/`。
+   原先 harness 记忆里的偏好（sonnet 子 Agent、commit+push、任务简报落盘、配置拆代码、部署放行规则）均已在本文件与 `procedures/workflow-部署.md` 中，harness 目录已清空。
 
 ## 推断的工作习惯（未经用户确认，标记为推断）
 
@@ -40,7 +45,7 @@ related:
 
 ## 注意事项
 
-- 规则**只有一份正本**：仓库根的 `AGENTS.md`；`CLAUDE.md` 是指向它的**软链接**。改规则只改 `AGENTS.md`。
+- 规则**只有一份正本**：记忆仓库根的 `AGENTS.md`；COMMON 内的 `AGENTS.md` 与 `CLAUDE.md` 都是指向它的**软链接**。改规则只改正本。
 - 2026-09-02 之前这两个文件叫 `AGNETS.md` / `CLAUD.md`（拼写有误），已改名。
   改名的实际收益：`CLAUDE.md` 会被 Claude Code 自动加载，而 `CLAUD.md` 不会——此前这份规则一直没有自动生效。
 
