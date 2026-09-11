@@ -3,7 +3,7 @@ title: 记忆索引
 type: index
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T02:40:00+08:00
+updated_at: 2026-09-12T07:00:00+08:00
 priority: critical
 keywords: [索引, 关键词, 导航]
 summary: 按关键词与主题定位记忆文件，先看概要再决定是否读正文
@@ -324,6 +324,7 @@ SPIDER gateway(`115.29.215.228:7542`)。生成 TS 契约：`nc-js/packages/catal
 
 ## 最近更新
 
+0. `03-project-context.md`、`00-overview.md`：**更新**——AGENTS.md/agent-memory 实体迁至独立仓库 agent-memory-osec-spider，COMMON 内改为软链接，记忆 commit 改在新仓库（2026-09-12 07:00）
 0. `current/tasks.md`、`00-overview.md`、`patterns` #96~98、`open-questions`、`sessions/2026-09-11-*`：**更新**——shortfall 父归位 09-12 02:17 完成（102,601 父，对拍 0.001% 级），P4 全部完成，遗留 2 个 :cur 窗口与 5 个未部署提交（2026-09-12 02:40）
 0. `00-shared.md`（ES 只读白名单）、`70-move-shortfall.md`（枚举改走 DB）、`patterns` #94~95、`risks`、`tasks`：**更新**——子 Agent 在 legacy 跑 has_child 致节点重启事故（已恢复，零写操作），重派执行（2026-09-11 17:50）
 0. `current/tasks.md`、`lessons/failure-longBoundary…`：**更新**——lc-check -trigger-move（aac5f84）与 bootstrap 三处缺陷修复（61cf1db/e856540/93f4d38）已提交未部署；shortfall 父归位 Opus 执行中（2026-09-11 17:00）

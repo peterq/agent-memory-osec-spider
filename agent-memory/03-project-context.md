@@ -3,7 +3,7 @@ title: 项目背景与仓库职责
 type: context
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-04T12:56:00+08:00
+updated_at: 2026-09-12T07:00:00+08:00
 priority: critical
 keywords: [仓库, module, replace, 目录结构, 依赖, 职责, NC-JS, 前端]
 summary: 五个仓库（4 个 Go + 1 个前端）的磁盘路径、module 名、职责、相互依赖与 go.mod replace 现状
@@ -30,6 +30,7 @@ related:
 工作区根目录：`/home/peterq/dev/projects/1s/`
 
 ### COMMON —— `enfi-resource-common`（本仓库，主工作目录）
+- [事实] 2026-09-12 起 `AGENTS.md`/`CLAUDE.md`/`agent-memory/` 实体迁至独立仓库 `/home/peterq/dev/projects/peterq/agent-memory-osec-spider`（尚无远端），COMMON 内三者为绝对路径软链接；记忆变更须在该仓库内单独 commit，COMMON 不再随记忆变动。
 - module：`github.com/1s/enfi-resource-common`
 - 职责：跨仓库共享的 gRPC 契约（`.proto` + 生成代码）、通用工具、Agent 记忆宿主
 - 关键目录：
