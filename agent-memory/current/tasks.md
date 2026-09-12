@@ -3,7 +3,7 @@ title: 当前任务与进度
 type: task
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T23:35:00+08:00
+updated_at: 2026-09-12T23:36:00+08:00
 priority: critical
 keywords: [任务, 进度, 待办, P5, 队列v2, queue-admin, 全站扫描, fullsweep, 文档爬虫, doc-crawler, FC Chrome, 凭据轮换, 站点发现, kkpans, misoso, 有效性检测]
 summary: 仍在推进/阻塞/待决策的事项（P0：checker 误删事故修复已上线、恢复待决策；P5 顺序 阶段C→A'→阶段D）；已上线任务在 archive
@@ -28,26 +28,16 @@ related:
 | 生命周期 P4 全量 bootstrap | ✅ 已完成 | 2 个 `:cur` 半区窗口 09-12 取证**无需处理**（父子都在 cur） | archive「生命周期 P4」 |
 | **生命周期 P5 准入** | 阶段 A/B 已上线；被事故阻塞 | 修复版 checker 上线 → 阶段 C 复测 → A' 投递 → 阶段 D 灰度（API 侧分流，开发中） | 本文件「进行中」 |
 | 09-08 并行四任务 | 部分已上线 | 文档爬虫 FC 自动化卡 6 项人工事项 | `current/tasks-backlog.md` |
-| 配置 v2/OAuth/配置拆代码 | ✅ 已上线 | `LOCAL_CONFIG_PATH` 回落待修；凭据轮换待决策 | 归档遗留待办 |
-| 资源生命周期改造 P0~P3 | ✅ 已上线 | es_endpoint / `resource_valid` 索引缺失等 | 归档遗留待办 |
-| 管理台合并 | ✅ 已上线 | ARMS 指标、浏览器实测待人工 | 归档遗留待办 |
+| 配置 v2/OAuth/配置拆代码 | ✅ 已上线 | `LOCAL_CONFIG_PATH` 回落待修；凭据轮换待决策 | `current/tasks-backlog.md` |
+| 资源生命周期改造 P0~P3 | ✅ 已上线 | es_endpoint / `resource_valid` 索引缺失等 | `current/tasks-backlog.md` |
+| 管理台合并 | ✅ 已上线 | ARMS 指标、浏览器实测待人工 | `current/tasks-backlog.md` |
 | 队列 v2 上线收尾 | 人工进行中 | A~E 待用户执行 | 本文件「待办」 |
 | 5 爬虫全站扫描启动行为改造 | 待办（P0） | 改为 `fullsweep:lastdone` 守卫 | 本文件「待办」 |
-| 安全凭据轮换 | 待用户决策 | 多处硬编码 AK/SK/Token | 归档遗留待办 |
+| 安全凭据轮换 | 待用户决策 | 多处硬编码 AK/SK/Token | `current/tasks-backlog.md` |
 
 > 09-08 并行四任务（文档爬虫 FC 自动化 6 项人工事项）与 P3 低优先级待办已移至 `current/tasks-backlog.md`。
 
-## 归档遗留待办（原分散在已归档任务块中，仍未完结）
-
-- [ ] **P1 生命周期 P4 收尾**：2 个 `:cur` 半区窗口已于 09-12 关闭（30/30 抽样父子均在 cur、long=0，「父在 long」前提不成立，不搬）；P6 关双写前须补 v3 detail/fileCtx（结构兼容，`knowledge/api-v3-detail-filectx兼容性分析.md`）；P5 进度见「进行中」。
-- [ ] **P2 排期**：巡检守护提升到 `runBootstrapJob` 级 + heap 阈值可配（0.5~1 人日）；rollout §9 待补写。
-- [ ] **P2 代码待修（配置 v2）**：`LOCAL_CONFIG_PATH` 缺省未回落宿主机 `config.yaml`；删宿主机 `config.yaml` 的时机（回滚现依赖 `spider.old`）留用户决定。
-- [ ] **P2 安全（凭据轮换，待决策）**：`devops_online_env.go` 硬编码 OSS AK/SK 与 ES 口令；`pan_download`/`bnd_download` 测试文件硬编码真实 RefreshToken/BDUSS（建议迁 `.hide.json`）；ali_log ak/sk 曾明文进会话记录，建议评估轮换。
-- [ ] **P1 待用户决策**：`osec-resdb` STORAGE worker 的 `es_endpoint` 指向已下线旧 ES 集群（已回滚，不影响 P3 数据正确性）。
-- [ ] **既有故障**：现网 ES 无 `resource_valid` 索引（404），`checkValid`/`queryValidAndPwd` v2/v3 同样失效。
-- [ ] **P2**：COMMON `common_message.proto` 的 `go_package` 仍是旧仓库名 `PPIO`，`gen.sh` 后要手工 sed；应改 proto 全自动。
-- [ ] **P2**：资源生命周期 P0 基线剩余项（PRD §15.3 第 12/13 项）：bnd checker 探测吞吐与代理池配额、无 join 百度文档 `_source` 大小抽样未采。
-- [ ] **P2 待人工验证（管理台合并）**：ARMS 确认 `queue_admin_*` 指标入库；浏览器实测 spiderAdmin 三组菜单/Mock/各页。
+> 「归档遗留待办」（P4 收尾/配置 v2 回落/凭据轮换/resdb ES 端点/resource_valid 缺失/proto go_package/管理台人工验证）已移至 `current/tasks-backlog.md`。
 
 ## 待办
 

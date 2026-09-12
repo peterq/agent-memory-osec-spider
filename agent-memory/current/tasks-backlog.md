@@ -3,13 +3,13 @@ title: 任务后备清单（低优先级 / 等人工事项）
 type: task
 status: active
 created_at: 2026-09-12T22:36:00+08:00
-updated_at: 2026-09-12T22:36:00+08:00
+updated_at: 2026-09-12T23:36:00+08:00
 priority: low
 keywords: [backlog, P3, 文档爬虫, FC, 人工事项]
 questions:
   - 文档爬虫 FC 自动化还差哪些人工步骤
   - 有哪些 P3 低优先级待办
-summary: 从 tasks.md 拆出的低优先级/等人工事项：文档爬虫 FC 自动化 6 项人工步骤、P3 代码小修
+summary: 从 tasks.md 拆出的低优先级/等人工/归档遗留事项：文档爬虫 FC 6 项人工步骤、归档任务遗留待办、P3 代码小修
 load: rarely
 related:
   - agent-memory/current/tasks.md
@@ -30,6 +30,18 @@ related:
   - [ ] PC 端油猴调度器是否下线，由用户决定（可与 doc-crawler 并存）
 - 详情：`sessions/2026/2026-09-08-并行四任务监控与文档爬虫上云.md`；`agent-tasks/2026-09-08-monitoring-and-doc-fc/`；`lessons/failure-旁路能力初始化拖垮主流程.md`。
 
+
+## 归档遗留待办（原分散在已归档任务块中，仍未完结）
+
+- [ ] **P1 生命周期 P4 收尾**：2 个 `:cur` 半区窗口已于 09-12 关闭（30/30 抽样父子均在 cur、long=0，「父在 long」前提不成立，不搬）；P6 关双写前须补 v3 detail/fileCtx（结构兼容，`knowledge/api-v3-detail-filectx兼容性分析.md`）；P5 进度见「进行中」。
+- [ ] **P2 排期**：巡检守护提升到 `runBootstrapJob` 级 + heap 阈值可配（0.5~1 人日）；rollout §9 待补写。
+- [ ] **P2 代码待修（配置 v2）**：`LOCAL_CONFIG_PATH` 缺省未回落宿主机 `config.yaml`；删宿主机 `config.yaml` 的时机（回滚现依赖 `spider.old`）留用户决定。
+- [ ] **P2 安全（凭据轮换，待决策）**：`devops_online_env.go` 硬编码 OSS AK/SK 与 ES 口令；`pan_download`/`bnd_download` 测试文件硬编码真实 RefreshToken/BDUSS（建议迁 `.hide.json`）；ali_log ak/sk 曾明文进会话记录，建议评估轮换。
+- [ ] **P1 待用户决策**：`osec-resdb` STORAGE worker 的 `es_endpoint` 指向已下线旧 ES 集群（已回滚，不影响 P3 数据正确性）。
+- [ ] **既有故障**：现网 ES 无 `resource_valid` 索引（404），`checkValid`/`queryValidAndPwd` v2/v3 同样失效。
+- [ ] **P2**：COMMON `common_message.proto` 的 `go_package` 仍是旧仓库名 `PPIO`，`gen.sh` 后要手工 sed；应改 proto 全自动。
+- [ ] **P2**：资源生命周期 P0 基线剩余项（PRD §15.3 第 12/13 项）：bnd checker 探测吞吐与代理池配额、无 join 百度文档 `_source` 大小抽样未采。
+- [ ] **P2 待人工验证（管理台合并）**：ARMS 确认 `queue_admin_*` 指标入库；浏览器实测 spiderAdmin 三组菜单/Mock/各页。
 
 ## P3 低优先级待办
 

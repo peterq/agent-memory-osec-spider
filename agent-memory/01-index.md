@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-12T23:32:15+08:00
+updated_at: 2026-09-12T23:32:34+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -32,7 +32,7 @@ load: always
 - current/risks.md | high | 2026-09-12 | 影响开发与运维安全的已知风险点；最高 R9 lifecycle_checker 误删 115.6 万资源（修复已上线、恢复待决策） | lifecycle_checker误删、风险、阻塞
   ? 密钥、安全相关的风险在哪看
 - current/changelog.md | low | 2026-09-12 | 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪 | 变更记录、changelog、历史
-- current/tasks-backlog.md | low | 2026-09-12 | 从 tasks.md 拆出的低优先级/等人工事项：文档爬虫 FC 自动化 6 项人工步骤、P3 代码小修 | backlog、P3、文档爬虫
+- current/tasks-backlog.md | low | 2026-09-12 | 从 tasks.md 拆出的低优先级/等人工/归档遗留事项：文档爬虫 FC 6 项人工步骤、归档任务遗留待办、P3 代码小修 | backlog、P3、文档爬虫
   ? 文档爬虫 FC 自动化还差哪些人工步骤 / 有哪些 P3 低优先级待办
 
 ## decisions/ (15)
