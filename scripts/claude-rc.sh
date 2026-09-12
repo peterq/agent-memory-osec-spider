@@ -1,20 +1,16 @@
 #!/usr/bin/env bash
-# 以 Remote Control 模式后台启动当前工作空间的 Claude Code 会话
-# (主目录 = 本记忆仓库, --add-dir 挂上 1s 下的五个业务仓库), 日志写 rc.log
-# 用法: scripts/claude-rc.sh [会话名] [permission-mode]   默认: osec-spider / auto
-# 环境变量 ONE_S_ROOT 可覆盖 1s 仓库根目录
-# 停止: pkill -f 'claude --remote-control osec-spider'
+# 前台启动本工作空间的 Claude Code Remote Control 服务(headless, 无需 TTY / nohup)。
+# 主目录 = 本记忆仓库; 1s 下五个业务仓库通过 .claude/settings.local.json 的
+# permissions.additionalDirectories 挂载(`claude remote-control` 子命令不支持 --add-dir)。
+# 由 systemd 用户服务 scripts/claude-rc.service 托管(后台/开机自启/日志 rc.log):
+#   systemctl --user enable --now "$PWD/scripts/claude-rc.service"   # 首次
+#   systemctl --user status|restart|stop claude-rc
+#   loginctl enable-linger "$USER"                                      # 开机无需登录即启动
+# 前置: 该目录必须已在终端里跑过一次 `claude` 并接受信任对话框, 否则报 "Workspace not trusted"。
+# 手工前台运行: scripts/claude-rc.sh [会话名] [permission-mode]   默认: osec-spider / 沿用全局默认
 set -euo pipefail
-ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-ONE_S="${ONE_S_ROOT:-/home/peterq/dev/projects/1s}"
+ROOT="$(cd "$(dirname "$(readlink -f "$0")")/.." && pwd)"
 NAME="${1:-osec-spider}"
-MODE="${2:-auto}"
+MODE="${2:-}"
 cd "$ROOT"
-nohup claude --remote-control "$NAME" --permission-mode "$MODE" \
-  --add-dir "$ONE_S/enfi-resource-common" \
-            "$ONE_S/osec-spider-go" \
-            "$ONE_S/osec-resource-api" \
-            "$ONE_S/enfi-resource-storage" \
-            "$ONE_S/nc-js" \
-  > "$ROOT/rc.log" 2>&1 &
-echo "已后台启动 (pid $!), 日志: $ROOT/rc.log"
+exec claude remote-control --name "$NAME" ${MODE:+--permission-mode "$MODE"}

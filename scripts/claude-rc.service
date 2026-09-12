@@ -1,0 +1,21 @@
+# Claude Code Remote Control 用户服务(osec-spider 工作空间)
+# 安装: systemctl --user enable --now /home/peterq/dev/projects/peterq/agent-memory-osec-spider/scripts/claude-rc.service
+# 开机无需登录即启动: loginctl enable-linger peterq
+[Unit]
+Description=Claude Code Remote Control (osec-spider workspace)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/peterq/dev/projects/peterq/agent-memory-osec-spider
+ExecStart=/home/peterq/.local/bin/claude-rc
+Environment=PATH=/home/peterq/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=HOME=/home/peterq
+StandardOutput=append:/home/peterq/dev/projects/peterq/agent-memory-osec-spider/rc.log
+StandardError=inherit
+Restart=on-failure
+RestartSec=15
+
+[Install]
+WantedBy=default.target
