@@ -3,7 +3,7 @@ title: 项目总览
 type: overview
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T15:00:00+08:00
+updated_at: 2026-09-12T15:45:00+08:00
 priority: critical
 keywords: [网盘资源爬取, 版权取证, COMMON, SPIDER, STORAGE, API, NC-JS]
 summary: 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件
@@ -26,10 +26,10 @@ related:
 ## 2. 当前状态（最近 7 天；更早见 `current/changelog.md`）
 
 - 09-12 **进行中：记忆系统瘦身**——常驻 5.4 万字超规则，`scripts/mem/mem.py` 已可用，协议改动待确认。→ `decisions/decision-2026-09-12-记忆系统瘦身与脚本化加载.md`
-- 09-11 **P4 bootstrap id=8 已 done**（终态对拍 0.001% 级）；下一步 P5 灰度，遗留 2 个 `:cur` 窗口、5 个未部署提交。→ `current/tasks.md`
+- 09-12 **P5 前置对拍未通过**——首页重合度 84%<95%（4% 是 legacy 已删 lc 未删的死链，其余是 `match_phrase_prefix` 分片展开彩票），待用户拍板 D1~D4。→ `current/open-questions.md`、`lessons/failure-v3首页重合度受前缀展开分片彩票影响.md`
+- 09-11 **P4 bootstrap id=8 已 done**（终态对拍 0.001% 级）；遗留 2 个 `:cur` 窗口、5 个未部署提交。→ `current/tasks.md`
 - 09-10 **代理池监控上线闭环**——全 0 是上报侧未部署，重部即有数据；新增只读巡检 `tools/proxy-admin-check`。→ `procedures/troubleshooting-代理池总览无数据.md`
 - 09-09 **配置按进程拆代码已部署**（SPIDER `883daeb`，网关双机 + 爬虫 + proxy 全重部）。→ `decisions/decision-2026-09-09-配置按进程拆代码而非文件.md`
-- 09-08 **并行四任务 + GitHub OAuth 登录已 push 未部署**（OAuth **上线顺序必须先网关后前端**，新旧握手协议不匹配会导致鉴权异常）；res_lc 只读后台已随配置 v2 上线。→ `sessions/2026/2026-09-08-后台登录改为github授权.md`、`sessions/2026/2026-09-08-并行四任务监控与文档爬虫上云.md`
 - 阻塞：无；四个 Go 仓库 `go build ./...` 全过；在办任务见 `current/tasks.md`，风险见 `current/risks.md`。
 
 ## 3. 核心事实
@@ -79,10 +79,11 @@ related:
 - 长周期生产作业巡检清单 → `lessons/patterns-长周期生产巡检.md`（实测吞吐数据 `knowledge/domain-bootstrap吞吐实测数据.md`）
 - 新爬虫写联网集成测试（假 committer + 独立 redis 前缀 + 环境变量开关）→ `lessons/success-爬虫联网集成测试.md`
 - 新站点调研先挖 JS bundle 接口、`total` 须用 sitemap 对账；**结论有保质期** → `procedures/workflow-新站点调研.md`
+- 生产 API 探针按 res-api 三级漏桶算节奏、不伪造来源头；排序差异用 `explain` 看 idf 求和项 → `lessons/failure-v3首页重合度受前缀展开分片彩票影响.md`
 
 ## 7. 待解决问题
 
-- `current/open-questions.md`；风险 `current/risks.md`。
+- **P5 前置 D1~D4 待用户拍板**（legacy→lc 失效同步 / 重合度口径 / bnd 慢 / 是否灰度）→ `current/open-questions.md`；风险 `current/risks.md`。
 
 ## 8. 怎么找记忆文件
 

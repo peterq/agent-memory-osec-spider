@@ -3,7 +3,7 @@ title: 当前任务与进度
 type: task
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T14:20:00+08:00
+updated_at: 2026-09-12T15:40:00+08:00
 priority: critical
 keywords: [任务, 进度, 待办, 队列v2, queue-admin, 全站扫描, fullsweep, 文档爬虫, doc-crawler, FC Chrome, 凭据轮换, 站点发现, kkpans, misoso, 有效性检测]
 summary: 当前仍在推进/阻塞/待人工决策的事项；已完成并上线（或被取代不再跟进）的任务已归档到 archive/2026/tasks-2026-09-已完成.md
@@ -25,6 +25,7 @@ related:
 | 任务 | 状态 | 阻塞/下一步 | 详情文件 |
 |---|---|---|---|
 | 生命周期 P4 全量 bootstrap | ✅ 已完成 | 5 提交待下次网关重启部署；2 个 `:cur` 半区窗口待决定 | 归档遗留待办 / archive「生命周期 P4」 |
+| **生命周期 P5 前置对拍** | ❌ 未通过（09-12） | 重合度 84%<95%，待用户决策 D1~D4；复测 SPIDER `scripts/lc_p5_v2v3_diff.py` | `current/open-questions.md` |
 | 09-08 并行四任务 | 部分已上线 | 文档爬虫 FC 自动化卡 6 项人工事项 | 本文件「2026-09-08 并行四任务」 |
 | 配置 v2/OAuth/配置拆代码 | ✅ 已上线 | `LOCAL_CONFIG_PATH` 回落待修；凭据轮换待决策 | 归档遗留待办 |
 | 资源生命周期改造 P0~P3 | ✅ 已上线 | es_endpoint / `resource_valid` 索引缺失等 | 归档遗留待办 |
@@ -53,7 +54,7 @@ related:
 
 ## 归档遗留待办（原分散在已归档任务块中，仍未完结）
 
-- [ ] **P1 生命周期 P4 收尾**：5 个未部署代码提交（`3b8cc13`/`aac5f84`/`61cf1db`/`e856540`/`93f4d38`）待下次网关重启生效；2 个 `:cur` 半区窗口（父在 long、子在 cur，21,451 子）是否处理待用户决定；P6 关双写前须补 v3 detail/fileCtx（结构兼容，见 `knowledge/api-v3-detail-filectx兼容性分析.md`）。**P5 前置未做**：bootstrap 后的 v2/v3 50 关键词重合度（≥95%）与 P99 延迟对比尚未跑。详见 `sessions/2026/2026-09-11-p4-bootstrap接管巡检与校验失败取证.md`。
+- [ ] **P1 生命周期 P4 收尾**：5 个未部署提交（`3b8cc13`…`93f4d38`，`git log` 可查）待下次网关重启生效；2 个 `:cur` 半区窗口（父在 long、子在 cur，21,451 子）是否处理待用户决定；P6 关双写前须补 v3 detail/fileCtx（结构兼容，`knowledge/api-v3-detail-filectx兼容性分析.md`）；P5 前置未通过见总表。
 - [ ] **P2 排期**：巡检守护提升到 `runBootstrapJob` 级 + heap 阈值可配（0.5~1 人日）；rollout §9 待补写。
 - [ ] **P2 代码待修（配置 v2）**：`LOCAL_CONFIG_PATH` 缺省未回落宿主机 `config.yaml`；删宿主机 `config.yaml` 的时机（回滚现依赖 `spider.old`）留用户决定。
 - [ ] **P2 安全（凭据轮换，待决策）**：`devops_online_env.go` 硬编码 OSS AK/SK 与 ES 口令；`pan_download`/`bnd_download` 测试文件硬编码真实 RefreshToken/BDUSS（建议迁 `.hide.json`）；ali_log ak/sk 曾明文进会话记录，建议评估轮换。
@@ -61,7 +62,7 @@ related:
 - [ ] **既有故障**：现网 ES 无 `resource_valid` 索引（404），`checkValid`/`queryValidAndPwd` v2/v3 同样失效。
 - [ ] **P2**：COMMON `common_message.proto` 的 `go_package` 仍是旧仓库名 `PPIO`，`gen.sh` 后要手工 sed；应改 proto 全自动。
 - [ ] **P2**：资源生命周期 P0 基线剩余项（PRD §15.3 第 12/13 项）：bnd checker 探测吞吐与代理池配额、无 join 百度文档 `_source` 大小抽样未采。
-- [ ] **P2 待人工验证（管理台合并）**：ARMS 确认 `queue_admin_*` 指标入库；浏览器实测 spiderAdmin 三组菜单/Mock 开关/各页数据。
+- [ ] **P2 待人工验证（管理台合并）**：ARMS 确认 `queue_admin_*` 指标入库；浏览器实测 spiderAdmin 三组菜单/Mock/各页。
 
 ## 待办
 

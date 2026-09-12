@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-12T13:17:36+08:00
+updated_at: 2026-09-12T14:05:04+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -16,7 +16,7 @@ load: always
 定位到文件后 `mem.py outline <file>` 看章节，再 `mem.py body <file> --section <标题>` 只读需要的一段。
 维护方式：改目标文件 Front Matter（summary / keywords / questions），然后运行 `scripts/mem/mem.py index --write`。
 
-# agent-memory 启动包（脚本生成, 110 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
+# agent-memory 启动包（脚本生成, 112 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
 
 ## 根目录 (3)
 - 00-overview.md | crit | 2026-09-12 | 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件 | 网盘资源爬取、版权取证、COMMON
@@ -27,11 +27,11 @@ load: always
 ## current/ (4)
 - current/tasks.md | crit | 2026-09-12 | 当前仍在推进/阻塞/待人工决策的事项；已完成并上线（或被取代不再跟进）的任务已归档到 archive/2026/tasks-2026-09-已完成.md | 任务、进度、待办
   ? 当前该做什么，有哪些待办
+- current/open-questions.md | high | 2026-09-12 | P5 前置对拍未通过后待用户拍板的 D1~D4（失效同步 / 重合度口径 / bnd 慢 / 是否灰度） | P5、待确认、用户确认
+  ? 当前有哪些待用户确认的问题
 - current/risks.md | high | 2026-09-12 | 影响开发与运维安全的已知风险点 | 风险、阻塞、密钥
   ? 密钥、安全相关的风险在哪看
 - current/changelog.md | low | 2026-09-12 | 按日期倒序的一句话变更流水，每条指向对应的 session/decision 文件；只用来回答"某件事是哪天做的、细节在哪个文件 | 变更记录、changelog、历史
-- current/open-questions.md | low | 2026-09-12 | 当前没有待确认问题（生命周期 Q1~Q6 已于 2026-09-05 确认） | 疑问、待确认、用户确认
-  ? 当前有哪些待用户确认的问题
 
 ## decisions/ (15)
 - decisions/decision-2026-09-02-停止磁力资源采集.md | crit | 2026-09-02 | 项目现只采集 4 种网盘类型资源，不再采集或入库磁力/BT 资源；存量索引与接口保留 | 磁力、torrent、magnet
@@ -77,7 +77,7 @@ load: always
   ? 部署 / 上线怎么操作，日志在哪看 / 新服务该放哪台机器 / 队列 v2 上线收尾脚本是哪个
 - procedures/workflow-部署-历史补充.md | low | 2026-09-12 | 历次生产上线（2026-09-05~09-10 生命周期 P3/P4 网关多次重部、代理池监控上线等）的一次性踩坑与已固化到 deploy.sh 的加固记录；常规部署流程见 wo… | 生命周期上线、网关重部、dryRun
 
-## lessons/ (31)
+## lessons/ (32)
 - lessons/failure-bootstrap按id排序打爆ES堆.md | crit | 2026-09-12 | P4 bootstrap 的 B1 用 sort:["_id"] 在 15.7 亿文档旧索引上翻页, 触发 _id fielddata 加载, 单页 >550s、堆到 99%、熔… | bootstrap、存量迁移、P4
   ? P4 bootstrap 为什么跑不起来 / 作业 id=1 为什么 failed
 - lessons/failure-longBoundary漂移导致父子跨索引与shortfall误报.md | crit | 2026-09-11 | id=8 的 89 条 shortfallSlices（420 万）不是子文档丢失，而是 copy_parent 与 copy_child 各自用 time.Now() 算 90… | bootstrap、longBoundary、shortfallSlices
@@ -94,6 +94,8 @@ load: always
   ? 筛选参数传了 0 却查不出数据 / proto3 不传字段被当成过滤条件是什么坑
 - lessons/failure-qiankun子应用挂到包裹层导致样式被清空.md | high | 2026-09-08 | 子应用 Vue app.mount 直接挂 qiankun 包裹层会把 <qiankun-head> 内联的全部静态 CSS 删掉(只在线上/被 qiankun 加载时出现); … | NC-JS、qiankun、微前端
 - lessons/failure-resdb的ES端点指向已下线集群.md | high | 2026-09-05 | STORAGE worker 所在的 osec-resdb 配置里的 ES 地址是已下线集群，旧代码只打 error 日志继续跑（哑故障），新代码 fail-fast 后进入重启… | osec-resdb、es_endpoint、ES 集群更换
+- lessons/failure-v3首页重合度受前缀展开分片彩票影响.md | high | 2026-09-12 | P5 对拍首页重合度 84%<95% 的两个根因——4% 坑位是 legacy 已删 lc 未删的死链（无反向失效同步）；其余是 match_phrase_prefix 展开集合… | P5、重合度、match_phrase_prefix
+  ? P5 对拍为什么没通过，v3 首页和 v2 为什么不一样 / dfs 能不能让新旧索引排序一致 / 旧索引 url_check 删掉的文档新方案会同步失效吗
 - lessons/failure-临时表排序规则不一致导致JOIN报错.md | high | 2026-09-06 | MySQL 8 里 CREATE TEMPORARY TABLE 不写 COLLATE 会继承服务器默认 utf8mb4_0900_ai_ci, 与建表为 utf8mb4_gen… | MySQL、collation、ERROR 1267
 - lessons/failure-前端环境默认值写死本地.md | high | 2026-09-08 | 子应用把 useLocalStorage('gwEndpoint') 默认值写死成 gwAddrs[1](本地 127.0.0.1)，导致生产首次访问卡死；改为按 locatio… | gwEndpoint、gwAddrs、defaultGwAddr
 - lessons/failure-把拆配置理解成拆文件.md | high | 2026-09-09 | 用户说"拆分"时先确认拆的是什么(代码结构/文件/进程); 用运行时断言或"文件里不写某项"来保证隔离, 通常说明方案层级选错了 | 需求理解、拆分对象、复述确认
@@ -159,7 +161,7 @@ load: always
 - knowledge/reference-github-oauth配置.md | medi | 2026-09-12 | 两个GitHub OAuth App(prod/dev)的名称、client_id、管理页、已注册回调列表与组织第三方应用策略, 不含任何secret | GitHub OAuth App、client_id、redirect_uri
   ? GitHub OAuth App 的 client_id 在哪查 / 1second 组织的回调地址怎么配置
 
-## sessions/ (27 个, 仅列最近 3 个; 其余用 mem.py search 找)
+## sessions/ (28 个, 仅列最近 3 个; 其余用 mem.py search 找)
 - sessions/2026/2026-09-02-kkpans爬虫开发.md | medi | 2026-09-12 | 按 PRD 实现 www.kkpans.com 爬虫（新建 services/bbs 包），联网实测 9 项验收标准全部达标 | kkpans、bbs_kkpans、services/bbs
 - sessions/2026/2026-09-02-kkpans站点调研与PRD.md | medi | 2026-09-12 | 探索 www.kkpans.com 并产出爬虫需求文档，沉淀站点知识、调研工作流与对账脚本 | kkpans、站点调研、PRD
 - sessions/2026/2026-09-02-修复夸克阿里有效性检测.md | medi | 2026-09-12 | 用 15+15 条样本复现并修复三类误判，API 与 SPIDER 两套 checker 结论现已一致 | 有效性检测、validShareLink、夸克
