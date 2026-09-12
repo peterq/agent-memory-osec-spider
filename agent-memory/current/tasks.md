@@ -3,7 +3,7 @@ title: 当前任务与进度
 type: task
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T12:10:00+08:00
+updated_at: 2026-09-12T14:20:00+08:00
 priority: critical
 keywords: [任务, 进度, 待办, 队列v2, queue-admin, 全站扫描, fullsweep, 文档爬虫, doc-crawler, FC Chrome, 凭据轮换, 站点发现, kkpans, misoso, 有效性检测]
 summary: 当前仍在推进/阻塞/待人工决策的事项；已完成并上线（或被取代不再跟进）的任务已归档到 archive/2026/tasks-2026-09-已完成.md
@@ -53,7 +53,7 @@ related:
 
 ## 归档遗留待办（原分散在已归档任务块中，仍未完结）
 
-- [ ] **P1 生命周期 P4 收尾**：5 个未部署代码提交（`3b8cc13`/`aac5f84`/`61cf1db`/`e856540`/`93f4d38`）待下次网关重启生效；2 个 `:cur` 半区窗口（父在 long、子在 cur，21,451 子）是否处理待用户决定；P5 灰度（切 v3）与 P6 关双写前须补 v3 detail/fileCtx；建议 done 后再跑一次 repair 对账。详见 archive「生命周期 P4」、`sessions/2026/2026-09-11-p4-bootstrap接管巡检与校验失败取证.md`。
+- [ ] **P1 生命周期 P4 收尾**：5 个未部署代码提交（`3b8cc13`/`aac5f84`/`61cf1db`/`e856540`/`93f4d38`）待下次网关重启生效；2 个 `:cur` 半区窗口（父在 long、子在 cur，21,451 子）是否处理待用户决定；P5 灰度（切 v3）与 P6 关双写前须补 v3 detail/fileCtx；建议 done 后再跑一次 repair 对账。**P5 前置未做**：bootstrap 后的 v2/v3 50 关键词重合度（≥95%）与 P99 延迟对比尚未跑（09-05 对拍 v3 仅 57 条不算数）。详见 archive「生命周期 P4」、`sessions/2026/2026-09-11-p4-bootstrap接管巡检与校验失败取证.md`。
 - [ ] **P2 排期**：巡检守护提升到 `runBootstrapJob` 级 + heap 阈值可配（0.5~1 人日）；被停 Agent 未写 rollout §9，下一个部署 Agent 补写。
 - [ ] **P2 代码待修（配置 v2）**：`LOCAL_CONFIG_PATH` 缺省未回落宿主机 `config.yaml`；删宿主机 `config.yaml` 的时机（回滚现依赖 `spider.old`）留用户决定。
 - [ ] **P2 安全（凭据轮换，待决策）**：`devops_online_env.go` 硬编码 OSS AK/SK 与 ES 口令；`pan_download`/`bnd_download` 测试文件硬编码真实 RefreshToken/BDUSS（建议迁 `.hide.json`）；ali_log ak/sk 曾明文进会话记录，建议评估轮换。
