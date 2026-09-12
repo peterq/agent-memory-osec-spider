@@ -107,3 +107,24 @@ go run ./cmd/localverify \
 - `/tmp/manual-chrome-profile*`、`/tmp/fc-chrome-local*.log`、诊断用临时 python 脚本均在 scratchpad 目录内，未污染仓库。
 - 未 `pnpm build`、未动 NC-JS/SPIDER 任何文件。
 - 用过在线 FC 端点做验证（主控已部署，未新建/未重新部署任何函数）。
+
+## 角色 30 —— 三处回填新 FC 地址（代码改动，不部署）
+
+| 事项 | 结果/证据 |
+|---|---|
+| NC-JS `admin/login3rd/src/task/task.ts:18` | `eps['prod-v3']` 由占位改为 `wss://fc-resource-node-api.krzb.net/cdp3/chrome`（共用域名新路径），注释补系统域名备用地址；默认选中项仍是 `prod-v2` |
+| NC-JS `apps/cdp-driver/s.yaml:34-38`、`src/main.ts:10-15` | `CDP_ENDPOINT` 注释占位改为真实系统域名/自定义域名（仍注释、不生效），`main.ts` TODO 改为"新实例已上线，切换时改 CDP_ENDPOINT"；缺省值不变（仍指旧实例 v2） |
+| NC-JS 类型检查 | `login3rd`: `pnpm run type-check`（`vue-tsc --build`）通过，无输出；`cdp-driver`: `pnpm exec tsc --noEmit` 报 1 个错误（`main.ts:6` `import { aw } from 'vitest/dist/chunks/...'`），经 `git blame` 确认该行来自 2024-12-26 历史提交，与本次改动（第 10-15 行）无关，未处理 |
+| SPIDER `config/config.go:521-524` | `FcEndpoint` 字段注释更新，去掉"尚未部署"措辞，指向 `doc_crawler.go` 的 `applyDefault` |
+| SPIDER `services/doc_crawler/doc_crawler.go:38-48` | `applyDefault`：`FcEndpoint` 缺省改为 VPC 内网系统域名 `wss://nc-app-prod-cdp-wmmmpvnmqb.cn-hangzhou-vpc.fcapp.run/chrome`；`FcEndpointPublic` 缺省改为共用自定义域名新路径 `wss://fc-resource-node-api.krzb.net/cdp3/chrome`（路由变更待用户执行） |
+| SPIDER 构建/测试 | `go build ./...` 无输出（通过）；`go vet ./config/... ./services/doc_crawler/...` 无输出（通过）；`go test ./services/doc_crawler/... -count=1` → `ok` |
+| commit | NC-JS `89860d8`（main，已 push）；SPIDER `e79c4f6`（master，已 push）。均无 Co-Authored-By |
+
+未做：未碰 userscripts 仓库（不属于本角色范围）；未执行自定义域名路由变更（属主控/用户）；未切换 `cdp-driver` 生产缺省值（按要求保留，切换由用户决定）。
+
+### 主控 —— 共用域名路由已生效 + 线上集成测试(inject 路径)通过（2026-09-13 07:59）
+- `s krzb info`：`/cdp3/*` → `nc-app-prod-cdp3` + `wildcardRules /cdp3/* → /$1` 已在线，其余 5 条路由原样；HTTPS 证书未受影响（`ssl_verify=0`）。
+  `https://fc-resource-node-api.krzb.net/cdp3/health` → `{"cacheEntries":0,"chromeVersion":"Google Chrome 153.0.8010.36","ok":true,"tampermonkey":"5.5.0"}`；老路径 `/`=404、`/check`=500 与改前基线一致。
+- `go run ./cmd/localverify -mode inject -timeout 150 -fc wss://fc-resource-node-api.krzb.net/cdp3/chrome -script <OSS kdoc.user.js> -page https://www.kdocs.cn/l/cdXYaQ5EOakI -nonce krzb-inject-1`：
+  握手 5 s → `start` → `progress` 200/244/400/574 → **`result ok:true docType=kdocSheet`（quark 链接列表）**，全程 20 s，退出码 0。nonce 完整（角色 20 修复生效）。
+- 待办：Tampermonkey 路径（不带 inject）等角色 13 的 profile 预热方案；随后重建 base/app 镜像 → jenkins 中转推 ACR → `s deploy` → 线上 `-mode tm` 复测。
