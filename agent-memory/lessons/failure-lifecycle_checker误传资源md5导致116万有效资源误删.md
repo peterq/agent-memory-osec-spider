@@ -3,7 +3,7 @@ title: 失败经验：lifecycle_checker 把资源 md5 当分享 id，116 万有�
 type: lesson
 status: active
 created_at: 2026-09-12T22:40:00+08:00
-updated_at: 2026-09-12T23:40:00+08:00
+updated_at: 2026-09-13T00:15:00+08:00
 priority: critical
 keywords: [lifecycle_checker, 误删, ShareId, 违规tooltip, bnd判定, invalid_link, 失效率告警, 事故, 恢复]
 questions:
@@ -55,6 +55,11 @@ related:
 bnd checker 正则 `(不存在|违规|链接已过期)` 匹配整页，而正常分享页模板固定带 `部分文件违规，已被过滤` tooltip → 有效分享判失效，2 分钟 930 条。
 API 侧 `bnd-api.go` 早已特判「部分文件违规」，SPIDER 没同步。修复 SPIDER `06ef50d`：`classifyBndShare` 看 `"errno":0`/HTTP 404/提取码页，文案只在 errno≠0 时兜底。
 **处置状态**：23:05 止血、23:06 部署 `b888846`、23:08 再停、23:10:53 部署 `06ef50d`（用户授权执行）。
+
+## 补记：恢复执行（09-12 23:34 起）
+`tools/lc-recrawl`（SPIDER `240a71a`）+ `scripts/lc_false_invalid_export.sh`（`a81c351`）：导出 1,152,617 条 → `-rate 10` 投递 `resourcePreCheck`。
+试点 1,000 条 25 min 内 498 条复活，其余为解析器判真失效（41031/41004/41012/41011）→ 恢复率约 50%，即误删集合里约一半在网盘侧本就已死。
+**直连 `drive.quark.cn` 从服务器 IP 探测一律回 14020 "file not found"（含已知有效分享），不能当判据；核验要走解析链路（代理池）。**
 
 ## 适用边界
 lc checker 与 API/SPIDER 两套旧判定实现无关（旧链路传的是分享 id，未受影响）；bnd/xunlei 零误删但 8 天零有效检测，dueBacklog 需在修复上线后消化。
