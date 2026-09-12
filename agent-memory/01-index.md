@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-12T16:47:00+08:00
+updated_at: 2026-09-12T16:47:30+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -86,7 +86,7 @@ load: always
   ? P4 第二次演练，copy_child 为什么这么慢
 - lessons/failure-copy_child真正瓶颈是子文档量.md | high | 2026-09-12 | 修完轮询空等后 copy_child 只快 2.1 倍——因为真正的工作量是 3245 万/单月、7.4 亿/全量的子文档，被 reindex 的 2000 rps 限速卡死 | copy_child、bootstrap、reindex
   ? P4 第三次尝试，作业 id=4 为什么还是 paused / copy_child 修完轮询还是慢，到底要搬多少子文档 / reindex 限速是多少
-- lessons/failure-copy_child计数校验对称差误判重跑.md | high | 2026-09-09 | childCountOk 用 |src-dst| 判窗口是否达标，但 :cur 半区含双写、:long 半区源侧被 url_check 删除，dst>src 是结构性的；重跑是幂… | bootstrap、copy_child、childCountOk
+- lessons/failure-copy_child计数校验对称差误判重跑.md | high | 2026-09-12 | childCountOk 用 |src-dst| 判窗口是否达标，但 :cur 半区含双写、:long 半区源侧被 url_check 删除，dst>src 是结构性的；重跑是幂… | bootstrap、copy_child、childCountOk
 - lessons/failure-haisou搜索接口收紧.md | high | 2026-09-12 | haisou.cc 搜索接口对代理池 IP 全量 429；傍晚复查排除了积分、请求头、HTTP/2、会话、匿名身份，锁定为按来源网络的端点级拦截 | haisou、13001、限流
   ? haisou 跑不通，13001/请求过于频繁是什么原因 / X-HS-Client-Context 头怎么来的 / haisou 积分额度模型是什么
 - lessons/failure-ncjs构建脚本会自动上传OSS.md | high | 2026-09-04 | admin/*子应用的标准 `pnpm build` 脚本默认会把 dist 上传到生产 OSS 并改写 apps.json, 验证构建前必须先用 { deploy:false … | NC-JS、pnpm build、mfe插件

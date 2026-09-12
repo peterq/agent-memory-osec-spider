@@ -3,7 +3,7 @@ title: 失败经验：copy_child 子文档计数校验用对称差，目标多�
 type: lesson
 status: active
 created_at: 2026-09-07T08:00:00+08:00
-updated_at: 2026-09-09T05:20:00+08:00
+updated_at: 2026-09-12T17:05:00+08:00
 priority: high
 keywords: [bootstrap, copy_child, childCountOk, version_conflicts, 重跑, FailedSlices, 双写, url_check, 对称差]
 summary: childCountOk 用 |src-dst| 判窗口是否达标，但 :cur 半区含双写、:long 半区源侧被 url_check 删除，dst>src 是结构性的；重跑是幂等 reindex 全 version_conflicts 补不回，实测一次白跑 5,492 万文档 2.5 小时
