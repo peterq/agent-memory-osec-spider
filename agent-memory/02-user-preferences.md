@@ -3,9 +3,9 @@ title: 用户偏好与协作约定
 type: preference
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T11:25:00+08:00
+updated_at: 2026-09-13T07:55:00+08:00
 priority: high
-keywords: [偏好, 中文, 脚本沉淀, token, 记忆维护, 子agent, sonnet, 模型选择, 任务简报, agent-tasks, harness记忆, 独立仓库, 敏感信息, AK/SK, 口令, 脱敏]
+keywords: [偏好, 中文, 脚本沉淀, lint双阈值, token, 记忆维护, 子agent, sonnet, 模型选择, 任务简报, agent-tasks, harness记忆, 独立仓库, 敏感信息, AK/SK, 口令, 脱敏]
 summary: 用户对语言、脚本沉淀、记忆维护、thinking 长度与敏感信息禁写的明确要求
 load: always
 related:
@@ -35,6 +35,8 @@ related:
 10. **敏感信息禁止入记忆**：配置文件（`config*.yaml`、`deploy.sh`、`_note/config/*`）里含明文阿里云 AK/SK、
     S3 凭证、ES/MySQL/Redis 账号口令，**禁止写入任何记忆文件、任务简报或对外输出**，只记录文件路径；
     需要展示配置结构时手工脱敏。风险详情见 `current/risks.md` R2。
+11. **[用户确认 2026-09-13] 记忆文件长度双阈值**：lint 只在 >12,000 字时报「超长」，一旦触发必须一次压到 <6,000，不许只压到刚好低于上限；
+    9,000~12,000 只提示不阻塞。原因：单阈值 8,000 时每次改 tasks.md 都反复触发。见 `decisions/decision-2026-09-13-lint长度双阈值.md`。
 
 ## 推断的工作习惯（未经用户确认，标记为推断）
 

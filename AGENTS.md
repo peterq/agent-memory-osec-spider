@@ -142,12 +142,13 @@ sessions 一律 `load: rarely`, 启动包不列、检索降权;只在用户点�
 任何 Front Matter 变化或文件增删改名后运行 `scripts/mem/mem.py index --write`;`mem.py lint` 会报「索引过期」。
 
 ### 加载层级
-- 第一层始终:`00-overview.md`(≤5,500) + 启动包(hook 注入或 `01-index.md`, ≤17,000), 合计 ≤ 22,500 字符
+- 第一层始终:`00-overview.md`(≤5,500) + 启动包(hook 注入或 `01-index.md`, 提示线 17,000、硬上限 20,000;超提示线时精简 summary/questions 或归档低价值文件), 合计目标 ≤ 22,500 字符
 - 第二层按任务:`03-project-context.md` `02-user-preferences.md` `current/` 相关决策与流程 —— 用 `outline` + `body --section` 按章节读
 - 第三层仅确需时:历史会话、详细领域知识、失败经验、归档内容、弱相关资料
 
 ### 长度(均为字符数, `mem.py lint` 判据)
-总览 ≤5,500;`03-project-context.md` ≤4,000;任何文件 ≤8,000, 超过必须拆分;`current/tasks.md` ≤8,000, 任务「完成且已部署」即整块移入 `archive/YYYY/tasks-YYYY-MM-已完成.md`;会话摘要 ≤4,000;`archive/` 与 `status: archived` 的文件不限长度(永不整读, 只按章节取)。
+总览 ≤5,500;`03-project-context.md` ≤4,000;会话摘要 ≤4,000;`archive/` 与 `status: archived` 的文件不限长度(永不整读, 只按章节取)。
+其余文件(含 `current/tasks.md`)采用**双阈值**:硬上限 12,000, 超过即 lint「超长」, **必须一次压缩/拆分/归档到 <6,000**(留足增长空间, 禁止只压到刚好低于上限, 否则下次改动又超);9,000~12,000 之间 lint 只打「提示」不阻塞, 顺手压缩即可。压缩手段:任务「完成且已部署」即整块移入 `archive/YYYY/tasks-YYYY-MM-已完成.md`;已上线/已验证的过程细节移到 rollout/决策/lessons 只留一句话指针;多主题文件按主题拆分。
 避免重复:总览写摘要,索引写关键词与概要,会话只写过程摘要,决策只写决策与依据;详细内容放唯一文件,其他文件链接引用。
 
 ### 整理与归档(定期主动执行)
@@ -170,7 +171,7 @@ sessions 一律 `load: rarely`, 启动包不列、检索降权;只在用户点�
 → 提炼高价值内容到总览(≤5,500 字符) → 归档过时内容
 → scripts/mem/mem.py index --write → scripts/mem/mem.py lint 通过
 ```
-每次任务完成后至少检查:新项目事实?新用户偏好?重要决策?可复用方法?验证了某方法无效?任务或风险变化?需更新 `00-overview.md`?Front Matter 是否反映新内容?然后 `index --write` + `lint`, lint 有「超长/常驻超长/索引过期/悬空引用」未清零视为任务未完成。
+每次任务完成后至少检查:新项目事实?新用户偏好?重要决策?可复用方法?验证了某方法无效?任务或风险变化?需更新 `00-overview.md`?Front Matter 是否反映新内容?然后 `index --write` + `lint`, lint 有「超长/常驻超长/索引过期/悬空引用」未清零视为任务未完成(「提示」不阻塞)。
 
 ## 10. 最低执行要求
 - 新会话:读 `00-overview.md`;看启动包(hook 注入或 `01-index.md`);至少按章节加载一个最相关详细文件(若存在)。

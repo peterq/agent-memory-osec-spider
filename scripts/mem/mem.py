@@ -594,6 +594,7 @@ def cmd_lint(a):
     docs = load_all()
     known = {d.mrel for d in docs}
     problems = 0
+    hints = 0  # 提示不计入问题, 不阻塞任务完成
     now = datetime.now(timezone(timedelta(hours=8)))
 
     def rep(kind, d, msg):
@@ -605,11 +606,25 @@ def cmd_lint(a):
         missing = [k for k in REQUIRED if k not in d.fm or d.fm[k] in ("", [])]
         if missing:
             rep("元数据缺失", d, ",".join(missing))
-        if d.chars > a.max_chars and d.fm.get("status") != "archived" and not d.mrel.startswith("archive/") and d.mrel != "01-index.md":
-            rep("超长", d, f"{d.chars} 字 > {a.max_chars}, 建议拆分/归档")  # archive/ 永不整读, 豁免
-        always_limit = a.index_max if d.mrel == "01-index.md" else a.always_max
-        if d.fm.get("load") == "always" and d.chars > always_limit:
-            rep("常驻超长", d, f"{d.chars} 字 > {always_limit}, 直接吃启动 token")
+        # 长度采用双阈值: 超过硬上限 max_chars 才算问题, 一旦触发必须一次压到 target_chars 以下(留出 6~8k 的增长空间,
+        # 避免"压到 7,9xx → 下次改动又超"的反复 lint); warn_chars~max_chars 之间只提示不计入问题
+        exempt = d.fm.get("status") == "archived" or d.mrel.startswith("archive/") or d.mrel == "01-index.md"  # archive/ 永不整读, 豁免
+        if not exempt and d.chars > a.max_chars:
+            rep("超长", d, f"{d.chars} 字 > {a.max_chars}, 必须压缩/拆分/归档到 < {a.target_chars}")
+        elif not exempt and d.chars > a.warn_chars:
+            hints += 1
+            print(f"[提示] {d.mrel}: {d.chars} 字 > {a.warn_chars}, 临近上限 {a.max_chars}; 下次改动顺手压到 < {a.target_chars}")
+        # 常驻文件: 总览等按 always_max 单线; 01-index.md(生成物, 随文件数线性增长)也用双阈值:
+        # > index_max 才算问题, > index_warn 只提示(手段: 精简 summary/questions、把低价值文件归档或 deprecated)
+        if d.fm.get("load") == "always":
+            if d.mrel == "01-index.md":
+                if d.chars > a.index_max:
+                    rep("常驻超长", d, f"{d.chars} 字 > {a.index_max}, 直接吃启动 token; 精简 summary/questions 或归档低价值文件到 < {a.index_warn}")
+                elif d.chars > a.index_warn:
+                    hints += 1
+                    print(f"[提示] {d.mrel}: {d.chars} 字 > {a.index_warn}, 临近上限 {a.index_max}; 下次整理时精简 summary/questions 或归档")
+            elif d.chars > a.always_max:
+                rep("常驻超长", d, f"{d.chars} 字 > {a.always_max}, 直接吃启动 token")
         # related 与正文引用的悬空检查
         rels = d.fm.get("related", [])
         refs = set(r.replace("agent-memory/", "") for r in (rels if isinstance(rels, list) else []))
@@ -647,7 +662,8 @@ def cmd_lint(a):
         if expect.strip() not in "".join(idx.lines):
             problems += 1
             print("[索引过期] 01-index.md 与当前 Front Matter 不一致, 运行 scripts/mem/mem.py index --write")
-    print(f"\n共 {problems} 条问题, {len(docs)} 个文件")
+    tail = f", 另 {hints} 条提示(不阻塞)" if hints else ""
+    print(f"\n共 {problems} 条问题{tail}, {len(docs)} 个文件")
 
 
 def cmd_stat(a):
@@ -737,7 +753,13 @@ def main():
     p.add_argument("--min-sim", type=float, default=0.35, help="语义相似度阈值, 低于此不计入")
     p.add_argument("-q", "--quiet", action="store_true")
     p.set_defaults(fn=cmd_search)
-    p = sp.add_parser("lint"); p.add_argument("--max-chars", type=int, default=8000); p.add_argument("--always-max", type=int, default=5500); p.add_argument("--index-max", type=int, default=17000, help="01-index.md(生成物)的上限, 约 108 文件 × 150 字")
+    p = sp.add_parser("lint")
+    p.add_argument("--max-chars", type=int, default=12000, help="硬上限: 超过即 [超长], 必须压缩/拆分/归档")
+    p.add_argument("--target-chars", type=int, default=6000, help="压缩目标: 触发超长后一次压到该值以下, 留足增长空间")
+    p.add_argument("--warn-chars", type=int, default=9000, help="提示线: 超过只打 [提示] 不计入问题")
+    p.add_argument("--always-max", type=int, default=5500, help="00-overview 等常驻文件的硬上限")
+    p.add_argument("--index-max", type=int, default=20000, help="01-index.md(生成物)的硬上限")
+    p.add_argument("--index-warn", type=int, default=17000, help="01-index.md 提示线(约 110 文件 × 150 字), 超过只提示")
     p.add_argument("--stale-days", type=int, default=14); p.add_argument("--index-kw", type=int, default=3); p.add_argument("--no-git", dest="git", action="store_false"); p.set_defaults(fn=cmd_lint)
     p = sp.add_parser("stat"); p.set_defaults(fn=cmd_stat)
     p = sp.add_parser("embed"); p.set_defaults(fn=cmd_embed)

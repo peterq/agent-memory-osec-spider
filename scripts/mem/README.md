@@ -16,6 +16,7 @@ scripts/mem/mem.py body <file>           # 只输出正文(剥离 Front Matter)
 scripts/mem/mem.py body <file> --section 实测数据   # 只输出某章节(标题子串匹配)
 scripts/mem/mem.py body <file> --lines 120:160     # 按行区间
 scripts/mem/mem.py lint                  # 体检: 元数据缺失/超长/常驻超长/悬空引用/updated_at 落后于 git/valid_until 过期/索引过期
+scripts/mem/mem.py lint --max-chars 12000 --target-chars 6000 --warn-chars 9000 --index-warn 17000 --index-max 20000   # 长度双阈值的缺省值, 见下文
 scripts/mem/mem.py stat                  # 各目录字数、load=always 体积、最大文件
 scripts/mem/mem.py dup                   # 跨文件逐行重复检测(只能抓原样复制, 抓不到改写复述)
 scripts/mem/mem.py recent --days 7       # 用 git 历史代替手工"最近更新"
@@ -39,6 +40,9 @@ scripts/mem/mem.py recent --days 7       # 用 git 历史代替手工"最近更�
   文档 boost：sessions ×0.7、archived/deprecated ×0.5、>2 万字巨型文件 ×0.8（避免 tasks.md 什么都沾边）。
 - **回归基线（2026-09-12）**：7 组自然语言问句 Top1 全部命中预期文件，见决策文件。
 - **性能**：全量建缓存 101 文件 / 1881 块约 40 秒（一次性），之后每次查询约 1 秒；缓存按文件内容哈希增量刷新。
+- **lint 长度检查是双阈值**（2026-09-13 起）：>12,000 字才报「超长」并计入问题，触发后必须一次压到 <6,000；9,000~12,000 只打「提示」不计入问题。
+  原因：单阈值 8,000 时每次只压到 7,9xx，下一次改动又超，lint 反复报警；把触发线和目标线拉开 6k 才有喘息空间。
+  总览 5,500 硬上限不变；`01-index.md` 随文件数线性增长，同样双阈值：17,000 提示、20,000 硬上限（`--index-warn/--index-max`）。
 - **lint 的 git 对比只看修改型提交**（`--diff-filter=M`），避免整目录迁移把所有文件判成落后。
 - 悬空引用只检查记忆目录内路径；指向其他仓库（`PRD/…`、`site-discovery/…`）的不管。
 

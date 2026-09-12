@@ -3,7 +3,7 @@ title: 项目变更记录（总览归档）
 type: knowledge
 status: active
 created_at: 2026-09-12T11:30:00+08:00
-updated_at: 2026-09-12T23:40:00+08:00
+updated_at: 2026-09-13T07:55:00+08:00
 priority: low
 keywords: [变更记录, changelog, 历史, 总览归档, 生命周期改造, 队列v2, queue-admin, 站点接入, 配置v2, GitHub OAuth]
 summary: 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪"
@@ -17,6 +17,11 @@ related:
 
 > `00-overview.md` §2 只保留最近 7 天。更早的条目压缩成「日期 + 一句话 + 指针」放这里，
 > **原文叙述在各自的 session / decision 文件里**，本文件不复制正文。需要细节就按指针读那一个文件。
+
+## 2026-09-13
+
+- 2026-09-13 07:55 用户要求：lint 长度改双阈值（>12,000 触发、压到 <6,000、9,000 起提示）→ `decisions/decision-2026-09-13-lint长度双阈值.md`
+- 2026-09-13 07:40 状态核实：重爬 263k/1,152k（≈23%）；A' 探测 bnd_03 05:31 因 MySQL 查询失败停止待续跑 → `current/tasks.md`「进行中」
 
 ## 2026-09-12
 
