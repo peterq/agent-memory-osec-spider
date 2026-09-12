@@ -53,7 +53,7 @@ related:
 
 ## 归档遗留待办（原分散在已归档任务块中，仍未完结）
 
-- [ ] **P1 生命周期 P4 收尾**：5 个未部署代码提交（`3b8cc13`/`aac5f84`/`61cf1db`/`e856540`/`93f4d38`）待下次网关重启生效；2 个 `:cur` 半区窗口（父在 long、子在 cur，21,451 子）是否处理待用户决定；P6 关双写前须补 v3 detail/fileCtx（结构兼容，见 `knowledge/api-v3-detail-filectx兼容性分析.md`）。**P5 前置未做**：bootstrap 后的 v2/v3 50 关键词重合度（≥95%）与 P99 延迟对比尚未跑。详见 archive「生命周期 P4」、`sessions/2026/2026-09-11-p4-bootstrap接管巡检与校验失败取证.md`。
+- [ ] **P1 生命周期 P4 收尾**：5 个未部署代码提交（`3b8cc13`/`aac5f84`/`61cf1db`/`e856540`/`93f4d38`）待下次网关重启生效；2 个 `:cur` 半区窗口（父在 long、子在 cur，21,451 子）是否处理待用户决定；P6 关双写前须补 v3 detail/fileCtx（结构兼容，见 `knowledge/api-v3-detail-filectx兼容性分析.md`）。**P5 前置未做**：bootstrap 后的 v2/v3 50 关键词重合度（≥95%）与 P99 延迟对比尚未跑。详见 `sessions/2026/2026-09-11-p4-bootstrap接管巡检与校验失败取证.md`。
 - [ ] **P2 排期**：巡检守护提升到 `runBootstrapJob` 级 + heap 阈值可配（0.5~1 人日）；rollout §9 待补写。
 - [ ] **P2 代码待修（配置 v2）**：`LOCAL_CONFIG_PATH` 缺省未回落宿主机 `config.yaml`；删宿主机 `config.yaml` 的时机（回滚现依赖 `spider.old`）留用户决定。
 - [ ] **P2 安全（凭据轮换，待决策）**：`devops_online_env.go` 硬编码 OSS AK/SK 与 ES 口令；`pan_download`/`bnd_download` 测试文件硬编码真实 RefreshToken/BDUSS（建议迁 `.hide.json`）；ali_log ak/sk 曾明文进会话记录，建议评估轮换。
