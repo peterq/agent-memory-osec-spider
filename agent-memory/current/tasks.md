@@ -131,4 +131,4 @@ related:
 
 - [ ] **P0 生命周期 P5 准入**（阶段 A/B 已上线 09-12 16:34）——决策 `decisions/decision-2026-09-12-P5切v3准入门槛与失效同步.md`；上线/观察项 SPIDER rollout §14；简报 `agent-tasks/2026-09-12-p5-stage-ab/`。
   - 下一步按序：① 09-13 ≥16:34 跑 rollout §14.3 观察项；② 阶段 C 复测 p5-plan §4（G1~G6）；③ A' 存量 probe 64 表 → `lc-check -trigger-check` 每天 ≤20 万；④ 阶段 D 调用方切 `searchType=match` → 3 天 → 全量。
-  - 待核：上线窗口 `clearExpire` 0 任务、jenkins `url_check` 6 h 全零、resdb ssh 超时——旧链路失效发现是否还在跑；若否，D1 钩子无流量，G3 靠 API v2 路径 + A' 存量。
+  - 已核（17:00）：旧链路 `url_check`（resdb/jenkins）4 天累计仅十余条，近乎空转；旧索引被删文档几乎全来自 API v2 `validShareLink` 直删 → G3 真正修复点是 API 侧 `ReportInvalid(api-v2-search)`（已上线），网关 D1 钩子只是兜底，`legacy_invalid_hint` 长期≈0 属预期。观察改看 `res_lc_event` `invalid` 且 detail 含 `api-v2-search` 的条数。

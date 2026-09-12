@@ -85,7 +85,7 @@ related:
 
 ## 7. 待解决问题
 
-- P5 阶段 A' 存量复检节奏、阶段 D 调用方切流对接待确认；旧链路 `url_check` 是否还在产出失效待核 → `current/open-questions.md`、`current/tasks.md`；风险 `current/risks.md`。
+- P5 阶段 A' 存量复检节奏、阶段 D 调用方切流对接待确认→ `current/open-questions.md`、`current/tasks.md`；风险 `current/risks.md`。
 
 ## 8. 怎么找记忆文件
 
