@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(go run ./tools/*)",
+      "Bash(ssh -N -L *)",
+      "Bash(./deploy.sh *)",
+      "Bash(./scripts/*)"
+    ]
+  }
+}

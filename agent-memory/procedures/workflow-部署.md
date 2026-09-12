@@ -205,7 +205,7 @@ ssh osec-res1 'url=$(grep es_endpoint /home/pplabs/enfi-resource-storage/config.
   管道加 `sed -E 's/(ak|sk|password|pwd)=[^&" ]*/\1=***/gi; s#//[^@/ ]*@#//***@#g'` 即可。
 - **v2 搜索延迟抽样必须换关键词**：同一个 `kw` 打 10 次，后几次命中缓存只要 7~10 ms，均值会被拉低一半。
   用 10 个不同关键词测得 532 ms，与历史基线 533 ms 一致，才可比。
-- **发邮件用 `COMMON/scripts/notify-admin.sh`（curl）**；python `urllib` 请求
+- **发邮件用 `MEMERY/scripts/notify-admin.sh`（curl）**；python `urllib` 请求
   `http://cf-worker.peterq.cn/notify_admin` 会被 **403**（UA 被挡）。
 - **杀后台进程一律按 pid**：`pgrep -af '<模式>'` / `ps|grep` 组成的 kill 循环会匹配到自己所在的 shell 并把它杀掉
   （exit 144）。pid 从启动时的 `$!` 或 `ss -ltnp` 取。这条规则今天又踩了一次。

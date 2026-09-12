@@ -27,7 +27,7 @@ related:
 
 Chrome 出于安全策略，在**默认 profile**（`~/.config/google-chrome`）上开
 `--remote-debugging-port` 会被拦截并提示换 user-data-dir。因此必须用一个**独立的**
-`--user-data-dir`；本仓库固定用 `COMMON/.agent-browser/profile`（已在 `.gitignore` 中
+`--user-data-dir`；本仓库固定用 `MEMORY/.agent-browser/profile`（已在 `.gitignore` 中
 排除，含 cookie 等敏感数据，**严禁提交**）。
 
 人工在这个 profile 里登录一次（GitHub / 其他后台）之后，登录态会长期保留，
@@ -37,8 +37,8 @@ Chrome 出于安全策略，在**默认 profile**（`~/.config/google-chrome`）
 
 | 脚本 | 作用 |
 |---|---|
-| `COMMON/scripts/agent-browser.sh` | 启动/查看/关闭调试 Chrome，管理独立 profile |
-| `COMMON/scripts/cdp.py` | 通过 Chrome DevTools Protocol 驱动该浏览器：导航、求值、填表、截图 |
+| `MEMERY/scripts/agent-browser.sh` | 启动/查看/关闭调试 Chrome，管理独立 profile |
+| `MEMERY/scripts/cdp.py` | 通过 Chrome DevTools Protocol 驱动该浏览器：导航、求值、填表、截图 |
 
 ## 用法
 

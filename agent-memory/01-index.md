@@ -267,7 +267,7 @@ TableStatsPage / EventListPage / TableDiagnosticsPage）。**已合并已 push�
 ### 我要测浏览器可见的交互 / 带登录态的浏览器 / CDP / 桩服务验收 / agent-browser.sh / cdp.py
 → `procedures/workflow-带登录态的浏览器自动化.md`（用法与"默认 profile 会被拦截"的前提坑）、
 `lessons/success-桩网关加cdp浏览器做登录链路联调.md`（方法论：只保留被测链路的桩服务 + 真实浏览器）
-代码：`COMMON/scripts/agent-browser.sh`、`COMMON/scripts/cdp.py`、`osec-spider-go/tools/stubgw`
+代码：`MEMERY/scripts/agent-browser.sh`、`MEMERY/scripts/cdp.py`、`osec-spider-go/tools/stubgw`
 
 ### 我要派子 Agent / 任务描述太长 / 多个 agent 上下文重复 / 并行开发怎么分工
 → `procedures/workflow-子agent任务简报.md`（任务描述落盘 `agent-tasks/`，prompt 只给路径）

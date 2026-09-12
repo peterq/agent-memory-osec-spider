@@ -4,18 +4,19 @@
 必须**严格按照**下文 agent-memory「§9 自主进化循环」工作。
 
 ## repos
-- COMMON: `.` 本项目, 多个项目使用的工具类, rpc定义等. 同时用于管理 Agent 记忆和工作流
-  - COMMON/agent-memory: 用于管理 Agent 记忆和工作流的目录, 由 Agent 自主维护
-  - 实际存放位置: 独立仓库 `/home/peterq/dev/projects/peterq/agent-memory-osec-spider` (COMMON 内的 AGENTS.md / CLAUDE.md / agent-memory / agent-tasks 均为指向该仓库的软链接, git操作需在该仓库内. 读写直接通过软链接访问)
+> 1S_ROOT: `/home/peterq/dev/projects/1s`
 
-- STORAGE:  `../enfi-resource-storage` 存储服务, 主要负责爬取的资源的入库
-- API: `../osec-resource-api` 给前端和其他部门提供资源查询接口服务
-- SPIDER: `../osec-spider-go` 爬虫服务, 主要负责爬取网络资源, 调用 STORAGE 入库, 并将爬取的资源信息写入 ES, 供 API 查询
-- NC-JS: `../nc-js` 前端mono repo
+- MEMORY: `/home/peterq/dev/projects/peterq/agent-memory-osec-spider` 用于管理 Agent 记忆和工作流的目录, 由 Agent 自主维护
+- COMMON: `1S_ROOT/enfi-resource-common` 跨仓库共用工具类, rpc定义等.
+- STORAGE:  `1S_ROOT/enfi-resource-storage` 存储服务, 主要负责爬取的资源的入库
+- API: `1S_ROOT/osec-resource-api` 给前端和其他部门提供资源查询接口服务
+- SPIDER: `1S_ROOT/osec-spider-go` 爬虫服务, 主要负责爬取网络资源, 调用 STORAGE 入库, 并将爬取的资源信息写入 ES, 供 API 查询
+- NC-JS: `1S_ROOT/nc-js` 前端mono repo
   - NC-JS/admin/* : 系统后台 由qiankun微前端框架管理的多子应用, 主要用于管理爬虫和资源
 
 
 ## Rules
+禁止使用 harness memory, 仅使用 agent-memory 进行跨会话记忆和复用
 向用户展示的信息使用 **中文**
 Agent Memory使用 **中文**
 代码注释使用 **中文**

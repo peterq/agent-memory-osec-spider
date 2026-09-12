@@ -42,13 +42,13 @@ OAuth App 事实、两次联调发现的阻断问题），以及三条已推送�
    桩服务（`osec-spider-go/tools/stubgw`：只有真实 rtcHandshake + 最小 SpiderRpc，
    不依赖 redis/mysql/ES）并用带登录态的调试浏览器实测。本次靠它抓到两个阻断级问题
    （字段被丢弃、失败原因被下一次重试覆盖），都是"代码看起来完全正确"的那种。
-   记下可复用资产：`COMMON/scripts/agent-browser.sh`、`COMMON/scripts/cdp.py`、
+   记下可复用资产：`MEMERY/scripts/agent-browser.sh`、`MEMERY/scripts/cdp.py`、
    `osec-spider-go/tools/stubgw`、`osec-spider-go/tools/ghauthcheck`。
 
 5. **流程** `procedures/workflow-带登录态的浏览器自动化.md`：
    启动/复用调试浏览器、用 cdp.py 导航求值填表、以及"Chrome 默认 profile 上开
    --remote-debugging-port 会被安全策略拦截，必须用独立 user-data-dir"这个前提。
-   profile 在 `COMMON/.agent-browser/profile`（已 gitignore），人工登录一次可长期复用。
+   profile 在 `MEMORY/.agent-browser/profile`（已 gitignore），人工登录一次可长期复用。
 
 6. **当前状态**：更新 `00-overview.md` 第 2 节与 `current/tasks.md`（或等价文件）——
    代码三仓库已合并并 push，但**未部署**：
@@ -69,7 +69,7 @@ OAuth App 事实、两次联调发现的阻断问题），以及三条已推送�
 8. **参考** `knowledge/` 或 `reference` 类文件里记下（**只记非机密项**）：
    两个 OAuth App 的名称、client_id、管理页 URL、已注册回调列表、组织策略
    （1second 自有应用自动放行，不需审批）；并注明 secret 存放位置是
-   `COMMON/.agent-browser/oauth-credentials.txt`（未纳入 git），**严禁把 secret 写进任何记忆文件**。
+   `MEMORY/.agent-browser/oauth-credentials.txt`（未纳入 git），**严禁把 secret 写进任何记忆文件**。
 
 9. 最后更新 `01-index.md`：新增文件全部登记（文件索引表 + 关键词索引 + 最近更新），
    并检查是否有指向不存在文件的死链。

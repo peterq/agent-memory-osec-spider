@@ -42,8 +42,8 @@ Agent）都判定通过，但真实浏览器一测就发现登录门根本不出
 1. **造一个只保留被测链路的桩服务**：不依赖 redis/mysql/ES 等重依赖，只实现真实的
    `rtcHandshake` + 最小可用的业务 RPC（够撑起页面骨架即可）。本次用
    `osec-spider-go/tools/stubgw`。
-2. **用带登录态的调试浏览器实测**：`COMMON/scripts/agent-browser.sh` 启动一个独立
-   profile 的 Chrome（人工登录一次 GitHub 后长期复用登录态），`COMMON/scripts/cdp.py`
+2. **用带登录态的调试浏览器实测**：`MEMERY/scripts/agent-browser.sh` 启动一个独立
+   profile 的 Chrome（人工登录一次 GitHub 后长期复用登录态），`MEMERY/scripts/cdp.py`
    通过 CDP 导航、求值、填表、截图，驱动整条链路走一遍。
 3. 桩网关 + 调试浏览器都由主控（有权限做这类验证的一方）持有，子 Agent 只管改代码，
    改完汇报，由主控在真实浏览器里复测——保持"谁改代码谁不自证"的验收独立性。
