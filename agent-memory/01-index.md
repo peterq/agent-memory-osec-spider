@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-12T23:32:34+08:00
+updated_at: 2026-09-12T23:35:20+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -27,7 +27,7 @@ load: always
 ## current/ (5)
 - current/tasks.md | crit | 2026-09-12 | 仍在推进/阻塞/待决策的事项（P0：checker 误删事故修复已上线、恢复待决策；P5 顺序 阶段C→A'→阶段D）；已上线任务在 archive | 任务、进度、待办
   ? 当前该做什么，有哪些待办
-- current/open-questions.md | high | 2026-09-12 | 待用户确认：误删 115.6 万条重爬的投递节奏（工具开发中）；A'/阶段 D 已按答复推进 | 待确认、事故恢复、lifecycle_checker
+- current/open-questions.md | high | 2026-09-12 | 当前无待用户确认问题；误删资源重爬已按确认节奏开始（进度在 tasks.md），A'/阶段 D 已按答复推进 | 待确认、事故恢复、lifecycle_checker
   ? 当前有哪些待用户确认的问题
 - current/risks.md | high | 2026-09-12 | 影响开发与运维安全的已知风险点；最高 R9 lifecycle_checker 误删 115.6 万资源（修复已上线、恢复待决策） | lifecycle_checker误删、风险、阻塞
   ? 密钥、安全相关的风险在哪看
