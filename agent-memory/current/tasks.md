@@ -3,7 +3,7 @@ title: 当前任务与进度
 type: task
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T22:55:00+08:00
+updated_at: 2026-09-12T22:50:00+08:00
 priority: critical
 keywords: [任务, 进度, 待办, P5, 队列v2, queue-admin, 全站扫描, fullsweep, 文档爬虫, doc-crawler, FC Chrome, 凭据轮换, 站点发现, kkpans, misoso, 有效性检测]
 summary: 仍在推进/阻塞/待决策的事项（P0：checker 误删事故止血/部署/恢复；P5 顺序 修复上线→阶段C→A'→阶段D）；已上线任务在 archive
@@ -114,6 +114,6 @@ related:
   - ③ **恢复待决策**：Mongo `share_files` 回灌工具（≈1 人日）→ 删 `invalid_link_*` 对应行 → `UpsertResource` → 修复版 `TriggerCheck(force)` 复检；范围 115.5 万（quark 1,115,264 / ali 40,007，res_id 从 `res_lc_event` 取）。
   - ④ 修复上线后消化 bnd `dueBacklog` 52.8 万（8 天零有效检测）。
 - [ ] **P0 生命周期 P5 准入**（阶段 A/B 已上线 09-12 16:34；**顺序因事故调整**）——决策 `decisions/decision-2026-09-12-P5切v3准入门槛与失效同步.md`、`decision-2026-09-12-阶段D改由API侧自动灰度分流.md`。
-  - 下一步按序：① 事故止血 + 修复上线；② 09-13 ≥16:34 跑 rollout §14.3 观察项 + 阶段 C 复测 p5-plan §4；③ A' 投递：只读探测 `scripts/lc_legacy_probe_all.sh _note/p5-aprime`（09-12 22:29 起在本机后台跑 xunlei，产物在会话 scratchpad `probe-xunlei/`，xunlei_00 缺失率 0.13%）→ 修复版上线后 `lc-check -trigger-check` 每天 ≤20 万；④ 阶段 D：`search_canary` 开发中（sonnet，简报 `agent-tasks/2026-09-12-p5-stage-d-canary/`），门槛全过后 `enabled: true` 重部 API。
+  - 下一步按序：① 事故止血 + 修复上线；② 09-13 ≥16:34 跑 rollout §14.3 观察项 + 阶段 C 复测 p5-plan §4；③ A' 投递：只读探测 `scripts/lc_legacy_probe_all.sh _note/p5-aprime`（09-12 22:29 起在本机后台跑 xunlei，产物在会话 scratchpad `probe-xunlei/`，xunlei_00 缺失率 0.13%）→ 修复版上线后 `lc-check -trigger-check` 每天 ≤20 万；④ 阶段 D：`search_canary` **已开发完成** API `6bbbfb8`（缺省关闭），门槛全过后 `enabled: true` + `notify_url` 重部 API；上线前决定 `step_every_v3_requests`（缺省 100 会在几十分钟内涨满）。
   - 已核：`url_check` 近乎空转，旧索引删除来自 API v2 `validShareLink`（G3 修复点 API 侧 `ReportInvalid`，已上线）**以及本次事故的 lcClear→clearExpire**。
 - [ ] **P2 代理池口径**（09-10 待确认项，Agent 自主判断）：`lifecycle_checker_*` ok=0 已归因为事故（非口径问题）；`keyword_upyunso/funletu/pansearch_me` 近 24 h 仍 ok=0（几乎全 ipUnusable/other），按 `decision-2026-09-03-清理下线爬虫代码.md` 口径列为下线候选，待修复版 checker 上线后再看一次代理池再定。
