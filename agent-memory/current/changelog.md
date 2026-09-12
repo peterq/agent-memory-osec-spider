@@ -3,7 +3,7 @@ title: 项目变更记录（总览归档）
 type: knowledge
 status: active
 created_at: 2026-09-12T11:30:00+08:00
-updated_at: 2026-09-12T11:30:00+08:00
+updated_at: 2026-09-12T15:00:00+08:00
 priority: low
 keywords: [变更记录, changelog, 历史, 总览归档, 生命周期改造, 队列v2, queue-admin, 站点接入, 配置v2, GitHub OAuth]
 summary: 按日期倒序的一句话变更流水，每条指向对应的 session/decision 文件；只用来回答"某件事是哪天做的、细节在哪个文件"
@@ -20,6 +20,7 @@ related:
 
 ## 2026-09-12
 
+- 15:00 用户确认弃用 report/likes/dislikes/addViews 等 update ES 文档的接口，不做 v3；v3 detail/fileCtx 结构兼容性核对完成。→ `decisions/decision-2026-09-12-弃用文档更新类接口.md`、`knowledge/api-v3-detail-filectx兼容性分析.md`
 - 07:00 记忆目录迁至独立仓库 `~/dev/projects/peterq/agent-memory-osec-spider`。→ `02-user-preferences.md`
 - 启动记忆系统瘦身（常驻 5.4 万字超规则，`scripts/mem/mem.py` 落地）。→ `decisions/decision-2026-09-12-记忆系统瘦身与脚本化加载.md`
 - 02:17 P4 shortfall 89 条定性为 longBoundary 漂移（零丢失），mover 归位 102,601 父文档，终态对拍 0.001% 级。→ `lessons/failure-longBoundary漂移导致父子跨索引与shortfall误报.md`

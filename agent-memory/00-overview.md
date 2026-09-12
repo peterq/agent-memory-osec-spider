@@ -3,7 +3,7 @@ title: 项目总览
 type: overview
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T11:35:00+08:00
+updated_at: 2026-09-12T15:00:00+08:00
 priority: critical
 keywords: [网盘资源爬取, 版权取证, COMMON, SPIDER, STORAGE, API, NC-JS]
 summary: 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件
@@ -59,6 +59,7 @@ related:
 - 配置按进程拆**代码**而非拆文件 → `decision-2026-09-09-配置按进程拆代码而非文件.md`
 - 后台登录改 GitHub OAuth（含上线顺序）→ `decision-2026-09-08-后台登录改为github-oauth.md`
 - 资源 ES 索引生命周期改造 → `decision-2026-09-04-资源索引生命周期改造方案.md`
+- **弃用 report/likes/dislikes/addViews 等 update ES 文档的接口**（删文档不回收磁盘），不做 v3 → `decision-2026-09-12-弃用文档更新类接口.md`
 - 管理类服务并入 `spider_gateway`，不新增进程 → `decision-2026-09-04-管理服务并入网关.md`
 - 后台前端合并为 `spiderAdmin` → `decision-2026-09-04-前端合并为spiderAdmin.md`
 - 任务投递统一走网关队列（队列 v2，收尾无回滚路径）→ `decision-2026-09-04-队列v2统一走网关.md`
