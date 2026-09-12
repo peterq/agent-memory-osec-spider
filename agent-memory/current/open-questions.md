@@ -3,7 +3,7 @@ title: 未解决的问题
 type: question
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T15:40:00+08:00
+updated_at: 2026-09-12T16:30:00+08:00
 priority: high
 keywords: [P5, 待确认, 用户确认, 重合度, legacy→lc 失效同步, 灰度]
 summary: P5 前置对拍未通过后待用户拍板的 D1~D4（失效同步 / 重合度口径 / bnd 慢 / 是否灰度）
@@ -66,7 +66,7 @@ related:
 - [用户确认 2026-09-05] Q1 全量复制；Q2 先不加副本；Q3 version 变化作更新判据；**Q4 每类型 16 桶（64 张表）**；
   **Q5 v3 只覆盖 search 与 valid 两类接口**；Q6 百度存量迁入。当前无待确认问题。
 
-## P5 前置对拍（2026-09-12，正本 SPIDER `PRD/res-lifecycle/rollout-2026-09-05.md` §13.4）
+## P5 前置对拍（2026-09-12，正本 SPIDER `PRD/res-lifecycle/rollout-2026-09-05.md` §13.4；**Agent 建议裁定与排期见 `p5-plan-2026-09-12.md` §0**：D1 做且为硬前置、D2 改语料级三项门槛、D3 先 profile（假设 bnd 的 has_child 纯开销）、D4 不切）
 
 - **D1** 旧链路 `url_check` 判失效是否同步到 lc？建议在 `res_scheduler/clear_expire.go` `HandleTask` 里把 DB `status=1` 行的 `next_check_at` 提前到 now（lc 自己复检），约 0.5 人日，**先做再复测**。
   - 答复：

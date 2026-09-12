@@ -3,7 +3,7 @@ title: 项目总览
 type: overview
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T15:45:00+08:00
+updated_at: 2026-09-12T16:30:00+08:00
 priority: critical
 keywords: [网盘资源爬取, 版权取证, COMMON, SPIDER, STORAGE, API, NC-JS]
 summary: 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件
@@ -26,7 +26,7 @@ related:
 ## 2. 当前状态（最近 7 天；更早见 `current/changelog.md`）
 
 - 09-12 **进行中：记忆系统瘦身**——常驻 5.4 万字超规则，`scripts/mem/mem.py` 已可用，协议改动待确认。→ `decisions/decision-2026-09-12-记忆系统瘦身与脚本化加载.md`
-- 09-12 **P5 前置对拍未通过**——首页重合度 84%<95%（4% 是 legacy 已删 lc 未删的死链，其余是 `match_phrase_prefix` 分片展开彩票），待用户拍板 D1~D4。→ `current/open-questions.md`、`lessons/failure-v3首页重合度受前缀展开分片彩票影响.md`
+- 09-12 **P5 前置对拍未通过**（首页重合度 84%：4% 死链未反向同步 + `match_phrase_prefix` 分片彩票），**准入计划已出待认可**：A 失效同步钩子 → B bnd 慢查询 → 复测 → 灰度。→ SPIDER `PRD/res-lifecycle/p5-plan-2026-09-12.md`、`current/open-questions.md`
 - 09-11 **P4 bootstrap id=8 已 done**（终态对拍 0.001% 级）；遗留 2 个 `:cur` 窗口、5 个未部署提交。→ `current/tasks.md`
 - 09-10 **代理池监控上线闭环**——全 0 是上报侧未部署，重部即有数据；新增只读巡检 `tools/proxy-admin-check`。→ `procedures/troubleshooting-代理池总览无数据.md`
 - 09-09 **配置按进程拆代码已部署**（SPIDER `883daeb`，网关双机 + 爬虫 + proxy 全重部）。→ `decisions/decision-2026-09-09-配置按进程拆代码而非文件.md`

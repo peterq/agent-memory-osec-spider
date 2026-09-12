@@ -3,7 +3,7 @@ title: 当前任务与进度
 type: task
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T15:40:00+08:00
+updated_at: 2026-09-12T16:30:00+08:00
 priority: critical
 keywords: [任务, 进度, 待办, 队列v2, queue-admin, 全站扫描, fullsweep, 文档爬虫, doc-crawler, FC Chrome, 凭据轮换, 站点发现, kkpans, misoso, 有效性检测]
 summary: 当前仍在推进/阻塞/待人工决策的事项；已完成并上线（或被取代不再跟进）的任务已归档到 archive/2026/tasks-2026-09-已完成.md
@@ -25,12 +25,12 @@ related:
 | 任务 | 状态 | 阻塞/下一步 | 详情文件 |
 |---|---|---|---|
 | 生命周期 P4 全量 bootstrap | ✅ 已完成 | 5 提交待下次网关重启部署；2 个 `:cur` 半区窗口待决定 | 归档遗留待办 / archive「生命周期 P4」 |
-| **生命周期 P5 前置对拍** | ❌ 未通过（09-12） | 重合度 84%<95%，待用户决策 D1~D4；复测 SPIDER `scripts/lc_p5_v2v3_diff.py` | `current/open-questions.md` |
+| **生命周期 P5 准入** | 计划已出，待用户认可 | A 失效同步钩子 / B bnd has_child → 复测 → 灰度；SPIDER `PRD/res-lifecycle/p5-plan-2026-09-12.md` | `current/open-questions.md` |
 | 09-08 并行四任务 | 部分已上线 | 文档爬虫 FC 自动化卡 6 项人工事项 | 本文件「2026-09-08 并行四任务」 |
 | 配置 v2/OAuth/配置拆代码 | ✅ 已上线 | `LOCAL_CONFIG_PATH` 回落待修；凭据轮换待决策 | 归档遗留待办 |
 | 资源生命周期改造 P0~P3 | ✅ 已上线 | es_endpoint / `resource_valid` 索引缺失等 | 归档遗留待办 |
-| 管理台合并 | ✅ 已上线并核验 | ARMS 指标、浏览器实测待人工验证 | 归档遗留待办 |
-| 队列 v2 上线收尾 | 进行中（人工） | A~E 步骤待用户执行 | 本文件「待办」 |
+| 管理台合并 | ✅ 已上线 | ARMS 指标、浏览器实测待人工 | 归档遗留待办 |
+| 队列 v2 上线收尾 | 人工进行中 | A~E 待用户执行 | 本文件「待办」 |
 | 5 爬虫全站扫描启动行为改造 | 待办（P0） | 改为 `fullsweep:lastdone` 守卫 | 本文件「待办」 |
 | 安全凭据轮换 | 待用户决策 | 多处硬编码 AK/SK/Token | 归档遗留待办 |
 | 进行中 | 无 | — | — |
