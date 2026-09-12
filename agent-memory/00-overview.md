@@ -117,7 +117,7 @@ related:
 - 次要待办：**队列 v2 上线收尾（人工）**——网关与全部消费者已上线在跑，剩余删 jenkins 旧容器、杀 2 个 2023 年裸进程、
   复核、旧队列存量迁移；脚本 `osec-spider-go/scripts/queue_v2_cutover_finish.sh`。**无回滚路径**。
   （queue-admin 原来那条"SLB 加 7543 监听"的待办**已随并入网关而作废**。）
-- 最近一次重要变化：2026-09-12 07:00 **记忆目录迁至独立仓库** `~/dev/projects/peterq/agent-memory-osec-spider`（COMMON 内 AGENTS.md/CLAUDE.md/agent-memory/agent-tasks 改为软链接，记忆 commit 改在该仓库进行，见 `03-project-context.md`）。上一条：
+- 最近一次重要变化：2026-09-12 07:00 **记忆目录迁至独立仓库** `~/dev/projects/peterq/agent-memory-osec-spider`上一条：
   2026-09-05 晚 **生命周期改造代码全部完成并推送（五仓库），生产部署被权限拦截待用户决定**——
   Phase 0 契约 → 5 Agent 并行开发 → 合并 → Opus 端到端验收（修 2 阻塞 + 3 重要缺陷）→ 修前置项 → push。
   见 `sessions/2026/2026-09-05-生命周期改造实施.md`、`lessons/success-生命周期改造验收发现.md`、

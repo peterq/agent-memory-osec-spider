@@ -32,8 +32,8 @@ agent-tasks/
 
 ```text
 你是本任务的<角色>。按顺序读这两个文件, 然后完成其中属于你的工作:
-1. /home/peterq/dev/projects/1s/enfi-resource-common/agent-tasks/<任务目录>/00-shared.md
-2. /home/peterq/dev/projects/1s/enfi-resource-common/agent-tasks/<任务目录>/10-backend.md
+1. MEMORY/agent-tasks/<任务目录>/00-shared.md
+2. MEMORY/agent-tasks/<任务目录>/10-backend.md
 完成后按 10-backend.md「交付」一节汇报。
 ```
 
