@@ -1,0 +1,40 @@
+edition: 3.0.0
+name: domain-probe
+access: 'shaka_osec'
+resources:
+  krzb:
+    component: fc3-domain
+    props:
+      region: cn-hangzhou
+      domainName: fc-resource-node-api.krzb.net
+      protocol: HTTP,HTTPS
+      certConfig:
+        certName: fc-resource-node-api-krzb-net-20260908
+      authConfig:
+        authType: anonymous
+      wafConfig:
+        enableWAF: false
+      routeConfig:
+        routes:
+          - path: /cdp3/*
+            functionName: nc-app-prod-cdp3
+            qualifier: LATEST
+            rewriteConfig:
+              wildcardRules:
+                - match: /cdp3/*
+                  replacement: /$1
+          - path: /nc-app-image-render-api-test/*
+            functionName: nc-app-test$nc-image-render-api
+            qualifier: LATEST
+          - path: /*
+            functionName: fc-resource-node-api-1-fc-resource-node-api-1-13C8D72DB862$fc-resource-node-api-1
+            qualifier: fc-resource-node-api-1
+          - path: /chrome
+            functionName: nc-app-prod-cdp2
+            qualifier: LATEST
+          - path: /proxy
+            functionName: nc-app-prod-cdp-driver
+            qualifier: LATEST
+          - path: /check
+            functionName: nc-app-prod-cdp-driver
+            qualifier: LATEST
