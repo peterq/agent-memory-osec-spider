@@ -3,10 +3,10 @@ title: 未解决的问题
 type: question
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T23:15:00+08:00
+updated_at: 2026-09-12T23:40:00+08:00
 priority: high
 keywords: [待确认, 事故恢复, lifecycle_checker, P5, 灰度, 用户确认]
-summary: 待用户确认：checker 误删 115.6 万条的恢复方案（修复已上线）；A'/阶段 D 已按答复推进
+summary: 待用户确认：误删 115.6 万条重爬的投递节奏（工具开发中）；A'/阶段 D 已按答复推进
 questions:
   - 当前有哪些待用户确认的问题
 load: on-demand
@@ -25,8 +25,8 @@ related:
 正本 SPIDER `PRD/res-lifecycle/rollout-2026-09-05.md` §15；经验 `lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md`。
 
 - ✅ 止血与修复部署已于 09-12 23:05~23:11 完成（`b888846` + bnd 判定修复 `06ef50d`，rollout §15.5）。
-- [待确认] 恢复方案：从 Mongo `share_files` 回灌 1,156,201 条（quark 1,115,264 / ali-share 40,007 / bnd 930）→ 删 `invalid_link_*` 对应行 → `storage.UpsertResource` → 修复版 `TriggerCheck(force)` 复检。
-  需新写回灌工具（≈1 人日，STORAGE 或 SPIDER devops），回灌吞吐走正常入库链路。是否做、何时做、由谁做？
+- [用户确认 09-12] Mongo 无数据、ES 唯一数据源 → 恢复**只能重爬**。方案：导出 1,156,201 条 type/share_id/pwd → 限速投递 `resourcePreCheck` → `*LoadShare` 解析入库、lc 行复活。工具开发中（`agent-tasks/2026-09-12-lc-recrawl/`）。
+- [待确认] 重爬投递节奏：quark 解析走代理池 `quark` 场景（现 ≈6.6 万/h 已有负载），建议额外 ≤3 万/h（≈10/s），111.5 万 ≈ 1.5~2 天；ali 4 万走 `v2aliLoadShare`（20 并发，慢）。可接受？
 - [待确认] 恢复期间 P5 阶段 C 复测/阶段 D 灰度是否顺延（v2/v3 同等缺这 115.5 万条，重合度不受影响，但对外召回已受损）。
 
 用户答复：

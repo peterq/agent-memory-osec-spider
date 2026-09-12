@@ -3,7 +3,7 @@ title: STORAGE 存储服务结构
 type: knowledge
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T12:10:00+08:00
+updated_at: 2026-09-12T23:40:00+08:00
 priority: high
 keywords: [STORAGE, enfi-resource-storage, 入库, Elasticsearch, 索引, save-worker, version]
 summary: enfi-resource-storage 的三个子命令、写入流程、ES 索引名与幂等策略
@@ -52,7 +52,7 @@ services/
 | `es_resource_useraction_indexes` | `resource_search`、`resource_download` |
 | `es_resource_valid_index` | dev 为空，线上配置里设置 |
 
-MongoDB：库 `enfiresource`，集合 `baidu_user`、`share_files`。
+MongoDB：库 `enfiresource`，集合 `baidu_user`、`share_files`。**[用户确认 2026-09-12] Mongo 实际无数据，ES 是唯一数据源**——ES 文档被删后无法从库回灌，只能重新解析入库（重爬）。
 MySQL：库 `enfi_resource_storagelayer`（`savemysql: false` 时不写）。
 
 ## 写入幂等与去重（`services/save-worker/es.go`）
