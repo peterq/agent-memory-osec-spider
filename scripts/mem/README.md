@@ -27,8 +27,8 @@ scripts/mem/mem.py recent --days 7       # 用 git 历史代替手工"最近更�
 - **Front Matter 就是索引**：`boot` 完全由各文件的 `summary/keywords/priority/updated_at` 生成，
   维护好 Front Matter 就不用再手工维护索引表。
 - **检索 = 词法 + 语义 RRF 融合**：词法是 jieba 搜索模式分词（未装则字二元切分）+ BM25 变体，字段加权
-  `title=keywords=questions(6) > summary(4) > headings(3) > body(1)`；语义用 `BAAI/bge-small-zh-v1.5`
-  （fastembed/ONNX，CPU 即可，模型约 100MB 存 `~/.cache/fastembed`），按「摘要块 + 章节块（≤600 字）」
+  `title=keywords=questions(6) > summary(4) > headings(3) > body(1)`；语义用 `jinaai/jina-embeddings-v2-base-zh`（09-12 基准评测优于 bge-small-zh 与 bge-m3，见 `bench/`）
+  （fastembed/ONNX，CPU 即可，模型约 640MB 存 `~/.cache/fastembed`），按「摘要块 + 章节块（≤600 字）」
   切块后取每文件最高相似块，结果里 `语义0.71@章节名` 直接告诉你该读哪一节。
   文档 boost：sessions ×0.7、archived/deprecated ×0.5、>2 万字巨型文件 ×0.8（避免 tasks.md 什么都沾边）。
 - **回归基线（2026-09-12）**：7 组自然语言问句 Top1 全部命中预期文件，见决策文件。
@@ -41,3 +41,10 @@ scripts/mem/mem.py recent --days 7       # 用 git 历史代替手工"最近更�
 - 文件数破千或中文长句召回不佳时，可把 `EMBED_MODEL` 换成 `BAAI/bge-m3`（更大更准，fastembed 已支持）。
 - Claude Code `SessionStart` hook 自动把 `boot` 输出注入上下文（`.claude/settings.json`），
   非 Claude Code 的 Agent 仍按 AGENTS.md 手动执行。
+
+## bench/ —— 评测基准与脚本
+
+- `gold.jsonl`：41 主题的「问法 → 期望文件」，抽自 01-index.md 关键词路由；`gold_paraphrased.jsonl`：每主题 3 条无泄露改写问法；`*_questions.jsonl` 为去答案版本，给被评测 Agent 用。
+- `search_bench.py`：对比检索配置（模型/切块/RRF 参数/boost），输出 Hit@k 与 MRR。
+- `score_routing.py`：给「Agent 只看某份启动上下文选文件」实验打分。
+- 结果与结论：`agent-tasks/2026-09-12-memory-optimization-bench/results-*.md`（`results-summary.md` 为汇总）。

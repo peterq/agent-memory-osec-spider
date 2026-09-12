@@ -261,12 +261,41 @@ def tokenize(text: str) -> list[str]:
 # ---------- 语义检索(可选, 依赖 fastembed; 缓存在 scripts/mem/.cache) ----------
 
 CACHE_DIR = Path(__file__).resolve().parent / ".cache"
-EMBED_MODEL = "BAAI/bge-small-zh-v1.5"
+EMBED_MODEL = "jinaai/jina-embeddings-v2-base-zh"  # 2026-09-12 基准评测: 改写问法 Hit@1 0.59→0.68, 见 scripts/mem/bench
 CHUNK_CHARS = 600
 
+# 供 bench/search_bench.py 对比实验用: 非默认 embedding 模型需要自定义注册(fastembed 未内置)。
+# 注册函数幂等, 重复调用安全; 只在 bench 脚本里按需调用, 不影响默认路径。
+_CUSTOM_MODELS_REGISTERED = False
 
-def _chunks_of(d: Doc) -> list[tuple[str, str]]:
-    """把文档切成 (章节名, 文本) 块: 头块=标题+summary+关键词, 其余按章节, 过长章节再按 CHUNK_CHARS 切。"""
+
+def register_custom_embed_models():
+    global _CUSTOM_MODELS_REGISTERED
+    if _CUSTOM_MODELS_REGISTERED:
+        return
+    _CUSTOM_MODELS_REGISTERED = True
+    try:
+        from fastembed import TextEmbedding  # type: ignore
+        from fastembed.common.model_description import PoolingType, ModelSource  # type: ignore
+    except Exception:
+        return
+    try:
+        TextEmbedding.add_custom_model(
+            model="BAAI/bge-m3",
+            pooling=PoolingType.CLS,
+            normalization=True,
+            sources=ModelSource(hf="BAAI/bge-m3"),
+            dim=1024,
+            model_file="onnx/model.onnx",
+            additional_files=["onnx/model.onnx_data"],
+            size_in_gb=2.27,
+        )
+    except Exception:
+        pass
+
+
+def _chunks_of(d: Doc, chunk_chars: int = CHUNK_CHARS) -> list[tuple[str, str]]:
+    """把文档切成 (章节名, 文本) 块: 头块=标题+summary+关键词, 其余按章节, 过长章节再按 chunk_chars 切。"""
     head = f"{d.fm.get('title', d.path.stem)}\n{d.fm.get('summary', '')}\n{' '.join(_kw(d.fm))}"
     out = [("(摘要)", head)]
     secs = d.sections() or [("(正文)", d.body_start, len(d.lines), 0)]
@@ -274,26 +303,34 @@ def _chunks_of(d: Doc) -> list[tuple[str, str]]:
         text = "".join(d.lines[s_:e_]).strip()
         if not text:
             continue
-        for i in range(0, len(text), CHUNK_CHARS):
-            out.append((title.strip(), f"{title.strip()}\n{text[i:i + CHUNK_CHARS]}"))
+        for i in range(0, len(text), chunk_chars):
+            out.append((title.strip(), f"{title.strip()}\n{text[i:i + chunk_chars]}"))
     return out
 
 
-def _embedder():
+def _embedder(model_name: str = EMBED_MODEL):
     try:
         import warnings
         warnings.filterwarnings("ignore")
         from fastembed import TextEmbedding  # type: ignore
     except Exception:
         return None
+    if model_name != EMBED_MODEL:
+        register_custom_embed_models()
     model_dir = Path.home() / ".cache" / "fastembed"
     model_dir.mkdir(parents=True, exist_ok=True)
-    return TextEmbedding(EMBED_MODEL, cache_dir=str(model_dir))
+    return TextEmbedding(model_name, cache_dir=str(model_dir))
 
 
-def _load_embed_cache():
+def _cache_file_name(model_name: str, chunk_chars: int) -> str:
+    """缓存文件名始终带模型名与切块大小: 换模型后向量维度不同, 绝不能混用同一份缓存。"""
+    safe = re.sub(r"[^A-Za-z0-9]+", "-", model_name)
+    return f"embeddings__{safe}__{chunk_chars}.pkl"
+
+
+def _load_embed_cache(cache_name: str = "embeddings.pkl"):
     import pickle
-    f = CACHE_DIR / "embeddings.pkl"
+    f = CACHE_DIR / cache_name
     if f.exists():
         try:
             return pickle.loads(f.read_bytes())
@@ -302,19 +339,21 @@ def _load_embed_cache():
     return {}
 
 
-def _save_embed_cache(cache):
+def _save_embed_cache(cache, cache_name: str = "embeddings.pkl"):
     import pickle
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
-    (CACHE_DIR / "embeddings.pkl").write_bytes(pickle.dumps(cache))
+    (CACHE_DIR / cache_name).write_bytes(pickle.dumps(cache))
 
 
-def semantic_index(docs: list[Doc], quiet=False):
-    """增量刷新 embedding 缓存, 返回 (model, cache); 未安装 fastembed 返回 (None, None)。"""
+def semantic_index(docs: list[Doc], quiet=False, model_name: str = EMBED_MODEL, chunk_chars: int = CHUNK_CHARS):
+    """增量刷新 embedding 缓存, 返回 (model, cache); 未安装 fastembed 返回 (None, None)。
+    model_name/chunk_chars 非默认值时使用独立缓存文件(见 _cache_file_name), 供 bench 脚本对比不同配置。"""
     import hashlib
-    model = _embedder()
+    model = _embedder(model_name)
     if model is None:
         return None, None
-    cache = _load_embed_cache()
+    cache_name = _cache_file_name(model_name, chunk_chars)
+    cache = _load_embed_cache(cache_name)
     todo = []
     for d in docs:
         entry = cache.get(d.mrel)
@@ -326,7 +365,7 @@ def semantic_index(docs: list[Doc], quiet=False):
         import numpy as np
         texts, owners = [], []
         for d, h in todo:
-            ch = _chunks_of(d)
+            ch = _chunks_of(d, chunk_chars)
             for title, text in ch:
                 texts.append(text); owners.append((d.mrel, title))
         if not quiet:
@@ -343,7 +382,7 @@ def semantic_index(docs: list[Doc], quiet=False):
         alive = {d.mrel for d in docs}
         for k in [k for k in cache if k not in alive]:
             del cache[k]
-        _save_embed_cache(cache)
+        _save_embed_cache(cache, cache_name)
     return model, cache
 
 
@@ -414,7 +453,9 @@ def lexical_scores(docs: list[Doc], q: list[str]) -> dict[str, tuple[float, floa
     return out
 
 
-def _doc_boost(d: Doc) -> float:
+def _doc_boost(d: Doc, enable: bool = True) -> float:
+    if not enable:
+        return 1.0
     b = {"critical": 1.05, "high": 1.05, "medium": 1.0, "low": 0.9}.get(str(d.fm.get("priority")), 1.0)
     if d.chars > 20000:
         b *= 0.8   # 巨型文件什么都沾边, 压一压, 逼着人去读专门文件
@@ -423,6 +464,24 @@ def _doc_boost(d: Doc) -> float:
     if d.mrel.startswith("sessions/"):
         b *= 0.7   # 会话摘要性价比低, 降权
     return b
+
+
+def fuse_scores(lex: dict, sem: dict, by: dict, mode: str = "hybrid",
+                 K: float = 30.0, sem_weight: float = 1.3, min_sim: float = 0.35,
+                 boost: bool = True) -> list[tuple[str, float]]:
+    """RRF(倒数排名融合): 词法/语义各自按分数排名取倒数名次分, 再乘文档 boost。
+    抽成独立函数供 cmd_search 与 bench/search_bench.py 复用, 便于扫参数。"""
+    fused: dict[str, float] = defaultdict(float)
+    if mode != "semantic":
+        for r, (rel, _) in enumerate(sorted(lex.items(), key=lambda x: -x[1][0])):
+            fused[rel] += 1.0 / (K + r)
+    if mode != "lexical":
+        for r, (rel, _) in enumerate(sorted(sem.items(), key=lambda x: -x[1][0])):
+            if sem[rel][0] >= min_sim:
+                fused[rel] += sem_weight / (K + r)   # 自然语言问句语义更可靠, 默认略高于词法
+    for rel in list(fused):
+        fused[rel] *= _doc_boost(by[rel], enable=boost)
+    return sorted(fused.items(), key=lambda x: -x[1])
 
 
 def cmd_search(a):
@@ -445,19 +504,7 @@ def cmd_search(a):
             mode = a.mode
         elif a.mode == "semantic":
             sys.exit("未安装 fastembed, 无法语义检索: python3 -m pip install -r scripts/mem/requirements.txt")
-    # 融合: RRF(倒数排名融合), 词法/语义各自排名, 再乘文档 boost
-    K = 30.0
-    fused: dict[str, float] = defaultdict(float)
-    if mode != "semantic":
-        for r, (rel, _) in enumerate(sorted(lex.items(), key=lambda x: -x[1][0])):
-            fused[rel] += 1.0 / (K + r)
-    if mode != "lexical":
-        for r, (rel, _) in enumerate(sorted(sem.items(), key=lambda x: -x[1][0])):
-            if sem[rel][0] >= a.min_sim:
-                fused[rel] += 1.3 / (K + r)   # 自然语言问句语义更可靠, 略高于词法
-    for rel in list(fused):
-        fused[rel] *= _doc_boost(by[rel])
-    ranked = sorted(fused.items(), key=lambda x: -x[1])
+    ranked = fuse_scores(lex, sem, by, mode=mode, min_sim=a.min_sim)
     if not ranked:
         print("无匹配")
         return

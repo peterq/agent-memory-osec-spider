@@ -1,0 +1,41 @@
+{"topic": "配置怎么读 / 某个进程读哪些配置 / config.Config 去哪了 / 网关为什么拿不到 spider_gateway", "queries": ["配置怎么读", "某个进程读哪些配置", "config.Config 去哪了", "网关为什么拿不到 spider_gateway"], "expected": ["decisions/decision-2026-09-09-配置按进程拆代码而非文件.md"]}
+{"topic": "代理池监控 / Scene 是什么 / IP 不可用 vs 被站点封禁 / 推送 IP 数", "queries": ["代理池监控", "Scene 是什么", "IP 不可用 vs 被站点封禁", "推送 IP 数"], "expected": ["procedures/troubleshooting-代理池总览无数据.md"]}
+{"topic": "我要改 gRPC 协议 / proto", "queries": ["我要改 gRPC 协议", "proto"], "expected": ["knowledge/api-rpc契约.md", "procedures/workflow-本地构建与验证.md"]}
+{"topic": "我要改爬虫 / 加一个站点 / 看某个子命令", "queries": ["我要改爬虫", "加一个站点", "看某个子命令"], "expected": ["knowledge/architecture-spider.md", "procedures/workflow-部署.md"]}
+{"topic": "我要找新的资源站 / task site-discovery / 启动网站发现任务", "queries": ["我要找新的资源站", "task site-discovery", "启动网站发现任务"], "expected": ["procedures/workflow-站点发现.md"]}
+{"topic": "我要调研一个新的资源站 / 写爬虫 PRD / 找站点的接口", "queries": ["我要调研一个新的资源站", "写爬虫 PRD", "找站点的接口"], "expected": ["procedures/workflow-新站点调研.md"]}
+{"topic": "kkpans / KK网盘 / 光鸭云盘 / guangyapan / bbs_kkpans", "queries": ["kkpans", "KK网盘", "光鸭云盘", "guangyapan", "bbs_kkpans"], "expected": ["knowledge/domain-站点-kkpans.md"]}
+{"topic": "dyyjmax / fuxipan / feikuai / kuakes / haisou / bbs_* 新爬虫 / 2609 批次", "queries": ["dyyjmax", "fuxipan", "feikuai", "kuakes", "haisou", "bbs_* 新爬虫", "2609 批次"], "expected": ["knowledge/domain-站点-2609接入批次.md"]}
+{"topic": "我要一次接入多个站点 / 并行开发 / worktree 怎么分工 / 合并冲突", "queries": ["我要一次接入多个站点", "并行开发", "worktree 怎么分工", "合并冲突"], "expected": ["procedures/workflow-并行开发多站点爬虫.md"]}
+{"topic": "队列监控 / queue-admin / 队列出问题了怎么看 / 任务详情 schema / 端口连不上", "queries": ["队列监控", "queue-admin", "队列出问题了怎么看", "任务详情 schema", "端口连不上"], "expected": ["decisions/decision-2026-09-04-管理服务并入网关.md", "knowledge/architecture-queue-admin.md", "sessions/2026/2026-09-04-队列监控系统queue-admin.md"]}
+{"topic": "队列 v2 / queue_task.Service / 旧队列 share_pwd/ad_share/quark_share/xunlei_share/keyword_filter 去哪了 / 怎么上线", "queries": ["队列 v2", "queue_task.Service", "旧队列 share_pwd/ad_share/quark_share/xunlei_share/keyword_filter 去哪了", "怎么上线"], "expected": ["decisions/decision-2026-09-04-队列v2统一走网关.md", "knowledge/architecture-spider.md", "sessions/2026/2026-09-04-队列v2改造.md", "sessions/2026/2026-09-04-队列v2改造收尾清理.md"]}
+{"topic": "我要写新的网关队列消费者 / 关键词站点怎么收关键词 / 爬虫怎么提交链接", "queries": ["我要写新的网关队列消费者", "关键词站点怎么收关键词", "爬虫怎么提交链接"], "expected": ["knowledge/architecture-spider.md"]}
+{"topic": "网关起不来 / no such host / ES 集群换了 / 重启前要检查什么 / 队列 v2 上线收尾脚本", "queries": ["网关起不来", "no such host", "ES 集群换了", "重启前要检查什么", "队列 v2 上线收尾脚本"], "expected": ["lessons/failure-网关重启暴露ES集群已更换.md", "procedures/workflow-部署.md"]}
+{"topic": "多个包同时重构 / 子 Agent 编译互锁 / Phase 0-1-2", "queries": ["多个包同时重构", "子 Agent 编译互锁", "Phase 0-1-2"], "expected": ["lessons/patterns-并行重构的分阶段切分.md"]}
+{"topic": "哪些爬虫还在跑 / 某个爬虫代码去哪了 / 为什么删了 xxx 爬虫 / 想恢复一个老爬虫", "queries": ["哪些爬虫还在跑", "某个爬虫代码去哪了", "为什么删了 xxx 爬虫", "想恢复一个老爬虫"], "expected": ["decisions/decision-2026-09-03-清理下线爬虫代码.md"]}
+{"topic": "haisou 为什么下线 / 还能不能复活", "queries": ["haisou 为什么下线", "还能不能复活"], "expected": ["decisions/decision-2026-09-03-下线haisou.md"]}
+{"topic": "haisou 跑不通 / 13001 / 请求过于频繁 / 积分额度 / X-HS-Client-Context / 调研结论和实际对不上", "queries": ["haisou 跑不通", "13001", "请求过于频繁", "积分额度", "X-HS-Client-Context", "调研结论和实际对不上"], "expected": ["lessons/failure-haisou搜索接口收紧.md"]}
+{"topic": "misoso / melost.cn / 影盘社 / bbs_misoso / disk-N.xml / 越界sitemap假200", "queries": ["misoso", "melost.cn", "影盘社", "bbs_misoso", "disk-N.xml", "越界sitemap假200"], "expected": ["knowledge/domain-站点-misoso.md"]}
+{"topic": "链接失效检测 / validShareLink 返回 -1 / 夸克阿里判定不准 / 误删资源", "queries": ["链接失效检测", "validShareLink 返回 -1", "夸克阿里判定不准", "误删资源"], "expected": ["knowledge/domain-网盘有效性检测.md", "lessons/success-网盘失效判定原则.md"]}
+{"topic": "代理池 / 代理连不上 / 蜻蜓白名单 / 出口 IP 不对 / redis-topic-sync", "queries": ["代理池", "代理连不上", "蜻蜓白名单", "出口 IP 不对", "redis-topic-sync"], "expected": ["lessons/success-本地代理池打通.md"]}
+{"topic": "我要给爬虫写测试 / 联网测试怎么不污染线上", "queries": ["我要给爬虫写测试", "联网测试怎么不污染线上"], "expected": ["lessons/success-爬虫联网集成测试.md"]}
+{"topic": "保活 / keepalive / alive() 该在哪调 / 爬虫空跑不告警", "queries": ["保活", "keepalive", "alive() 该在哪调", "爬虫空跑不告警"], "expected": ["lessons/success-爬虫保活语义.md"]}
+{"topic": "新增服务配置节 / yaml 解析 Duration / 线上配置没同步", "queries": ["新增服务配置节", "yaml 解析 Duration", "线上配置没同步"], "expected": ["knowledge/architecture-spider.md"]}
+{"topic": "资源生命周期 / 三索引 / res_lc / 索引轮换 / 失效检测改造 / 生产 ES 有多大 / 怎么查生产 ES / 双写 / v3 / P3 上线 / P4 bootstrap", "queries": ["资源生命周期", "三索引", "res_lc", "索引轮换", "失效检测改造", "生产 ES 有多大", "怎么查生产 ES", "双写", "v3", "P3 上线", "P4 bootstrap"], "expected": ["decisions/decision-2026-09-04-资源索引生命周期改造方案.md", "knowledge/architecture-es索引现状.md", "lessons/failure-bootstrap按id排序打爆ES堆.md", "lessons/failure-copy_child小reindex被轮询间隔拖垮.md", "lessons/failure-copy_child真正瓶颈是子文档量.md", "sessions/2026/2026-09-05-生命周期P4启动失败.md", "sessions/2026/2026-09-05-生命周期P4演练.md", "sessions/2026/2026-09-05-生命周期P4第三次尝试.md"]}
+{"topic": "我要改入库逻辑 / ES 索引 / 查资源为什么没写进去", "queries": ["我要改入库逻辑", "ES 索引", "查资源为什么没写进去"], "expected": ["knowledge/architecture-storage.md"]}
+{"topic": "后台怎么看 res_lc_* 分表数据 / 资源列表 / 分表统计 / 事件流水 / 表诊断", "queries": ["后台怎么看 res_lc_* 分表数据", "资源列表", "分表统计", "事件流水", "表诊断"], "expected": ["sessions/2026/2026-09-08-res_lc数据纳入后台.md"]}
+{"topic": "筛选参数传了 0 却查不出数据 / proto3 不传字段被当成过滤条件", "queries": ["筛选参数传了 0 却查不出数据", "proto3 不传字段被当成过滤条件"], "expected": ["lessons/failure-proto3零值与负一哨兵冲突.md"]}
+{"topic": "我要测浏览器可见的交互 / 带登录态的浏览器 / CDP / 桩服务验收 / agent-browser.sh / cdp.py", "queries": ["我要测浏览器可见的交互", "带登录态的浏览器", "CDP", "桩服务验收", "agent-browser.sh", "cdp.py"], "expected": ["lessons/success-桩网关加cdp浏览器做登录链路联调.md", "procedures/workflow-带登录态的浏览器自动化.md"]}
+{"topic": "我要派子 Agent / 任务描述太长 / 多个 agent 上下文重复 / 并行开发怎么分工", "queries": ["我要派子 Agent", "任务描述太长", "多个 agent 上下文重复", "并行开发怎么分工"], "expected": ["procedures/workflow-子agent任务简报.md", "procedures/workflow-并行开发多站点爬虫.md"]}
+{"topic": "我要改后台前端 / 加一个后台页面 / qiankun 子应用 / NC ADMIN / apps.json / spiderAdmin", "queries": ["我要改后台前端", "加一个后台页面", "qiankun 子应用", "NC ADMIN", "apps.json", "spiderAdmin"], "expected": ["knowledge/architecture-nc-js.md", "lessons/failure-qiankun子应用挂到包裹层导致样式被清空.md"]}
+{"topic": "前端怎么连后端 / 网关 IP 换了 / 前端 proto 怎么生成", "queries": ["前端怎么连后端", "网关 IP 换了", "前端 proto 怎么生成"], "expected": ["knowledge/architecture-nc-js.md"]}
+{"topic": "后台登录 / GitHub OAuth / 管理秘钥去哪了 / gwToken / RtcToken 兜底 / needLogin / githubClientId", "queries": ["后台登录", "GitHub OAuth", "管理秘钥去哪了", "gwToken", "RtcToken 兜底", "needLogin", "githubClientId"], "expected": ["decisions/decision-2026-09-08-后台登录改为github-oauth.md", "knowledge/architecture-nc-js.md", "knowledge/reference-github-oauth配置.md", "lessons/failure-握手回包附加字段被传输层丢弃.md", "sessions/2026/2026-09-08-后台登录改为github授权.md"]}
+{"topic": "我要改查询接口 / 限流 / 搜索", "queries": ["我要改查询接口", "限流", "搜索"], "expected": ["knowledge/architecture-api.md"]}
+{"topic": "编译不过 / 依赖报错 / replace 问题 / go mod tidy", "queries": ["编译不过", "依赖报错", "replace 问题", "go mod tidy"], "expected": ["03-project-context.md", "procedures/workflow-本地构建与验证.md"]}
+{"topic": "泛型队列 PushTask 怎么写 / GwQueue 类型对不上", "queries": ["泛型队列 PushTask 怎么写", "GwQueue 类型对不上"], "expected": ["knowledge/architecture-spider.md"]}
+{"topic": "bnd / ali-share / quark / xunleipan 是什么、字段什么意思", "queries": ["bnd", "ali-share", "quark", "xunleipan 是什么、字段什么意思"], "expected": ["knowledge/concept-术语表.md"]}
+{"topic": "任务队列怎么消费 / seq / 永久失败", "queries": ["任务队列怎么消费", "seq", "永久失败"], "expected": ["knowledge/architecture-spider.md", "knowledge/concept-术语表.md"]}
+{"topic": "部署 / 上线 / 看日志 / 重启 / 确认线上跑着哪些服务 / 新服务放哪台机", "queries": ["部署", "上线", "看日志", "重启", "确认线上跑着哪些服务", "新服务放哪台机"], "expected": ["lessons/failure-按进程数分配主机压垮restest.md", "procedures/workflow-部署.md"]}
+{"topic": "密钥、安全", "queries": ["密钥、安全"], "expected": ["current/risks.md"]}
+{"topic": "记忆太大 / 启动 token 太多 / 怎么找记忆文件 / mem.py / 索引怎么生成", "queries": ["记忆太大", "启动 token 太多", "怎么找记忆文件", "mem.py", "索引怎么生成"], "expected": ["decisions/decision-2026-09-12-记忆系统瘦身与脚本化加载.md"]}
+{"topic": "当前该做什么", "queries": ["当前该做什么"], "expected": ["current/open-questions.md", "current/tasks.md"]}
