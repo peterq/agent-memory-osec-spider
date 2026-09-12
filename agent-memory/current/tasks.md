@@ -3,10 +3,10 @@ title: 当前任务与进度
 type: task
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T22:50:00+08:00
+updated_at: 2026-09-12T23:15:00+08:00
 priority: critical
 keywords: [任务, 进度, 待办, P5, 队列v2, queue-admin, 全站扫描, fullsweep, 文档爬虫, doc-crawler, FC Chrome, 凭据轮换, 站点发现, kkpans, misoso, 有效性检测]
-summary: 仍在推进/阻塞/待决策的事项（P0：checker 误删事故止血/部署/恢复；P5 顺序 修复上线→阶段C→A'→阶段D）；已上线任务在 archive
+summary: 仍在推进/阻塞/待决策的事项（P0：checker 误删事故修复已上线、恢复待决策；P5 顺序 阶段C→A'→阶段D）；已上线任务在 archive
 questions:
   - 当前该做什么，有哪些待办
 load: on-demand
@@ -109,9 +109,9 @@ related:
 ## 进行中
 
 - [ ] **🔴 P0 lifecycle_checker 误删事故（09-12 22:17 发现）**——正本 SPIDER rollout §15；经验 `lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md`。
-  - ① **人工止血**：`ssh osec-jenkins "docker stop spider-lifecycle_checker"`（Agent 被安全策略拦）。每小时不停 ≈ +7,000 条误删。
-  - ② 部署修复 `b888846`：`./deploy.sh lifecycle_checker`（先停后部，看容器统计出现 valid>0 才算通过）；网关告警护栏随下次网关发版。
-  - ③ **恢复待决策**：Mongo `share_files` 回灌工具（≈1 人日）→ 删 `invalid_link_*` 对应行 → `UpsertResource` → 修复版 `TriggerCheck(force)` 复检；范围 115.5 万（quark 1,115,264 / ali 40,007，res_id 从 `res_lc_event` 取）。
+  - ✅ ①② 09-12 23:05~23:11 用户授权执行：止血 → 部署 `b888846` → 发现 bnd「违规」tooltip 误判 930 条再停 → 修复 `06ef50d` 重新部署（rollout §15.5）。观察容器统计 bnd valid/invalid 回常态、quark 出现 valid。
+  - ③ **恢复待决策**：Mongo `share_files` 回灌工具（≈1 人日）→ 删 `invalid_link_*` 对应行 → `UpsertResource` → 修复版 `TriggerCheck(force)` 复检；范围 **1,156,201**（quark 1,115,264 / ali 40,007 / bnd 930，res_id 从 `res_lc_event` 取）。
+  - ⑤ **P1** API `services/valid/bnd-api.go` 按 SPIDER `classifyBndShare` 对齐（仍拿「不存在」匹配整页）；网关下次发版带上 `06ef50d`（url_check 共用 valid 包）+ `b888846` 告警护栏。
   - ④ 修复上线后消化 bnd `dueBacklog` 52.8 万（8 天零有效检测）。
 - [ ] **P0 生命周期 P5 准入**（阶段 A/B 已上线 09-12 16:34；**顺序因事故调整**）——决策 `decisions/decision-2026-09-12-P5切v3准入门槛与失效同步.md`、`decision-2026-09-12-阶段D改由API侧自动灰度分流.md`。
   - 下一步按序：① 事故止血 + 修复上线；② 09-13 ≥16:34 跑 rollout §14.3 观察项 + 阶段 C 复测 p5-plan §4；③ A' 投递：只读探测 `scripts/lc_legacy_probe_all.sh _note/p5-aprime`（09-12 22:29 起在本机后台跑 xunlei，产物在会话 scratchpad `probe-xunlei/`，xunlei_00 缺失率 0.13%）→ 修复版上线后 `lc-check -trigger-check` 每天 ≤20 万；④ 阶段 D：`search_canary` **已开发完成** API `6bbbfb8`（缺省关闭），门槛全过后 `enabled: true` + `notify_url` 重部 API；上线前决定 `step_every_v3_requests`（缺省 100 会在几十分钟内涨满）。

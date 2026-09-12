@@ -3,7 +3,7 @@ title: 项目变更记录（总览归档）
 type: knowledge
 status: active
 created_at: 2026-09-12T11:30:00+08:00
-updated_at: 2026-09-12T22:36:00+08:00
+updated_at: 2026-09-12T23:15:00+08:00
 priority: low
 keywords: [变更记录, changelog, 历史, 总览归档, 生命周期改造, 队列v2, queue-admin, 站点接入, 配置v2, GitHub OAuth]
 summary: 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪"
@@ -20,6 +20,7 @@ related:
 
 ## 2026-09-12
 
+- 2026-09-12 23:05~23:11 用户授权：止血 → 部署 `b888846` → 发现 bnd「违规」tooltip 误判 930 条 → 修复 `06ef50d` 重新部署 → SPIDER rollout §15.5
 - 2026-09-12 22:17 🔴 发现 lifecycle_checker 把 md5 当分享 id，115.5 万条误删（quark/ali）；修复 SPIDER `b888846`，止血待人工 → `lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md`、rollout §15
 - 2026-09-12 按 open-questions 答复推进：`:cur` 两窗口取证不搬；阶段 D 改 API 侧自动灰度（sonnet 开发中）→ `decisions/decision-2026-09-12-阶段D改由API侧自动灰度分流.md`；A' 探测驱动 `scripts/lc_legacy_probe_all.sh`
 - 16:34 **P5 阶段 A/B 上线**：D1 旧链路失效同步钩子（网关双机）、API v2 valid 上报 lc + bnd 去 `has_child`（热态 bnd v3 反超 v2 2×）、A' 存量复检工具链；res2 网关重部遇 ssh 超时半完成态，新增 `deploy.sh redeployHost` 补救。→ `decisions/decision-2026-09-12-P5切v3准入门槛与失效同步.md`、`sessions/2026/2026-09-12-P5阶段AB上线.md`、SPIDER rollout §14

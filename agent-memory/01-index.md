@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-12T22:41:12+08:00
+updated_at: 2026-09-12T23:12:23+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -25,11 +25,11 @@ load: always
 - 02-user-preferences.md | high | 2026-09-12 | 用户对语言、脚本沉淀、记忆维护、thinking 长度与敏感信息禁写的明确要求 | 偏好、中文、脚本沉淀
 
 ## current/ (5)
-- current/tasks.md | crit | 2026-09-12 | 仍在推进/阻塞/待决策的事项（P0：checker 误删事故止血/部署/恢复；P5 顺序 修复上线→阶段C→A'→阶段D）；已上线任务在 archive | 任务、进度、待办
+- current/tasks.md | crit | 2026-09-12 | 仍在推进/阻塞/待决策的事项（P0：checker 误删事故修复已上线、恢复待决策；P5 顺序 阶段C→A'→阶段D）；已上线任务在 archive | 任务、进度、待办
   ? 当前该做什么，有哪些待办
-- current/open-questions.md | high | 2026-09-12 | 待用户确认：checker 误删事故的止血执行与 115.5 万条恢复方案；A'/阶段 D 已按答复推进 | 待确认、事故恢复、lifecycle_checker
+- current/open-questions.md | high | 2026-09-12 | 待用户确认：checker 误删 115.6 万条的恢复方案（修复已上线）；A'/阶段 D 已按答复推进 | 待确认、事故恢复、lifecycle_checker
   ? 当前有哪些待用户确认的问题
-- current/risks.md | high | 2026-09-12 | 影响开发与运维安全的已知风险点；最高 R9 lifecycle_checker 误删 116 万资源（止血待人工、恢复待决策） | lifecycle_checker误删、风险、阻塞
+- current/risks.md | high | 2026-09-12 | 影响开发与运维安全的已知风险点；最高 R9 lifecycle_checker 误删 115.6 万资源（修复已上线、恢复待决策） | lifecycle_checker误删、风险、阻塞
   ? 密钥、安全相关的风险在哪看
 - current/changelog.md | low | 2026-09-12 | 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪 | 变更记录、changelog、历史
 - current/tasks-backlog.md | low | 2026-09-12 | 从 tasks.md 拆出的低优先级/等人工事项：文档爬虫 FC 自动化 6 项人工步骤、P3 代码小修 | backlog、P3、文档爬虫
@@ -84,7 +84,7 @@ load: always
 ## lessons/ (27)
 - lessons/failure-bootstrap按id排序打爆ES堆.md | crit | 2026-09-12 | P4 bootstrap 的 B1 用 sort:["_id"] 在 15.7 亿文档旧索引上翻页, 触发 _id fielddata 加载, 单页 >550s、堆到 99%、熔… | bootstrap、存量迁移、P4
   ? P4 bootstrap 为什么跑不起来 / 作业 id=1 为什么 failed
-- lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md | crit | 2026-09-12 | checker 用 task.Id(md5) 而非 ShareId 探测，115.5 万条 quark/ali 经 lcClear 从新旧索引误删并写 invalid_link；… | lifecycle_checker、误删、ShareId
+- lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md | crit | 2026-09-12 | checker 用 task.Id(md5) 而非 ShareId 探测，115.5 万条 quark/ali 误删；bnd 再因「违规」tooltip 误判 930 条；修复 … | lifecycle_checker、误删、ShareId
   ? lifecycle_checker 为什么把所有夸克资源判成失效 / 116 万条资源误删是怎么回事，怎么恢复 / 检测吞吐 valid=0 意味着什么 / 代理池 lifecycle_checker 场景成功率 0 的原因
 - lessons/failure-longBoundary漂移导致父子跨索引与shortfall误报.md | crit | 2026-09-12 | shortfall 89 条不是子文档丢失：copy_parent/copy_child 各自取 now 算 90 天边界、长跑漂移致父 cur 子 long；修法是 mover… | bootstrap、longBoundary、shortfallSlices
 - lessons/failure-repair对账在bootstrap未完成时误标数据.md | crit | 2026-09-06 | bootstrap 未完成时跑 repair 的 db_to_es 会把「尚未复制到 ES」的 DB 行误判为丢失并置 status=3，导致 copy_child 静默漏搬子文档 | repair、对账、bootstrap

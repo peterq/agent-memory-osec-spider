@@ -3,10 +3,10 @@ title: 当前风险与阻塞
 type: risk
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T22:50:00+08:00
+updated_at: 2026-09-12T23:15:00+08:00
 priority: high
 keywords: [lifecycle_checker误删, 风险, 阻塞, 密钥, AK/SK, 生产, 测试, 依赖升级, 队列v2, 无回滚, 上线收尾]
-summary: 影响开发与运维安全的已知风险点；最高 R9 lifecycle_checker 误删 116 万资源（止血待人工、恢复待决策）
+summary: 影响开发与运维安全的已知风险点；最高 R9 lifecycle_checker 误删 115.6 万资源（修复已上线、恢复待决策）
 questions:
   - 密钥、安全相关的风险在哪看
 load: on-demand
@@ -16,10 +16,10 @@ related:
 
 # 当前风险与阻塞
 
-## 🔴 R9 lifecycle_checker 误判事故：116 万有效资源已从新旧索引删除（2026-09-12 22:17 发现，**仍在流血直到容器停止**）
+## 🔴 R9 lifecycle_checker 误判事故：115.6 万有效资源已从新旧索引删除（2026-09-12 22:17 发现，23:11 修复版上线止血，恢复待决策）
 
-- 根因 `task.Id`(md5) 误当分享 id；修复 SPIDER `b888846` 已 push **未部署**；容器 `spider-lifecycle_checker@osec-jenkins` 停止操作被安全策略拦，需人工 `docker stop`。
-- 已删 quark 1,115,264 / ali-share 40,007（每天 +16 万直到停止）；旧索引 `resource` 同步被删（v2 搜索也少这些）；`invalid_link_*` 已写入，阻止爬虫重新入库。
+- 根因 `task.Id`(md5) 误当分享 id（`b888846`）+ bnd「违规」tooltip 文案误判（`06ef50d`），均已部署到 checker；网关侧 url_check 共用 valid 包，下次发版带上。
+- 已删 quark 1,115,264 / ali-share 40,007 / bnd 930；旧索引 `resource` 同步被删（v2 搜索也少这些）；`invalid_link_*` 已写入，阻止爬虫重新入库。
 - 恢复来源 Mongo `share_files`；方案与顺序见 `lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md`、SPIDER rollout §15。
 - 连带：**A' 存量复检、任何 `-trigger-check` 投递必须等修复版上线**；bnd/xunlei 8 天零有效检测，`dueBacklog` 52.8 万待消化。
 
