@@ -58,7 +58,7 @@ related:
 - [ ] **P2 代码待修（配置 v2）**：`LOCAL_CONFIG_PATH` 缺省未回落宿主机 `config.yaml`；删宿主机 `config.yaml` 的时机（回滚现依赖 `spider.old`）留用户决定。
 - [ ] **P2 安全（凭据轮换，待决策）**：`devops_online_env.go` 硬编码 OSS AK/SK 与 ES 口令；`pan_download`/`bnd_download` 测试文件硬编码真实 RefreshToken/BDUSS（建议迁 `.hide.json`）；ali_log ak/sk 曾明文进会话记录，建议评估轮换。
 - [ ] **P1 待用户决策**：`osec-resdb` STORAGE worker 的 `es_endpoint` 指向已下线旧 ES 集群（已回滚，不影响 P3 数据正确性）。
-- [ ] **既有故障**：现网 ES 无 `resource_valid` 索引（404），`checkValid`/`queryValidAndPwd` 及对应 v3 接口同样失效。
+- [ ] **既有故障**：现网 ES 无 `resource_valid` 索引（404），`checkValid`/`queryValidAndPwd` v2/v3 同样失效。
 - [ ] **P2**：COMMON `common_message.proto` 的 `go_package` 仍是旧仓库名 `PPIO`，`gen.sh` 后要手工 sed；应改 proto 全自动。
 - [ ] **P2**：资源生命周期 P0 基线剩余项（PRD §15.3 第 12/13 项）：bnd checker 探测吞吐与代理池配额、无 join 百度文档 `_source` 大小抽样未采。
 - [ ] **P2 待人工验证（管理台合并）**：ARMS 确认 `queue_admin_*` 指标入库；浏览器实测 spiderAdmin 三组菜单/Mock 开关/各页数据。
