@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-12T13:09:43+08:00
+updated_at: 2026-09-12T13:12:31+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -16,7 +16,7 @@ load: always
 定位到文件后 `mem.py outline <file>` 看章节，再 `mem.py body <file> --section <标题>` 只读需要的一段。
 维护方式：改目标文件 Front Matter（summary / keywords / questions），然后运行 `scripts/mem/mem.py index --write`。
 
-# agent-memory 启动包（脚本生成, 108 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
+# agent-memory 启动包（脚本生成, 109 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
 
 ## 根目录 (3)
 - 00-overview.md | crit | 2026-09-12 | 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件 | 网盘资源爬取、版权取证、COMMON
@@ -120,10 +120,12 @@ load: always
 - lessons/success-archify画图的几何约束.md | medi | 2026-09-07 | archify 渲染器的固定布局规则（lifecycle 三带坐标、事件列对齐主轨 2~4 列、阅读区自适应仅在宽高比≥1.55）以及一轮修到 showcase+visual-c… | archify、lifecycle、architecture
 - lessons/success-配置v2上线准备发现的两个衔接问题.md | medi | 2026-09-08 | v1/v2 两份网关配置文件同名字段易贴错目标文件；README §2.7 首次上传前置步骤的表述与 uploadConfigToOss 实际代码逻辑相反 | 配置v2、github_auth、spider.gateway.prod.yaml
 
-## knowledge/ (18)
+## knowledge/ (19)
 - knowledge/architecture-系统总览.md | crit | 2026-09-02 | 从爬取到入库到检索的完整链路、各服务端口与中间件分工 | 架构、数据链路、网关
 - knowledge/api-rpc契约.md | high | 2026-09-12 | COMMON 仓库中各 proto 服务的方法清单、核心消息结构与代码生成流程 | proto、gRPC、StorageRpc
   ? 我要改 gRPC 协议 / proto，改完怎么生成 / 某个 rpc 方法的入参/出参消息结构是什么 / proto 改完要同步哪些下游仓库
+- knowledge/api-v3-detail-filectx兼容性分析.md | high | 2026-09-12 | 结论——lc 索引结构与 v2 detail/fileCtx 的查询方式兼容（nested filelist、join file、fid/parent、routing 均保留），… | v3 detail、fileCtx、res_lc_all
+  ? detail/fileCtx 能不能直接查 res_lc_all / 补 v3 detail/fileCtx 要改哪些地方 / 为什么 /api/v2/detail 会报 size 反序列化错误
 - knowledge/architecture-api.md | high | 2026-09-12 | osec-resource-api 的路由表、中间件链、依赖服务与后台管理模块；另含 SPIDER 网关 LifecycleRpc 新增的 res_lc 分表数据只读接口（资源列… | API、osec-resource-api、gin
   ? 我要改查询接口/限流/搜索 / 后台怎么看 res_lc_* 分表数据
 - knowledge/architecture-es索引现状.md | high | 2026-09-12 | 阿里云 ES 6.7 单索引的分片/容量/父子文档结构/入库增速与读写清理链路代码位置，是生命周期改造方案的事实基线 | ES、Elasticsearch、6.7
