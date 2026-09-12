@@ -28,7 +28,6 @@ related:
 - 09-12 22:17 **🔴 事故：lifecycle_checker 把资源 md5 当分享 id，115.5 万条有效资源（quark/ali）被误判失效并从新旧索引删除**。修复 `b888846` + bnd「违规」tooltip 误判修复 `06ef50d` **23:11 已部署 checker**；**Mongo 无数据，恢复只能重爬**：`tools/lc-recrawl` 09-13 00:06 全量投递中（≈31 h，试点恢复率 ≈50%）。→ `lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md`、`current/open-questions.md`
 - 09-12 按答复推进：`:cur` 两窗口取证**不搬**；阶段 D 改 **API 侧自动灰度分流**（30% 起、每 100 个 v3 请求 +1%，sonnet 开发中）；A' 只读探测驱动 `scripts/lc_legacy_probe_all.sh` 就绪，投递等修复上线。→ `decisions/decision-2026-09-12-阶段D改由API侧自动灰度分流.md`、`current/tasks.md`「进行中」
 - 09-12 16:34 **P5 阶段 A/B 已上线**（D1 钩子；API v2 valid 上报 lc；bnd 去 `has_child`）；顺序：阶段 C 复测 → A' → 阶段 D。→ `decisions/decision-2026-09-12-P5切v3准入门槛与失效同步.md`
-- 09-11 P4 bootstrap id=8 done；09-10 代理池监控闭环；09-09 配置按进程拆代码已部署。→ `current/changelog.md`
 - 阻塞：无；重爬进行中；四个 Go 仓库 `go build ./...` 全过；风险见 `current/risks.md` R9。
 
 ## 3. 核心事实
