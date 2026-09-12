@@ -3,7 +3,7 @@ title: 项目总览
 type: overview
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T16:30:00+08:00
+updated_at: 2026-09-12T16:55:00+08:00
 priority: critical
 keywords: [网盘资源爬取, 版权取证, COMMON, SPIDER, STORAGE, API, NC-JS]
 summary: 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件
@@ -26,8 +26,8 @@ related:
 ## 2. 当前状态（最近 7 天；更早见 `current/changelog.md`）
 
 - 09-12 **进行中：记忆系统瘦身**——常驻 5.4 万字超规则，`scripts/mem/mem.py` 已可用，协议改动待确认。→ `decisions/decision-2026-09-12-记忆系统瘦身与脚本化加载.md`
-- 09-12 **P5 前置对拍未通过**（首页重合度 84%：4% 死链未反向同步 + `match_phrase_prefix` 分片彩票），**准入计划已出待认可**：A 失效同步钩子 → B bnd 慢查询 → 复测 → 灰度。→ SPIDER `PRD/res-lifecycle/p5-plan-2026-09-12.md`、`current/open-questions.md`
-- 09-11 **P4 bootstrap id=8 已 done**（终态对拍 0.001% 级）；遗留 2 个 `:cur` 窗口、5 个未部署提交。→ `current/tasks.md`
+- 09-12 16:34 **P5 阶段 A/B 已上线**（D1 旧链路失效同步钩子；API v2 valid 上报 lc；bnd 去 `has_child` 后 v3 热态反超 v2 2×）；09-13 起 24 h 观察 → 阶段 C 复测 → A' 存量 → 阶段 D 切流。→ `decisions/decision-2026-09-12-P5切v3准入门槛与失效同步.md`、`current/tasks.md`「进行中」
+- 09-11 **P4 bootstrap id=8 已 done**（终态对拍 0.001% 级）；遗留 2 个 `:cur` 窗口（5 个未部署提交已随 09-12 网关重部生效）。→ `current/tasks.md`
 - 09-10 **代理池监控上线闭环**——全 0 是上报侧未部署，重部即有数据；新增只读巡检 `tools/proxy-admin-check`。→ `procedures/troubleshooting-代理池总览无数据.md`
 - 09-09 **配置按进程拆代码已部署**（SPIDER `883daeb`，网关双机 + 爬虫 + proxy 全重部）。→ `decisions/decision-2026-09-09-配置按进程拆代码而非文件.md`
 - 阻塞：无；四个 Go 仓库 `go build ./...` 全过；在办任务见 `current/tasks.md`，风险见 `current/risks.md`。
@@ -55,6 +55,7 @@ related:
 
 ## 5. 当前关键决策（正本在 `decisions/`，本节只列仍在生效的）
 
+- P5 切 v3 准入门槛 G1~G6 与 D1~D4 裁定（失效只提前复检、口径改语料级、bnd 去 has_child、门槛全过才切）→ `decision-2026-09-12-P5切v3准入门槛与失效同步.md`
 - 记忆系统瘦身与脚本化加载 → `decision-2026-09-12-记忆系统瘦身与脚本化加载.md`
 - 配置按进程拆**代码**而非拆文件 → `decision-2026-09-09-配置按进程拆代码而非文件.md`
 - 后台登录改 GitHub OAuth（含上线顺序）→ `decision-2026-09-08-后台登录改为github-oauth.md`
@@ -80,10 +81,11 @@ related:
 - 新爬虫写联网集成测试（假 committer + 独立 redis 前缀 + 环境变量开关）→ `lessons/success-爬虫联网集成测试.md`
 - 新站点调研先挖 JS bundle 接口、`total` 须用 sitemap 对账；**结论有保质期** → `procedures/workflow-新站点调研.md`
 - 生产 API 探针按 res-api 三级漏桶算节奏、不伪造来源头；排序差异用 `explain` 看 idf 求和项 → `lessons/failure-v3首页重合度受前缀展开分片彩票影响.md`
+- 部署半完成态（容器已删未重建）用 `deploy.sh call redeployHost <svc> <host>` 补救，别用 `call dockerRun`（缺 OSS 配置注入）→ `procedures/workflow-部署.md`
 
 ## 7. 待解决问题
 
-- **P5 前置 D1~D4 待用户拍板**（legacy→lc 失效同步 / 重合度口径 / bnd 慢 / 是否灰度）→ `current/open-questions.md`；风险 `current/risks.md`。
+- P5 阶段 A' 存量复检节奏、阶段 D 调用方切流对接待确认；旧链路 `url_check` 是否还在产出失效待核 → `current/open-questions.md`、`current/tasks.md`；风险 `current/risks.md`。
 
 ## 8. 怎么找记忆文件
 

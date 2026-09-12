@@ -3,10 +3,10 @@ title: 未解决的问题
 type: question
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T16:30:00+08:00
+updated_at: 2026-09-12T16:15:00+08:00
 priority: high
-keywords: [P5, 待确认, 用户确认, 重合度, legacy→lc 失效同步, 灰度]
-summary: P5 前置对拍未通过后待用户拍板的 D1~D4（失效同步 / 重合度口径 / bnd 慢 / 是否灰度）
+keywords: [P5, 待确认, 用户确认, 存量复检, 切流, 灰度]
+summary: 待用户确认：P5 A' 存量复检节奏、阶段 D 调用方切流对接，及 :cur 半区窗口、代理池口径等历史项
 questions:
   - 当前有哪些待用户确认的问题
 load: on-demand
@@ -23,7 +23,6 @@ related:
 ## 2026-09-11 shortfall 修复 = mover 父归位（**已完成** 09-12 02:17，102,601 父归位）
 
 - [待确认] 2 个 `:cur` 半区窗口（`t202608290000`/`t202608310000`，父在 long、子在 cur，21,451 子）是否同法处理（target=long，规模小）。
-- [待确认] 5 个未部署代码提交何时随网关发版（`3b8cc13` verify 汇总、`aac5f84` trigger-move、`61cf1db` longBoundary 固化、`e856540` ids 范围、`93f4d38` shortfall 两口径）。
 
 ### 原记录
 
@@ -31,14 +30,6 @@ related:
 - [待确认] 范围：只修 shortfall 相关 ≈1.5~2 万父（6~9 h）还是 `res_short_202609` 里全部 utime<now-90d 的 220,333 父（≈92 h，语义上本就该沉 long）。
 - [待确认] 是否放宽 `move_batch`（200）/`move_interval_sec`（300）加速；`enabled`/`dual_write_legacy` 不动。
 - 前置：repair id=11 done。禁用 `copyMode=ids`。详见 `lessons/failure-longBoundary漂移导致父子跨索引与shortfall误报.md`。
-
-## 2026-09-11 P4 作业 id=8 verify 失败后的恢复（**已完成** 10:25 done）
-
-- [待确认] repair 守卫被 id=4（paused）拦住：用 `-job-params '{"force":true}'`（推荐，当前无 running/pending bootstrap）还是先 cancel id=4？
-- [待确认] repair 执行时间窗（建议 23:00~08:00 低峰；全量 43.7M 行 1.5~4 h，对 long 删父 ≈5.3 万 + 子 ≈131 万）。
-- [待确认] 是否 `skipEsToDb=true`（取证显示 ① 补录量 ≈0）。
-- [待确认] shortfallSlices 89 条（2026-06 整窗 dst=0）补搬放在 id=8 done 之前还是之后。
-- 决策后顺序：repair → 只读复核两索引 <0.1% → retry id=8 → done。详见 `current/tasks.md` 09-11 条目、SPIDER rollout §12.6。
 
 ## 代理池监控首批数据里几个场景成功率为 0（2026-09-10，待确认口径）
 
@@ -55,24 +46,14 @@ related:
 > 决策见 `osec-spider-go/PRD/2609/www.kkpans.com.md` §8
 > 与 `agent-memory/decisions/decision-2026-09-02-停止磁力资源采集.md`。
 
-## 全量 bootstrap 提速方案（2026-09-06，待用户决策）
-
-- [待确认] 作业 id=8 copy_parent 阶段吞吐仅 1,400~2,700 docs/s（瓶颈是每窗口固定开销，rps 6000 未跑满），主控已选择原地 resume 跑完。用户可选：cancel 后以更大 `windowTargetDocs`（如 60~100 万）重跑以减少窗口数——代价是重做 3.9 h 建库、丢弃已复制进度、需重评 heap；或给 lc-check/bootstrap 补"窗口固定开销"优化后再谈。见 `decisions/decision-2026-09-06-全量bootstrap熔断后原地resume.md`。
-- [已关闭 2026-09-08] res2 xigua/qingting 按多数派剔除、oss/s3 留空——用户已确认。
-- [待确认] 用户本机 18081 隧道（pid 1880789）09-06 03:29 随网络中断消失，是否需要恢复由用户处理。
-
 ## 资源生命周期改造（2026-09-05）——已全部确认，见决策文件
 
 - [用户确认 2026-09-05] Q1 全量复制；Q2 先不加副本；Q3 version 变化作更新判据；**Q4 每类型 16 桶（64 张表）**；
   **Q5 v3 只覆盖 search 与 valid 两类接口**；Q6 百度存量迁入。当前无待确认问题。
 
-## P5 前置对拍（2026-09-12，正本 SPIDER `PRD/res-lifecycle/rollout-2026-09-05.md` §13.4；**Agent 建议裁定与排期见 `p5-plan-2026-09-12.md` §0**：D1 做且为硬前置、D2 改语料级三项门槛、D3 先 profile（假设 bnd 的 has_child 纯开销）、D4 不切）
+## P5 准入执行中（2026-09-12）—— D1~D4 已由用户以「执行 p5-plan」采纳，见 `decisions/decision-2026-09-12-P5切v3准入门槛与失效同步.md`
 
-- **D1** 旧链路 `url_check` 判失效是否同步到 lc？建议在 `res_scheduler/clear_expire.go` `HandleTask` 里把 DB `status=1` 行的 `next_check_at` 提前到 now（lc 自己复检），约 0.5 人日，**先做再复测**。
+- [待确认] 阶段 A' 存量提前复检（约 170 万条 bootstrap 迁入但旧链路已删的 lc 行）何时开始、每天多少批（建议按 lc checker 吞吐每天 ≤20 万，`TriggerCheck(force)` ≤200/批）。
   - 答复：
-- **D2** 「重合度 ≥95%」口径：首页 15 条 id 集合结构上达不到；建议改成 `total` 差额 ≤1% + 首页 100 条 ≥90% + 首页无「旧索引已删」文档。
-  - 答复：
-- **D3** bnd 类搜索 v3 慢 3~10×（quark 反而快 3×），是否单独 `profile` 排查；P99 需 ≥3 轮、间隔 ≥30 min 重测。
-  - 答复：
-- **D4** D1 修复前是否照常切 1 个低流量入口到 v3？建议不切（用户会看到旧链路已剔除的死链）。
+- [待确认] 阶段 D 切流由调用方 `dashengpan_web` 改路径，需要哪位对接、何时可改（不在本仓库范围）。
   - 答复：

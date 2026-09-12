@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-12T15:21:28+08:00
+updated_at: 2026-09-12T16:43:37+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -16,7 +16,7 @@ load: always
 定位到文件后 `mem.py outline <file>` 看章节，再 `mem.py body <file> --section <标题>` 只读需要的一段。
 维护方式：改目标文件 Front Matter（summary / keywords / questions），然后运行 `scripts/mem/mem.py index --write`。
 
-# agent-memory 启动包（脚本生成, 112 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
+# agent-memory 启动包（脚本生成, 114 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
 
 ## 根目录 (3)
 - 00-overview.md | crit | 2026-09-12 | 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件 | 网盘资源爬取、版权取证、COMMON
@@ -25,15 +25,15 @@ load: always
 - 02-user-preferences.md | high | 2026-09-12 | 用户对语言、脚本沉淀、记忆维护、thinking 长度与敏感信息禁写的明确要求 | 偏好、中文、脚本沉淀
 
 ## current/ (4)
-- current/tasks.md | crit | 2026-09-12 | 当前仍在推进/阻塞/待人工决策的事项；已完成并上线（或被取代不再跟进）的任务已归档到 archive/2026/tasks-2026-09-已完成.md | 任务、进度、待办
+- current/tasks.md | crit | 2026-09-12 | 仍在推进/阻塞/待决策的事项；已上线或被取代的任务归档在 archive/2026/tasks-2026-09-已完成.md | 任务、进度、待办
   ? 当前该做什么，有哪些待办
-- current/open-questions.md | high | 2026-09-12 | P5 前置对拍未通过后待用户拍板的 D1~D4（失效同步 / 重合度口径 / bnd 慢 / 是否灰度） | P5、待确认、用户确认
+- current/open-questions.md | high | 2026-09-12 | 待用户确认：P5 A' 存量复检节奏、阶段 D 调用方切流对接，及 :cur 半区窗口、代理池口径等历史项 | P5、待确认、用户确认
   ? 当前有哪些待用户确认的问题
 - current/risks.md | high | 2026-09-12 | 影响开发与运维安全的已知风险点 | 风险、阻塞、密钥
   ? 密钥、安全相关的风险在哪看
-- current/changelog.md | low | 2026-09-12 | 按日期倒序的一句话变更流水，每条指向对应的 session/decision 文件；只用来回答"某件事是哪天做的、细节在哪个文件 | 变更记录、changelog、历史
+- current/changelog.md | low | 2026-09-12 | 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪 | 变更记录、changelog、历史
 
-## decisions/ (15)
+## decisions/ (14)
 - decisions/decision-2026-09-02-停止磁力资源采集.md | crit | 2026-09-02 | 项目现只采集 4 种网盘类型资源，不再采集或入库磁力/BT 资源；存量索引与接口保留 | 磁力、torrent、magnet
 - decisions/decision-2026-09-03-全站扫描不在启动时触发.md | crit | 2026-09-03 | 全量扫描完成后把时间写进 redis；启动时检查该时间，有则跳过全量，只跑增量 | 全站扫描、全量、启动
 - decisions/decision-2026-09-04-资源索引生命周期改造方案.md | crit | 2026-09-12 | 用短周期(cur/prev)+长周期三索引与 MySQL 分表元数据替代单大索引的失效清理方式；两套方案共存、v3 接口切换、双写保回滚 | 生命周期、lifecycle、三索引
@@ -50,10 +50,10 @@ load: always
 - decisions/decision-2026-09-04-管理服务并入网关.md | high | 2026-09-04 | queue_admin 由独立进程并入 spider_gateway，日后管理类需求一律放 services/gateway 之下，不增新进程 | queue_admin、网关、进程合并
 - decisions/decision-2026-09-04-队列v2统一走网关.md | high | 2026-09-12 | SPIDER 所有跨进程任务投递从 queue_task.Service(直连 redis list) 改为网关 res_scheduler 队列；选 res_scheduler… | 队列v2、queue_task、res_scheduler
   ? 队列 v2 是什么，为什么统一走网关 / 旧队列 share_pwd/ad_share/quark_share/xunlei_share/keyword_filter 去哪了 / 队列 v2 怎么上线的
-- decisions/decision-2026-09-06-全量bootstrap动态rps守护续跑.md | high | 2026-09-06 | 11:08 v2 搜索延迟 13.5× 熔断后，用户选择 rps 2500 起步并由监测程序按 10 分钟区间的慢请求占比动态调峰续跑；参数经 UPDATE res_lc_job… | bootstrap、id=8、v2 延迟
-- decisions/decision-2026-09-06-全量bootstrap熔断后原地resume.md | high | 2026-09-06 | 09-06 07:22 作业 id=8 因 copy_parent 吞吐 <2000 docs/s 被 pause；主控判定为作业侧窗口固定开销而非集群压力，决定原地 resum… | bootstrap、id=8、熔断
 - decisions/decision-2026-09-08-后台登录改为github-oauth.md | high | 2026-09-12 | 固定管理秘钥改为 GitHub OAuth 登录并校验 1second 组织成员身份的四个关键设计取舍与原因 | GitHub OAuth、后台登录、RtcToken
   ? 后台登录为什么改成 GitHub OAuth / 管理秘钥去哪了，needLogin/githubClientId 是什么
+- decisions/decision-2026-09-12-P5切v3准入门槛与失效同步.md | high | 2026-09-12 | 用户 2026-09-12 采纳 D1~D4——旧链路失效只提前 lc 复检、重合度改语料级三项、bnd 去 has_child、门槛全过才切流；阶段 A/B 已上线，正本 SP… | P5、准入门槛、legacy→lc 失效同步
+  ? 切 v3 前必须满足哪些门槛 / 旧链路判失效为什么只提前复检而不直接置 lc 失效 / bnd 搜索在 v3 慢的原因与修法 / P5 灰度怎么切、怎么回滚
 - decisions/decision-2026-09-12-弃用文档更新类接口.md | high | 2026-09-12 | 用户 2026-09-12 确认——report/likes/dislikes/addViews 这类频繁 update ES 文档的接口已弃用，不做 v3、不再新增同类写法；原… | 弃用、addViews、likes
   ? report/likes/dislikes/views 这些接口还要不要做 v3 / 为什么 v3 detail 不能调 addViews / 哪些接口不允许频繁 update ES 文档
 - decisions/decision-2026-09-04-合并sweep-guard分支冲突取舍.md | medi | 2026-09-04 | 合并遗留分支时，master 已修正的旧逻辑不应因"冲突两边都保留"而被恢复，需先判断冲突是否为真实的两个功能重叠 | sweep-guard、全量扫描守卫、merge 冲突
@@ -161,9 +161,9 @@ load: always
 - knowledge/reference-github-oauth配置.md | medi | 2026-09-12 | 两个GitHub OAuth App(prod/dev)的名称、client_id、管理页、已注册回调列表与组织第三方应用策略, 不含任何secret | GitHub OAuth App、client_id、redirect_uri
   ? GitHub OAuth App 的 client_id 在哪查 / 1second 组织的回调地址怎么配置
 
-## sessions/ (28 个, 仅列最近 3 个; 其余用 mem.py search 找)
+## sessions/ (29 个, 仅列最近 3 个; 其余用 mem.py search 找)
 - sessions/2026/2026-09-02-kkpans爬虫开发.md | medi | 2026-09-12 | 按 PRD 实现 www.kkpans.com 爬虫（新建 services/bbs 包），联网实测 9 项验收标准全部达标 | kkpans、bbs_kkpans、services/bbs
 - sessions/2026/2026-09-02-kkpans站点调研与PRD.md | medi | 2026-09-12 | 探索 www.kkpans.com 并产出爬虫需求文档，沉淀站点知识、调研工作流与对账脚本 | kkpans、站点调研、PRD
 - sessions/2026/2026-09-02-修复夸克阿里有效性检测.md | medi | 2026-09-12 | 用 15+15 条样本复现并修复三类误判，API 与 SPIDER 两套 checker 结论现已一致 | 有效性检测、validShareLink、夸克
 
-## archive/ (2 个, 已归档不列出; 需要时 mem.py search --dir archive)
+## archive/ (4 个, 已归档不列出; 需要时 mem.py search --dir archive)

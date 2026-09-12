@@ -3,7 +3,7 @@ title: 工作流：子 Agent 任务简报落盘（agent-tasks/）
 type: procedure
 status: active
 created_at: 2026-09-08T09:40:00+08:00
-updated_at: 2026-09-12T12:10:00+08:00
+updated_at: 2026-09-12T16:55:00+08:00
 priority: high
 keywords: [子agent, 任务描述, agent-tasks, 简报, token, 重复上下文, 并行开发, prompt, 失败模式, Monitor, 后台任务, 抽样对账]
 summary: 派子 Agent 时任务描述落盘成文件、prompt 只给路径，并列出子 Agent 的常见失败模式与提示词对策
@@ -78,6 +78,9 @@ agent-tasks/YYYY-MM-DD-<任务名>/
   导致从未被真正测过。每一层都抓到了上一层的漏网之鱼。
 - 子 Agent 可能**自行转派再停在"等待回报"**上，把活留在工作区不提交。收尾时按仓库
   `git status` 核实真实状态，而不是按它的汇报；必要时唤醒并明确要求"自己做完，不要再转派"。
+- **多个 Agent 共用一个 git 仓库时，`git commit` 会把别人已 `git add` 的文件一起卷进自己的提交**（2026-09-12 主控的
+  `docs` 提交卷入了子 Agent 的 `tools/lc-check` 改动，内容无误但归属错乱）。对策：同仓库并发时一律 `git commit -- <自己的路径>`
+  或 `git commit <路径>` 带 pathspec，不要裸 `git commit`/`-a`；能避免就一仓库只派一个写代码的 Agent。
 - 与 `agent-memory/` 的分工：`agent-tasks/` 是一次任务的作业指导书（任务期有效，之后留存），
   `agent-memory/` 是跨任务的长期知识（持续维护、提炼、归档）。
 

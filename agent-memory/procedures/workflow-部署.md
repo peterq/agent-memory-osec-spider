@@ -3,7 +3,7 @@ title: 生产部署流程
 type: procedure
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T12:10:00+08:00
+updated_at: 2026-09-12T16:55:00+08:00
 priority: medium
 keywords: [auto模式, 权限分类器, 部署, config.yaml 宿主机改配置, fail-fast, lc-check, deploy.sh, docker, ssh, OSS 配置, 主机, supervisor, 主机选型, 负载, 重启前检查, ES, 外部依赖]
 summary: SPIDER deploy.sh 的常规用法、服务到主机的映射方式、判断线上现役服务的唯一判据、新服务选主机方法、配置分发机制与安全提醒；历次上线（生命周期/网关重部/代理池等）的一次性踩坑记录移至 workflow-部署-历史补充.md
@@ -35,7 +35,12 @@ STORAGE / API 各自也有 `deploy.sh`。历次上线的一次性踩坑记录（
 ./deploy.sh stop|remove <service> [hostIdx] [cmdIdx]
 ./deploy.sh supervisor <cmd> <host>
 ./deploy.sh call <函数名> [参数...]   # 直接调脚本内的函数，如 catConf / deployGrafana
+./deploy.sh call redeployHost <service> <host>  # 单机补救：ssh 抖动留下"容器已删未重建"时用（2026-09-12 res2 实测）
 ```
+
+- **半完成态补救不要用 `call dockerRun`**：`deployService` 路径里 `setOssConfig` 先 `export OSS_CONFIG_URL`，直接 `call dockerRun`
+  跳过了这一步，容器拿到 `-e X=X` 会一直 `Restarting`；`redeployHost` 就是 setOssConfig + dockerRun。ssh 超时后先
+  `ssh <host> 'sudo docker ps -a --filter name=spider-<cmd>'` 看状态再补救。
 
 ## 服务 → 命令 → 主机 的映射
 

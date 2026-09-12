@@ -1,18 +1,20 @@
 ---
 title: 决策：全量 bootstrap 吞吐熔断后原地 resume 而非重跑
-type: decision
-status: active
+type: archive
+status: archived
 created_at: 2026-09-06T07:35:00+08:00
-updated_at: 2026-09-06T07:35:00+08:00
+updated_at: 2026-09-12T17:05:00+08:00
 priority: high
 keywords: [bootstrap, id=8, 熔断, resume, 吞吐, windowTargetDocs, copy_parent, 窗口固定开销]
 summary: 09-06 07:22 作业 id=8 因 copy_parent 吞吐 <2000 docs/s 被 pause；主控判定为作业侧窗口固定开销而非集群压力，决定原地 resume 并修订吞吐熔断条款
-load: on-demand
+load: rarely
 related:
   - agent-memory/lessons/patterns-长周期生产巡检.md
   - agent-memory/current/tasks.md
   - agent-memory/current/open-questions.md
 ---
+
+> 2026-09-12 归档：P4 全量 bootstrap 已于 09-11 done，本决策仅供复盘；有效结论已提炼到 `lessons/patterns-长周期生产巡检.md` 与 `knowledge/domain-bootstrap吞吐实测数据.md`。
 
 # 决策：全量 bootstrap 吞吐熔断后原地 resume
 

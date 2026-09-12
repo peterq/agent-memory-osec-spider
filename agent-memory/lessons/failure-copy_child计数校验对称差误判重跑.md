@@ -10,7 +10,7 @@ summary: childCountOk 用 |src-dst| 判窗口是否达标，但 :cur 半区含�
 load: on-demand
 related:
   - agent-memory/lessons/patterns-长周期生产巡检.md
-  - agent-memory/decisions/decision-2026-09-06-全量bootstrap动态rps守护续跑.md
+  - agent-memory/archive/2026/decision-2026-09-06-全量bootstrap动态rps守护续跑.md
 ---
 
 # 失败经验：计数校验对称差误判

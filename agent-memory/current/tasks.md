@@ -3,10 +3,10 @@ title: 当前任务与进度
 type: task
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T16:30:00+08:00
+updated_at: 2026-09-12T16:50:00+08:00
 priority: critical
-keywords: [任务, 进度, 待办, 队列v2, queue-admin, 全站扫描, fullsweep, 文档爬虫, doc-crawler, FC Chrome, 凭据轮换, 站点发现, kkpans, misoso, 有效性检测]
-summary: 当前仍在推进/阻塞/待人工决策的事项；已完成并上线（或被取代不再跟进）的任务已归档到 archive/2026/tasks-2026-09-已完成.md
+keywords: [任务, 进度, 待办, P5, 队列v2, queue-admin, 全站扫描, fullsweep, 文档爬虫, doc-crawler, FC Chrome, 凭据轮换, 站点发现, kkpans, misoso, 有效性检测]
+summary: 仍在推进/阻塞/待决策的事项；已上线或被取代的任务归档在 archive/2026/tasks-2026-09-已完成.md
 questions:
   - 当前该做什么，有哪些待办
 load: on-demand
@@ -24,8 +24,8 @@ related:
 
 | 任务 | 状态 | 阻塞/下一步 | 详情文件 |
 |---|---|---|---|
-| 生命周期 P4 全量 bootstrap | ✅ 已完成 | 5 提交待下次网关重启部署；2 个 `:cur` 半区窗口待决定 | 归档遗留待办 / archive「生命周期 P4」 |
-| **生命周期 P5 准入** | 计划已出，待用户认可 | A 失效同步钩子 / B bnd has_child → 复测 → 灰度；SPIDER `PRD/res-lifecycle/p5-plan-2026-09-12.md` | `current/open-questions.md` |
+| 生命周期 P4 全量 bootstrap | ✅ 已完成 | 遗留 5 提交已随 09-12 网关重部生效；2 个 `:cur` 半区窗口待决定 | 归档遗留待办 / archive「生命周期 P4」 |
+| **生命周期 P5 准入** | 阶段 A/B **已上线**，24 h 观察中 | 观察 → 阶段 C 复测 → A' 存量分批 → 阶段 D 切流 | 本文件「进行中」 |
 | 09-08 并行四任务 | 部分已上线 | 文档爬虫 FC 自动化卡 6 项人工事项 | 本文件「2026-09-08 并行四任务」 |
 | 配置 v2/OAuth/配置拆代码 | ✅ 已上线 | `LOCAL_CONFIG_PATH` 回落待修；凭据轮换待决策 | 归档遗留待办 |
 | 资源生命周期改造 P0~P3 | ✅ 已上线 | es_endpoint / `resource_valid` 索引缺失等 | 归档遗留待办 |
@@ -37,10 +37,7 @@ related:
 
 ## 2026-09-08 并行四任务（监控增强 + 文档爬虫上云）—— 部分已上线，文档爬虫 FC 自动化待人工
 
-四件事：①告警加入后台+附日志、队列失败率告警按队列可配（默认 10min/50%→1h/60%）；②代理池情况加入 admin 后台；③资源链接爬取路径追踪（SLS 拼时间线）；④文档爬虫 FC 自动化（新 Chrome FC 实例 + doc-crawler 进程 + 移植金山文档油猴脚本）。
-
-- 五仓库均已 push：SPIDER `d6a4d54` / COMMON `5e5cdc1` / NC-JS `ab7753d` / API `9518bac` / userscripts `fdc884a`。
-- **①②③已随 2026-09-09 网关重启（`883daeb`）一并上线**：告警后台、代理池监控 `proxy_admin`、链接追踪均生效；`spiderAdmin` 新页面已发布；爬虫容器与 `proxy` 服务均已重部，埋点数据正常。
+①告警后台/队列告警可配 ②代理池后台 ③链接路径追踪 **已随 09-09 网关重启上线**（五仓库均已 push，详情见 session）。
 - **④文档爬虫 FC 自动化仍未落地**，卡在以下人工事项：
   - [ ] SLS 给 `link_key` 建索引后打开 `services.queue_admin.sls.link_key_indexed`（缺省 false）
   - [ ] Tampermonkey 扩展包上传 OSS（`fc-chrome/extensions/tampermonkey.zip`），拿到实物后复核 `fc-chrome/tampermonkey.go` DOM 选择器（未验证）
@@ -49,12 +46,11 @@ related:
   - [ ] 云端油猴脚本上传：userscripts `pnpm build:cloud && pnpm upload:cloud`
   - [ ] doc-crawler 部署主机待确认（`deploy.sh` 暂填 `osec-jenkins` 占位）
   - [ ] PC 端油猴调度器是否下线，由用户决定（可与 doc-crawler 并存）
-- 已知取舍：代理池总览全场景去重 IP/主机数恒为空；`proxyAdminRpc` 无前端 mock；`AlertRulesResponse.global.backlogThreshold` 未暴露 `resourcePreCheck` 专用缺省；无生产凭据多项未联网验证。
 - 详情：`sessions/2026/2026-09-08-并行四任务监控与文档爬虫上云.md`；`agent-tasks/2026-09-08-monitoring-and-doc-fc/`；`lessons/failure-旁路能力初始化拖垮主流程.md`。
 
 ## 归档遗留待办（原分散在已归档任务块中，仍未完结）
 
-- [ ] **P1 生命周期 P4 收尾**：5 个未部署提交（`3b8cc13`…`93f4d38`，`git log` 可查）待下次网关重启生效；2 个 `:cur` 半区窗口（父在 long、子在 cur，21,451 子）是否处理待用户决定；P6 关双写前须补 v3 detail/fileCtx（结构兼容，`knowledge/api-v3-detail-filectx兼容性分析.md`）；P5 前置未通过见总表。
+- [ ] **P1 生命周期 P4 收尾**：2 个 `:cur` 半区窗口（父在 long、子在 cur，21,451 子）是否处理待用户决定；P6 关双写前须补 v3 detail/fileCtx（结构兼容，`knowledge/api-v3-detail-filectx兼容性分析.md`）；P5 进度见「进行中」。
 - [ ] **P2 排期**：巡检守护提升到 `runBootstrapJob` 级 + heap 阈值可配（0.5~1 人日）；rollout §9 待补写。
 - [ ] **P2 代码待修（配置 v2）**：`LOCAL_CONFIG_PATH` 缺省未回落宿主机 `config.yaml`；删宿主机 `config.yaml` 的时机（回滚现依赖 `spider.old`）留用户决定。
 - [ ] **P2 安全（凭据轮换，待决策）**：`devops_online_env.go` 硬编码 OSS AK/SK 与 ES 口令；`pan_download`/`bnd_download` 测试文件硬编码真实 RefreshToken/BDUSS（建议迁 `.hide.json`）；ali_log ak/sk 曾明文进会话记录，建议评估轮换。
@@ -133,4 +129,6 @@ related:
 
 ## 进行中
 
-- 无
+- [ ] **P0 生命周期 P5 准入**（阶段 A/B 已上线 09-12 16:34）——决策 `decisions/decision-2026-09-12-P5切v3准入门槛与失效同步.md`；上线/观察项 SPIDER rollout §14；简报 `agent-tasks/2026-09-12-p5-stage-ab/`。
+  - 下一步按序：① 09-13 ≥16:34 跑 rollout §14.3 观察项；② 阶段 C 复测 p5-plan §4（G1~G6）；③ A' 存量 probe 64 表 → `lc-check -trigger-check` 每天 ≤20 万；④ 阶段 D 调用方切 `searchType=match` → 3 天 → 全量。
+  - 待核：上线窗口 `clearExpire` 0 任务、jenkins `url_check` 6 h 全零、resdb ssh 超时——旧链路失效发现是否还在跑；若否，D1 钩子无流量，G3 靠 API v2 路径 + A' 存量。

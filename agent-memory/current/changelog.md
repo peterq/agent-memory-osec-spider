@@ -3,10 +3,10 @@ title: 项目变更记录（总览归档）
 type: knowledge
 status: active
 created_at: 2026-09-12T11:30:00+08:00
-updated_at: 2026-09-12T16:30:00+08:00
+updated_at: 2026-09-12T16:50:00+08:00
 priority: low
 keywords: [变更记录, changelog, 历史, 总览归档, 生命周期改造, 队列v2, queue-admin, 站点接入, 配置v2, GitHub OAuth]
-summary: 按日期倒序的一句话变更流水，每条指向对应的 session/decision 文件；只用来回答"某件事是哪天做的、细节在哪个文件"
+summary: 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪"
 load: rarely
 related:
   - agent-memory/00-overview.md
@@ -20,6 +20,7 @@ related:
 
 ## 2026-09-12
 
+- 16:34 **P5 阶段 A/B 上线**：D1 旧链路失效同步钩子（网关双机）、API v2 valid 上报 lc + bnd 去 `has_child`（热态 bnd v3 反超 v2 2×）、A' 存量复检工具链；res2 网关重部遇 ssh 超时半完成态，新增 `deploy.sh redeployHost` 补救。→ `decisions/decision-2026-09-12-P5切v3准入门槛与失效同步.md`、`sessions/2026/2026-09-12-P5阶段AB上线.md`、SPIDER rollout §14
 - 16:30 输出切 v3 前的 P5 准入计划（A 失效同步钩子 / B bnd 慢查询 / C 复测门槛 / D 灰度与回滚条件，最短 9 天）。→ SPIDER `PRD/res-lifecycle/p5-plan-2026-09-12.md`（`f42e0f2`）
 - 15:30 P5 前置对拍跑完，**未通过**（首页重合度 84%、语料级 91.7%；4% 坑位是 legacy 已删 lc 未删的死链，其余是 match_phrase_prefix 分片展开彩票），待用户决策 D1~D4。→ `lessons/failure-v3首页重合度受前缀展开分片彩票影响.md`、`current/open-questions.md`、SPIDER rollout §13
 - 15:00 用户确认弃用 report/likes/dislikes/addViews 等 update ES 文档的接口，不做 v3；v3 detail/fileCtx 结构兼容性核对完成。→ `decisions/decision-2026-09-12-弃用文档更新类接口.md`、`knowledge/api-v3-detail-filectx兼容性分析.md`
