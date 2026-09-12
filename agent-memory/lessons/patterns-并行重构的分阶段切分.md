@@ -3,10 +3,13 @@ title: 可迁移模式：跨包重构如何切成能并行的子 Agent 任务
 type: lesson
 status: active
 created_at: 2026-09-04T12:40:00+08:00
-updated_at: 2026-09-04T12:40:00+08:00
+updated_at: 2026-09-12T12:10:00+08:00
 priority: high
 keywords: [并行重构, 子agent, worktree, 编译依赖, 三阶段, Phase0, 收尾清理, 队列v2]
 summary: 多个包同时改造且互相引用时，用"主会话先做共享契约 → 子 Agent 只加不删 → 单独清理 Agent 收尾"三阶段避免编译互锁
+questions:
+  - 多个包同时重构，子 Agent 怎么避免编译互锁
+  - Phase 0/1/2 怎么切分任务
 load: on-demand
 related:
   - agent-memory/procedures/workflow-并行开发多站点爬虫.md
@@ -60,3 +63,8 @@ related:
 
 适用于"同一仓库多包同时改、包间有引用"的重构；纯新增（多站点接入）用
 `procedures/workflow-并行开发多站点爬虫.md` 即可，不需要 Phase 2。
+
+## 代码位置
+
+- `osec-spider-go/services/spider-common/spider-common.go`（`CommitResLink`，爬虫提交链接的统一入口）
+- `queue_task.StartQueueRemoteConsumer`（关键词/资源消费的统一封装）

@@ -3,10 +3,12 @@ title: 当前风险与阻塞
 type: risk
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-11T17:50:00+08:00
+updated_at: 2026-09-12T12:10:00+08:00
 priority: high
-keywords: [风险, 阻塞, 密钥, 生产, 测试, 依赖升级]
+keywords: [风险, 阻塞, 密钥, AK/SK, 生产, 测试, 依赖升级, 队列v2, 无回滚, 上线收尾]
 summary: 影响开发与运维安全的已知风险点
+questions:
+  - 密钥、安全相关的风险在哪看
 load: on-demand
 related:
   - agent-memory/current/tasks.md
@@ -41,6 +43,7 @@ related:
 AWS S3 凭证、Elasticsearch 账号密码、MySQL/Redis 口令，且已进版本库。
 **影响**：任何粘贴、日志输出、记忆写入都可能扩散泄露。
 **处理**：只引用路径不引用值；如需展示配置结构，手工脱敏。
+**这是硬性禁令**（禁止写入记忆文件/任务简报/对外输出），同条列在 `02-user-preferences.md`「已确认的硬性要求」第 10 条。
 
 ## R3 存在直连生产环境的测试文件
 
@@ -67,3 +70,11 @@ SPIDER `services/devops/` 下按时间分了 `2408/2409/2511/26/...` 多个目�
 ## R6 STORAGE 依赖版本被 `go mod tidy` 顺带升级（新增）
 
 见 `current/tasks.md` P1。编译通过不代表运行时行为不变，下次上线前需回归。
+
+## R8 队列 v2 上线收尾无回滚路径
+
+- [事实] 队列 v2 的网关与全部消费者已上线在跑，剩余收尾是**人工**动作：删 jenkins 旧容器、
+  杀 2 个 2023 年的裸进程、复核、旧队列存量迁移，脚本 `osec-spider-go/scripts/queue_v2_cutover_finish.sh`。
+- [风险] **这批收尾动作没有回滚路径**：删掉/杀掉的旧消费者无法原样恢复，存量迁移也不可逆。
+  动手前必须确认新链路已稳定消费，并逐步执行、每步留观察窗口。
+- 状态与清单以 `current/tasks.md`「队列 v2 上线收尾」为准；方案见 `decisions/decision-2026-09-04-队列v2统一走网关.md`。

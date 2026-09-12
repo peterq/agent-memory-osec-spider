@@ -3,10 +3,13 @@ title: STORAGE 存储服务结构
 type: knowledge
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-02T10:50:00+08:00
+updated_at: 2026-09-12T12:10:00+08:00
 priority: high
 keywords: [STORAGE, enfi-resource-storage, 入库, Elasticsearch, 索引, save-worker, version]
 summary: enfi-resource-storage 的三个子命令、写入流程、ES 索引名与幂等策略
+questions:
+  - 我要改入库逻辑，查资源为什么没写进去
+  - ES 索引幂等/version 判重是怎么回事
 load: on-demand
 related:
   - agent-memory/knowledge/architecture-系统总览.md

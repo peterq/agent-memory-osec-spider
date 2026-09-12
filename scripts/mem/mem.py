@@ -2,12 +2,13 @@
 """agent-memory 加载/检索/体检工具。核心功能零依赖; 装 jieba/fastembed 后检索质量更好(见 requirements.txt)。
 
 子命令:
-  boot   [--budget N]        会话启动包: 从全部文件的 Front Matter 生成紧凑目录, 替代通读 01-index.md
+  boot                       会话启动包: 从全部文件的 Front Matter 生成紧凑目录(含 questions)
+  index --write              把启动包写成 agent-memory/01-index.md(索引是生成物, 禁止手改)
   outline <file>...          输出文件章节结构(标题/起止行/字数), 用于决定只读哪一段
   body <file> [--section 标题|--lines a:b] [--no-fm]   只输出正文(默认剥离 Front Matter), 可选只取某章节
   search <关键词>... [-k N] [--dir lessons,...]        词法(jieba+BM25)+语义(bge-small-zh)融合检索, 未装依赖自动退化
   embed                      预热/刷新 embedding 缓存(search 也会自动增量刷新)
-  lint                       体检: 元数据缺失/超长文件/悬空引用/updated_at 与 git 不符/长期未更新
+  lint                       体检: 元数据缺失/超长/悬空引用/updated_at 落后 git/valid_until 过期/索引过期
   stat                       统计各目录字数、始终加载体积等
   dup                        跨文件重复段落检测(量化 overview/tasks/sessions 之间的复制粘贴)
   recent [--days N]          用 git 历史列出最近变更, 替代手工维护的"最近更新"
@@ -161,22 +162,29 @@ def _date(fm: dict, key: str) -> str:
 
 # ---------- boot ----------
 
-def cmd_boot(a):
-    docs = load_all()
+def _questions(fm: dict) -> list[str]:
+    q = fm.get("questions", [])
+    return q if isinstance(q, list) else [str(q)]
+
+
+def render_boot(docs: list[Doc], kw: int = 3, sessions: bool = False, recent_sessions: int = 3, with_questions: bool = True,
+                summary_max: int = 90, max_questions: int = 5) -> str:
+    """评测(2026-09-12): 紧凑版(关键词 3 个、summary 截断)比全量更准, 噪声更少。archive/ 只给计数不列条目。"""
     by_dir: dict[str, list[Doc]] = defaultdict(list)
     for d in docs:
         parts = d.path.relative_to(MEM).parts
         by_dir[parts[0] if len(parts) > 1 else ""].append(d)
-
-    out = []
-    out.append(f"# agent-memory 启动包 (自动生成, {len(docs)} 文件) — 格式: 路径 | 优先级 | 更新 | summary | 关键词")
+    out = [f"# agent-memory 启动包（脚本生成, {len(docs)} 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题"]
     for top in DIR_ORDER + sorted(set(by_dir) - set(DIR_ORDER)):
         if top not in by_dir:
             continue
         items = by_dir[top]
-        if top == "sessions" and not a.sessions:
-            recent = sorted(items, key=lambda d: _date(d.fm, "updated_at"), reverse=True)[: a.recent_sessions]
-            out.append(f"\n## sessions/ ({len(items)} 个, 仅列最近 {len(recent)} 个; 全量: mem.py boot --sessions)")
+        if top == "archive":
+            out.append(f"\n## archive/ ({len(items)} 个, 已归档不列出; 需要时 mem.py search --dir archive)")
+            continue
+        if top == "sessions" and not sessions:
+            recent = sorted(items, key=lambda d: _date(d.fm, "updated_at"), reverse=True)[:recent_sessions]
+            out.append(f"\n## sessions/ ({len(items)} 个, 仅列最近 {len(recent)} 个; 其余用 mem.py search 找)")
             items = recent
         else:
             out.append(f"\n## {top + '/' if top else '根目录'} ({len(items)})")
@@ -184,11 +192,56 @@ def cmd_boot(a):
         for d in items:
             st = d.fm.get("status", "")
             flag = "" if st == "active" else f" [{st}]"
-            kws = "、".join(_kw(d.fm)[: a.kw])
-            out.append(f"- {d.mrel}{flag} | {str(d.fm.get('priority','?'))[:4]} | {_date(d.fm,'updated_at')} | {d.fm.get('summary','')} | {kws}")
-    text = "\n".join(out)
+            kws = "、".join(_kw(d.fm)[:kw])
+            sm = str(d.fm.get("summary", ""))
+            if len(sm) > summary_max:
+                sm = sm[:summary_max - 1] + "…"
+            line = f"- {d.mrel}{flag} | {str(d.fm.get('priority','?'))[:4]} | {_date(d.fm,'updated_at')} | {sm} | {kws}"
+            qs = _questions(d.fm) if with_questions else []
+            if qs:
+                line += "\n  ? " + " / ".join(qs[:max_questions])
+            out.append(line)
+    return "\n".join(out)
+
+
+def cmd_boot(a):
+    docs = load_all()
+    text = render_boot(docs, kw=a.kw, sessions=a.sessions, recent_sessions=a.recent_sessions, with_questions=not a.no_questions)
     print(text)
-    print(f"\n<!-- 启动包 {len(text)} 字; 检索: mem.py search <关键词>; 看结构: mem.py outline <file>; 读正文: mem.py body <file> [--section 标题] -->")
+    print(f"\n<!-- 启动包 {len(text)} 字; 检索: mem.py search <问题>; 看结构: mem.py outline <file>; 读正文: mem.py body <file> --section <标题> -->")
+
+
+INDEX_HEADER = """---
+title: 记忆索引（脚本生成）
+type: index
+status: active
+created_at: 2026-09-02T10:55:00+08:00
+updated_at: {now}
+priority: critical
+keywords: [索引, 导航, 启动包, mem.py]
+summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
+load: always
+---
+
+# 记忆索引（脚本生成，勿手改）
+
+本文件 = `scripts/mem/mem.py boot --kw {kw}` 的输出快照。找文件先看这里；找不到就 `mem.py search <自然语言问题>`；
+定位到文件后 `mem.py outline <file>` 看章节，再 `mem.py body <file> --section <标题>` 只读需要的一段。
+维护方式：改目标文件 Front Matter（summary / keywords / questions），然后运行 `scripts/mem/mem.py index --write`。
+
+"""
+
+
+def cmd_index(a):
+    docs = [d for d in load_all() if d.mrel != "01-index.md"]
+    now = datetime.now(timezone(timedelta(hours=8))).replace(microsecond=0).isoformat()
+    text = INDEX_HEADER.format(now=now, kw=a.kw) + render_boot(docs, kw=a.kw, sessions=False, recent_sessions=a.recent_sessions) + "\n"
+    if a.write:
+        (MEM / "01-index.md").write_text(text, encoding="utf-8")
+        print(f"已写入 agent-memory/01-index.md ({len(text)} 字, {len(docs)} 文件)")
+    else:
+        print(text)
+
 
 # ---------- outline / body ----------
 
@@ -552,10 +605,11 @@ def cmd_lint(a):
         missing = [k for k in REQUIRED if k not in d.fm or d.fm[k] in ("", [])]
         if missing:
             rep("元数据缺失", d, ",".join(missing))
-        if d.chars > a.max_chars:
-            rep("超长", d, f"{d.chars} 字 > {a.max_chars}, 建议拆分/归档")
-        if d.fm.get("load") == "always" and d.chars > a.always_max:
-            rep("常驻超长", d, f"{d.chars} 字 > {a.always_max}, 直接吃启动 token")
+        if d.chars > a.max_chars and d.fm.get("status") != "archived" and not d.mrel.startswith("archive/") and d.mrel != "01-index.md":
+            rep("超长", d, f"{d.chars} 字 > {a.max_chars}, 建议拆分/归档")  # archive/ 永不整读, 豁免
+        always_limit = a.index_max if d.mrel == "01-index.md" else a.always_max
+        if d.fm.get("load") == "always" and d.chars > always_limit:
+            rep("常驻超长", d, f"{d.chars} 字 > {always_limit}, 直接吃启动 token")
         # related 与正文引用的悬空检查
         rels = d.fm.get("related", [])
         refs = set(r.replace("agent-memory/", "") for r in (rels if isinstance(rels, list) else []))
@@ -571,6 +625,14 @@ def cmd_lint(a):
             u = _date(d.fm, "updated_at")
             if g and u and g > u:
                 rep("updated_at 落后于 git", d, f"fm={u} git={g}")
+        # 有保质期的结论
+        vu = str(d.fm.get("valid_until", "")).strip()
+        if vu:
+            try:
+                if datetime.fromisoformat(vu[:10]).date() < now.date():
+                    rep("已过保质期", d, f"valid_until={vu[:10]}, 需重验或标记 deprecated")
+            except Exception:
+                rep("valid_until 非日期", d, vu)
         # 长期未更新的 current/ 文件
         try:
             u = datetime.fromisoformat(str(d.fm.get("updated_at")))
@@ -578,6 +640,13 @@ def cmd_lint(a):
                 rep("current 陈旧", d, f"{(now - u).days} 天未更新")
         except Exception:
             rep("updated_at 非 ISO", d, str(d.fm.get("updated_at")))
+    # 01-index.md 应是生成物: 比较正文是否与当前 boot 一致
+    idx = next((d for d in docs if d.mrel == "01-index.md"), None)
+    if idx is not None:
+        expect = render_boot([d for d in docs if d.mrel != "01-index.md"], kw=a.index_kw, sessions=False, recent_sessions=3)
+        if expect.strip() not in "".join(idx.lines):
+            problems += 1
+            print("[索引过期] 01-index.md 与当前 Front Matter 不一致, 运行 scripts/mem/mem.py index --write")
     print(f"\n共 {problems} 条问题, {len(docs)} 个文件")
 
 
@@ -653,8 +722,10 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sp = ap.add_subparsers(dest="cmd", required=True)
     p = sp.add_parser("boot"); p.add_argument("--sessions", action="store_true", help="列出全部 sessions")
-    p.add_argument("--recent-sessions", type=int, default=3); p.add_argument("--kw", type=int, default=6, help="每文件最多列几个关键词")
-    p.set_defaults(fn=cmd_boot)
+    p.add_argument("--recent-sessions", type=int, default=3); p.add_argument("--kw", type=int, default=3, help="每文件最多列几个关键词(评测: 3 比 6 更准)")
+    p.add_argument("--no-questions", action="store_true"); p.set_defaults(fn=cmd_boot)
+    p = sp.add_parser("index"); p.add_argument("--write", action="store_true", help="写入 agent-memory/01-index.md, 否则打印")
+    p.add_argument("--kw", type=int, default=3); p.add_argument("--recent-sessions", type=int, default=3); p.set_defaults(fn=cmd_index)
     p = sp.add_parser("outline"); p.add_argument("files", nargs="+"); p.set_defaults(fn=cmd_outline)
     p = sp.add_parser("body"); p.add_argument("file"); p.add_argument("--section"); p.add_argument("--lines", help="a:b 1-based 闭区间")
     p.add_argument("--no-fm", action="store_true", default=True); p.add_argument("--with-fm", dest="no_fm", action="store_false")
@@ -666,8 +737,8 @@ def main():
     p.add_argument("--min-sim", type=float, default=0.35, help="语义相似度阈值, 低于此不计入")
     p.add_argument("-q", "--quiet", action="store_true")
     p.set_defaults(fn=cmd_search)
-    p = sp.add_parser("lint"); p.add_argument("--max-chars", type=int, default=8000); p.add_argument("--always-max", type=int, default=4000)
-    p.add_argument("--stale-days", type=int, default=14); p.add_argument("--no-git", dest="git", action="store_false"); p.set_defaults(fn=cmd_lint)
+    p = sp.add_parser("lint"); p.add_argument("--max-chars", type=int, default=8000); p.add_argument("--always-max", type=int, default=5500); p.add_argument("--index-max", type=int, default=17000, help="01-index.md(生成物)的上限, 约 108 文件 × 150 字")
+    p.add_argument("--stale-days", type=int, default=14); p.add_argument("--index-kw", type=int, default=3); p.add_argument("--no-git", dest="git", action="store_false"); p.set_defaults(fn=cmd_lint)
     p = sp.add_parser("stat"); p.set_defaults(fn=cmd_stat)
     p = sp.add_parser("embed"); p.set_defaults(fn=cmd_embed)
     p = sp.add_parser("dup"); p.add_argument("--min-len", type=int, default=30); p.add_argument("-k", type=int, default=15); p.set_defaults(fn=cmd_dup)

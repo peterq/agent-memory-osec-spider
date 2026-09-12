@@ -3,10 +3,12 @@ title: 未解决的问题
 type: question
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T02:40:00+08:00
+updated_at: 2026-09-12T12:10:00+08:00
 priority: low
 keywords: [疑问, 待确认, 用户确认, 生命周期, lifecycle, Q1~Q6]
 summary: 当前没有待确认问题（生命周期 Q1~Q6 已于 2026-09-05 确认）
+questions:
+  - 当前有哪些待用户确认的问题
 load: on-demand
 related:
   - agent-memory/current/tasks.md

@@ -3,10 +3,14 @@ title: gRPC 协议契约（COMMON/rpc）
 type: knowledge
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-02T10:50:00+08:00
+updated_at: 2026-09-12T12:10:00+08:00
 priority: high
 keywords: [proto, gRPC, StorageRpc, SpiderRpc, res_scheduler, doc_scheduler, download_scheduler, gateway_v2, Makefile]
 summary: COMMON 仓库中各 proto 服务的方法清单、核心消息结构与代码生成流程
+questions:
+  - 我要改 gRPC 协议 / proto，改完怎么生成
+  - 某个 rpc 方法的入参/出参消息结构是什么
+  - proto 改完要同步哪些下游仓库
 load: on-demand
 related:
   - agent-memory/knowledge/architecture-系统总览.md

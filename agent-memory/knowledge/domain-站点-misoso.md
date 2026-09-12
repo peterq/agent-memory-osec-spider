@@ -3,10 +3,13 @@ title: 站点知识：www.misoso.cc（影盘社，实抓 www.melost.cn）
 type: knowledge
 status: active
 created_at: 2026-09-03T18:10:00+08:00
-updated_at: 2026-09-03T18:10:00+08:00
+updated_at: 2026-09-12T12:10:00+08:00
 priority: medium
 keywords: [misoso, melost.cn, 影盘社, 域名不一致, sitemap陷阱, 越界文件, 假200, hunhepan, ReMan, bbs_misoso]
 summary: misoso.cc 实际抓取域名是 melost.cn；sitemap 有"过期快照"与"越界文件假200"两个陷阱；爬虫已于 2026-09-03 实现为 bbs_misoso（626万条规模，未实跑全量）
+questions:
+  - misoso / melost.cn 域名不一致是怎么回事
+  - misoso sitemap 有什么陷阱
 load: on-demand
 related:
   - agent-memory/procedures/workflow-新站点调研.md

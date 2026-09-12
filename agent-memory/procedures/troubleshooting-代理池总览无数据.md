@@ -3,10 +3,15 @@ title: 排查：代理池总览/场景明细无数据
 type: procedure
 status: active
 created_at: 2026-09-10T09:30:00+08:00
-updated_at: 2026-09-10T10:10:00+08:00
+updated_at: 2026-09-12T12:10:00+08:00
 priority: medium
-keywords: [proxy-admin-check, 代理池总览, proxy_admin, proxy-monitor, proxyMon, dataSource, 无数据, 全是0, 上报侧未部署, 容器创建时间]
+keywords: [proxy-admin-check, 代理池总览, proxy_admin, proxy-monitor, proxyMon, dataSource, 无数据, 全是0, 上报侧未部署, 容器创建时间, Scene, ClassifyResult]
 summary: 后台代理池页全 0/— 时的三步定位（网关 dataSource → 上报侧容器创建时间 → 日志）与直连网关 RPC 的巡检工具 proxy-admin-check；09-10 结论上报侧未重部，已全部重部解决
+questions:
+  - 代理池监控的 Scene 是什么，怎么加新消费端
+  - IP 不可用和被站点封禁怎么区分
+  - 代理池推送 IP 数在哪看
+  - 代理池总览/场景明细全 0 怎么排查
 load: on-demand
 related:
   - agent-memory/lessons/failure-旁路能力初始化拖垮主流程.md
@@ -62,3 +67,9 @@ cd ~/dev/projects/1s/osec-spider-go && go run ./tools/proxy-admin-check -addr 12
 
 - 扫 redis `proxyMon:*` 需要密码，auto 模式分类器会拦截"从配置文件取密码拼进 ssh 命令"；
   用网关日志的 `dataSource` + 全 -1/0 的返回即可等价判断"库里无 key"，不必直连 redis。
+
+## 代码位置
+
+- `illuminate/proxy-client/{hook.go,classify.go}`（只暴露 hook，不含上报逻辑；加新消费端只需在 `ProxyClient{}` 填 `Scene:`）
+- `illuminate/proxy-monitor/`（独立包，消费端 `Init` 注册；分钟桶 + 延迟直方图 + HLL 去重）
+- 契约 COMMON `rpc/spider/proxy_admin_rpc/`

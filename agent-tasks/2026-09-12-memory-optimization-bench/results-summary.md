@@ -50,3 +50,27 @@ RRF 权重 {1.0,1.3,1.6,2.0}、K {10,30,60}、min_sim、切块 {300,600,1200}、
 2. 01-index.md 改为 `mem.py boot --kw 3` 的生成物；原「关键词索引」的问句迁到各目标文件 `questions:` 字段（boot 与 search 同时受益）。
 3. 瘦身前先做三件事：回写 6 条总览独有事实、修 architecture-spider.md 等文件的 Front Matter、把被路由到 sessions 的内容提炼进 knowledge。
 4. `current/tasks.md` 与总览同轮瘦身；`lint` 进会话收尾清单。
+
+## 执行记录（用户 2026-09-12 拍板「按方案执行」，口径 5,500 字符）
+
+| 步骤 | 结果 |
+|---|---|
+| AGENTS.md 协议 | 启动包三层加载、01-index.md 为生成物禁止手改、Front Matter 增 `questions`/`valid_until`、长度按字符数由 lint 判定、sessions 一律 rarely、会话收尾固定 `index --write` + `lint` |
+| SessionStart hook | `.claude/settings.json` 自动注入 `mem.py boot` |
+| 总览（任务 60） | 27,124 → 4,804 字符；回写 9 条总览独有事实；新增 `current/changelog.md` 5,185 字符 |
+| tasks.md（任务 70） | 58,375 → 7,929 字符；10 块归档到 `archive/2026/tasks-2026-09-已完成.md` |
+| 超长拆分（任务 80） | 巡检 18k→6.9k、nc-js 16k→6.4k（拆 3 文件）、部署 12k→6.4k、spider 8.9k→6.9k；res_lc 会话提炼进 api 与 nc-js 文件 |
+| haisou 文件（主控） | 8.9k→6.0k；代理池「住宅秒拨池」事实迁入 `success-本地代理池打通.md`，代码记录归档 |
+| sessions | 25 个文件改 `load: rarely` |
+| questions 迁移（任务 90） | 见 results-90.md |
+| questions 迁移（任务 90） | 45 小节 → 48 文件 `questions:`，10 处「代码位置」；2 主题待提炼（TraceResLink、FC Chrome/doc_crawler） |
+
+### 执行后复测（gold v2：期望文件已按拆分扩展）
+
+| 指标 | 执行前 | 执行后 |
+|---|---:|---:|
+| 常驻合计 | 53,639 字符 | 23,765 字符（overview 4,804 + index 16,163 + 03 2,798） |
+| LLM 看索引选文件 Hit@1 / Hit@3 | 手工索引 24.7k：100% / 100% | 生成索引 16.2k：**100% / 100%** |
+| `mem.py search` hybrid Hit@1 / Hit@3 | 68% / 85% | 66% / 89% |
+| `mem.py lint` | 14 条 | 0 条 |
+| > 8,000 字符非归档文件 | 8 | 0 |

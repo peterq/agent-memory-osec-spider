@@ -3,7 +3,7 @@ title: 成功经验：爬虫保活(keepalive)只在 CommitResLink 成功时续�
 type: lesson
 status: active
 created_at: 2026-09-03T21:30:00+08:00
-updated_at: 2026-09-03T22:10:00+08:00
+updated_at: 2026-09-12T12:10:00+08:00
 priority: high
 keywords:
   - keepalive
@@ -14,6 +14,9 @@ keywords:
   - nil channel
   - 定时器竞态
 summary: 保活续期的唯一判据是"有新链接真正提交成功"，轮次成功不算；顺带修掉 keepalive 包读 nil channel 挂死的隐患
+questions:
+  - 保活 keepalive 该在哪调
+  - 爬虫空跑为什么不告警
 load: on-demand
 related:
   - agent-memory/knowledge/architecture-spider.md
@@ -95,3 +98,7 @@ ticker 里算 `time.Since(lastAlive) - duration` 判断是否超时」。
 ## 可迁移范围
 
 所有新增站点爬虫；写新爬虫时直接照上面的代码形状写。
+
+## 代码位置
+
+- `osec-spider-go/illuminate/keepalive/keepalive.go`（各爬虫提交成功处调用）

@@ -3,10 +3,13 @@ title: 术语与命名约定
 type: knowledge
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-02T11:06:00+08:00
+updated_at: 2026-09-12T12:10:00+08:00
 priority: medium
 keywords: [术语, bnd, valid, version, client, enfi, osec, 命名]
 summary: 代码里高频出现的缩写、字段含义与命名来历，避免误读
+questions:
+  - bnd / ali-share / quark / xunleipan 是什么，字段什么意思
+  - 任务队列 seq / 永久失败是什么含义
 load: on-demand
 related:
   - agent-memory/knowledge/api-rpc契约.md

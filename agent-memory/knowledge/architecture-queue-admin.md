@@ -3,10 +3,16 @@ title: queue-admin 队列监控管理系统
 type: knowledge
 status: active
 created_at: 2026-09-04T18:10:00+08:00
-updated_at: 2026-09-08T16:00:00+08:00
+updated_at: 2026-09-12T12:10:00+08:00
 priority: high
-keywords: [queue-admin, 队列监控, QueueAdminRpc, detailSchema, 7542, 抢主锁, dlock, 巡检, 告警]
+keywords: [queue-admin, 队列监控, QueueAdminRpc, detailSchema, 7542, 抢主锁, dlock, 巡检, 告警, fail_window, link_key]
 summary: 队列 v2 的监控管理系统：已并入网关进程的架构、端口、schema 解耦机制、抢主锁、巡检工具与已知数据缺口
+questions:
+  - 队列告警怎么配，失败率窗口和阈值是多少
+  - 告警历史在哪看，告警为什么没发
+  - queue-admin 队列出问题了怎么看，任务详情 schema 哪来的
+  - 队列监控端口连不上怎么办
+  - 一条链接为什么没入库，怎么看它的完整时间线
 load: on-demand
 related:
   - agent-memory/knowledge/architecture-spider.md
@@ -77,3 +83,11 @@ related:
 - 资源队列 `queue_push_total` / `QueueStats.push` 无数据（网关入队不打结构化日志）
 - 总览 `consumerHosts` 在生产恒为 0（网关 Pop 传 nil meta，不写 consumeHost）
 - waiting 常态为 0（消费者阻塞式秒取），积压类指标只在真出问题时才非零——这是正常现象
+
+## 代码位置
+
+- `services/gateway/queue_admin/alert_rules.go`（告警规则按队列覆盖，redis hash + 30s 热同步）
+- `services/gateway/queue_admin/alert_history.go`（告警历史落 redis，7 天/2000 条）
+- `services/gateway/queue_admin/alert_logs.go`（触发时抓 SLS 现场日志）
+- `services/gateway/queue_admin/fail_window.go`（失败率分钟桶；数据不足时宁可漏报不误报；默认阈值 1h/60%，2026-09-08 由 10min/50% 调整）
+- `services/gateway/queue_admin/trace.go`（链接追踪；前端「队列监控 → 链接追踪」页；各阶段日志带 link_key 顶层字段）

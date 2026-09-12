@@ -3,10 +3,13 @@ title: 工作流：常态化站点发现任务
 type: procedure
 status: active
 created_at: 2026-09-03T11:20:00+08:00
-updated_at: 2026-09-03T16:20:00+08:00
+updated_at: 2026-09-12T12:10:00+08:00
 priority: high
-keywords: [站点发现, site-discovery, 候选站点, 初筛, 有效率抽样, 工具集, 代理池, 10条每分钟]
-summary: 收到 `task site-discovery` / `启动网站发现任务` 时的入口与要点；正文流程在 site-discovery/README.md
+keywords: [站点发现, site-discovery, 候选站点, 初筛, 有效率抽样, 工具集, 代理池, 10条每分钟, PanSou, PanHub, harvest.py, 聚合项目]
+summary: 收到 `task site-discovery` / `启动网站发现任务` 时的入口、候选来源渠道与要点；正文流程在 site-discovery/README.md
+questions:
+  - 我要找新的资源站，怎么启动网站发现任务
+  - task site-discovery 是干什么的
 load: on-demand
 related:
   - agent-memory/procedures/workflow-新站点调研.md
@@ -43,6 +46,13 @@ related:
    每次任务要输出 5~10 个**新**站点。
 3. **所有探索过的站点都要记进 `history.md`，包括不满足的**，并写清卡在哪一条。
    这是这个常态化任务不重复劳动的唯一保障。
+
+## 候选从哪来：渠道性价比
+
+- **开源聚合项目的插件目录性价比最高**（`PanSou`、`PanHub` 这类网盘聚合搜索项目，插件/源站目录里
+  一次能薅出几十个域名），远高于搜索引擎逐个找。已固化成 `site-discovery/tools/harvest.py`，
+  直接跑脚本出候选清单，再进初筛。
+- 拿到候选先过 `history.md` 去重（见上一节第 2 条），别把已淘汰的域名再挖一遍。
 
 ## 与「新站点调研」的关系
 

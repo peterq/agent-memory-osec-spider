@@ -3,11 +3,11 @@ title: 会话摘要：kkpans 站点调研与 PRD 产出
 type: session
 status: active
 created_at: 2026-09-02T14:20:00+08:00
-updated_at: 2026-09-02T16:05:00+08:00
+updated_at: 2026-09-12T11:50:00+08:00
 priority: medium
 keywords: [kkpans, 站点调研, PRD, 公开API, 探测脚本]
 summary: 探索 www.kkpans.com 并产出爬虫需求文档，沉淀站点知识、调研工作流与对账脚本
-load: on-demand
+load: rarely
 related:
   - agent-memory/knowledge/domain-站点-kkpans.md
   - agent-memory/decisions/decision-2026-09-02-停止磁力资源采集.md

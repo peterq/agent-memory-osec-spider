@@ -3,11 +3,11 @@ title: 会话摘要：P4 全量 bootstrap 接管巡检（第 19~26 轮）与校�
 type: session
 status: active
 created_at: 2026-09-11T06:30:00+08:00
-updated_at: 2026-09-12T02:40:00+08:00
+updated_at: 2026-09-12T11:50:00+08:00
 priority: high
 keywords: [bootstrap, id=8, 巡检, 网关重部, 883daeb, verify 失败, repair, 双索引副本, shortfallSlices, rollout §12]
 summary: 09-09 12:00 接管：核实网关重部完成、派 8 轮 Opus 巡检直至作业 09-11 05:16 以 failed 终结、只读取证给出 repair→retry 恢复路径与 5 项用户决策、rollout §12 落盘
-load: on-demand
+load: rarely
 related:
   - agent-memory/current/tasks.md
   - agent-memory/lessons/patterns-长周期生产巡检.md

@@ -3,10 +3,13 @@ title: 项目背景与仓库职责
 type: context
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T07:00:00+08:00
+updated_at: 2026-09-12T12:10:00+08:00
 priority: critical
 keywords: [仓库, module, replace, 目录结构, 依赖, 职责, NC-JS, 前端]
 summary: 五个仓库（4 个 Go + 1 个前端）的磁盘路径、module 名、职责、相互依赖与 go.mod replace 现状
+questions:
+  - 各仓库的职责分别是什么
+  - go.mod replace 现状是怎样的
 load: on-demand
 related:
   - agent-memory/00-overview.md

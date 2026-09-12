@@ -3,7 +3,7 @@ title: 失败经验：握手回包附加字段被 RTC 传输层丢弃 / 失败�
 type: lesson
 status: active
 created_at: 2026-09-08T16:00:00+08:00
-updated_at: 2026-09-08T16:00:00+08:00
+updated_at: 2026-09-12T12:10:00+08:00
 priority: high
 keywords:
   - RtcTransport
@@ -15,6 +15,9 @@ keywords:
   - 自研RPC传输
   - 重试覆盖错误信息
 summary: 网关握手403回包里的needLogin/githubClientId等业务字段无法到达前端业务层, 因为统一取消路径把失败原因重建成了只剩code/message的protobuf类型; 另附一个同源问题——登录失败原因被下一次无code重试的通用403覆盖
+questions:
+  - 握手回包字段传不到前端是什么原因
+  - 登录失败原因被重试覆盖是怎么回事
 load: on-demand
 related:
   - agent-memory/decisions/decision-2026-09-08-后台登录改为github-oauth.md

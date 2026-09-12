@@ -3,7 +3,7 @@ title: 网盘链接有效性检测
 type: knowledge
 status: active
 created_at: 2026-09-02T16:35:00+08:00
-updated_at: 2026-09-03T11:55:00+08:00
+updated_at: 2026-09-12T12:10:00+08:00
 priority: high
 keywords:
   - 有效性检测
@@ -15,6 +15,10 @@ keywords:
   - 限流
   - 41031
 summary: 两套有效性检测实现的位置、各网盘的判定接口与业务码表、联网自测方法
+questions:
+  - 链接失效检测怎么做，validShareLink 返回 -1 是什么意思
+  - 夸克/阿里网盘判定不准怎么排查
+  - 误删资源怎么避免
 load: on-demand
 related:
   - agent-memory/knowledge/architecture-api.md

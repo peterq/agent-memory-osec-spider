@@ -3,10 +3,13 @@ title: 失败经验：proto3 零值与 -1「不过滤」哨兵冲突导致静默
 type: lesson
 status: active
 created_at: 2026-09-08T10:20:00+08:00
-updated_at: 2026-09-08T10:20:00+08:00
+updated_at: 2026-09-12T12:10:00+08:00
 priority: high
 keywords: [proto3, 零值, 哨兵, -1, 不过滤, 筛选参数, 契约设计, 静默空结果, lifecycle, ListResources]
 summary: proto3 标量字段不传时零值是 0，若 0 恰好是合法业务值、而"不过滤"哨兵定成 -1，前端漏传就会静默查错数据且不报错
+questions:
+  - 筛选参数传了 0 却查不出数据
+  - proto3 不传字段被当成过滤条件是什么坑
 load: on-demand
 related:
   - agent-memory/knowledge/api-rpc契约.md

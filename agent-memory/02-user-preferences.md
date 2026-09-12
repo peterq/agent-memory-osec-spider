@@ -3,10 +3,10 @@ title: 用户偏好与协作约定
 type: preference
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T07:20:00+08:00
+updated_at: 2026-09-12T11:25:00+08:00
 priority: high
-keywords: [偏好, 中文, 脚本沉淀, token, 记忆维护, 子agent, sonnet, 模型选择, 任务简报, agent-tasks, harness记忆, 独立仓库]
-summary: 用户对语言、脚本沉淀、记忆维护和 thinking 长度的明确要求
+keywords: [偏好, 中文, 脚本沉淀, token, 记忆维护, 子agent, sonnet, 模型选择, 任务简报, agent-tasks, harness记忆, 独立仓库, 敏感信息, AK/SK, 口令, 脱敏]
+summary: 用户对语言、脚本沉淀、记忆维护、thinking 长度与敏感信息禁写的明确要求
 load: always
 related:
   - agent-memory/00-overview.md
@@ -32,6 +32,9 @@ related:
    上线类任务 push 是第一步。被安全策略拦截时明确告知哪些没推。
 9. **[用户确认 2026-09-12] 禁止使用 harness 记忆**（Claude Code 自带的 `~/.claude/projects/*/memory/`），本项目一切记忆只写 `agent-memory/`。
    原先 harness 记忆里的偏好（sonnet 子 Agent、commit+push、任务简报落盘、配置拆代码、部署放行规则）均已在本文件与 `procedures/workflow-部署.md` 中，harness 目录已清空。
+10. **敏感信息禁止入记忆**：配置文件（`config*.yaml`、`deploy.sh`、`_note/config/*`）里含明文阿里云 AK/SK、
+    S3 凭证、ES/MySQL/Redis 账号口令，**禁止写入任何记忆文件、任务简报或对外输出**，只记录文件路径；
+    需要展示配置结构时手工脱敏。风险详情见 `current/risks.md` R2。
 
 ## 推断的工作习惯（未经用户确认，标记为推断）
 

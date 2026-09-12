@@ -3,10 +3,13 @@ title: 站点知识：2026-09 接入的 5 个资源站（dyyjmax/fuxipan/feikuai
 type: knowledge
 status: active
 created_at: 2026-09-03T15:50:00+08:00
-updated_at: 2026-09-03T15:50:00+08:00
+updated_at: 2026-09-12T12:10:00+08:00
 priority: high
 keywords: [dyyjmax, fuxipan, feikuai, kuakes, haisou, Flarum, 苹果CMS, magicpost, 站点接入, 子命令]
 summary: 本批 5 个站点的形态、子命令、规模、各自的坑与实现状态；详细规格见各自 PRD
+questions:
+  - dyyjmax/fuxipan/feikuai/kuakes 是什么站，各自的坑是什么
+  - 2609 批次都接了哪些站
 load: on-demand
 related:
   - agent-memory/knowledge/domain-站点-misoso.md

@@ -3,7 +3,7 @@ title: 会话摘要：spiderAdmin 线上样式丢失与顶栏深色修复
 type: session
 status: active
 created_at: 2026-09-08T07:20:00+08:00
-updated_at: 2026-09-08T07:20:00+08:00
+updated_at: 2026-09-12T11:50:00+08:00
 priority: medium
 keywords:
   - spiderAdmin
@@ -13,7 +13,7 @@ keywords:
   - header 深色
   - 生产部署
 summary: 定位并修复 spiderAdmin 线上 body margin/布局失效(Vue mount 清空 qiankun 包裹层)与顶栏 #001529(antd 两级选择器), 已部署 OSS 并 push
-load: on-demand
+load: rarely
 related:
   - agent-memory/lessons/failure-qiankun子应用挂到包裹层导致样式被清空.md
   - agent-memory/knowledge/architecture-nc-js.md

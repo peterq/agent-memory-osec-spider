@@ -3,7 +3,7 @@ title: 成功经验：给站点爬虫写可复跑的联网集成测试
 type: lesson
 status: active
 created_at: 2026-09-02T15:25:00+08:00
-updated_at: 2026-09-02T15:25:00+08:00
+updated_at: 2026-09-12T12:10:00+08:00
 priority: high
 keywords:
   - 集成测试
@@ -13,6 +13,8 @@ keywords:
   - 命名空间
   - 假 committer
 summary: 用「假 committer + 独立 redis 键前缀 + 环境变量开关」让爬虫的联网测试可重复运行且不污染线上
+questions:
+  - 我要给爬虫写测试，联网测试怎么不污染线上
 load: on-demand
 related:
   - agent-memory/procedures/workflow-新站点调研.md

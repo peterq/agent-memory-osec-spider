@@ -3,7 +3,7 @@ title: 决策：后台登录改为 GitHub OAuth（限 1second 组织成员）
 type: decision
 status: active
 created_at: 2026-09-08T16:00:00+08:00
-updated_at: 2026-09-08T16:00:00+08:00
+updated_at: 2026-09-12T12:10:00+08:00
 priority: high
 keywords:
   - GitHub OAuth
@@ -13,7 +13,12 @@ keywords:
   - client_id
   - allow_rtc_token
   - 会话票据
+  - 上线顺序
+  - 先网关后前端
 summary: 固定管理秘钥改为 GitHub OAuth 登录并校验 1second 组织成员身份的四个关键设计取舍与原因
+questions:
+  - 后台登录为什么改成 GitHub OAuth
+  - 管理秘钥去哪了，needLogin/githubClientId 是什么
 load: on-demand
 related:
   - agent-memory/knowledge/architecture-nc-js.md
@@ -71,6 +76,10 @@ session_secret）齐全 或 allow_rtc_token=true"二选一满足即可启动，�
 - 前端新增登录门组件 `GwLoginGate`，`spidergw.ts` 增加 `needLogin`/`loginError` 状态。
 - 两个 OAuth App 的 client_id、管理页地址、已注册回调列表见
   `knowledge/reference-github-oauth配置.md`（**client_secret 不在任何记忆文件里**）。
+- **上线顺序必须"先网关后前端"**：握手协议升到 v2（403 回包带 `needLogin`/`githubClientId`），
+  新前端连老网关拿不到登录信息、老前端连新网关会被当成未登录，新旧不匹配会直接导致登录/鉴权异常。
+  其余未部署待办（用户贴含 client_secret 的 `_note/config/spider.prod.yaml`、网关部署受 P4 bootstrap 阻塞、
+  两个连网关的子应用各自发布）见 `sessions/2026/2026-09-08-后台登录改为github授权.md`「后续行动」。
 
 ## 复盘条件
 

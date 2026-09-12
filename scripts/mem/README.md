@@ -6,7 +6,8 @@ Python 3.10+；核心功能零依赖，装上 `requirements.txt`（jieba + faste
 把新会话恢复上下文的 token 从 4 万量级压到 1 万以内。
 
 ```bash
-scripts/mem/mem.py boot                  # 启动包: 全部文件的 路径|优先级|更新|summary|关键词 (sessions 只列最近 3 个)
+scripts/mem/mem.py boot                  # 启动包: 路径|优先级|更新|summary|前 3 个关键词 + questions 行 (sessions 只列最近 3 个)
+scripts/mem/mem.py index --write         # 把启动包写成 agent-memory/01-index.md (索引是生成物, 禁止手改)
 scripts/mem/mem.py search 网关重启前要检查什么 -q   # 混合检索, 支持自然语言问句; 默认排除常驻文件
 scripts/mem/mem.py search xx --dir lessons,decisions -k 5 --no-snippets --mode lexical   # 纯词法, 不加载模型更快
 scripts/mem/mem.py embed                 # 预热/刷新 embedding 缓存(search 也会按文件哈希自动增量刷新)
@@ -14,13 +15,18 @@ scripts/mem/mem.py outline <file>...     # 章节结构: 起止行/字数, 决�
 scripts/mem/mem.py body <file>           # 只输出正文(剥离 Front Matter)
 scripts/mem/mem.py body <file> --section 实测数据   # 只输出某章节(标题子串匹配)
 scripts/mem/mem.py body <file> --lines 120:160     # 按行区间
-scripts/mem/mem.py lint                  # 体检: 元数据缺失/超长/常驻超长/悬空引用/updated_at 落后于 git/current 陈旧
+scripts/mem/mem.py lint                  # 体检: 元数据缺失/超长/常驻超长/悬空引用/updated_at 落后于 git/valid_until 过期/索引过期
 scripts/mem/mem.py stat                  # 各目录字数、load=always 体积、最大文件
 scripts/mem/mem.py dup                   # 跨文件逐行重复检测(只能抓原样复制, 抓不到改写复述)
 scripts/mem/mem.py recent --days 7       # 用 git 历史代替手工"最近更新"
 ```
 
 文件参数可以写 `agent-memory/xxx.md`、`xxx.md`（相对 agent-memory）或绝对路径。
+
+## 与 AGENTS.md 协议的关系
+
+- Claude Code 的 `SessionStart` hook（`.claude/settings.json`）在每个新会话自动注入 `boot` 输出；其他 Agent 读 `01-index.md`（同一内容的快照）。
+- 会话结束固定动作：改 Front Matter → `index --write` → `lint` 清零。
 
 ## 设计要点
 

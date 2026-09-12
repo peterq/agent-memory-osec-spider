@@ -3,10 +3,13 @@ title: 生产 ES 资源索引现状（2026-09-04 实测）
 type: knowledge
 status: active
 created_at: 2026-09-05T00:30:00+08:00
-updated_at: 2026-09-05T01:10:00+08:00
+updated_at: 2026-09-12T12:10:00+08:00
 priority: high
 keywords: [ES, Elasticsearch, 6.7, 无join, nested filelist, 百度存量, enfi_resource_v6, resource 别名, join 父子, 墓碑, docs.deleted, 分片, 容量, 入库速率, es_survey]
 summary: 阿里云 ES 6.7 单索引的分片/容量/父子文档结构/入库增速与读写清理链路代码位置，是生命周期改造方案的事实基线
+questions:
+  - 生产 ES 有多大，怎么查生产 ES
+  - 无 join 索引和 join 父子索引的区别
 load: on-demand
 related:
   - agent-memory/knowledge/architecture-storage.md

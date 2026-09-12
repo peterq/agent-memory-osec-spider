@@ -3,7 +3,7 @@ title: 参考：GitHub OAuth App 配置（后台登录）
 type: knowledge
 status: active
 created_at: 2026-09-08T16:00:00+08:00
-updated_at: 2026-09-08T16:00:00+08:00
+updated_at: 2026-09-12T12:10:00+08:00
 priority: medium
 keywords:
   - GitHub OAuth App
@@ -13,6 +13,9 @@ keywords:
   - 回调地址
   - Access restricted
 summary: 两个GitHub OAuth App(prod/dev)的名称、client_id、管理页、已注册回调列表与组织第三方应用策略, 不含任何secret
+questions:
+  - GitHub OAuth App 的 client_id 在哪查
+  - 1second 组织的回调地址怎么配置
 load: on-demand
 related:
   - agent-memory/decisions/decision-2026-09-08-后台登录改为github-oauth.md

@@ -3,10 +3,13 @@ title: 本地构建与验证流程
 type: procedure
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-02T11:06:00+08:00
+updated_at: 2026-09-12T12:10:00+08:00
 priority: high
-keywords: [构建, go build, replace, 编译失败, 验证, protoc]
-summary: 四个仓库当前的可编译状态、编译命令与已知失败原因，改代码前必读
+keywords: [构建, go build, replace, 编译失败, 验证, protoc, go vet, 存量告警, module名, 验收口径]
+summary: 四个仓库当前的可编译状态、编译命令、已知失败原因，以及编译/go vet 的验收口径，改代码前必读
+questions:
+  - 编译不过，依赖报错怎么排查
+  - go mod tidy / replace 问题怎么处理
 load: on-demand
 related:
   - agent-memory/03-project-context.md
@@ -35,6 +38,15 @@ go build -C /home/peterq/dev/projects/1s/enfi-resource-storage ./...
 ```
 
 SPIDER 全量编译约 1～2 分钟，建议放后台或给足 timeout。
+
+## 验收口径：编译与存量告警
+
+- **判断"能不能编译"必须逐仓库实测**。Go 的目录型 `replace`（`=> ../xxx`）**不校验被替换模块自己声明的 module 名**，
+  所以"下游仓库能编译"不能证明上游仓库的 `go.mod` module 声明是对的——`PPIO → 1s` 重命名时就是靠这一点才发现
+  COMMON 的 module 名还是旧的。每个仓库都要单独跑一次 `go build ./...`。
+- **SPIDER 有大量存量的 `go vet` 告警与测试失败**（`services/alipan`、`services/quark`、`services/gateway/*`、
+  `services/devops/*` 等包）。验收新代码时**只看新增/改动的包**，存量问题如实报告但**不要顺手改**——
+  顺手改会把无关改动混进本次提交，也超出验收范围。
 
 ## `PPIO → 1s` 重命名收尾做了什么（2026-09-02 已完成）
 

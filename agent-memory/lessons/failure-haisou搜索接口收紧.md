@@ -3,12 +3,17 @@ title: 失败经验：haisou.cc 搜索接口在调研当天被收紧，爬虫无
 type: lesson
 status: active
 created_at: 2026-09-03T15:40:00+08:00
-updated_at: 2026-09-03T19:50:00+08:00
+updated_at: 2026-09-12T12:10:00+08:00
 priority: high
 keywords: [haisou, 13001, 限流, 代理网段, 调研结论过期, 联网验收, keyword_haisou, 积分, X-HS-Client-Context, FingerprintJS, visitorId]
 summary: haisou.cc 搜索接口对代理池 IP 全量 429；傍晚复查排除了积分、请求头、HTTP/2、会话、匿名身份，锁定为按来源网络的端点级拦截
+questions:
+  - haisou 跑不通，13001/请求过于频繁是什么原因
+  - X-HS-Client-Context 头怎么来的
+  - haisou 积分额度模型是什么
 load: on-demand
 related:
+  - agent-memory/archive/2026/haisou-代码落地与探路记录.md
   - agent-memory/procedures/workflow-新站点调研.md
   - agent-memory/lessons/success-本地代理池打通.md
 ---
@@ -136,33 +141,9 @@ related:
 7. 逆向前端找的**不只是签名头**：`anonymous_identity_type` 这类**响应字段**会直接
    点出站点在用什么身份维度，顺着字段名去 bundle 里搜，比盲搜 `sign/token/nonce` 准得多。
 
-### 已落地的代码（2026-09-03 傍晚，SPIDER 未提交）
+### 已落地的代码 / 常态化探路
 
-用户确认「连积分账本一起写」，已实现并编译/单测通过（**联网仍无法验收**，因为 13001 未解除）：
-
-| 文件 | 内容 |
-|---|---|
-| `services/haisou/client_context.go` | Go 版身份头：还原混淆公钥 + RSA-OAEP 加密 payload |
-| `services/haisou/credits.go` | 积分账本 + 代理准入闸门 + status 拉取 + `BeforeSend` 头装配 |
-| `services/haisou/credits_test.go` | 离线单测：公钥还原、头不可重复、IP 提取、次日零点 TTL（含 UTC 输入与 23:59:59 边界） |
-| `config/config.go` | `minCredits` / `creditsRefreshInterval` / `visitorIdTTL` 三个新字段，全部有内置缺省 |
-| `scripts/haisou_client_context.py`、`scripts/haisou_probe.py` | Python 版身份头 + `credits` / `curl` 两个新子命令 |
-
-设计要点（与用户原方案的差异都在这）：
-
-- **账本按 IP 记，不按 `ip:port`**：代理商给同一出口 IP 分不同端口，按 ip:port 会把同一份额度重复算。
-- **TTL 到次日零点（东八区）**，且 `DECRBY` 后要补一次 `Expire`——跨零点时键已过期，
-  DECRBY 会建出一个**没有 TTL 的负数键**，会把该 IP 永久拉黑。
-- **status 刷新做了节流**（默认 30 分钟一个 IP，靠一个短 TTL 标记键）。
-  用户原方案是"每次 OnProxy 都刷新"，但代理池会持续复推同一批 IP、代理 leader 只活 5 分钟，
-  不节流会变成每 IP 每几秒一次真实请求。账本在两次刷新之间靠本地扣减维持。
-- **扣多少以站点回传的 `meta.credits_consumed` 为准**，缺失才按常量 2 兜底，站点调价能自动跟上。
-- **visitorId 按代理 IP 绑定并存 redis**（`haisou:vid:<ip>`）：额度是 ip 桶与 fingerprint 桶取小，
-  换指纹拿不到更多额度，反而让同一 IP 上出现大量一次性指纹，特征更明显。
-- 身份头挂在 `proxy_client.Request.BeforeSend` 上，因为它必须和**实际派发到的那个代理**绑定，
-  而代理是调度时才确定的。
-- `fetchCredits` 顺带校验 `anonymous_identity_type`，不是 `client_context` 就告警——
-  站点换公钥时服务端不报错、只是把身份退回按 IP 识别，这是唯一能及时发现的判据。
+实现细节已归档到 `archive/2026/haisou-代码落地与探路记录.md`（站点已下线，考虑复活时再读）。
 
 ### 结论定案（2026-09-03 晚，用户实测补齐最后一块）
 
@@ -194,62 +175,9 @@ related:
 3. **低成本定期探路**——`python3 scripts/haisou_probe.py credits` 确认代理仍被站点识别，
    再发一次搜索看是否仍 13001。一天一次，几乎零成本，站点松绑时能第一时间发现。
 
-### 更正：代理池不是机房 IP，是住宅宽带秒拨池（2026-09-03 晚，RDAP 实测）
+### 更正：代理池不是机房 IP，是住宅宽带秒拨池
 
-此前多处记着「蜻蜓＝机房 IP，可能整段被标记」，**这是错的**。对池子里的 IP 做 RDAP 查询：
-
-| IP | 注册网段 | 归属 |
-|---|---|---|
-| 119.101.54.192 | 119.96.0.0/13 | CHINANET-HB 湖北电信 |
-| 218.86.67.52 | 218.85.0.0/15 | CHINANET-FJ 福建电信 |
-| 140.250.147.83 | 140.250.0.0/16 | CHINANET-SD 山东电信 |
-| 49.87.0.119 | 49.64.0.0/11 | CHINANET-JS 江苏电信 |
-| 27.152.127.141 | 27.152.0.0/17 | Quanzhou Broadband MAN 泉州宽带城域网 |
-
-全是**电信省级宽带/城域网**，也就是家宽 PPPoE 拨号池（"秒拨"），不是 IDC 机房段。
-
-**这条更正会改变结论的走向**：
-
-- 通用的「代理/VPN/机房检测」类数据库对这些 IP 大概率判**低风险、住宅**——
-  因为按 ASN 和网段性质它们确实就是住宅。指望这类库预筛出"哪个 IP 会被 haisou 拒"是不现实的。
-- 只有专门追踪**住宅代理网络**的厂商（Spur.us 一类）才有可能识别，且都是商业付费。
-- 站点更可能是**按行为**把这些秒拨段拉黑的（这些池子被爬虫反复复用），
-  这种黑名单没有公开数据库能镜像。
-
-**最便宜也最准的判据其实是站点自己**：13001 不消耗积分，所以对每个新 IP 发一次搜索探路是**零成本**的，
-结果比任何第三方分数都准。要做 IP 预筛就用观测结果建黑名单（redis 记 IP → 拒绝时间），
-不要引入第三方纯净度库。
-
-**可迁移教训**：判断代理是不是"机房 IP"要查 RDAP 的网段归属，不要凭代理商的品类名脑补。
-判错了会把排查方向整个带偏（"换住宅代理"这个建议其实是原地打转，因为用的就已经是住宅 IP）。
-
-### 常态化探路（2026-09-03 晚已上线）
-
-`osec-spider-go/scripts/haisou_watch.py` + 本机 crontab，每天 09:30 跑一次，结果邮件通知。
-
-    30 9 * * * \
-      /home/peterq/dev/env/miniforge3/bin/python3 scripts/haisou_watch.py --proxies 3 \
-      >> /tmp/haisou_watch.log 2>&1
-
-判定口径（**`unknown` 与 `blocked` 必须分开**，这是设计上最关键的一点）：
-
-| 结论 | 条件 | 含义 |
-|---|---|---|
-| `released` ✅ | 任一代理搜索成功 | 站点放行，要立刻补联网验收 |
-| `blocked` ⛔ | 全部 13001 | 维持现状 |
-| `quota` ⚠️ | 命中 11003 | 不该出现，说明账本或探路逻辑有问题 |
-| `unknown` ❓ | 没代理 / 全网络错误 | **我们这边坏了**，不是站点的结论 |
-
-把 `unknown` 混进 `blocked` 会让「探路早就没在跑了」这件事被无声吞掉——
-同步进程一停、白名单一过期就会这样，而那恰恰是最容易发生又最难察觉的失效。
-
-邮件通道：`POST http://cf-worker.peterq.cn/notify_admin`，
-body `{"subject","htmlContent","source"}`，实测返回 `email_send_ok`。
-这是本项目通用的管理员通知入口，其他 cron 任务也可复用。
-
-⚠️ 探路依赖本机常驻的 `redis-topic-sync` 与 `dev_add_local_ip_to_qingting`，
-两者**不会开机自启**，重启后探路会一直报 `unknown`。
-默认每次都发邮件；嫌吵可以加 `--only-on-change`（代价是失去心跳，死掉和无变化看起来一样）。
+已迁入 `lessons/success-本地代理池打通.md`「代理池的真实形态」一节。
 
 ### 后续：已下线（2026-09-03 晚，用户决定）
 

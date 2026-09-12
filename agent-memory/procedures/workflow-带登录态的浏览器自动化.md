@@ -3,7 +3,7 @@ title: 工作流：带登录态的浏览器自动化（agent-browser + cdp）
 type: procedure
 status: active
 created_at: 2026-09-08T16:00:00+08:00
-updated_at: 2026-09-08T16:00:00+08:00
+updated_at: 2026-09-12T12:10:00+08:00
 priority: medium
 keywords:
   - agent-browser
@@ -15,6 +15,9 @@ keywords:
   - 浏览器自动化
   - 登录态复用
 summary: 如何启动/复用一个带登录态的调试Chrome并用CDP脚本驱动它, 含"默认profile会被安全策略拦截"的前提坑
+questions:
+  - 我要测浏览器可见的交互，带登录态的浏览器怎么起
+  - agent-browser.sh / cdp.py 怎么用
 load: on-demand
 related:
   - agent-memory/lessons/success-桩网关加cdp浏览器做登录链路联调.md
@@ -78,3 +81,7 @@ Chrome 出于安全策略，在**默认 profile**（`~/.config/google-chrome`）
 - profile 目录含真实登录态，任何截图/DOM dump 若可能带出敏感信息（token、邮箱等），
   分享前自行核对脱敏。
 - 每次会话结束不必关闭调试浏览器，长期驻留、下次直接复用是设计初衷。
+
+## 代码位置
+
+- `osec-spider-go/tools/stubgw`（桩网关，只保留被测链路）

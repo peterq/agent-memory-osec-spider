@@ -3,10 +3,14 @@ title: 失败经验：copy_child 的真正瓶颈是子文档量 × reindex 限�
 type: lesson
 status: active
 created_at: 2026-09-05T16:50:00+08:00
-updated_at: 2026-09-05T16:50:00+08:00
+updated_at: 2026-09-12T12:10:00+08:00
 priority: high
 keywords: [copy_child, bootstrap, reindex, requests_per_second, 限速, 子文档, file_count, 量纲估算, 生命周期, P4, slices]
 summary: 修完轮询空等后 copy_child 只快 2.1 倍——因为真正的工作量是 3245 万/单月、7.4 亿/全量的子文档，被 reindex 的 2000 rps 限速卡死
+questions:
+  - P4 第三次尝试，作业 id=4 为什么还是 paused
+  - copy_child 修完轮询还是慢，到底要搬多少子文档
+  - reindex 限速是多少
 load: on-demand
 related:
   - agent-memory/lessons/failure-copy_child小reindex被轮询间隔拖垮.md

@@ -3,10 +3,13 @@ title: 工作流：子 Agent 任务简报落盘（agent-tasks/）
 type: procedure
 status: active
 created_at: 2026-09-08T09:40:00+08:00
-updated_at: 2026-09-08T10:30:00+08:00
+updated_at: 2026-09-12T12:10:00+08:00
 priority: high
-keywords: [子agent, 任务描述, agent-tasks, 简报, token, 重复上下文, 并行开发, prompt]
-summary: 派子 Agent 时任务描述落盘成文件、prompt 只给路径，避免多个子 Agent 之间重复传递同一段上下文
+keywords: [子agent, 任务描述, agent-tasks, 简报, token, 重复上下文, 并行开发, prompt, 失败模式, Monitor, 后台任务, 抽样对账]
+summary: 派子 Agent 时任务描述落盘成文件、prompt 只给路径，并列出子 Agent 的常见失败模式与提示词对策
+questions:
+  - 我要派子 Agent，任务描述太长怎么办
+  - 多个 agent 上下文重复怎么解决
 load: on-demand
 related:
   - agent-memory/02-user-preferences.md
@@ -62,6 +65,11 @@ agent-tasks/YYYY-MM-DD-<任务名>/
 - 必读文件要列清单**并说明为什么读**，子 Agent 才知道该从中提取什么。
 - 会导致返工或生产事故的禁忌单独成节（例：NC-JS 跑 `pnpm build` 会真实上传生产 OSS）。
 - 验证命令写成可直接复制执行的完整命令，别让子 Agent 猜脚本名。
+- **子 Agent 有两种高频失败模式，提示词里要提前堵住**：
+  ① **卡在等自己起的后台任务**——它自己起了后台命令再去等通知，而通知永远不会来，整轮空耗；
+  对策是**提示词里直接禁用 Monitor / 禁止"起后台任务再等"**，要么前台跑完，要么分两次派单。
+  ② **把"跑全量"当成验收的必要条件**——为了"证明跑通"去跑全量数据，烧掉大量时间和站点配额；
+  对策是提示词里**明确写"抽样对账即可"**并给出样本量。这两条各能省掉整轮往返。
 - 任务结束后目录保留作为协作记录；长期有效的经验再提炼进 `agent-memory/`。
 - **主控自己产出的东西要当场提交**（契约、生成代码、脚本修复）。留在工作区里，子 Agent 会
   面对来路不明的改动——本次前端因此把已生成好的 TS 契约又重新生成了一遍。

@@ -3,13 +3,19 @@ title: SPIDER 爬虫仓库结构
 type: knowledge
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-09T01:40:00+08:00
+updated_at: 2026-09-12T12:10:00+08:00
 priority: high
-keywords: [SPIDER, osec-spider-go, 爬虫, gateway, 子命令, 队列, 队列v2, resourcePreCheck, gw_remote_queue, bnd, 下载调度, bbs, kkpans]
-summary: osec-spider-go 的入口子命令、目录分层、gateway 四大调度器与队列约定
+keywords: [SPIDER, osec-spider-go, 爬虫, gateway, 子命令, bnd, 下载调度, bbs, kkpans, 配置节, yaml, Duration, 线上配置同步, 缺省值, 配置怎么读]
+summary: osec-spider-go 的入口子命令、目录分层、编译状态、bnd_resolver 关键类型、写新爬虫可复用要点（含配置节 yaml/Duration/缺省值写法）与多角色配置读取机制；队列约定（resourcePreCheck/gw_remote_queue 等）已拆到 knowledge/architecture-spider-队列约定.md
+questions:
+  - 我要改爬虫/加一个站点，该看哪个子命令
+  - 新增服务配置节，yaml 怎么解析 Duration
+  - 泛型队列 PushTask 怎么写，GwQueue 类型对不上怎么办
+  - 任务队列怎么消费，seq 是什么，永久失败怎么处理
 load: on-demand
 related:
   - agent-memory/knowledge/architecture-系统总览.md
+  - agent-memory/knowledge/architecture-spider-队列约定.md
   - agent-memory/procedures/workflow-部署.md
 ---
 
@@ -70,33 +76,8 @@ _note/         线上配置源、SQL、临时笔记（config/spider.prod.yaml �
 ## 队列约定（2026-09-04 队列 v2 之后）
 
 **[事实] 跨进程任务投递一律走网关，爬虫进程不再直连 redis 队列。** 决策见
-`decisions/decision-2026-09-04-队列v2统一走网关.md`。
-
-- `res_scheduler` 固定队列名（常量在 COMMON `rpc/spider/res_scheduler_rpc/res_rpc.go`，`ResourceQueueNames()` 列全）：
-  - `resourcePreCheck`：所有分享链接的统一入口，taskKey = `ResTaskKey(typ,id)` = `<type>:<id>`。
-    网关内置消费者（`services/gateway/res_scheduler/pre_check.go`，8 协程）做：识别类型 → `ShareLinkFromId` 规范化 +
-    从 `?pwd=` 补提取码 → redis `resDealAt:<typ>:<id>:<pwd>` 6h 去重 → 路由到下游；下游 waiting≥2000 时背压等待并 keepalive；
-    推下游失败会回滚去重 key 再交网关重试（maxRetry=3）。
-  - 下游：`bndInputPwd`(百度带码) / `bndLoadShare` / `aliLoadShare` / `quarkLoadShare` / `xlLoadShare`，taskKey = 分享 id。
-  - 关键词：网关 `CommitKeyword` 直接 8h 去重（`keywordDealAt:<kw>`）并扇出到 `keywordSubscribed:<site>`（单队列上限 2000）；
-    站点通过 Pop 自动注册进 ZSET `kwSiteListeners`（5 分钟心跳有效），关键词就是 taskKey，maxRetry=2。
-- 客户端辅助 `services/v2/gw_remote_queue/res_queue_helpers.go`：`NewResConsumer(resCli, q)`、`NewKeywordConsumer(resCli, site)`、
-  `PushResTask(s)`、`PushKeywords`、`IsTaskExists`。
-- 生产者：爬虫一律 `spider_common.NewResLinkCommitter().CommitResLink()`（内部按需建网关连接，调用方标识取 `os.Args[1]`），
-  链接已在预检队列中返回 `resource.ErrDupTask`。外部系统走网关 `SpiderRpc.CommitResource/CommitKeyword`。
-- 消费者模式：`queue_task.StartQueueRemoteConsumer(name, opts, gw_remote_queue.NewXxxConsumer(...), handler)`；
-  handler 返回 nil=成功，`queue_task.MarkPermanentError(err)`=永久失败出队，其他 error=网关重试。
-  各消费者：`v2bndInputPwd`/`v2bndLoadShare`(50)、`v2aliLoadShare`(20)、`v2quarkLoadShare`(50)、`v2xlLoadShare`(20)，
-  代码在 `services/v2/res_crawler/{bnd,ali,quark,xl}`；`keyword_*` 6 站各 20。
-- `gateway_v2` 通用队列（下载链路专用）：`QueueDefine[T]{Namespace, QueueName, Version}`，默认 JSON 编解码，`FullQueueLen` 本地 dev=10 / 线上=1000。
-  命名空间 `resDlAcc`、`resDl`、`webResDl`，见 `services/gateway/gw_contract/gw_queues.go`。
-- **[已废弃 2026-09-04]** `illuminate/queue-task/service.go` 的 `Service`（redis list `service:<name>:queue:task`）及
-  `share`/`share_pwd`/`ad_share`/`quark_share`/`xunlei_share`/`keyword_filter`/`file_bot`/`urn` 命令已删除。
-- 旧队列存量迁移：`./spider devops_migrate_legacy_queues`（默认 dry-run；`--apply --dry-run=false` 才写），
-  把 17 个旧 list/pending hash 迁到网关队列，README 在 `services/devops/2609/migrate_legacy_queues/`。
-- 运维调试代理：`v2aliLoadShare`/`v2xlLoadShare` 进程起 `:9527` 的 `/proxy?url=&method=`（经代理池转发），
-  公共实现 `services/spider-common/debug_proxy_server.go`，同机第二个进程绑不上端口只记 Warn。
-- 仍直连 redis 的例外：`devops_check_and_push_clear_queue`（`Queue2` 直连，线上 4 台在跑）与网关 clear 消费者配套，未迁移。
+`decisions/decision-2026-09-04-队列v2统一走网关.md`。详细的队列名/去重键/消费者并发度/通用队列命名空间
+等约定已拆到 `knowledge/architecture-spider-队列约定.md`（内容较细，写新队列消费者时按需加载）。
 
 ## 编译状态
 

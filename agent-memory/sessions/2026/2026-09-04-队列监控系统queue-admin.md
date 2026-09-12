@@ -3,11 +3,11 @@ title: 会话摘要：队列监控管理系统 queue-admin 全流程（PRD→并
 type: session
 status: active
 created_at: 2026-09-04T18:15:00+08:00
-updated_at: 2026-09-04T18:15:00+08:00
+updated_at: 2026-09-12T11:50:00+08:00
 priority: high
 keywords: [queue-admin, 队列监控, PRD, 并行开发, 验收, 上线, NC-JS, schema, gRPC, WebRTC]
 summary: 一次会话完成 NC-JS 调研、PRD、契约、前后端并行开发、opus 验收、生产部署与发布的全流程记录
-load: on-demand
+load: rarely
 related:
   - agent-memory/knowledge/architecture-queue-admin.md
   - agent-memory/knowledge/architecture-nc-js.md

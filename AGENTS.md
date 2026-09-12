@@ -38,7 +38,7 @@ Agent Memory使用 **中文**
 ```text
 agent-memory/
 ├── 00-overview.md          # 必加载:总览与当前状态
-├── 01-index.md             # 必加载:关键词索引
+├── 01-index.md             # 必加载:启动包快照, 由 scripts/mem/mem.py index --write 生成, 禁止手改
 ├── 02-user-preferences.md  # 用户偏好
 ├── 03-project-context.md   # 项目背景、目标、边界、基础事实
 ├── current/    goals.md tasks.md risks.md open-questions.md
@@ -61,9 +61,11 @@ status: active | draft | deprecated | archived
 created_at: 2026-08-24T10:30:00+08:00   # 创建后不得修改
 updated_at: 2026-08-24T10:30:00+08:00   # 每次改动必须更新
 priority: critical | high | medium | low
-keywords: [关键词]                       # 用于检索与按需加载
+keywords: [关键词]                       # 用于检索与按需加载, 含英文标识符; 启动包只展示前 3 个, 最重要的放前面
+questions: [这个文件能回答的问题]         # 可选, 3~6 条自然语言问句, 进入启动包与检索; 替代旧索引里的"问题→文件"路由
 summary: 一句话概括,不读正文即可判断是否加载
-load: always | on-demand | rarely        # always 仅限启动必读文件
+load: always | on-demand | rarely        # always 仅限启动必读文件; sessions 一律 rarely
+valid_until: 2026-10-01                  # 可选, 限流/配额/第三方接口类结论的保质期, lint 到期提醒
 related:
   - agent-memory/xxx.md  # 文件名不足以说明关联时加注释
 ---
@@ -73,7 +75,8 @@ related:
 ## 4. 必须维护的核心文件
 
 ### 4.1 `00-overview.md`(priority critical, load always)
-每次新会话首先加载。普通项目 800~2000 字,复杂项目 ≤4000 字;只放后续工作最需要的信息,不复制详细知识。
+每次新会话首先加载。**硬上限 5,500 字符**(`python3 -c "print(len(open(p).read()))"` 口径, `mem.py lint` 判据);只放后续工作最需要的信息,不复制详细知识。
+§2 当前状态只留最近 7 天 ≤5 条、每条 ≤2 行并指向精确文件;历史进 `current/changelog.md`。§5/§6 只写「一句话 → 文件路径」各 ≤10 条。
 章节:
 1. 项目身份:名称/类型/目标/当前阶段/边界/主要交付物
 2. 当前状态:正在处理/已完成/进行中/下一步/阻塞/最近重要变化
@@ -82,22 +85,21 @@ related:
 5. 当前关键决策:决策/原因/影响 → 详见 `decisions/`
 6. 高价值经验 → 详见 `lessons/` `procedures/`
 7. 待解决问题 → 详见 `current/open-questions.md`
-8. 快速加载指引表:主题 → 文件(项目背景 `03`、用户偏好 `02`、当前任务 `current/tasks.md`、风险 `current/risks.md`、决策 `decisions/`、流程 `procedures/`、失败经验 `lessons/failure-*`、领域知识 `knowledge/`)
+8. 找文件方法(≤6 行):`scripts/mem/mem.py boot` → `search <问题>` → `outline <file>` → `body <file> --section <标题>`;不再维护手工导航表
 
-### 4.2 `01-index.md`(priority critical, load always)
-所有其他文件的索引,只放导航信息不复制正文。小项目可与总览一起始终加载。
-章节:
-- 使用方法:先按关键词/主题/概要找候选,再按需读正文
-- 文件索引表:文件 | 类型 | 状态 | 关键词 | 概要 | 更新时间
-- 关键词索引:按主题分组(项目背景、用户偏好、当前工作、决策、经验、流程)列出 关键词 → 文件
-- 最近更新:按时间倒序列出 文件 → 变化概要
+### 4.2 `01-index.md`(priority critical, load always, **脚本生成物**)
+= `scripts/mem/mem.py index --write` 的输出:每个文件一行「路径 | 优先级 | 更新 | summary | 前 3 个关键词」+ 可选的 `questions` 行, sessions 只列最近 3 个。
+**禁止手工编辑**。索引的唯一维护方式是改目标文件的 Front Matter(summary / keywords / questions),再运行 `scripts/mem/mem.py index --write`。
+「最近更新」不再维护, 需要时 `mem.py recent --days 7` 看 git 历史。工具说明见 `scripts/mem/README.md`。
 
 ## 5. 新会话启动协议
 1. 检查 `agent-memory/`:不存在则创建最小文件集(`00-overview.md` `01-index.md` `02-user-preferences.md` `03-project-context.md`);存在则补齐缺失核心文件。
 2. 读取 `00-overview.md`。
-3. 读取 `01-index.md`(总览已足够时可只读相关部分)。
+3. 读取启动包:Claude Code 下 SessionStart hook 已自动注入 `mem.py boot` 输出(看到「agent-memory 启动包」即不必再读);否则读 `01-index.md`(等价快照)。
 4. 从用户请求提取关键词:项目/功能/技术栈/任务类型/领域术语/实体/约束/错误信息/用户提及的历史事项。
-5. 按索引匹配并**只加载直接相关文件**,优先级:当前任务目标 > 项目背景 > 用户偏好 > 决策 > 流程 > 成功/失败经验 > 领域知识。不因文件存在就全读。
+5. 先在启动包里按 summary/关键词/questions 选文件(评测:LLM 读紧凑目录 Hit@1 90%, 强于算法检索);拿不准或要找 sessions 时 `scripts/mem/mem.py search <自然语言问题>`。
+   定位到文件后**先 `mem.py outline <file>` 看章节, 再 `mem.py body <file> --section <标题>` 只读需要的一段**;整文件读取仅限 ≤3,000 字符的文件。
+   优先级:当前任务目标 > 项目背景 > 用户偏好 > 决策 > 流程 > 成功/失败经验 > 领域知识。不因文件存在就全读。
 6. 内部整理工作上下文:已知事实/当前目标/适用约束/相关决策/可复用流程/潜在风险/需确认问题。
 
 记忆与用户当前指令冲突时,以当前指令为准并记录该变化。
@@ -109,7 +111,7 @@ related:
 
 **会话摘要**:有长期价值的会话创建 `sessions/YYYY/YYYY-MM-DD-主题.md`(type session, priority medium, load on-demand),章节:完成事项/关键发现/新增或改变的事实/做出的决策/遇到的问题/后续行动/值得沉淀的经验。
 摘要不是最终知识库,长期有效内容须进一步提炼到项目上下文、决策、流程、成功/失败经验、当前任务或风险文件。
-非必要不读取 sessions, 对agent工作性价比不高. 直接读取提炼后的内容即可
+sessions 一律 `load: rarely`, 启动包不列、检索降权;只在用户点名某次会话或提炼后的文件确实没有时才读。会话中沉淀的长期知识**必须**在会话结束时提炼进 knowledge/procedures/lessons/decisions, 不能只留在 session 里(评测发现索引指向 session 的主题是找不准的主因之一)。
 
 ## 7. 经验、决策与可信度
 
@@ -135,15 +137,15 @@ related:
 当前阶段/目标/任务、关键事实、重要约束、有效决策、最近重要变化、最值得复用的经验、关键文件导航。不放完整文档、长会话记录、历史细节、失效方案、无关知识。
 
 ### 索引更新时机
-文件新增/删除/移动/重命名,主题/关键词/状态/概要变化,重要文件更新时间变化。
+任何 Front Matter 变化或文件增删改名后运行 `scripts/mem/mem.py index --write`;`mem.py lint` 会报「索引过期」。
 
 ### 加载层级
-- 第一层始终:`00-overview.md`(必要时 `01-index.md`)
-- 第二层按任务:`03-project-context.md` `02-user-preferences.md` `current/` 相关决策与流程
+- 第一层始终:`00-overview.md`(≤5,500) + 启动包(hook 注入或 `01-index.md`, ≤17,000), 合计 ≤ 22,500 字符
+- 第二层按任务:`03-project-context.md` `02-user-preferences.md` `current/` 相关决策与流程 —— 用 `outline` + `body --section` 按章节读
 - 第三层仅确需时:历史会话、详细领域知识、失败经验、归档内容、弱相关资料
 
-### 长度
-总览 ≤4000 字;索引只含导航;普通文件 3000~6000 字,>8000 字考虑拆分;会话摘要 500~2000 字。
+### 长度(均为字符数, `mem.py lint` 判据)
+总览 ≤5,500;`03-project-context.md` ≤4,000;任何文件 ≤8,000, 超过必须拆分;`current/tasks.md` ≤8,000, 任务「完成且已部署」即整块移入 `archive/YYYY/tasks-YYYY-MM-已完成.md`;会话摘要 ≤4,000;`archive/` 与 `status: archived` 的文件不限长度(永不整读, 只按章节取)。
 避免重复:总览写摘要,索引写关键词与概要,会话只写过程摘要,决策只写决策与依据;详细内容放唯一文件,其他文件链接引用。
 
 ### 整理与归档(定期主动执行)
@@ -161,13 +163,14 @@ related:
 
 ## 9. 自主进化循环(必须严格执行)
 ```text
-读取总览 → 识别任务关键词 → 按索引加载相关记忆 → 执行任务
-→ 识别新事实/决策/经验 → 更新详细记忆文件 → 提炼高价值内容到总览
-→ 更新索引、关键词和概要 → 归档过时内容
+读取总览 → 读启动包 → 识别任务关键词 → 选文件, 按章节加载 → 执行任务
+→ 识别新事实/决策/经验 → 更新详细记忆文件(含 Front Matter 的 summary/keywords/questions)
+→ 提炼高价值内容到总览(≤5,500 字符) → 归档过时内容
+→ scripts/mem/mem.py index --write → scripts/mem/mem.py lint 通过
 ```
-每次任务完成后至少检查:新项目事实?新用户偏好?重要决策?可复用方法?验证了某方法无效?任务或风险变化?需更新 `00-overview.md`?需更新 `01-index.md`?
+每次任务完成后至少检查:新项目事实?新用户偏好?重要决策?可复用方法?验证了某方法无效?任务或风险变化?需更新 `00-overview.md`?Front Matter 是否反映新内容?然后 `index --write` + `lint`, lint 有「超长/常驻超长/索引过期/悬空引用」未清零视为任务未完成。
 
 ## 10. 最低执行要求
-- 新会话:读 `00-overview.md`;按关键词查 `01-index.md`;至少加载一个最相关详细文件(若存在)。
-- 任务后:判断是否产生长期信息;有则更新/创建 `.md`;更新 `updated_at`;影响导航时更新总览与索引。
-- 禁止:忽略总览从零开始;一次性加载全部历史;创建无元数据文件;修改 `created_at`;把推测记为事实;索引指向不存在的文件;只记过程不提炼经验;总览无限膨胀。
+- 新会话:读 `00-overview.md`;看启动包(hook 注入或 `01-index.md`);至少按章节加载一个最相关详细文件(若存在)。
+- 任务后:判断是否产生长期信息;有则更新/创建 `.md`;更新 `updated_at` 与 Front Matter;`scripts/mem/mem.py index --write`;`scripts/mem/mem.py lint`。
+- 禁止:忽略总览从零开始;一次性加载全部历史;整文件读取 >3,000 字符的文件而不先 `outline`;手工编辑 `01-index.md`;创建无元数据文件;修改 `created_at`;把推测记为事实;索引指向不存在的文件;只记过程不提炼经验;总览无限膨胀;把长期知识只留在 sessions。

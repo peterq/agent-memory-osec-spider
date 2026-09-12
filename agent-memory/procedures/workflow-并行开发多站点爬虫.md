@@ -3,10 +3,13 @@ title: 工作流：用并行子 Agent + git worktree 同时开发多个站点爬
 type: procedure
 status: active
 created_at: 2026-09-03T15:45:00+08:00
-updated_at: 2026-09-03T15:45:00+08:00
+updated_at: 2026-09-12T12:10:00+08:00
 priority: high
 keywords: [并行开发, worktree, 子agent, 合并, 冲突, 代理池共享, Monitor卡死]
 summary: 一次接入多个新站点时的分工方式：worktree 隔离、共享资源集中准备、冲突面收敛、合并与验收
+questions:
+  - 我要一次接入多个站点，worktree 怎么分工
+  - 多站点并行开发怎么处理合并冲突
 load: on-demand
 related:
   - agent-memory/procedures/workflow-新站点调研.md

@@ -3,7 +3,7 @@ title: 失败经验：bootstrap 按 _id 排序翻页打爆生产 ES 堆
 type: lesson
 status: active
 created_at: 2026-09-05T13:30:00+08:00
-updated_at: 2026-09-05T13:30:00+08:00
+updated_at: 2026-09-12T12:10:00+08:00
 priority: critical
 keywords:
   - bootstrap
@@ -19,6 +19,9 @@ keywords:
   - 占位符
   - BatchUpsert
 summary: P4 bootstrap 的 B1 用 sort:["_id"] 在 15.7 亿文档旧索引上翻页, 触发 _id fielddata 加载, 单页 >550s、堆到 99%、熔断器 tripped; 同时 batch=5000×21 列超 MySQL 65535 占位符上限
+questions:
+  - P4 bootstrap 为什么跑不起来
+  - 作业 id=1 为什么 failed
 load: on-demand
 related:
   - agent-memory/sessions/2026/2026-09-05-生命周期P4启动失败.md

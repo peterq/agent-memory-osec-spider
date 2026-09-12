@@ -3,416 +3,65 @@ title: 当前任务与进度
 type: task
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T02:40:00+08:00
+updated_at: 2026-09-12T12:10:00+08:00
 priority: critical
-keywords: [任务, 进度, 待办, 生命周期, lifecycle, P3, 双写, bootstrap, resdb, es_endpoint, resource_valid, 重命名, 编译, kkpans, misoso, PRD, 有效性检测, 站点发现, 清理下线爬虫, 队列v2, queue-admin, 队列监控, spiderAdmin, 网关合并, GitHub OAuth, 后台登录, 配置按服务拆分, 告警后台, 代理池监控, 链接追踪, doc-crawler, FC Chrome]
-summary: 当前进行中与待办事项及其状态
+keywords: [任务, 进度, 待办, 队列v2, queue-admin, 全站扫描, fullsweep, 文档爬虫, doc-crawler, FC Chrome, 凭据轮换, 站点发现, kkpans, misoso, 有效性检测]
+summary: 当前仍在推进/阻塞/待人工决策的事项；已完成并上线（或被取代不再跟进）的任务已归档到 archive/2026/tasks-2026-09-已完成.md
+questions:
+  - 当前该做什么，有哪些待办
 load: on-demand
 related:
   - agent-memory/current/risks.md
+  - agent-memory/archive/2026/tasks-2026-09-已完成.md
   - agent-memory/procedures/workflow-本地构建与验证.md
 ---
 
 # 当前任务与进度
 
-## 2026-09-09 配置按进程拆代码（用户纠正）—— **已完成并 push（SPIDER `4f5f528`），未部署**
+> 已完成且已上线（或被后续方案取代）的任务块已原文移入 `archive/2026/tasks-2026-09-已完成.md`（P4 全量 bootstrap、配置 v2 上线、GitHub OAuth、配置按进程拆代码、管理台合并、资源生命周期改造 P0~P3 等）。本文件只留仍在推进/阻塞/待决策的事项。
 
-- 原则与设计：`decisions/decision-2026-09-09-配置按进程拆代码而非文件.md`。
-- [x] hub（主控）：`config` 根包裁成 section 类型 + `Common`；`config/internal/loader`（惰性、单角色）；
-      7 个角色包（带构建 tag）；`spider.go` 拆三份；`db`/`gw_config`/`proxy-provider`/`config_show` 接线；
-      `scripts/check_config_isolation.sh`；`deploy.sh` 回退单文件；`_note` 两份合回一份
-      （`scripts/config_v2_merge_by_service.py`，网关那份留档 `.merged-20260909.bak`）；README §2.8 改写、runbook §9 作废。
-- [x] 调用点迁移（sonnet 子 Agent）：约 80 处 → 各角色 `Get()`；4 个多角色共用包改为调用方传值
-      （`download_scheduler.NewService(..., proxySub)`、`pan_download.NewProxyClient(sub)`、`xunlei-pan Option.ProxySub`、
-      `doc_scheduler` 用构造传入的 nodeName），`proxy-provider` 供应侧拆到带 tag 的 `proxy_provider_supply.go`。
-- [x] 主控复核（build / 隔离脚本三种构建 / 测试 / 残留引用 grep / import 图）+ 提交 push；部署与架构文档已同步。
-- [x] **上线**：网关双机已于 09-09 11:53/12:04 以 `883daeb` 重部生效（详见下方「生命周期 P4」09-09 条目）；爬虫容器 + `proxy` 服务已于 09-10 09:30~09:56 以 master `fefbf10`（与 `883daeb` 仅差巡检脚本）全部重部，bootstrap 无可辨识影响。
-- 注意：`services/proxy-provider/change_proxy_config.go`（gitignore 凭据文件）已改成 `localProxyOverride` 钩子，
-  另一个遗留 worktree `../spider-wt-queue-admin-backend` 里的副本仍是旧写法（那个 worktree 已过时）。
+## 一眼总表
 
-## 2026-09-08 并行四任务（监控增强 + 文档爬虫上云）—— **已完成并 push, 未部署**
+| 任务 | 状态 | 阻塞/下一步 | 详情文件 |
+|---|---|---|---|
+| 生命周期 P4 全量 bootstrap | ✅ 已完成 | 5 提交待下次网关重启部署；2 个 `:cur` 半区窗口待决定 | 归档遗留待办 / archive「生命周期 P4」 |
+| 09-08 并行四任务 | 部分已上线 | 文档爬虫 FC 自动化卡 6 项人工事项 | 本文件「2026-09-08 并行四任务」 |
+| 配置 v2/OAuth/配置拆代码 | ✅ 已上线 | `LOCAL_CONFIG_PATH` 回落待修；凭据轮换待决策 | 归档遗留待办 |
+| 资源生命周期改造 P0~P3 | ✅ 已上线 | es_endpoint / `resource_valid` 索引缺失等 | 归档遗留待办 |
+| 管理台合并 | ✅ 已上线并核验 | ARMS 指标、浏览器实测待人工验证 | 归档遗留待办 |
+| 队列 v2 上线收尾 | 进行中（人工） | A~E 步骤待用户执行 | 本文件「待办」 |
+| 5 爬虫全站扫描启动行为改造 | 待办（P0） | 改为 `fullsweep:lastdone` 守卫 | 本文件「待办」 |
+| 安全凭据轮换 | 待用户决策 | 多处硬编码 AK/SK/Token | 归档遗留待办 |
+| 进行中 | 无 | — | — |
 
-四件事：① 告警加入后台+附日志、队列失败率告警按队列可配且默认 10min/50%→**1h/60%**；
-② 代理池情况加入 admin 后台；③ 资源链接爬取路径追踪（SLS 拼时间线）；
-④ 文档爬虫 FC 自动化（新 Chrome FC 实例 + doc-crawler 进程 + 移植金山文档油猴脚本）。
+## 2026-09-08 并行四任务（监控增强 + 文档爬虫上云）—— 部分已上线，文档爬虫 FC 自动化待人工
 
-- 五仓库均已 push：SPIDER `d6a4d54` / COMMON `5e5cdc1` / NC-JS `ab7753d` /
-  API `9518bac` / userscripts `fdc884a`。**全部未部署**（网关受 P4 bootstrap 阻塞）。
-- 全程记录：`sessions/2026/2026-09-08-并行四任务监控与文档爬虫上云.md`；
-  作业指导书与验收判据：`agent-tasks/2026-09-08-monitoring-and-doc-fc/`。
-- 主控 hub 审查抓到阻塞级缺陷（监控初始化会让网关一启动就 Fatal），
-  见 `lessons/failure-旁路能力初始化拖垮主流程.md`。
+四件事：①告警加入后台+附日志、队列失败率告警按队列可配（默认 10min/50%→1h/60%）；②代理池情况加入 admin 后台；③资源链接爬取路径追踪（SLS 拼时间线）；④文档爬虫 FC 自动化（新 Chrome FC 实例 + doc-crawler 进程 + 移植金山文档油猴脚本）。
 
-### 上线待办（等 P4 bootstrap 结束、网关可重启后）
+- 五仓库均已 push：SPIDER `d6a4d54` / COMMON `5e5cdc1` / NC-JS `ab7753d` / API `9518bac` / userscripts `fdc884a`。
+- **①②③已随 2026-09-09 网关重启（`883daeb`）一并上线**：告警后台、代理池监控 `proxy_admin`、链接追踪均生效；`spiderAdmin` 新页面已发布；爬虫容器与 `proxy` 服务均已重部，埋点数据正常。
+- **④文档爬虫 FC 自动化仍未落地**，卡在以下人工事项：
+  - [ ] SLS 给 `link_key` 建索引后打开 `services.queue_admin.sls.link_key_indexed`（缺省 false）
+  - [ ] Tampermonkey 扩展包上传 OSS（`fc-chrome/extensions/tampermonkey.zip`），拿到实物后复核 `fc-chrome/tampermonkey.go` DOM 选择器（未验证）
+  - [ ] FC 镜像构建与部署（阿里云 ACR + serverless-devs，函数名 `nc-app-prod-cdp3`），步骤见 COMMON `fc-chrome/README.md`
+  - [ ] 新 FC 域名回填三处：NC-JS `CDP_ENDPOINT`、`task.ts` 的 `eps['prod-v3']`（TODO 占位）、SPIDER `services.doc_crawler.fc_endpoint`
+  - [ ] 云端油猴脚本上传：userscripts `pnpm build:cloud && pnpm upload:cloud`
+  - [ ] doc-crawler 部署主机待确认（`deploy.sh` 暂填 `osec-jenkins` 占位）
+  - [ ] PC 端油猴调度器是否下线，由用户决定（可与 doc-crawler 并存）
+- 已知取舍：代理池总览全场景去重 IP/主机数恒为空；`proxyAdminRpc` 无前端 mock；`AlertRulesResponse.global.backlogThreshold` 未暴露 `resourcePreCheck` 专用缺省；无生产凭据多项未联网验证。
+- 详情：`sessions/2026/2026-09-08-并行四任务监控与文档爬虫上云.md`；`agent-tasks/2026-09-08-monitoring-and-doc-fc/`；`lessons/failure-旁路能力初始化拖垮主流程.md`。
 
-- [ ] **网关重启才生效的三项一起做**：告警后台 + 代理池监控 `proxy_admin` + 链接追踪
-      `TraceResLink`。与既有的「配置按服务拆分」「GitHub OAuth」合并成一次网关重启。
-- [x] **前端发布**：`spiderAdmin` 新增 5 个页面（[事实] 09-10 代理池总览页已在生产可访问）（告警历史/告警配置/链接追踪/代理池总览/场景明细）。
-      顺序仍是**先网关后前端**。
-- [x] **爬虫容器分批重部**（09-10 09:33~09:56，20 个 service/32 容器，sonnet 子 Agent 执行、主控独立复核，简报 `agent-tasks/2026-09-10-proxy-monitor-rollout/`）：代理池监控的 `Scene` 埋点与链接追踪的 SLS 埋点都在爬虫侧，
-      不重部就没有数据。
-- [x] `proxy` 服务（osec-jenkins）重部（09-10 09:30，主控执行），供给侧「推送 IP 数/去重 IP 数」才有数据。
+## 归档遗留待办（原分散在已归档任务块中，仍未完结）
 
-### 需要人工提供 / 决策
-
-- [ ] **SLS 控制台给 `link_key` 字段建索引**，然后把
-      `services.queue_admin.sls.link_key_indexed` 打开（缺省 false，此时走分享 id 全文检索）。
-- [ ] **Tampermonkey 扩展包**上传到 `oss://osec-deploy-pub/fc-chrome/extensions/tampermonkey.zip`
-      （缺失时镜像仍能构建，只警告）。拿到实物后要复核
-      `fc-chrome/tampermonkey.go` 里 options 页的 DOM 选择器（未验证）。
-- [ ] **FC 镜像构建与部署**（阿里云 ACR + serverless-devs，函数名 `nc-app-prod-cdp3`）：
-      `enfi-resource-common/fc-chrome/README.md` 有完整步骤。
-- [ ] **新 FC 域名回填**三处：NC-JS `apps/cdp-driver` 的 `CDP_ENDPOINT` 环境变量、
-      `admin/login3rd/src/task/task.ts` 的 `eps['prod-v3']`（现为 TODO 占位）、
-      SPIDER `services.doc_crawler.fc_endpoint`。
-- [ ] **云端油猴脚本上传**：userscripts `pnpm build:cloud && pnpm upload:cloud`
-      （传到 `oss://osec-deploy-pub/fc-chrome/userscripts/kdoc.user.js`）。
-- [ ] **doc-crawler 部署主机**：`deploy.sh` 暂填 `osec-jenkins` 占位，待确认。
-- [ ] **PC 端油猴调度器是否下线**（`userscripts/src/plugins/scheduler/`）：
-      doc-crawler 与它可以并存（同一个 `doc_crawler` 队列的两个消费者），由用户决定。
-
-### 已知取舍 / 未做（不阻塞）
-
-- 代理池总览「全场景汇总」行的去重 IP 数与主机数恒为空（跨 scene 的 HLL 并集未做）；
-  用户要求的"5m/1h/24h 推送 IP 数与去重 IP 数"来自供给侧，已正确实现。
-- `proxyAdminRpc` 没有前端 mock，两个代理页面只过了类型检查，未跑过真实数据分支。
-- `AlertRulesResponse.global.backlogThreshold` 只暴露通用队列缺省(2000)，
-  没暴露 `resourcePreCheck` 专用缺省(5000)，总览页对该队列会偏早标红；
-  后端判定是精确的。要修需给 proto 加字段。
-- 无生产凭据，SLS 查询效果、FC 部署、Tampermonkey 安装路径均未联网验证。
-
-## 后台登录改为 GitHub OAuth（2026-09-08，代码已合并 push，**未部署**）
-
-- [x] 三仓库开发+两轮真实浏览器联调（发现并修复两个阻断级问题）已完成：
-      SPIDER `41832ca` / NC-JS `5808d42` / COMMON `ac5cfc5`。
-- [ ] **待用户**：把 `.agent-browser/gateway-github-auth-snippet.yaml`（含 client_secret、
-      session_secret）贴进 `_note/config/spider.prod.yaml` 的 `services.gateway` 下
-      （Agent 不能碰该文件）。
-- [ ] **待网关部署**：受既有阻塞影响——网关双机在跑 `hotfix/p4-bootstrap`（P4 全量
-      bootstrap 未完成前不能重部）。**不要从 master 构建网关**（master 含未上线的配置 v2）。
-- [ ] **待前端部署**：`admin/qiankun` 主应用 + `spiderAdmin`/`panShareDownload` 两个连
-      网关的子应用需各自 `deployProd`/发 OSS。
-- ⚠️ **上线顺序必须"先网关后前端"**：新前端连旧网关拿不到登录参数会卡住；
-  老前端连新网关会因生产 `allow_rtc_token=false` 而全员被拒登录。
-- 详见 `agent-memory/decisions/decision-2026-09-08-后台登录改为github-oauth.md`、
-  `agent-memory/sessions/2026/2026-09-08-后台登录改为github授权.md`。
-
-## 生命周期 P4（2026-09-05 晚状态）
-- [x] 网关热修 3（`279bdc1`：copy_child 按窗口整段 has_parent reindex + heap 降速守护）已部 res2 17:21 / res1 17:28
-- [x] 单月 window 实测（作业 id=5，2026-08，rps 6000）：17:35→19:03 共 88 分钟，复制 2994 万文档 ≈ 5700 docs/s（限速 95%），校验通过（cur DB 763,763 vs ES 763,745；long 1,796 vs 1,724 即已知 72 行残留），repair id=6 已 done。集群 heap 53~69%、无 reindex 残留
-- [推算] 全量 7.4 亿子文档 ÷ 5700/s ≈ 36 小时 + B1 约 2 小时 → 1.5~2 天
-- [x] 修复 5：[用户指出] ctime 分布极不均匀（新站点短时集中入库）→ 窗口划分改为按目标文档数自适应切分（`bootstrap_ctime_split.go`，`windowTargetDocs` 缺省 30 万，月→日→时→分钟递归细分，join/百度分别切分，窗口表缓存进 `progress.windows`）；master `487f183`、热修分支 `fb26e82`；单测 6 例 + 尖峰联调 119 窗口通过
-- [x] 热修 5 `fb26e82` 已部 res2 19:56 / res1 20:02（容器 `294622e3`/`51d5e0d7`），leader 仍 res2，配置未动，回滚位 `279bdc1`；5 个观测脚本沉淀 SPIDER `27133dc`；rollout §11 `5a72f37`
-- [x] 生产 dryRun 作业 id=7（20:06→21:54，107 分钟，≈6870 docs/s）：1908 窗口（join 810 / 百度 1098；月 263、日 1613、时 26、边界 6 且计数全 0），最大窗口 27.9 万，无窗口超 30 万；预估 44,338,431 与扫描 44,340,729 偏差 0.005%
-- [ ] **P0 进行中：全量 bootstrap 作业 `id=8`**（operator `p4-full`，2026-09-05 23:01 启动，`copyMode=window rps=6000 copyConcurrency=1 windowTargetDocs=300000`）。
-  窗口 1908 = join 810 + 百度 1098，与 dryRun id=7 一致。首 1h50m 无熔断：heap 37~78%、全程 green、breaker 无增长（基线 23×0/2×1 为历史遗留）、v2 延迟 310~504 ms（基线 404）、网关 0 panic。
-  建库阶段（`db_join` → `db_bnd`）实测 2,600~3,700 行/s，约 3.9 h（预计 09-06 03:00 转入复制）；复制阶段 ≈7.17 亿文档 ÷ 5686 ≈ 35 h；**预计全量完成 2026-09-07 14:00 前后（约 39 h）**。
-  **巡检第 1 轮（00:57~05:47）**：03:42 建库完成（DB 44,344,517 行，与 dryRun 吻合）→ copy_parent；父文档吞吐 2,036~2,674 docs/s（低于单月 5,686），heap 44~79% 守护未触发，无熔断；05:47 父文档已复制 1,723 万/4,434 万。
-  **巡检第 2 轮（05:50~07:23）触发熔断**：copy_parent 差分吞吐 1,442/1,523 docs/s 连续两次 <2,000 → 07:22 pause（父文档 27,883,001/44,344,517=62.9%，join 型 1620/1620 槽全完成，bnd 1244/2196 槽）。集群全部正常（heap ≤82%、green、breaker 平、v2 ≤631ms、0 panic），reindex `created==total` 限速空等 → 瓶颈是作业侧窗口固定开销。
-  **主控决策（07:35）**：原地 resume（见 `decisions/decision-2026-09-06-全量bootstrap熔断后原地resume.md`），吞吐熔断修订为需伴随 `created<total` 或 heap≥80%。第 3 轮 07:29:57 已 resume，state=running 但**实际未推进**。
-  **repair 误标事故（07:22~08:12，已止损）**：系统定时 repair 作业 **id=9**（每天 04:00 排队）趁 id=8 被 pause 开跑，`db_to_es` 把未复制中间态行 `MarkDeleted`，**误标 147,826 行 + 去重 14 条**（游标停在 `res_lc_bnd_00` `204f24e0…`），并占住串行调度循环使 id=8 停摆。Agent 的 pause 被 auto 分类器拦 3 次，**用户 08:12 手动 pause id=9**，随后在 COMMON 项目级 `.claude/settings.json` 放行 `Bash(go run ./tools/*)`、`Bash(ssh -N -L *)`、`Bash(./deploy.sh *)`（前缀匹配，命令须以此开头、cwd 在 SPIDER）。id=8 08:23 确认真正推进（updatedAt 动、reindex 5、bnd 槽 1255→1340、父 2,892 万）。
-  **分析结论（09:05，生产只读验证）**：误标精确限定 `res_lc_bnd_00` **147,432 行**（dry-run 时 147,429，少量被正常写入自愈），`created_at` 100% 落在 09-06 01:00~03:xx 建库阶段、无一早于 bootstrap 启动；`MarkDeleted` 只改 `status`/`next_check_at` 两列，其余原值完好；其它 63 表为 0。「已修正 147,826」= 147,437 误标 + 389 良性索引位置纠正；「去重 14」是 ES 物理删 `res_long_2026` 冗余副本（保留双写的 `res_short_202609`），良性且不可逆，不回滚。B5 校验按 status=1 计数，误标不回滚会静默漏算。
-  **代码**：互斥热修 master `dd4b7e0` / hotfix `e44b702`（`repair_guard.go`：调度层不创建/不选取、执行层自动 paused、`force` 逃生口；repair 不进 `heavyJobKinds`——既有测试断言且锁在 pause 时会释放，堵不住此事故）。回滚脚本 `scripts/lc_rollback_repair_marked.sh`（master `2d32689`，缺省 dry-run，`--execute` 分批 5000 + 补偿事件 `operator=manual_rollback`，经 osec-res1 mysql 客户端、口令走 MYSQL_PWD）。
-  **[用户确认 09:15]** ① 授权 Agent 执行回滚；② 立即重部互斥热修网关。**已全部完成（09:16~09:36）**：
-  - 回滚 09:15:41→09:16:28，47 秒 31 批，选中=更新=事件=**147,424**（剩余 5 行 `updated_at` 漂出窗口，留自愈），窗口内 status=3 剩 0；执行时 id=8 仍在 copy_parent，**赶在 copy_child 前**。首跑 ERROR 1267（临时表 collation）零写入即停，修复 SPIDER `82ef0d8` 后重跑（`lessons/failure-临时表排序规则不一致导致JOIN报错.md`）。
-  - 09:17:35 pause id=8，reindex 80 秒归零；网关 **res1 `b0a118d197ec` 09:22:45 / res2 `d1972841e0e1` 09:26:30**（`e44b702`，md5 一致，回滚位 `spider.old`=`fb26e82`），`config unchanged`、热更新参数不变、三索引四别名齐全、queue-admin 回归一致；**leader 漂到 res1**（09:27:56）。
-  - 09:30:17 resume id=8，bnd 槽 1666→1690 断点续跑，吞吐 ≈1,106 父/s 与暂停前持平。互斥只有单测 + 结构性证据（未创建 repair 实测）。
-  - 观测文档/脚本修正 SPIDER `3e12122`（`actions=*reindex*`、隧道 keepalive、slices 前缀/`_count` 差分说明）。
-  **第 4 轮巡检（08:26~09:19，按指令提前退出）**：copy_parent 父文档 75.2%（33,349,798），有效吞吐 1,362 docs/s 缓降，v2 673 ms（基线 1.7×），无熔断、无其它作业；09:17:35 id=8 被生产 Agent pause（预期）。copy_parent 预计还需 2.4 h。
-  **[待确认] 异常**：09:08:43→09:19:10 `res_short_202609` file 子文档 +1,047,458（≈1,670 docs/s），此前背景仅 20~180 docs/s，当时 copy_child 未启动——下轮 copy_child 差分前必须先复核背景基线并查明来源（双写突发 / 百度 filelist 注入 / `_count` 可见性）。
-  **第 5 轮巡检（09:41~11:20）→ 真熔断**：id=9 已 cancel（09:42）。09:08~09:19 子文档 +105 万定性为回滚后子文档重写（147,424 父 × ≈7.1 子），常态双写背景 ≈77 docs/s。copy_parent 尾段窗口体量缩到 ≈3.2 万/窗口，吞吐 2,322→364 docs/s（限速空等）。**v2 搜索延迟 10:04 815 ms → 11:07 5,469 ms（13.5×，max 15.7 s），11:08:06 pause id=8，8 分钟回落 470 ms——因果确认为 reindex 负载**。heap 峰值多次 90~94% 但 1 分钟内回落，breaker/green/网关正常。
-  **现状**：id=8 paused，父文档 41,690,679/44,344,517（94.0%），bnd 槽 1972/2196，copy_child 未开始。只读分析结论：params 在 resume 时重读，`UPDATE res_lc_job … JSON_SET requestsPerSecond` 可降速不丢进度；网关守护只在 copy_child 且只看 heap；真实用户影响：25 分钟 743 次搜索 43% >2 s、21% >5 s、无 5xx。
-  **[用户确认 11:45，11:55 修正] 续跑方案：rps 2500 起步 + 动态峰值守护**（10 分钟区间慢请求占比 r：<40% 加 1000 / 40~50% 维持 / >50% 峰值减半并 pause 2 分钟；样本 <30 视为稳定但上限 60%），见 `decisions/decision-2026-09-06-全量bootstrap动态rps守护续跑.md`。
-  **已上线（SPIDER `73dd99d`+`523e2a8`）**：`scripts/lc_adaptive_rps.sh`（守护）+ `scripts/lc_v2_slow_ratio.sh`（慢请求统计）。12:42:56 UPDATE rps=2500 并 resume（bnd 槽 1972 续跑）；守护 PID 2953046、隧道 18083、状态 `_note/adaptive_rps.state.json`、日志 `_note/adaptive_rps.log`、停止 `scripts/lc_adaptive_rps.sh --stop --state _note/adaptive_rps.state.json`。
-  **13:25:50 copy_parent 完成（父 44,313,198）→ copy_child**（join 窗口 1620 个复用父窗口缓存，早年窗口子文档少，首差分仅 ≈133 docs/s，不可外推）。前 5 区间 r 4/3/11/15/8%，peak 2500→7500（探针 v2：3500 时 568 ms、4500~5500 时 1,209 ms），0 pause、0 硬熔断、green。**peak 已超上午击穿时的 6000，趋势顶到 10000——是否调低 `--max` 待用户**。
-  - [事实] sliced reindex 父任务 `status.requests_per_second` 恒 0、分片跑时父 `status.slices` 全 null，rethrottle 判据须按 `parent_task_id` 归并分片求和（已修）。
-  - [事实] 本集群空载 max heap 即 85~93 锯齿，代码 `guardHeapHigh=85/Recover=70` 在此集群失效；守护硬熔断用 95/90。网关 `bootstrap_guard` 每开新窗口压到 1250，守护 5 秒内拉回——对着调，守护胜出，网关 heap 保护实际被架空（breaker 增长即 pause 仍有效）。
-  **第 6 轮巡检（13:40~18:47，零介入）**：13:58 peak 到顶 10000 后恒 hold，r 全程 6~22%（晚高峰 18:00~18:45 9~15% 无抬升），v2 均值 818~1,025 ms，0 pause/减半/heap 刹车，breaker 基线不变。前 196 槽（2013~2021 窗口）子文档为 0 纯空转；15:42 起进入真实数据，近 1 小时纯净吞吐 4,442 docs/s（活跃窗口内 5,004~6,082，`throttled_millis` ≈50% 即被 `--max` 封顶）。18:45 `child:` 槽 254/1620（2023-12），已复制 3,727 万。
-  **[事实] 源索引 `join=file` 子文档实测 12.00 亿**（此前估算 6.73 亿偏低近一倍），进度 ≈3.1%；**完成校准 09-09 19:00 ~ 09-10 07:00**（乐观 09-09 06:00）。[待确认] 是否还有 bnd child 阶段（第 7 轮核实代码）。
-  **[用户确认 19:00] 守护上限提至 18000**：22:05 停旧守护，22:08 以 `--peak 10000 --max 18000` 重启，**新 PID 3405622**、隧道 18083（pid 会自愈重建），每区间 +1000 至 23:30 到 18000 恒 hold；低样本上限脚本按比例自动 10800。
-  **第 7 轮巡检（18:55~次日 07:52，会话曾挂起 8 h，守护自主运行）**：零 pause/减半；heap 硬熔断 1 次（05:28 max 98 → 降 9000，45 秒自恢复）；晚高峰 r 6~22%、v2 峰值 1,422 ms（19:49）后回 850~1,120；夜间 r 4~9%。窗口体量 930 万→1,789 万→5,527 万→**1.005 亿**（t202405），吞吐稳在 4,800~5,900 docs/s，`throttled_millis` 56%→25%。**07:52：已复制 2.715 亿 / 12.00 亿（22.6%），完成校准 09-09 12:00~22:00**。`child:` 槽 250/1620 已无进度意义。
-  **[事实] 代码核实**：copy_child 只处理 join 窗口，百度型 nested filelist 随 copy_parent 整体复制，**无 bnd child 阶段**；之后仅 B5 verify（秒级，只对拍父文档）+ B6 finish（秒级，排一个异步 repair，无别名切换）。
-  **🔶 新缺陷**：`childCountOk` 对称差把 dst>src 判不达标 → 整窗重跑全 version_conflicts 白跑（实测 3 例，一次白跑 5,492 万 2.5 h；1 亿窗口误判一次 4~5 h）。见 `lessons/failure-copy_child计数校验对称差误判重跑.md`。修复已提交：master `b5073cf`（+`b7f9da9` 巡检采样脚本 `lc_patrol_sample.sh`）、hotfix **`ca92fb3`**；`childCountOk` 改为 `dst>=src` 通过、只看短缺，message 写明原因。
-  [事实] FailedSlices 不影响作业终态：`bootstrapCopyChildren` 只 append 不返回错误，B5 只对拍父文档、finish 不读它；已有两条 `:cur` FailedSlices 数据无缺失（旧校验误报），仅展示层残留，不清理。
-  **[用户确认 09-07 08:35] 第三次热修重部 `ca92fb3` 已完成（09:48~10:13，中断 24 分钟）**：网关 **res2 `fb5956c211fa` 10:04（现 leader）/ res1 `dcf3efc2e649` 10:07**，md5 一致，回滚位 `spider.old`=`e44b702`，`config unchanged`、29 项热更新参数不变、别名齐全、queue-admin 一致。10:12:48 resume，**新校验立即生效**（12 个旧「未达标」窗口判通过，未达标片数 12→0）。守护 10:13 重启 **PID 3963729**（隧道 pid 3963747），peak/max 18000。**04:00 定时 repair 未被创建**——互斥热修 `e44b702` 在生产验证生效。
-  [事实] pause 不取消 ES 侧 reindex（持久化 `es_task_id`，resume 时 reattach）；但本次 resume 后作业先补跑早期窗口，原 1 亿窗口任务 `…:81260128` 成孤儿（全 version_conflicts，双倍限速 36000，heap 采样 98）——主控决定取消该任务（由第 8 轮巡检 Agent 执行）。守护也会把 move 搬迁的小 reindex 拉到 peak（既有行为）。
-  **第 8 轮巡检（08:00~12:55）**：`t202405:long` 白跑 3 h 01 min（created 1,141 / vconf 4,602 万）后 10:47 `_cancel` 孤儿任务，2 分钟内分片 10→4、heap 96→88，v2 1,591→919→678 ms，r 30%→3~7%；补跑 12 个旧窗口一次通过（FailedSlices 12→0，日志 7 次「视为通过」）。**5 小时净新增 ≈0，进度仍 22.6%**（2.7116 亿），完成片 259/1620，cursor `t202403:long` 补跑中。
-  [事实] 网关容器名 `spider-gateway`（勿看 `resource-storage-gateway`）；守护 rethrottle 按父任务逐个施加、无全局预算——**已修复 master `ba70eba`**（按 description `reindex from [resource] to [` 识别 bootstrap 父任务，N 个均分 peak、最低 500，move/rotation 小任务不计入；`--selftest` 通过），13:16 重启生效，**新守护 PID 4106692**（隧道 pid 4106711），`budget` N=1 各 18000，重启耗时 15 秒。
-  **第 9 轮巡检（12:54~17:52，零重跑、仅守护重启）**：`t202403:long` 13:46 完成、`t202404:cur` 秒级通过、`t202405:long`（1.0019 亿）13:48 起补跑（created 仅 3.9 万——此前已复制过），扫描 ≈5,100 docs/s、限速占比 24~29%；净新增 -41.7 万。r 2~23% 全 hold；v2 980~1,354 ms。估计补跑还剩 ≈1.53 亿约 8 h（到 09-08 02:00），再真实复制 9.29 亿；**完成校准 09-10 06:00（09-09 22:00 ~ 09-10 12:00）**。
-  [事实] `_tasks` 的 `total` 是活跃分片之和，分片完成即消失，算窗口百分比要用首次 total 作分母；补跑窗口看 `version_conflicts` 才知进度（脚本 `scripts/lc_window_stat.sh`，主控已提交）；v2 主动探针与 r 被动统计解耦。
-  **第 10 轮巡检（17:52~23:00，零介入）**：`t202405:long` 补跑 20:19 收尾（6.5 h，created ≈2 万 / vconf 5,000 万+）；**20:22 起真实复制**（created≈total、vconf=0），均值 4,807 docs/s（2,400 万级窗口 6,000~7,600，2024-05 后 30~100 万级小窗口 3,800~4,200、翻台 0.3~0.6 分钟）；晚高峰 r 4~22% 全 hold，v2 探针 689→1,196 ms；**23:00 进度 26.15%（3.1385 亿），完成片 314/1620**；**完成校准 09-09 18:00 ~ 09-10 06:00（中值 09-10 00:00）**。
-  **第 11 轮夜巡（23:02~04:25，零介入）**：夜间均值 **5,526 docs/s**（大窗口 8,000~8,600），r 0~9%，v2 664~1,122 ms；**04:04 定时 repair 再次被互斥拦住**（日志判据命中 id=4 paused 而非 id=8——若日后清理 id=4 需复核 `repair.go:348` 查询条件）；低样本规则实测：样本最低 44 未触发，源码确认低样本时 peak 不主动降只不加档。**04:25 进度 35.13%（4.2156 亿），完成片 396/1620；完成校准 09-09 19:30 ~ 09-10 01:30**。
-  **第 12 轮巡检（04:28~09:28，零介入）**：均值 4,363 docs/s（大窗口 5,500~6,000）；**08:30 起进入 26~100 万级密集小窗口段**，吞吐跌到 2,000~2,200，片推进 20 片/30 分钟；早高峰 r 峰值 10%，v2 探针早高峰 750 ms 反优于夜间大窗口段（压力由窗口体量驱动）。**09:28 进度 41.86%（5.0233 亿），完成片 488/1620；完成校准后延至 09-10 06:00 ~ 09-11 00:00**。
-  **第 13 轮巡检（09:35~14:25，零介入）**：均值 3,416 docs/s（小窗口段实测 3,000~4,400，非 2,100），窗口推进 9.8 窗/h；上线期间 pause 11:49:49 → resume 12:10:09（20 分 20 秒），无孤儿，resume 后吞吐无退化；守护新 PID 1122433 行为一致。解析 `progress.windows.join`：**剩余 517 窗全为 <30 万父文档小窗口**（t202412~202609 + 2 noctime），无大窗口段；EstCount 不能用子/父比外推。**14:22 进度 46.52%（5.5819 亿），完成片 586/1620；完成校准 09-10 15:00 ~ 09-11 02:00**（`_count` 差分与窗口推进两口径吻合 1%）。
-  **第 14 轮巡检（14:30~19:20）**：17:56 跨过 50%；守护正常段 3,192 docs/s，爬虫分批重部无可辨识影响；**18:44~19:21 守护失能事故**（`es_curl.sh` 解析 v2 格式 `es_addr` 为空静默退出→守护存活但取数全失败→网关 guard 接管 rps 9000→吞吐 1,942）；主控 19:21 修 `es_curl.sh`（SPIDER 已提交），守护 19:21:47 自动恢复 rethrottle 18000。**19:19 进度 50.95%（6.114 亿），完成校准 09-11 01:45 ~ 02:20**（守护正常前提）。剩余窗口实测最大 370 万（非全小窗口）。
-  **第 15 轮巡检（19:23~00:26）**：守护 19:55 换新版重启（**PID 1664230**，中断 64 秒），新字段全程正常，23:10 慢请求统计取数失败被新保护识别并 hold；零介入，04:00 前无其它作业。**吞吐降至 1,846 docs/s**（密集窗口 4,300~5,700，但多个「total 大、created 极小」窗口，如 total 851 万/created 404）；**00:26 进度 53.71%（6.445 亿），child 槽 705/1620；两口径校准后移至 09-12 09:00 ~ 13:00**。[待确认] 低产出窗口是「稀疏」还是「重扫已复制文档」——第 16 轮首要诊断。
-  **第 16 轮巡检（00:31~05:12，零介入）**：**诊断——低产出窗口是 `:long` 半区计数短缺 0.6~5.6% 触发的整窗无效重跑**（`created=0`、`vconf` 数十万；重跑前后计数逐字不变；抽样 1000/1000 子文档目标侧均存在，属结构性差异，疑似同 `_id` 子文档跨父 routing 合并——待确认）。26 个窗口重跑、近 1 小时 58% 时间浪费，`failedSlices` 0→23、`childVerifyFail` 12→35。均值 2,222 docs/s（无重跑段 4,500~5,100）。04:01 互斥再次拦住 repair。**05:11 进度 56.92%（6.831 亿），child 槽 754/1620；校准 09-11 22:00 ~ 09-12 19:00**；若消除无效重跑约 30 h → 09-10 中午。**Sonnet 修复中（05:20 起）**：首次 reindex 正常完成即不重跑，短缺记 `shortfallSlices`。
-  **第 17 轮巡检（05:19~10:16，零介入）**：无效重跑 06:55 后自然消失（越过 2025-07 `:long` 段，`failedSlices` 停在 60 / `childVerifyFail` 72），分段吞吐 1,610 → 2,733（1.70×）；早高峰 r 峰 21%；**10:13 进度 60.47%（7.257 亿），child 槽 847/1620；校准 09-11 10:00 ~ 18:00**。`docker logs --since` >2 h 不可靠（轮转）；`lc_patrol_sample.sh` 的 sed 行号因 brief 新增行错位待修。
-  修复已提交 **SPIDER `97541e9`**（首次 reindex 正常完成即不重跑，短缺记 `Extra.childShortfall`/`progress.shortfallSlices`，`TaskInfo.Ok()` 补 noops；8 单测）+ `649b9a3`（brief 输出三计数）。历史 60 条 failedSlices 不回填，续跑时按新逻辑重评。
-  **[用户确认 10:20] 立即重部网关：短缺修复 + 配置拆分 + log_store + 打码 + 其他会话新增功能（与 lc 无关）一起上线。Opus 执行中（10:25 起）**：核实 master 差异 → OSS 旧对象备份 `.v1bak`/oss.last 核对 → 停守护 → pause → res1→res2 → resume → 重启守护。操作 Agent 核实时发现两份文件方案已被另一会话回退（改为拆代码 `4f5f528`），主动停下；主控 10:45 按新状态重新授权：统一对象 `res/spider.prod.yaml` 语义等价上传（触发 36 容器 + 2 网关一次等价热加载，接受）、`Noops` 计入 handled 放行、不动 `res/spider.gateway.prod.yaml`。master `6cf6157..4f5f528` 共 21 提交（config 重构、proxy_admin、queue_admin trace/alert、doc-crawler、download_scheduler 等），构建/单测/隔离门禁通过。**10:55 部署再次中止（生产零改动）**：构建校验发现 master `4f5f528` 两个阻断缺陷——① 默认构建二进制 `registerCommands()` 在 `init()` 里以 crawler+gateway 双角色 `Get()`，`loader.Load()` 第二角色 panic，任何子命令都起不来；② `deploy.sh buildSpider` 仍 `go build spider.go` 单文件，拆出 `commands_*.go` 后产物只剩 `config_show`（24.8MB vs 60.6MB），静默无报错；③ `check_config_isolation.sh` 只编译不运行，误报安全。**Sonnet 修复中（11:00 起）**：惰性注册、`go build .` + 产物断言、门禁加冒烟运行；**[用户 11:10] 并入：去掉 build tag**。已修复 **SPIDER `b12073a`（惰性注册、命令按 7 个角色分组——顺带修了 doc_crawler/devops/proxy/downloader 与 crawler 共组导致的运行时双角色 panic）/`63efe79`（去 tag，README §2.8.1 记理由）/`2c55f41`（deploy.sh `go build .` + 体积>40MB + 命令列表断言）/`883daeb`（门禁：构建→冒烟→7 角色 config_show→静态 import 检查）**；产物 61MB 命令齐全。**网关重部完成（11:37 pause → 12:12:52 resume，中断 35 分 07 秒，零孤儿）：res1 `93d1fb726816` 11:53 / res2 `600e1a8c2738` 12:04（master `883daeb`，md5 `bdd0c722…`，leader=res2，回滚位 `spider.6cf6157.bak` 与 `spider.old`）**；OSS 统一对象上传等价新字节（md5 `233c19e9…`），全舰队热加载 0 报错；核验全过（打码生效、SLS 恢复、容器内角色隔离坐实、OAuth/浏览 API/别名/params/queue-admin）。**短缺不重跑生效：failedSlices 61→0，shortfallSlices 开始记账**。守护 **PID 2967491**。[待决策] 原 61 条 failedSlices 被清空且 cursor 已过，done 后需 `copyMode=ids`/对账确认；守护命令行含 ES 凭据（ps 可见）待改。**本会话后台已全部结束，交接给新会话（`_note/handoff-2026-09-09-p4-bootstrap-config-v2.md` 已更新到 12:50）。** **交接文档：SPIDER `_note/handoff-2026-09-09-p4-bootstrap-config-v2.md`（12:00，供新会话主控接手；上一会话的后台 Agent 通知不会送达新会话，状态以现场检查与邮件为准）。**config 重构对 bootstrap 断点续跑无影响已核实（lifecycle 目录仅 `register.go` 两处取配置改动）。第 18 轮巡检同时进行（不介入）。原文：守护取数失败检测/告警/保护已提交 **SPIDER `c34ac3c`**（状态文件新增 `alert`/`es_fail_streak`/`es_fail_total`/`stat_failed`，连续 3 次 ERROR、12 次邮件 30 分钟节流，`thr_child<-1e5` 强制 hold；selftest 18 项），巡检 Agent 择机重启生效，新 PID 待回填。
-  **[事实] 网关重部（master `883daeb`）已完成——新会话主控 12:00~12:20 现场核查**：旧会话 Opus Agent 仍存活并走完流程：守护 11:36 停 → 作业 11:37 pause → res1 `93d1fb726816` 11:53 → res2 `600e1a8c2738` 12:04（leader 12:05 漂到 res2）→ 12:13 resume → 12:17 守护重启（pid `2967491`，peak 18000）；两台二进制 md5 `bdd0c722…`（回滚位 `spider.old`=`c405efb1…` 即 `6cf6157`），0 panic，热更新参数未变（`enabled=true`/`dual_write_legacy=true`），无孤儿 reindex，中断 ≈36 分钟。新代码效应：resume 时 `failedSlices` 61→0（`bootstrap.go` 清 `child:` 前缀旧记录，属预期；那 60 条结构性短缺误报的 key 未另存）、`shortfallSlices` 开始计数（12:21 已 3）。12:21 进度 61.88%（7.425 亿）、child 槽 857/1620。`lc_patrol_sample.sh` sed 错位已修（SPIDER `8a3d25a`）。**第 19 轮巡检由新会话派 Opus 接管（12:30 起，独立隧道 18085，简报 `agent-tasks/2026-09-09-p4-bootstrap-patrol/`）**；旧会话第 18 轮可能跑到 15:30，两者并存但只读为主。
-  **第 19 轮巡检（12:26~17:15，零介入）**：全程处于「重跑旧 failedSlices 窗口」段——主控核实 `bootstrapCopyChildrenByWindow` 的 `done` 只来自 `progress.Slices`，resume 时 61 条 `child:` 失败记录被清掉后**不在 done 里，被按 specs 顺序重跑**（2025-04→2025-08 的 600 万~1000 万级大窗口，`created≈0`、vconf 数百万），每条改记入 `shortfallSlices`（3→57，与槽增量 1:1，合计缺 130.3 万 / 2.24%，单窗 0.17%~5.62%）。这等价于对 61 条误报做了一次自动对账（交接文档 §2.5「决策项」已由此解决，done 后只需核对 shortfall 明细）。`_count` 差分该段无效（净 -86 万，来自生命周期删除背景）；child 槽 858→913（11.4 槽/h），cursor 到 `child:t202508010000:long`，重跑段剩约 4 条。集群 green、heap 58~98 锯齿、breaker 基线、v2 组 1 中位 429~994、r 4~22%、守护 peak 恒 18000 无 pause/刹车、容器未变、真 panic 0、「重跑该窗口一次」0。**完成校准整体后推 ≈6 h（重跑段 5 h + 上线 36 分）→ 09-11 16:00 ~ 24:00**，第 20 轮越过重跑段后（判据：`created≈total`、vconf 归零）用 `_count` 差分重新校准。巡检脚本判据修正：panic 计数改 `grep -cE "panic:|\[fatal\]"`（`-i fatal` 被关键词 "Femme Fatales" 误触发）；禁止在网关日志 grep `shortfall`（progressJson 单行 2.2 MB）。日志 SPIDER `_note/patrol-2026-09-09-r19.log`。旧会话 12:50 补充：回滚位另备 `spider.6cf6157.bak`，OSS `res/spider.prod.yaml` 已上传等价字节（md5 `233c19e9…`），守护把 ES 凭据放在 ssh/curl 命令行上（`ps` 可见）为安全待办。
-  **第 20 轮巡检（17:21~22:35，零介入）**：**17:50 越过重跑段**（新窗口 total 1810 万/created 41.6 万/vconf 0，shortfall 增量 < 槽增量），61 条旧 failedSlices 重跑共耗约 5.5 h（跨 19/20 轮）。越段后 `_count` 差分立刻由负转正：`long_file` 7.416 亿 → **8.027 亿（66.89%）**，本轮 +6,115 万，越段后有效吞吐 **3,642 docs/s**（大窗口段 5,309~6,864、21:00 后密集小窗口段 1,415~2,946）；child 槽 914→958/1620（8.6 槽/h，与 `_count` 背离 2.5 倍，槽口径只用于判卡死）。**完成时间重校：剩余 3.973 亿 → 09-11 00:00 ~ 20:00，中值 09-11 08:00**（小窗口段占比是最大不确定性）。`shortfallSlices` 58→61（越段后仅 +1，属正常记账）、`failedSlices` 0、`childVerifyFail` 73、「重跑该窗口一次」0。集群 green、heap 58~99 锯齿（刹车 0）、breaker 基线、v2 组 1 中位 537~1330（>1100 仅 2 次不连续，未熔断）、r 3~27%、守护 peak 18000 全程存活（守护隧道 18083 自愈 pid 变 3540504）、容器未变、panic 0。观测侧瞬时故障 3 类：巡检隧道 21:09 静默断开（brief 缺 slices 行，先查 `ss` 再重采）、跳板 ssh 超时 3 次、小窗口段翻台间隙最长 6 分钟（复核用守护日志 `N=1`）。日志 `_note/patrol-2026-09-09-r20.log`。
-  **第 21 轮巡检（09-09 22:38~09-10 03:48，仅 1 次条款 6 隧道重建）**：`long_file` 8.032 亿 → **8.662 亿（72.18%）**，+6,300 万，均值 **3,388 docs/s**；child 槽 960→1060/1620（19.4 槽/h）。夜间 11 段吞吐全部落在 2,439~4,906，与窗口体量相关性弱（白天的大/小窗口分段口径夜间不成立）。**完成重校：均值外推 09-11 07:10，区间 09-10 22:40 ~ 09-11 17:50，槽口径 09-11 08:45**。`shortfallSlices` 61→62、`failedSlices` 0、`childVerifyFail` 73、重跑 0。集群 green、heap 60~99（峰 99 在 01:50~02:11，刹车 0）、breaker 基线、v2 组 1 中位 554~895（峰值 4,527 但中位未破 1,100）、r 3~34%、守护 peak 18000 存活（18083 自愈 pid 4006010）、容器未变、panic 0。观测侧：18085 隧道 03:22 静默断开重建；跳板 ssh 超时约 8 次。日志 `_note/patrol-2026-09-09-r21.log`。
-  **第 22 轮巡检（09-10 03:51~08:58，零介入）**：`long_file` 8.663 亿 → **9.255 亿（77.12%）**，+5,918 万，均值 **3,218 docs/s**（11 段 1,926~4,539）；child 槽 1062→1196/1620。早高峰专项：07:00~08:00 r 3~6%、吞吐 4,400+（优于夜间）；**08:00 后 r 12~18%、吞吐 1,926~2,832（−40%）**，`created≈total` 属作业侧固定开销非 ES 慢。**完成外推 09-11 08:40（区间 09-11 01:46 ~ 09-12 00:34）**，较上轮后移 1.5 h。`shortfallSlices` 62→66（低速累积）、`failedSlices` 0、重跑 0。集群 green、heap 73~95、breaker 基线、v2 组 1 中位 654~1,037（06:00 峰 9,710 未连续超阈）、守护 peak 18000 存活、容器未变、panic 0。脚本：跳板超时会让 brief 行序错位（`total=None ratio=` 顶掉 slices 行），`lc_patrol_sample.sh` 已改关键字匹配（SPIDER 本轮提交）。日志 `_note/patrol-2026-09-10-r22.log`。
-  **第 23 轮巡检（09-10 09:02~14:07，零介入）**：`long_file` 9.261 亿 → **9.639 亿（80.33%）**，+3,786 万，均值 **2,071 docs/s**（10 段 1,245~3,322，与 r% 强负相关：r≤7% 时 2,700~4,600、r≥15% 时 1,000~1,900），白天约为夜间的 61%；child 槽 1199→1308/1620。**完成外推（昼夜分段加权）09-11 14:40**（全白天口径 21:47、全夜间口径 10:00），较上轮后延 6 h。`shortfallSlices` 66→67、`failedSlices` 0、重跑 0。集群 green、heap 80~98、breaker 基线、磁盘可用 47~50%；v2 组 1 中位 12:38 一次 1,370（午间抖动，12:50 复测 672 回落，未连续）；守护 peak 18000 存活、容器未变、panic 0。日志 `_note/patrol-2026-09-10-r23.log`。
-  **第 24 轮巡检（09-10 14:10~19:10，零介入）**：`long_file` 9.640 亿 → **9.975 亿（83.12%）**，+3,352 万，均值 **1,861 docs/s**（分段 1,278~3,367，由「窗口体量 × r%」共同决定，同一小时内可差 2.6×）；child 槽 1309→1398/1620（剩 222）。全白天（09:00~19:10）加权 ≈1,967。**完成重校（昼夜加权，白天参数下调到 1,950~2,000）09-11 ≈16:20（区间 14:00~19:00）**。`shortfallSlices` 67→70（非重跑段自然增速 ≈0.6 条/h，短缺增量/槽增量 3.4%）、`failedSlices` 0、重跑 0。集群 green、heap 58~99、breaker 基线、磁盘可用 332~361 GB；v2 组 1 中位 769~1,457，3 次单次超 1,100 均 10 分钟后回落（未连续），19:16 收尾 1,201 待下轮开头复测；r 4~38%；守护 peak 18000 存活、容器未变、panic 0。日志 `_note/patrol-2026-09-10-r24.log`。
-  **第 25 轮巡检（09-10 19:15~09-11 00:16，零介入）**：child 槽 **1398→1505/1620**（21.4 槽/h，progress 0.93）；`long_file` 9.986 亿 → 10.177 亿（84.80%）但 **22:15 起连续 3 窗净负增长**——查因为业务 dual_write 的短命 `delete-by-query`（33 个、0.4~12 s、无 parent、同时打 legacy 索引）抵消 reindex 写入，`_count` 是净值、晚间业务高峰可净负，**`_count` 差分口径尾段作废**（守护子吞吐均值 ≈2,380 vs `_count` 净增 1,325，差 ≈1,055/s 即业务删除速率）。晚高峰 21:15~21:45 谷底 910/s（r 27~29%），00:00 后守护子吞吐回升 4,587~6,000（r 4~9%）。**完成改按槽口径：剩 115 槽 → 09-11 05:00~11:00**。`shortfallSlices` 70→**87**（+17，占槽增量 16%，`created/total` 同量级非重跑段，需在完成校验时看明细）、`failedSlices` 0、重跑 0。集群 green、heap 82~99（刹车 0）、breaker 基线、磁盘 47~51%；v2 组 1 中位 372~853（开轮复测 372，上轮 1,201 为单次抖动）；守护 peak 18000 存活、容器未变、panic 0。日志 `_note/patrol-2026-09-10-r25.log`。
-  **第 26 轮巡检（09-11 00:20~05:25，15 分钟采样，仅 1 次隧道重建）→ 作业 id=8 于 05:16:00 终结为 `failed`（step=verify，progress=1.00）**：copy_child **跑满 1620/1620**（尾段最后 5 槽为超大窗口，单父任务连跑 45 分钟 total 1,256 万），`_tasks` 归零；`error=bootstrap 校验不通过: res_short_202609 的 DB/ES 差额 0.107% > 0.1%, 不切换任何别名, 请跑 repair 定位`（DB 2,752,219 vs ES 父文档 2,749,262，差 2,957 条，仅超阈值 0.007 个百分点）。**别名未切换，线上无影响。**四计数终值：`failedSlices` 0、`childVerifyFail` 73、`childShortfall`/`shortfallSlices` **89**；重跑 0；panic 0；容器未变。守护按致命判据自行退出（`fatal: 作业 state=failed`，自发邮件，18083 隧道随之消失）。`long_file` 终值 10.14 亿（84.52%，净值受业务删除影响）。终态快照 SPIDER `_note/r26-job8-final.json`（`grep -vE progressJson=` 看头部）。日志 `_note/patrol-2026-09-11-r26.log`。**下一步（主控 05:30 起）**：核对是否有 04:00 定时 repair 被放行起跑（bootstrap 占轮询时会排队，终结后立刻放行，见 `failure-repair对账在bootstrap未完成时误标数据.md`）；读 verify/repair 语义后决定 repair 方案；完成校验取证；rollout §12。
-  **校验取证（Opus 只读，05:28~05:56）结论**：① 无 repair 起跑（守卫被 id=4 paused 拦住，定时 repair 从未创建）；② **`res_long_2026` 也超标**：DB 40,897,231 vs ES 40,956,796，ES 多 59,565（0.146%），verify 按 cur→long 顺序在 cur 失败即返回没查它——**直接 retry 必败两次**；两索引差额 20 分钟内各 +1，稳定不自愈。③ cur 差额 3,025 成因（5% 抽样 137,666）：87% 是文档实际在 long 的位置不一致（repair ③ SetIndex）、13% 是 legacy 也不存在的线上删除（repair ② MarkDeleted 正确）、**漏搬 0/23**，不需 copyMode=ids。④ long 盈余成因（双向抽样 ≈6 万条）：同 id 同时在 cur 与 long 的副本 ≈52,860（repair ④ 保留 cur 删 long）、位置不一致 ≈4,120、DB 无行 ≈686；DB→ES 缺失 0。**预测 repair 后 long ≈0.009%、cur ≈0.02%，均过阈值。**⑤ shortfallSlices 89：long 87/cur 2，缺口 419.98 万（4.92%），`child:t202606100000:long` 整窗 dst=0（114 万），2026-06 占总缺口 60%；全局目标子文档 11.446 亿 > legacy 源 11.358 亿（双写），窗口级缺口≠全局净缺失。⑥ repair 代价：`repairDbToEs` 无 MaxDocs 上限，43.7M 行 ≈43,700 次 LocateIds，1.5~4 h，另对 long ≈52,860 次父删除 + 子文档 `_delete_by_query` ≈131 万——须避开高峰并盯 heap/v2。**推荐恢复路径 A：repair（`skipEsToDb` 可 true）→ 只读复核两索引 <0.1% → retry id=8 → done（B6 再排 repair）；shortfall 2026-06 空洞 done 后单独补。** rollout §12 已写入并 push（SPIDER `26337bd`）。**需用户决策**：(1) repair 守卫怎么过——`force:true`（推荐，当前无 running/pending bootstrap）还是先 cancel id=4；(2) repair 执行时间窗（建议夜间 23:00~08:00 低峰）；(3) 是否 `skipEsToDb=true`；(4) shortfall 补搬优先级（done 前/后）；(5) ~~取证用的只读脚本固化~~ **已固化（SPIDER `b80d899`：`scripts/lc_mysql_ro.sh` 只读 MySQL、`lc_es_ids_probe.sh` ids 批量探测、`lc_db_lookup.py` 分桶反查；README「bootstrap verify 失败后的只读对拍」一节；提交已复核无凭据）。**~~代码待改：`bootstrapVerify` 两索引都对拍完再汇总失败。~~ **已修（SPIDER `3b8cc13`：抽 `verifyGap`/`evalVerifyResults` 纯函数 + 4 组单测，主控复核通过；未部署，随下次网关重启生效）。**
-  **[用户确认 09-11] 决策：(1) cancel id=4；(2) repair 白天可跑；(3) `skipEsToDb=false`；(4) 其余按建议（shortfall 放 done 后单独排）。主控派 Opus 按 `agent-tasks/2026-09-09-p4-bootstrap-patrol/30-recover.md` 执行：cancel id=4 → repair → 只读复核 → retry id=8 → done（B6 自动排的 repair 不取消）。**
-  **✅ 恢复完成（09-11 07:18~10:59，Opus 执行）**：07:20 cancel id=4 → 07:21 repair **id=10**（`skipEsToDb=false`）2h55m done：`esToDbFixed=0`/`dbToEsFixed=4,508`/`dupCleaned=57,414`（99% 在 bnd 16 表），期间 green、breaker 无增长、heap 59~96、v2 组 1 单次 1,131 后自愈、未介入；10:23 复核 cur 184（0.0067%）/ long 1,228（0.0030%，方向翻为 ES>DB）均过；10:25:30 retry → **10:25:55 id=8 `done`**；B6 自动排 repair **id=11**（operator=system，10:26 起，观察 33 min 修正 0/去重 0，预计 ~13:30 完成，未取消）。rollout §12.6 已更新（SPIDER `de9c08c`）。
-  **shortfall 只读分析结论（09-11 12:00，Opus）——前提被推翻**：89 条 420 万「缺口」**零子文档丢失**，全在 long；缺的是父留在 cur（`longBoundary` 在 copy_parent/copy_child 各自 `time.Now()` 计算，6 天长跑漂移 4~6 天）+ 少数超大父被线上写入更新 utime。`has_parent` 口径把「父不在本索引」误报为短缺。**`copyMode=ids` 绝不可用**（重跑 B1 翻回 status=3、父跨索引双份、`ListIdsByIndex` 无 ctime 过滤退化全量、打断 id=11）。**正确修法：mover `TriggerMove`（≤200/批，target=long）让 cur 里 utime<now-90d 的 220,333 个父归位**（≈2,400 父/h；只修 shortfall 相关 1.5~2 万父 6~9 h，全量 ≈92 h），前置 id=11 done。详见 `lessons/failure-longBoundary漂移导致父子跨索引与shortfall误报.md`。
-  **[用户确认 09-11 12:30] 决策**：(1) 给 lc-check 加 `-trigger-move`（sonnet 实现中，简报 60）；(2) 只修 shortfall 相关父；(3) 放宽 move 参数——主控定 `move_interval_sec` 300→60、`move_batch` 保持 200、`move_requests_per_second` 保持 3000，完成后改回 300。repair id=11 已 done（前置满足）。执行简报 `70-move-shortfall.md`（枚举 87 个 `:long` 窗口内 cur 里 utime<now-90d 的父 → 试点 200 → 三查 → 全量 → 收尾恢复参数），CLI 已完成（SPIDER `aac5f84`，主控复核）。**第一次执行（16:24~17:33）在枚举阶段停止且发生自致事故**：§1.2 的 ES 口径查出 143,277（92% 为 2026-06-01~12 无子文档的父，搬了也修不了 shortfall）；Agent 为区分有无子文档在 legacy 上循环 `has_child` `_count`，**17:00 data-i-2 heap 99% 重启、集群 red，17:27 恢复 green**，无数据丢失、生产零写操作、参数未动。主控 17:45 复核 green/heap 54~74/breaker 全 0（重启清零）/v2 中位 295。已把禁令写入 00-shared，枚举改走 DB（join 三类表 `file_count>0`），重派执行。**第二次执行（18:05~18:25，只读）**：DB 枚举 **102,601** 父（quark 102,174 / xunlei 369 / ali 58；92.6% 在 2026-06），`file_count` 合计 4,695,846 vs 87 窗缺口 4,178,373（比 1.12，吻合）；抽样 30/30 父在 cur 不在 long、10 个 parent_id 9 个在 long 有子。cur 内全部逾期 join 父 114,092，shortfall 限定只少 10%。**主控裁定 18:40：放行全量 102,601，`move_interval_sec` 放宽到 30（≈24,000 父/h，≈4.5 h），先试点 200；ids 文件 `_note/move-shortfall-ids.txt`。** 2 个 `:cur` 窗口（21,451 子）本轮不纳入。**第 1 轮执行（18:05~23:27）**：18:09 `move_interval_sec=30`；试点 200 三查通过（ids probe 20/20、parent_id 计数 long=legacy 10/10、DB index_name 20/20、mover 0 错）；18:21~19:15 投递 513 批 0 失败；23:21 剩余 ≈31,500/102,601（69% 完成），实测 ≈14,300 父/h（单批 runOnce 25~30 s 与间隔同量级）；集群全程 green、heap 53~78、breaker 全 0 零增长、v2 组 1 中位 349~479，零介入。**✅ 第 2 轮收尾（09-11 23:31 → 09-12 02:17）**：DB 同口径剩余 31,493 → 0（12,000~15,500 父/h，末段超大父 ≈9,000/h），残留 1 条为枚举后新进入者复投即清；终态随机 50 父三查全过，ES/DB 父数（status=1）对拍 cur +31（0.0012%）/ long +311（0.0008%）；`move_interval_sec` 已改回 300，其余参数未动；`_tasks` 归零、无作业；邮件已发。**P4 全量 bootstrap 及其收尾全部完成。** 遗留：2 个 `:cur` 半区窗口（父在 long、子在 cur，21,451 子）未处理，待用户决定是否同法处理；已提交未部署的 5 个代码提交（`3b8cc13`/`aac5f84`/`61cf1db`/`e856540`/`93f4d38`）随下次网关发版生效。**代码三项已修（sonnet，主控复核 build/vet/test 全绿，未部署）**：`61cf1db` longBoundary 固化进 `progress.longBoundary`（B1/copy_parent/copy_child 复用，旧作业兼容现算）；`e856540` `ListIdsByIndex` 尊重 ctime 范围、`copyMode=ids` 无范围拒绝；`93f4d38` shortfall 新增 `dstByParentId`/`missingParents` 两口径与 `judgeChildShortfallCause`。随下次网关重启生效。
-  排期项：守护提升到 runBootstrapJob 级 + 注入 v2 延迟探针，且 heap 阈值需按集群基线可配（0.5~1 人日）；`523e2a8` 提交信息有过度归因（无需处理）。
-  - [事实] `v2_search_latency.sh` 关键词组 1/2 基线不同，盯盘必须固定组 1（基线 404 ms）。
-  **待办**：bootstrap done 后跑一次新 repair 对账；worktree 不能放 /tmp（go.mod 相对 replace）；09:35 单节点 heap 瞬时 90% 需盯。
-  详见 `lessons/failure-repair对账在bootstrap未完成时误标数据.md`。精简采样脚本已固化 SPIDER master `4f22ffa`（`scripts/lc_job_brief.sh`、`lc_count_light.sh`）。
-  完成时间区间：09-07 20:00（copy_child 达 5,686）~ 09-11（仅 1,500）。**待用户决策**：是否 cancel 后加大 `windowTargetDocs` 重跑提速。
-  已发邮件 7 封（基线、启动成功、第 1 轮进度、熔断异常、主控决策、repair 紧急、需人工 pause）。**待报备用户：用户 18081 隧道（pid 1880789）在 03:29 网络中断时消失，子 Agent 未动未代建。**
-  巡检经验见 `lessons/patterns-长周期生产巡检.md`（前台等待、隧道 keepalive、复制阶段用 `_count` 差分）。
-  - [事实] `progress.windows` 是按类型分组的 map（`join`/`bnd` 键，`bnd` 进入 `db_bnd` 才出现），核对总数须各组求和；`progress.ratio` 每步重置，剩余时间按 `progress.done` 累计行数推算
-  - 巡检命令（SPIDER 目录，先开隧道 `ssh -N -L 18082:127.0.0.1:8082 osec-res2 &`，结束 kill 并核对；`127.0.0.1:18081` pid 1880789 是用户隧道勿动）：
-    `scripts/lc_bootstrap_watch.sh <jobId> <次数> <间隔秒>`、`scripts/lc_reindex_stat.sh`、`scripts/v2_search_latency.sh osec-res2 1`、
-    `go run ./tools/lc-check -addr 127.0.0.1:18082 -job <jobId>`；熔断 `-control-job <jobId> -action pause`（条件见 rollout §11.5：heap≥85% 不回落 / breaker 增长 / 非 green / failed / 吞吐<2000 持续 20 分钟 / v2 延迟>1100ms / 磁盘<20% / 网关 panic）；**熔断后不 retry/resume，报告用户**
-  - 完成后：核对作业自带校验（DB 行数 vs ES 父文档数，允许 long 索引已知 72 行残留）、`_tasks` 无 reindex 残留、heap 回落；有差异则参照 id=6 建 repair 作业；rollout 追加 `## 12. 全量 bootstrap 实测` 提交 master 并 push
-- [ ] **全量完成后待办（用户 2026-09-05 交待，本轮不做）**：
-  - P5 灰度：调用方切 v3（API 流量几乎全在 res2）；P6 关双写前须补 v3 detail/fileCtx
-  - 配置 v2 上线（P4 稳定后）：`cp _note/config/spider.prod.yaml oss.last.spider.prod.yaml` → 上传 OSS → 灰度 1 个爬虫 → 分批重启 41 进程 → 网关（改从 master 构建，切 OSS 路径 `res/spider.prod.yaml`）+ checker 最后；宿主机旧 config.yaml 收尾前不删
-  - 待用户决策：osec-resdb STORAGE worker es_endpoint 修正；res2 多出的 xigua 代理提供方是否保留
-  - 既有问题：queue-admin registry 纳入 lcCheck 三类队列；`resource_valid` 索引缺失；res1 磁盘/21GB 日志；git 历史与 `devops_online_env.go` 凭据轮换；jenkins `spider-xunlei_share` 废弃容器
-- [ ] **P2** 被停 Agent 未写 rollout §9（单月实测记录），下一个部署 Agent 补写
-
-- [x] P4 缺陷修复（2026-09-06）：bootstrap/repair 全量扫描改 scroll(`_doc`)+ctime 窗口断点、DB 批量按列数自适应≤3000、dryRun/窗口演练参数；master `4d31aa0`
-- [x] **已完成** 网关热修重部（分支 `hotfix/p4-bootstrap`=`f0d5048`）：osec-res2 14:22:17 / osec-res1 14:28:03，0 panic、leader 唯一、三索引四别名齐全、queue-admin-check 回归一致（2026-09-05）
-- [ ] **P2** 热修分支只用于本次部署；配置 v2 上线时网关改从 master 构建并切 OSS 路径 `res/spider.prod.yaml`
-
-## 资源生命周期改造 P4（存量迁移 bootstrap）—— **仍阻塞：第三次尝试复测未达标**（2026-09-05 三次演练后）
-
-- [x] STORAGE 双机重部 `2afe9f2`（新索引首写从旧索引 `resource` 兜底继承历史字段），osec-res2 12:33 / osec-res1 12:35，0 error。已核验生效。
-- [x] 双写窗口内文档补齐：新工具 `SPIDER tools/lc-backfill-legacy`（`72dba5c` 已 push），补齐 **3551 条**（client 3389 / refer 2331 / meta 168），复核 dry-run 归零。
-- [x] `SPIDER tools/lc-check` 补齐作业控制子命令 `-jobs / -job <id> / -create-job <kind> -job-params <json> / -control-job <id> -action pause|resume|cancel|retry`（`5f51ec6` 已 push）。
-- [x] **缺陷 A/B 已修复并在生产验证通过**（2026-09-05 二次演练）：
-  A（`sort:["_id"]` → `scroll + sort:["_doc"]` + ctime 窗口）：全窗口 dryRun 期间 fielddata 恒为基线
-  （只有 `join#resource` 的 global ordinals，**`_id` 一项都没出现**）、heap 45~69%、scroll 取消后归零；
-  B（`bootstrap_batch` 5000→2000 + `BatchUpsert` 按列数分片）：全程真实写入，无 `Error 1390`。
-- [x] 演练结果：全窗口 dryRun 26.4 万条/分钟（全量需 2.8 h，已取消）；2026-08 单月 dryRun **117 秒**，
-  计数 704,776 与独立 `_count` 704,772 吻合；单月实跑 B1/B1b 2.5 min、B3/B4 9 min，
-  百度型 join 注入 100% 生效，`res_long_2026` DB↔ES 差额正好是已知的 72 行残留。
-- [x] **第三个缺陷（`copy_child` 轮询空等）已修复并上线**：`waitEsTask` 改指数退避（200 ms 起、×2、封顶 10 s）
-  + 新增 `bootstrap_copy_batch`（缺省 2000，硬上限 5000，与 `move_batch` 解耦）；
-  网关双机 2026-09-05 16:04/16:10 重部到 `hotfix/p4-bootstrap` **`fbddacb`**，0 panic、leader 唯一、配置未动。
-- [ ] **P4 新阻塞（第 4 层）：`copy_child` 的真正瓶颈是子文档量 × `_reindex` 限速**
-  复测实测每批（2000 父 id）**63~103 s**、父 id 吞吐 19.4/s（修复前 9.1/s，只快 2.1 倍），
-  单月剩余需 **约 7 小时**。量纲事实：2026-08 单月 join 型 **649,472 父 → 32,449,681 子文档（平均 50/父）**，
-  全量约 **7.4 亿子文档**；`requests_per_second` 缺省 2000 → 单月下界 4.5 h、全量 4.3 天，
-  **30 分钟/单月目标数学上不可达**。实测只跑到 913 docs/s（限速的 46%），其余在
-  15.8 亿文档旧索引上的 `terms{2000 ids}` 检索 + slice 分配不均。
-  三条候选改法（见 `rollout-2026-09-05.md` §8.7）：
-  ① 作业参数把 `requestsPerSecond` 提到 6000~10000（不改代码，但最多再快约 2 倍）；
-  ② 消除 slice 不均（按 routing 分组成批 / slices 远大于分片数）；
-  ③ **根治**：改成按 ctime 窗口整段 reindex 子文档（量纲上唯一能把全量压进 24 h 的做法）。
-- [ ] **PRD 修正**：README §11.8.7 的"单月 6~17 分钟 / 全量 2~6 小时"作废，按子文档量 ÷ 有效 rps 重算，
-  并把"3245 万子文档/单月、7.4 亿/全量、平均 50 子文档/父"写进 §11.6 量纲表。
-- [ ] 改完再 **`resume` 作业 `id=4` 原地续跑**（`paused` 停在 `copy_child`，
-  游标 `res_lc_quark_00|b0fb5760837162b563c432e3cda3ee88`，表内 69.1%），重测单月，再谈全量。
-  **不要 retry，retry 会从头。**
-- [ ] **不要点作业 `id=1` 的「重试」**（`retry` 保留 step/cursor，会从同一段有缺陷的 B1 重来）。
-- [x] `deploy.sh` 的 `scp -C` 与 "`docker rm -f` 失败不静默" 两处已随 `a703e22` 提交进 master，
-  并在 2026-09-05 16:04/16:10 的网关重部中**首次生产验证有效**（60 MB 二进制 ~1.5 min，两台 rm -f 一次成功）。
-- [ ] 残留（不清理，重跑自愈）：B1 首批写了 72 条 xunleipan DB 行到 `index_name=res_long_2026`，无对应 ES 文档。
-- 详见 `lessons/failure-bootstrap按id排序打爆ES堆.md`、`lessons/failure-copy_child小reindex被轮询间隔拖垮.md`、
-  `lessons/failure-copy_child真正瓶颈是子文档量.md`、
-  `sessions/2026/2026-09-05-生命周期P4启动失败.md`、`sessions/2026/2026-09-05-生命周期P4演练.md`、
-  `sessions/2026/2026-09-05-生命周期P4第三次尝试.md`、
-  `osec-spider-go/PRD/res-lifecycle/rollout-2026-09-05.md`（§7 二次演练、**§8 三次演练**）。
-
-## 配置 v2 上线（2026-09-08，与 GitHub OAuth、res_lc 浏览 API 一并上线）
-- [用户确认 10:30] 路线：补齐 GitHub OAuth 密钥后按 README §2.7 顺序上线（含网关 master 构建）。lifecycle 核心代码 master 与热修 `ca92fb3` 逐字节等价、作业断点结构未变——bootstrap 不是阻断。
-- [x] 密钥与拍板（10:50）：用户首次贴错到 v1 文件 `spider.gateway.prod.yaml` 顶层（**该文件顶层残留一节 github_auth，建议用户删除**），准备 Agent 结构化并入统一配置；主控打码核对三件套/org/ttl/`allow_rtc_token=false`/redirect 前缀与片段一致、唯一一节；xigua/qingting 按多数派剔除、oss/s3 留空。
-- [x] 准备（SPIDER `6cf6157`）：6 台机 config.yaml 自 2024-08 未变、键路径一致（死键 `maget.*`/`services.{panduoduo,pansoso,xiaobaipan}.redis`/`urn` 安全丢弃）；`config_show` 通过、`Start()` 硬校验正反回归通过；`services.gateway.redis`=`redises.db1`；`dl_download` 外部主机已注释；手册 `PRD/config-v2/rollout-runbook-2026-09-08.md`；README 过时表述已改（首次上传要求本地**不存在** `oss.last`）。
-- [x] **第一阶段（11:17~12:35）**：11:17:09 首次上传 OSS `res/spider.prod.yaml`（旧对象 `res/spider.gateway.prod.yaml` 未动）；灰度 kuakes（resngix `90179613fcb0`）；**网关 res1 `cede6400ce65` 11:55:38 / res2 `748f2125fe9d` 12:01:13（master `6cf6157` 静态构建 md5 `f5ea7b89…`，回滚位 `spider.old`=`ca92fb3`，res1/res2 已另备份为 `spider.hotfix-p4-rollback.bak`）**，pause 11:49:49 → resume 12:09/12:10（中断 ≈20 分钟，无孤儿），leader=res2，29 项热更新参数不变，OAuth 硬校验通过，浏览 API 可达；守护重启 PID 1122433。热修分支已弃用。
-- [事实] **v1→v2 行为漂移**：v1 `gw_config.AliLogConfig` 无 yaml tag，`services.gateway.ali_log.log_store` 从未生效（实际用内置 `resource-spider`）；v2 解析后指向不存在的 logstore，queue-admin SLS 搜索 `LogStoreNotExist`（写入不受影响）。主控决定改回 `resource-spider`（第二阶段首批上传，`oss.last` md5 `ff516ec1…`），**网关重启生效推迟到 bootstrap 完成后**。
-- [x] **第二阶段（12:50~14:45）**：8 批 27 容器切 v2（misoso、lifecycle_checker、fuxipan/dyyjmax、url_commit_check/proxy、aliyun×2/xunlei×3、v2bnd×2/quark、res1 六个、res2 六个），首批重新上传后 26 次 `config unchanged`，每批核验通过；跳过 url_check（含 resdb）、dl_push/web_res_download（resdb）、url_dump（无进程）、dl_download（不在分批表）。两次 ssh 抖动致"容器已删未重建"各重跑一次恢复。
-- [x] **熔断（14:45）→ [用户确认 15:15] 放行 → 已完成（15:27~15:56）**：**v2 二进制无本地 config.yaml 回落**，jenkins url_check crash-loop 95 次停摆；res1 dl_download、resngix/restest url_check、jenkins xunlei_share 下次重启即挂；resdb 三容器安全。逐台重建：jenkins url_check `90ca41386ddf` 15:27（原 RestartCount 124）、resngix `b4523e936113` 15:34、restest `4c4c9128c9d4` 15:42、res1 dl_download `1dce1069317b` 15:49；jenkins xunlei_share 15:56 删除留档。单主机部署路径：`source ./deploy.sh call true; setOssConfig "$CONFIG_OSS_KEY"; dockerRun <host> <cmd>`（不走 deployService，md5 核对代替上传）。终态：非 resdb 36 个运行中容器全部注入 `OSS_CONFIG_URL`、restarts 0；resdb 3 个旧二进制未动。**新隐患待用户**：res1/res2 上 3 个 2023~24 年已 exited 但 `restart=always` 的历史容器（`keyword_yunso_net`/`share_download_download`/`keyword_repanso`），docker daemon 重启会被拉起并 crash-loop，建议 `docker rm`；`url_check` 计数长期 0 属队列已空（职能被 lifecycle_checker 取代）。**安全**：子 Agent 读容器日志时 `ali log start` 行明文打印 ali_log ak/sk 进入了会话记录（未进邮件/报告），二进制打码待修，建议评估轮换。见 `lessons/failure-配置v2二进制无本地回落导致老容器重启即挂.md`。
-- [x] **§6 NC-JS 前端已发布（15:27，HEAD `5808d42`）**：spiderAdmin 产物与线上逐字节相同（14:34 已是 HEAD，仅刷 entry 时间戳）、panShareDownload 更新；主应用 `admin/qiankun` 未改动未发。CDP 实测通过：登录门（非旧秘钥框）→ GitHub 授权回跳 → 命名客户端 → spiderAdmin 队列监控/作业 id=8 running/资源列表真实数据 → panShareDownload 会话复用与独立回调均正常；控制台无错误。回滚：还原 `index.html`（`apps.json` entry 时间戳不构成回滚手段，旧 hash 资源未删）。
-- [x] **前端既有缺陷（09-04 `b1c6689` 引入）已修复重发（NC-JS `7fb3721`，spiderAdmin 15:47:45 / panShareDownload 15:48:21）**：catalyst 新增 `defaultGwAddr()` 按 hostname 选正式/本地（按 name 查找非下标）；CDP 复测：清空 localStorage 后直接登录门→授权→后台正常，localhost 场景自动本地，控制台 0 错误；一次网关→GitHub `access_token` 超时重试即过（**网关机出网抖动，登录偶发失败可从此查**）。回滚快照 `scratchpad/rollback-20260908-154648/`（还原两个 index.html + apps.json）。原文：：两子应用 `useLocalStorage('gwEndpoint', gwAddrs[1])` 默认指向本地环境，首次访问生产卡在「连接本地环境」看不到登录门；改为按 hostname 自动选择并重发两子应用 + CDP 复测。
-- [ ] §7 收尾语义已变：回滚依赖是 `spider.old` 而非 config.yaml；删宿主机 config.yaml 只影响未切的老容器——留用户决定。
-- ~~[x] [用户原则 16:40] 配置按服务拆分——代码/脚本/文档已完成~~ **[2026-09-09 作废并回退：这是误解，用户要的是拆代码不拆文件]**（原记录保留供复盘）：本地两份配置已生成（`_note/config/spider.gateway.prod.yaml` 全新内容、旧 v1 文件改名 `.v1bak`；`_note/config/spider.prod.yaml` 原地去掉 `services.gateway`），拆分脚本 `scripts/config_v2_split_by_service.py`（键路径级，不打印值）；`deploy.sh` 按 `$cmd==gateway` 选择 `CONFIG_GATEWAY_*` 三元组；新增防御断言 `config.MarkCurrentProcessAsGateway()`（`services/gateway/gateway.go Start()` 开头调用）使 `MustSpiderGwConn`/`MustNewResSchedulerRpcClient` 在网关进程内调用直接 panic，单测 `TestGatewayClientGuard`；`go build ./...` 通过，`go test ./config/... ./services/gateway/...` 通过（`spider_dao`/`download_scheduler` 部分子包需真实 MySQL/网络，已用 `git stash` 核实与本次改动无关）。两份文件均通过 `config_show` 冒烟（无 panic）。方案与键路径边界表见 SPIDER `PRD/config-v2/README.md` §2.8，可执行命令序列见 `rollout-runbook-2026-09-08.md` §9。**仍未部署**——生效需网关重启，按计划与 SLS `log_store` 修正合并做一次。
-  - **[新发现，需用户在实际上线前确认]** 网关新文件复用的 OSS key `res/spider.gateway.prod.yaml` 正是 v1 时代旧对象、也是 `rollout-runbook-2026-09-08.md` §4.5「回滚到 hotfix 前二进制」现有依赖的那个 key；本次拆分上线会用 v2.1 结构覆盖它，**会让那条 hotfix 二进制回滚路径失效**，除非上线前先 `ossutil cp` 把它备份成 `.v1bak`（README §2.8.4/runbook §9.2 已给出命令与两层回滚说明）。上线前需用户拍板「是否还需要保留 hotfix 二进制回滚能力」（P4/热修分支均已过时，大概率不需要，但不应由 Agent 单方面决定丢弃这条安全网）。
-  - **[待验证]** 本地 `oss.last.spider.gateway.prod.yaml`（2026-09-04 记录）与本地 v1 遗留文件（现 `.v1bak`）md5 不同，是否仍等于 **OSS 实际现状**未经本次任务核实（任务范围不允许连生产 OSS）；上线前必须先由有权限的人 `ossutil cat` 核对，不一致则按 README §2.8.4 步骤同步基线，不能绕过 `uploadConfigToOss` 的漂移检查强推。
-- [ ] 代码待修：① `LOCAL_CONFIG_PATH` 缺省回落宿主机 config.yaml；② ~~启动日志明文打印 OSS 预签名 URL 与 ali_log ak/sk~~ **已修**（SPIDER `9cea15a` `config/mask.go`；pan/common `e36a582` `ali-log.go` 只打打码 ak、`config-loader.go` 清空签名 query），随下次网关/爬虫重启生效；今日三次进入会话记录，建议评估轮换 ali_log ak/sk；~~`download_scheduler_service.go:641` 运行时打印网盘账号凭据~~ **已修（SPIDER `1ab56b4`）**，含 `resolve_mgr.go:171` worker 级 logger 携带明文账号（影响该 worker 全部日志）等 7 处；**待用户决策**：`pan_download/alipan_download/alipan_dl_test.go`、`bnd_download/bnd_dl_test.go` 硬编码真实 RefreshToken/BDUSS 已明文进仓库，建议轮换并迁到 `.hide.json`（参照 `bndAccounts.hide.json`）；③ queue-admin SLS 搜索需网关重启后生效。
-- [x] **网关重启已于 09-09 11:53/12:04（`883daeb`）合并生效**（用户 10:20 决定不等 bootstrap 完成）：配置按进程拆代码（09-09，纯代码、配置对象不动）+ SLS log_store 修正 + 日志打码 + 告警/代理池监控/链接追踪。09-08 两份文件方案已回退，runbook §9 作废。
-
-## 配置 v1 → v2 迁移（2026-09-06 用户新任务，Opus 进行中）
-- [用户确认] SPIDER 配置统一走 v2（OSS 私有桶，config-util + OSS_CONFIG_URL），删除 v1（当前目录本地 config.yaml）代码与项目内配置文件。
-- [x] Opus 实施完成并已合并 master（`a06881f`/`b722fba`，2026-09-06）：单份 OSS 配置 `res/spider.prod.yaml`、`gw_config` 并入 `config.GatewayConfig`、`LOCAL_CONFIG_PATH` 开发回退、`./spider config_show` 打码查看、删 v1 与两份含凭据 yaml；方案 `PRD/config-v2/README.md`
-- [x] 生产配置 `_note/config/spider.prod.yaml` 已由 6 台宿主机 config.yaml + 网关配置合并生成（gitignore，config_show 校验通过）
-- [ ] **待用户拍板** ① osec-res2 多出的 xigua 代理提供方与不同长度的 qingting conf 已按 5 台多数派剔除；② `oss`/`s3` 两节宿主机均为空，保持空
-- [ ] **P1** 配置 v2 上线（P3/P4 稳定后）：`cp spider.prod.yaml oss.last.spider.prod.yaml` 作首次基线 → `deploy.sh` 上传 OSS → 先部 1 个低风险爬虫灰度 → 分批重启其余（41 进程，6 台）→ 网关 + checker 最后；宿主机旧 `config.yaml` 收尾前不删（回滚依赖）
-- [ ] **P2 安全** 仓库 git 历史仍有明文凭据；`services/devops/devops_utils/devops_online_env.go` 仍硬编码 OSS AK/SK 与 ES 口令，建议轮换
-- [x] **P1 生产配置文件已准备**（2026-09-05）：`_note/config/spider.prod.yaml` 已由 6 台宿主机现役 `config.yaml`
-      + `_note/config/spider.gateway.prod.yaml` 合并生成（用分支 `scripts/config_v2_build_prod_yaml.py`），`go build` +
-      `LOCAL_CONFIG_PATH=... ./spider config_show` 校验通过、无未知键警告、键路径与源文件完全对账。未加入 git（确认被
-      忽略）。**关键发现**（已知晓，非阻塞）：
-      - README 建议"以旧 `config.prod.yaml`(git 历史) 为骨架"的说法与实际生产不符：该文件的 `kkpans/dyyjmax/kuakes`
-        配置从未真正下发到宿主机（`deploy.sh` 不分发 `config.yaml`），6 台宿主机现役文件里**根本没有**这三节，说明这三个
-        2609 批次爬虫和 `feikuai/fuxipan/misoso/haisou` 一样**全靠代码内置缺省值在跑**。本次改用宿主机实况为准（零行为
-        变更迁移），未采用 config.prod.yaml 里的历史值，避免顺带引入未经验证的参数变化。
-      - 宿主机文件里还有 4 处 README 未提及的死键：`services.pansoso/panduoduo/xiaobaipan`、`services.urn`、
-        顶层 `maget.*`（`spider.go` 注释确认功能已删，结构体无对应字段），已一并剔除，未搬进 v2。
-      - `nodename` 六台机各不相同（环境差异，只喂 `AliLog.Host` 标签），v2 单文件无法逐机保留 —— **留空**，
-        **待用户拍板**：接受"迁移后 SLS 里丢失按机器区分的 host 标签"，还是后续代码改成 fallback 到
-        `config_util.GetHostname()`（改动超出本次配置任务范围）。
-      - `osec-res2` 的 `services.proxy.providers` 比其余 5 台多一条 `xigua` 且 `qingting` 的 conf 与其余 5 台不同长度
-        （疑似遗留测试配置）——**待用户拍板**：采用多数派（5 台一致的 qingting）还是需要保留 res2 的额外配置。
-      - `oss`/`s3` 两节宿主机上均为空值（从未真正启用），v2 里原样留空，**待用户补充**若要启用相关功能。
-      - 6 台宿主机拉取的原始 `config.yaml` 保留在 scratchpad（会话私有，未提交）供复核。
-- [ ] **P1** 上线前用户需最终核对上述拍板项，之后 `cp` 为 `oss.last.spider.prod.yaml` 首次上传基线，按 README §2.7
-      顺序（先低风险爬虫 → lifecycle_checker → 其余滚动 → 网关最后）分批重启 41 个 spider 进程。
-
-## 资源 ES 索引生命周期改造（2026-09-05，PRD v1.1 已完成，待用户确认）
-
-- PRD：`osec-spider-go/PRD/res-lifecycle/README.md`（v1.1，2705 行）；决策 `decisions/decision-2026-09-04-资源索引生命周期改造方案.md`
-- [x] Q1~Q6 已确认（2026-09-05）：全量复制 / 不加副本 / version 判据 / **16 桶** / **v3 只做 search+valid** / 百度存量迁入
-- [ ] **P0** Phase 0（进行中）：`rpc/spider/lifecycle_rpc/lifecycle.proto`、64+3 表 DDL、`res_short_*`/`res_long_*` index template、类型映射表
-- [x] **P0 已上线完成（2026-09-05 10:05~10:42）**：基线采集 + `lifecycle_init_tables`（67 张 `res_lc_*` 表）
-      + `lifecycle_init_indexes`（`res_lc_short_tpl`/`res_lc_long_tpl` 两套模板、`res_short_202608/202609`、
-      `res_long_2026` 三索引、四别名，全 green），旧索引与 `resource` 别名未动。报告 `PRD/res-lifecycle/rollout-2026-09-05.md`
-      （SPIDER `bbb9f2a`，已 push），经验见 `sessions/2026/2026-09-05-生命周期P0上线.md`。
-- [x] **P1/P2 已上线**（见 `PRD/res-lifecycle/rollout-2026-09-05.md`）：网关双机含 lifecycle、`enabled=true` 热更新打开、
-      `lifecycle_checker` 部署在 osec-jenkins 空转、前端 spiderAdmin 已发布
-- [x] **P3 已上线（2026-09-05 11:33~12:10）**：STORAGE 双写（osec-res2 11:40:35 / osec-res1 11:45:00，
-      md5 `9fdc8f5c…`）+ API v3（osec-res2 11:57:42 / osec-res1 12:04:05，md5 `fcedcbe4…`）。
-      核验：`res_short_202609` docs 375,361 / `index_failed=0` / 集群 green；MySQL 分表 2,766 行、
-      `index_role=1`、`next_check_at=入库时刻+7d`；抽样 8/8 `foundInDb && foundInLegacy`；
-      `ReportUpsert` 正常、无 110607/110611、`lcReportRetry`=0；旧索引写入 18.6 ops/s 与基线持平；
-      v2/v3 四接口对拍行为一致。报告 SPIDER `7435489`（已 push），
-      经验见 `sessions/2026/2026-09-05-生命周期P3上线.md`。
-- [ ] **P3 未完成项（需用户决策）**：**osec-resdb 的 `services.storage.es_endpoint` 指向已下线的旧 ES 集群**
-      （`es-cn-nwy39…`，DNS 无记录），worker 上新版本会 fail-fast，**已完整回滚**（现役 `a47b8ff2…`＋备份配置，
-      新二进制/新配置留在 `storage.lc` / `config.yaml.lc`）。这是既有故障——该机 `worker.log` 3.7 GB
-      长期在刷解析失败 + nil 指针 panic，save-worker 的 ES 写入路径早就坏了，**不影响 P3 数据正确性**
-      （新资源实际由 res1/res2 网关写入）。改端点属改动既有配置，未做。
-      见 `lessons/failure-resdb的ES端点指向已下线集群.md`
-- [ ] **P4 启动前必须先确认**：bootstrap 从旧索引复制时，对**P3 期间已写进新索引的 id** 是覆盖还是跳过。
-      `upsertResourceLegacy` 从**旧**索引继承 `client/refer/createtime/meta`，而 `lifecycle.BuildParentDoc`
-      的 `inheritFields` 从**新**索引继承，新索引首次写入没有历史值可继承 —— 若 bootstrap 跳过已存在 id，
-      这批资源会永久缺 `client/refer/likes/views/downloads`
-- [ ] **P5 相关事实**：API 线上流量**全部落在 osec-res2**（osec-res1 的 `res-api` 近 60 分钟仅 1 次请求），
-      灰度切流量要按这个事实设计
-- [ ] **既有故障（与本次无关，建议单独立项）**：现网 ES **没有 `resource_valid` 索引**（HTTP 404），
-      导致 `/api/v2/checkValid`、`/api/v2/queryValidAndPwd` 与对应 v3 接口**同样**失效
-      （前者返回 `data:null`，后者返回 `50005`）
-- [ ] **P0 基线剩余项**（PRD §15.3 第 12、13 项）：bnd checker 探测吞吐与代理池配额、无 join 百度文档 `_source` 大小抽样——
-      第 1/7/8/11 项已采齐并记入报告
-- [ ] **P1 下一步**：部署含 lifecycle 的网关二进制（`enabled` 缺省 false）→ 回归 5 个既有 RPC + queue-admin →
-      前端 spiderAdmin 发布。注意 osec-res1 根分区 69% 且 scp 60MB 二进制约需 25 分钟
-- [ ] **P2** COMMON `rpc/common_message/common_message.proto` 的 `go_package` 仍是旧仓库名 `PPIO`，`gen.sh` 生成后要手工 sed 导入路径；应改 proto 让 gen.sh 全自动（2026-09-05 发现）
-- [x] **P1** Wave 1 五条开发分支已全部**本地合并**进各仓库主干（2026-09-05，均**未 push**，push 待验收后决定）：
-      SPIDER `feat/lifecycle-gateway`+`feat/lifecycle-checker` → master、STORAGE `feat/lifecycle-dual-write` → master、
-      API `feat/lifecycle-v3` → master、NC-JS `feat/lifecycle-admin` → main。
-      四仓库 `go build`/`go test`/`vue-tsc --build` 全通过；SPIDER `config/config.go` 一处结构体字段冲突（`Lifecycle`
-      vs `LifecycleChecker`）按字母序两边全保留手工解决，其余全部无冲突自动合并。详见
-      `sessions/2026/2026-09-05-生命周期五分支合并.md`。
-- [ ] **P1** 下一步：人工验收（含前端浏览器实测、必要时补充部署前检查），验收通过后 push 五仓库并规划上线顺序
-- [x] 2026-09-05 **验收报告"前置项 1"已修复**（`PRD/res-lifecycle/acceptance-2026-09-05.md` §5）：
-      月度轮换步骤④补回填 `index_role`（先把 `index_name=OldCur` 整体翻成 role=2，再执行原有的
-      `OldPrev -> OldCur/role=1` 迁移，顺序不可颠倒 + 幂等标记防断点续跑重复翻转）；
-      `decideOnValid` 改为吃调用方按别名现算的 `currentRole`，不再信任可能陈旧的 `row.IndexRole`。
-      SPIDER `6b86db4`（master，**未 push**）。改动文件：`services/gateway/lifecycle/{rotation,result,rpc_service}.go`
-      + 对应 `*_test.go`（新增 3 个真实 MySQL/ES/Redis 联调用例，`scripts/lifecycle_it_env.sh test` 全过）。
-      复核确认 `bootstrap.go`/`mover.go` 的 role 赋值本来就正确，未改动。
-
-## 管理台合并（2026-09-04 晚，✅ 已上线并核验通过）
-
-- 后端：`queue_admin` 并入 `spider_gateway`，目录移到 `services/gateway/queue_admin/`，
-  复用网关 7542/:8082，新增 dlock 抢主锁。SPIDER `e725c86`（master，已 push）。
-- 前端：`docSpiderScheduler` + `resSpiderScheduler` → `admin/spiderAdmin`，左侧栏布局。
-  NC-JS `b1c6689`（main，已 push）。
-- 见 `decisions/decision-2026-09-04-管理服务并入网关.md`、
-  `decisions/decision-2026-09-04-前端合并为spiderAdmin.md`、
-  `sessions/2026/2026-09-04-管理服务并入网关与前端合并.md`。
-
-上线（2026-09-04 21:13~21:15，用户执行，主会话核验）：
-- [x] `./deploy.sh deploy gateway` → res1/res2 两台网关已重启在跑
-- [x] `ssh osec-res1 "docker rm -f spider-queue_admin"` → 旧独立容器已删除（`docker ps -a` 无残留）
-- [x] 前端 `pnpm build` 发 OSS；`removeMfeApps.mjs --yes` 摘除两条旧条目 →
-      生产 apps.json 现为 3 条：`spiderAdmin` / `panShareDownload` / `login3rd`
-- [x] **抢主锁行为符合预期**：两台都打 `queue_admin registered into gateway rtc/grpc server`，
-      **只有 res1** 打 `become leader`（日志 `{"stage":"workerLeader","type":"queue-admin"}`）
-- [x] 全链路实测（`ssh -f -N -L 18082:127.0.0.1:8082 osec-res1` + `go run ./tools/queue-admin-check -addr 127.0.0.1:18082`）：
-      13 个队列快照、6 个关键词站点 `alive=true`、`DetailSchemas version=1`、
-      SLS 日志搜索命中、`ListTasks`/`GetTask`(`schemaId=res.loadShare`) 全部正常
-- [x] ~~SLB 加 7543 UDP(+TCP) 监听~~ **已作废**：并入网关后走 7542，不再需要独立端口
-
-剩余待人工：
-- [ ] **P2** ARMS 控制台确认 `queue_admin_*` 指标入库、`queue_admin_poll_error_total` 带 `host` label
-- [ ] **P2** 浏览器实测新页面：左侧三组菜单全部可用、Mock 开关关闭、各页数据正常
-      （主会话无法做视觉验收——页面要先连上生产网关拿到 RtcToken 才渲染正文）
-
-## 已完成
-
-- [x] 2026-09-04 **SPIDER 合并 `feat/sweep-guard-a/b`（5 站全量扫描守卫）到 master**：
-      `git merge --no-ff` 两个分支，`kkpan.com.go`/`bbs.dyyjmax.org.go`/`kuakes.com.go`
-      各 1 处冲突（三处模式完全相同：分支基于的旧 master 在 `runRound()` 末尾有
-      `p.alive()`，当前 master 已按保活语义决策把它移进 `handleItem` 只在
-      `CommitResLink` 成功时调用）——**未套用"两边全保留"字面规则**，而是保留 master
-      对保活语义的修正、完整保留分支新增的全量守卫函数(`fullSweepStartupSkip` 等)，
-      判断依据见下方决策记录。`feat/sweep-guard-b` 三文件无冲突自动合并。
-      验收：`go build ./...`/`go vet ./services/bbs/`/`go test ./services/bbs/` 全过，
-      5 站（kkpans/dyyjmax/kuakes/fuxipan/misoso）均确认落地 `fullsweep:lastdone` 守卫，
-      `feikuai` 游标分批天然不需要。已删 2 个 worktree 与分支。**未 push**。
-      见 `decisions/decision-2026-09-04-合并sweep-guard分支冲突取舍.md`。
-- [x] 2026-09-04 **SPIDER「队列 v2 升级」收尾清理与验收**：删干净全仓残留的
-      `queue_task.Service` 用法（`share`/`share_pwd`/`ad_share`/`quark_share`/`xunlei_share`/
-      `keyword_filter`/`file_bot`/`urn` 命令及 `illuminate/queue-task/service.go`），
-      `upyunso-detail.go`/`haisou.cc.go` 残留引用改走网关队列；`go build`/`go vet` 全仓通过；
-      `.vscode/launch.json` 补 3 个 v2 消费者调试配置。master 本地 2 个 commit，**未 push、未上线**。
-      见 `decisions/decision-2026-09-04-队列v2统一走网关.md`、
-      `sessions/2026/2026-09-04-队列v2改造收尾清理.md`。
-- [x] 2026-09-02 通读四个仓库架构，初始化 `agent-memory/` 记忆体系
-- [x] 2026-09-02 **完成 `PPIO → 1s` 重命名收尾**：COMMON / API 的 module 名，
-      API / STORAGE 的 `require` + `replace`（并统一为相对路径）。四仓库 `go build ./...` 全部通过。
-      具体改动见 `procedures/workflow-本地构建与验证.md`。
-- [x] 2026-09-02 **修复 SPIDER 两处存量编译错误**：`bnd_resolver_check.go`（队列泛型类型 + `PushTaskParam` 包装）、
-      `devops_res_reindex.go`（ES 客户端 + 空回调）。详见 `knowledge/architecture-spider.md`。
-- [x] 2026-09-02 **按用户答复清理 5 项遗留**：`devops_res_reindex` 非本地环境 panic 退出；
-      `AGNETS.md`→`AGENTS.md` + `CLAUD.md`→`CLAUDE.md`(软链接)；API `README.md` 重写；
-      STORAGE `go.mod` 删除失效的注释 replace；线上现役服务的确认方法记入部署流程。
-- [x] 2026-09-02 **确认磁力采集范围**：项目停止磁力/BT 的采集与入库，只处理 4 种网盘类型
-      （`decisions/decision-2026-09-02-停止磁力资源采集.md`）。
-- [x] 2026-09-02 **调研 www.kkpans.com 并产出爬虫 PRD**：`osec-spider-go/PRD/2609/www.kkpans.com.md`，
-      配套脚本 `osec-spider-go/scripts/kkpans_probe.py`。站点结论见 `knowledge/domain-站点-kkpans.md`。
-- [x] 2026-09-02 **开发 kkpans 爬虫并联网实测通过**：命令 `bbs_kkpans`，新建 `services/bbs` 包。
-      全量实测 `found=4295 == siteTotal`、45 次请求 / 22 秒、光鸭+UC 145 条全部过滤、二轮去重后提交 0。
-      PRD §11 记录了改动清单与 4 处实现偏差；经验见 `lessons/success-爬虫联网集成测试.md`。
-
-- [x] 2026-09-02 **修复夸克/阿里云盘链接有效性检测**：夸克补 `41004` 等业务码判定、
-      阿里补 `ShareLink.ContentInvalid` 与 429 限流重试、API 侧补"内容已空"判定；
-      判定改为业务码优先 + 未知报错。API 与 SPIDER 各加一份联网用例（`VALID_IT=1`），
-      30 条样本 0 报错且两套结论一致。见 `knowledge/domain-网盘有效性检测.md`。
-
-- [x] 2026-09-03 **建立常态化「站点发现」任务并跑完首轮**：流程 `site-discovery/README.md`，
-      工具集 `site-discovery/tools/`（harvest/triage/sitescan/pancheck + selftest），
-      历史总表 `site-discovery/history.md`。首轮初筛 47 站、深挖 23 站，6 站满足全部验收标准。
-
-- [x] 2026-09-03 **打通本地代理池**：修复 `proxy-provider.localIp()`（原接口
-      `112.124.34.135:8103` 已不可用，改为三个**境内**接口取多数派），
-      跑通 `dev_add_local_ip_to_qingting` + `redis-topic-sync`，代理 6/6 可用。
-      详见 `lessons/success-本地代理池打通.md`。
-- [x] 2026-09-03 **并行开发首轮筛出的 6 个站点爬虫并合并进本地 master**：
-      `bbs_dyyjmax` / `bbs_fuxipan` / `bbs_feikuai` / `bbs_kuakes` / `bbs_misoso` / `keyword_haisou`。
-      4 并发子 Agent + 独立 worktree，每站产出 PRD + 实现 + probe 脚本 + 联网集成测试。
-      **5 站联网验收通过**；`haisou.cc` 因站点当天收紧搜索接口（`13001`）未能验收。
-      master 领先 origin 12 个提交，`go build` 通过、新增包 `go vet` 零告警、`go test` ok，
-      **未 push、未上线**。见 `knowledge/domain-站点-2609接入批次.md`、
-      `procedures/workflow-并行开发多站点爬虫.md`、`sessions/2026/2026-09-03-并行开发6站爬虫.md`。
-- [x] 2026-09-03 **落实「分享链接爬虫一律走代理池」硬规则**：
-      SPIDER 两个还在直连的链接爬虫改为 `NeedDirect: false` 并无条件订阅代理池
-      （`services/bbs/kkpan.com.go`、`services/keyword/keyword2024/www.pansearch.me.go`），
-      `KkpansConfig.UseProxy` 开关下线；site-discovery 工具集加 `--require-proxy`
-      硬约束（拿不到代理即退出码 3，绝不降级直连）。`go build ./...` 与 `go vet` 通过。
+- [ ] **P1 生命周期 P4 收尾**：5 个未部署代码提交（`3b8cc13`/`aac5f84`/`61cf1db`/`e856540`/`93f4d38`）待下次网关重启生效；2 个 `:cur` 半区窗口（父在 long、子在 cur，21,451 子）是否处理待用户决定；P5 灰度（切 v3）与 P6 关双写前须补 v3 detail/fileCtx；建议 done 后再跑一次 repair 对账。详见 archive「生命周期 P4」、`sessions/2026/2026-09-11-p4-bootstrap接管巡检与校验失败取证.md`。
+- [ ] **P2 排期**：巡检守护提升到 `runBootstrapJob` 级 + heap 阈值可配（0.5~1 人日）；被停 Agent 未写 rollout §9，下一个部署 Agent 补写。
+- [ ] **P2 代码待修（配置 v2）**：`LOCAL_CONFIG_PATH` 缺省未回落宿主机 `config.yaml`；删宿主机 `config.yaml` 的时机（回滚现依赖 `spider.old`）留用户决定。
+- [ ] **P2 安全（凭据轮换，待决策）**：`devops_online_env.go` 硬编码 OSS AK/SK 与 ES 口令；`pan_download`/`bnd_download` 测试文件硬编码真实 RefreshToken/BDUSS（建议迁 `.hide.json`）；ali_log ak/sk 曾明文进会话记录，建议评估轮换。
+- [ ] **P1 待用户决策**：`osec-resdb` STORAGE worker 的 `es_endpoint` 指向已下线旧 ES 集群（已回滚，不影响 P3 数据正确性）。
+- [ ] **既有故障**：现网 ES 无 `resource_valid` 索引（404），`checkValid`/`queryValidAndPwd` 及对应 v3 接口同样失效。
+- [ ] **P2**：COMMON `common_message.proto` 的 `go_package` 仍是旧仓库名 `PPIO`，`gen.sh` 后要手工 sed；应改 proto 全自动。
+- [ ] **P2**：资源生命周期 P0 基线剩余项（PRD §15.3 第 12/13 项）：bnd checker 探测吞吐与代理池配额、无 join 百度文档 `_source` 大小抽样未采。
+- [ ] **P2 待人工验证（管理台合并）**：ARMS 确认 `queue_admin_*` 指标入库；浏览器实测 spiderAdmin 三组菜单/Mock 开关/各页数据。
 
 ## 待办
 
@@ -447,23 +96,6 @@ related:
       启动时读该键，未超 `FullSweepInterval` 就跳过全量只跑增量。
       `bbs_feikuai` 的游标分批全量天然合规，可作参照。
       ⚠️ 这 5 个已经上线在跑，每次重启/重新部署都会重扫全站，优先级高。
-- [x] 2026-09-03 **6 站爬虫已上线**：`bbs_kkpans`(res1) / `bbs_dyyjmax`(jenkins) /
-      `bbs_fuxipan`(jenkins) / `bbs_feikuai`(res2) / `bbs_kuakes`(resngix) / `bbs_misoso`(resngix)，
-      `./deploy.sh ps` 实测 6 个进程都在跑。
-- [x] 2026-09-03 **清理已下线的爬虫代码**：以 `./deploy.sh ps` 为判据删除 21 个线上无进程的
-      爬虫命令及代码/配置（26,228 行），保留 `keyword_haisou` 与全部非爬虫工具命令；
-      `deploy.sh` 删掉 3 个僵尸服务条目，`config/config.go` 与两份 yaml 同步清理。
-      `go build ./...` 通过、`go vet` 零告警。**已 `git add` 未提交**。
-      见 `decisions/decision-2026-09-03-清理下线爬虫代码.md`。
-- [x] 2026-09-03 **`haisou.cc` 已下线**（用户决定）。站点对代理池 IP 段做端点级拦截（`13001`，
-      不扣积分），爬虫从未有过一条真实入库数据；且单 IP 上限只有 50 次搜索/天 ≈ 1000 条/天，
-      即使放行也不值得优先做。代码保留但默认不启动（`enabled` 为 nil 视为关闭），
-      `deploy.sh` 中保持注释，每日探路 cron 已移除。
-      见 `decisions/decision-2026-09-03-下线haisou.md`。
-- [x] 2026-09-04 **清理遗留 ①③**（用户逐条定夺）：删掉 `deploy.sh` 的 `url_clear` 死条目
-      （指向的 `devops_clear_expire_queue` 命令根本不存在）；删掉全仓无引用的
-      `services/online_doc/`（金山文档）与 `services/alipan/`（阿里云盘客户端，
-      **不是**在跑的 `services/aliyun-drive`）。`go build ./...` 与改动包 `go vet` 通过。
 - [ ] **P1 待用户手动执行** 清理遗留 ②：用户已确认 `osec-resdb` 上两个废弃容器**不需要了**，
       但删除命令需要 `sudo`（`pplabs` 直连 docker.sock 是 permission denied），
       被 Claude Code 自动模式安全策略拦截，需要人工在终端跑：

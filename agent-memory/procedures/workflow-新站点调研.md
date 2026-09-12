@@ -3,10 +3,13 @@ title: 工作流：资源站点调研与 PRD 产出
 type: procedure
 status: active
 created_at: 2026-09-02T14:20:00+08:00
-updated_at: 2026-09-03T18:10:00+08:00
+updated_at: 2026-09-12T12:10:00+08:00
 priority: high
-keywords: [站点调研, 爬虫, PRD, SSR, 公开API, 分页陷阱, sitemap, 对账, Flarum, 积分制, IP配额, 域名不一致, 过期sitemap, 越界文件假200]
+keywords: [站点调研, 爬虫, PRD, SSR, 公开API, 分页陷阱, sitemap, 对账, Flarum, 积分制, IP配额, 域名不一致, 过期sitemap, 越界文件假200, 游客可见率, 回复可见, 登录可见, 论坛站]
 summary: 接到"探索某资源站并输出爬虫 PRD"时的标准步骤：先找结构化接口，再验证全量可枚举性，最后对账
+questions:
+  - 我要调研一个新的资源站，怎么写爬虫 PRD
+  - 怎么找一个站点的公开接口
 load: on-demand
 related:
   - agent-memory/knowledge/architecture-spider.md
@@ -28,6 +31,14 @@ related:
    **往往能直接挖出后端未公开文档的 REST 接口和全部查询参数名**。
    > 注意：bundle 里 admin 接口也会一并暴露，**只用 public/无鉴权的那部分**，不要碰 `/admin`、`/auth`。
 4. **确认参数枚举值**：在 bundle 里找选项数组（如 `[{label:"夸克",value:"quark"},...]`）比逐个试参数快。
+
+## 论坛型站点：先量化「游客可见率」
+
+评估论坛型资源站（Flarum/Discuz/NodeBB 等）时，**第一件事是量化「游客可见率」**——
+随机抽一批帖子用无 Cookie 的请求打开，统计其中能直接看到网盘链接的比例。
+**最常见的淘汰原因是「回复可见 / 登录可见」，而不是站点规模或链接有效率**：
+规模和有效率都达标、但游客只能看到 10% 的帖子，实际可采量就只有账面的 10%。
+可见率太低就直接淘汰，不要先去做规模盘点和限流探测，省掉一整轮无用调研。
 
 ## 必须实测验证的四件事
 

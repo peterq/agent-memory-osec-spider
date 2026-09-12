@@ -3,10 +3,13 @@ title: 站点知识：www.kkpans.com（KK网盘）
 type: knowledge
 status: active
 created_at: 2026-09-02T14:20:00+08:00
-updated_at: 2026-09-02T15:25:00+08:00
+updated_at: 2026-09-12T12:10:00+08:00
 priority: medium
 keywords: [kkpans, KK网盘, 站点调研, 公开API, SSR, 光鸭云盘, 磁力, PRD]
 summary: kkpans 的公开 JSON API、分页陷阱、数据规模与采集范围（只采 quark/xunlei/baidu 4295 条）；爬虫已于 2026-09-02 实现为 bbs_kkpans
+questions:
+  - kkpans / KK网盘 / 光鸭云盘是什么站，接口在哪
+  - bbs_kkpans 爬虫实现在哪
 load: on-demand
 related:
   - agent-memory/procedures/workflow-新站点调研.md
