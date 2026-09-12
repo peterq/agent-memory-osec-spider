@@ -7,6 +7,7 @@
 > 1S_ROOT: `/home/peterq/dev/projects/1s`
 
 - MEMORY: `/home/peterq/dev/projects/peterq/agent-memory-osec-spider` 用于管理 Agent 记忆和工作流的目录, 由 Agent 自主维护
+  - `ls .` => `agent-memory  AGENTS.md  agent-tasks  CLAUDE.md  scripts`
 - COMMON: `1S_ROOT/enfi-resource-common` 跨仓库共用工具类, rpc定义等.
 - STORAGE:  `1S_ROOT/enfi-resource-storage` 存储服务, 主要负责爬取的资源的入库
 - API: `1S_ROOT/osec-resource-api` 给前端和其他部门提供资源查询接口服务
@@ -16,6 +17,7 @@
 
 
 ## Rules
+禁止在 git message 中添加类似 Co-Authored-By 的信息, 会被远程仓库拒绝.
 禁止使用 harness memory, 仅使用 agent-memory 进行跨会话记忆和复用
 向用户展示的信息使用 **中文**
 Agent Memory使用 **中文**
