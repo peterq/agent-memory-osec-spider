@@ -3,7 +3,7 @@ title: 失败经验：按 spider 进程数分配部署主机，压垮了 osec-re
 type: lesson
 status: archived
 created_at: 2026-09-03T17:15:00+08:00
-updated_at: 2026-09-12T23:20:00+08:00
+updated_at: 2026-09-12T22:36:00+08:00
 priority: high
 keywords: [部署, 主机分配, 负载, osec-restest, sshd失联, deploy.sh, 进程数, 内存]
 summary: 只数 spider 进程会严重低估主机真实负载——restest 还跑着 6 个非 spider 容器且内存只有 1G

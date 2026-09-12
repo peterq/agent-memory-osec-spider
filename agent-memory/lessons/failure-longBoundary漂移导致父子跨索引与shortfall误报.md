@@ -3,7 +3,7 @@ title: 失败经验：longBoundary 按 time.Now() 计算导致长跑 bootstrap �
 type: lesson
 status: active
 created_at: 2026-09-11T12:10:00+08:00
-updated_at: 2026-09-12T23:15:00+08:00
+updated_at: 2026-09-12T22:36:00+08:00
 priority: critical
 keywords: [bootstrap, longBoundary, shortfallSlices, has_parent, parent_id, copyMode=ids, mover, TriggerMove, 父子跨索引, res_short_202609, res_long_2026]
 summary: shortfall 89 条不是子文档丢失：copy_parent/copy_child 各自取 now 算 90 天边界、长跑漂移致父 cur 子 long；修法是 mover 父归位（已完成），copyMode=ids 禁用；2 个 :cur 窗口取证不搬

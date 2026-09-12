@@ -3,7 +3,7 @@ title: 失败经验：qiankun 子应用把 Vue 挂到包裹层上, 线上静态 
 type: lesson
 status: active
 created_at: 2026-09-08T07:20:00+08:00
-updated_at: 2026-09-12T23:20:00+08:00
+updated_at: 2026-09-12T22:36:00+08:00
 priority: high
 keywords:
   - NC-JS

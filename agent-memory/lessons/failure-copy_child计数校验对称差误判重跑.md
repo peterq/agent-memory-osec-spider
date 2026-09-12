@@ -3,7 +3,7 @@ title: 失败经验：copy_child 子文档计数校验用对称差，目标多�
 type: lesson
 status: active
 created_at: 2026-09-07T08:00:00+08:00
-updated_at: 2026-09-12T23:15:00+08:00
+updated_at: 2026-09-12T22:36:00+08:00
 priority: high
 keywords: [bootstrap, copy_child, childCountOk, version_conflicts, 重跑, FailedSlices, 双写, url_check, 对称差]
 summary: childCountOk 用 |src-dst| 判达标，但 cur 含双写、long 源侧被删，dst>src 是结构性的；重跑幂等补不回，白跑 2.5 h

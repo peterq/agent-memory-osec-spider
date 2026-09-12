@@ -3,7 +3,7 @@ title: 未解决的问题
 type: question
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T23:05:00+08:00
+updated_at: 2026-09-12T22:36:00+08:00
 priority: high
 keywords: [待确认, 事故恢复, lifecycle_checker, P5, 灰度, 用户确认]
 summary: 待用户确认：checker 误删事故的止血执行与 115.5 万条恢复方案；A'/阶段 D 已按答复推进

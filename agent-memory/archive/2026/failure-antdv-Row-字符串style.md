@@ -3,7 +3,7 @@ title: 失败经验：给 ant-design-vue 的 Row 传字符串 style 会运行时
 type: lesson
 status: archived
 created_at: 2026-09-04T23:20:00+08:00
-updated_at: 2026-09-12T23:20:00+08:00
+updated_at: 2026-09-12T22:36:00+08:00
 priority: medium
 keywords:
   - ant-design-vue

@@ -3,7 +3,7 @@ title: 成功经验：配置 v2 上线准备阶段发现的两个衔接问题
 type: lesson
 status: archived
 created_at: 2026-09-08T11:40:00+08:00
-updated_at: 2026-09-12T23:20:00+08:00
+updated_at: 2026-09-12T22:36:00+08:00
 priority: medium
 keywords:
   - 配置v2

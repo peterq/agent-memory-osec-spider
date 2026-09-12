@@ -3,7 +3,7 @@ title: 失败经验：大量小 _reindex 被固定 10 s 轮询间隔拖垮
 type: lesson
 status: active
 created_at: 2026-09-05T15:40:00+08:00
-updated_at: 2026-09-12T23:15:00+08:00
+updated_at: 2026-09-12T22:36:00+08:00
 priority: high
 keywords:
   - bootstrap
