@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-13T00:43:41+08:00
+updated_at: 2026-09-13T06:45:18+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -16,7 +16,7 @@ load: always
 定位到文件后 `mem.py outline <file>` 看章节，再 `mem.py body <file> --section <标题>` 只读需要的一段。
 维护方式：改目标文件 Front Matter（summary / keywords / questions），然后运行 `scripts/mem/mem.py index --write`。
 
-# agent-memory 启动包（脚本生成, 118 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
+# agent-memory 启动包（脚本生成, 119 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
 
 ## 根目录 (3)
 - 00-overview.md | crit | 2026-09-13 | 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件 | 网盘资源爬取、版权取证、COMMON
@@ -62,7 +62,7 @@ load: always
   ? 搜索流量怎么从 v2 切到 v3，谁来切 / search_canary 是什么，比例怎么涨、异常怎么回滚
 - decisions/decision-2026-09-04-合并sweep-guard分支冲突取舍.md | medi | 2026-09-04 | 合并遗留分支时，master 已修正的旧逻辑不应因"冲突两边都保留"而被恢复，需先判断冲突是否为真实的两个功能重叠 | sweep-guard、全量扫描守卫、merge 冲突
 
-## procedures/ (9)
+## procedures/ (10)
 - procedures/workflow-子agent任务简报.md | high | 2026-09-12 | 派子 Agent 时任务描述落盘成文件、prompt 只给路径，并列出子 Agent 的常见失败模式与提示词对策 | 子agent、任务描述、agent-tasks
   ? 我要派子 Agent，任务描述太长怎么办 / 多个 agent 上下文重复怎么解决
 - procedures/workflow-并行开发多站点爬虫.md | high | 2026-09-12 | 一次接入多个新站点时的分工方式：worktree 隔离、共享资源集中准备、冲突面收敛、合并与验收 | 并行开发、worktree、子agent
@@ -73,6 +73,8 @@ load: always
   ? 编译不过，依赖报错怎么排查 / go mod tidy / replace 问题怎么处理
 - procedures/workflow-站点发现.md | high | 2026-09-12 | 收到 `task site-discovery` / `启动网站发现任务` 时的入口、候选来源渠道与要点；正文流程在 site-discovery/README.md | 站点发现、site-discovery、候选站点
   ? 我要找新的资源站，怎么启动网站发现任务 / task site-discovery 是干什么的
+- procedures/checklist-仓库脚本清单.md | medi | 2026-09-13 | MEMORY 仓库 scripts/ 下可复用脚本一览（claude-rc 后台启动 Remote Control、notify-admin 邮件、agent-browser/c… | scripts、claude-rc、remote-control
+  ? 怎么后台启动当前工作空间的 Claude Remote Control 会话 / 记忆仓库 scripts/ 下有哪些可复用脚本，各自做什么 / 怎么给管理员发邮件通知
 - procedures/troubleshooting-代理池总览无数据.md | medi | 2026-09-12 | 后台代理池页全 0 时三步定位：网关 dataSource → 上报侧是否部署 → tools/proxy-admin-check 只读巡检 | proxy-admin-check、代理池总览、proxy_admin
   ? 代理池监控的 Scene 是什么，怎么加新消费端 / IP 不可用和被站点封禁怎么区分 / 代理池推送 IP 数在哪看 / 代理池总览/场景明细全 0 怎么排查
 - procedures/workflow-带登录态的浏览器自动化.md | medi | 2026-09-12 | 如何启动/复用一个带登录态的调试Chrome并用CDP脚本驱动它, 含"默认profile会被安全策略拦截"的前提坑 | agent-browser、cdp.py、CDP
