@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-13T00:08:24+08:00
+updated_at: 2026-09-13T00:43:41+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -113,7 +113,7 @@ load: always
 - lessons/patterns-并行重构的分阶段切分.md | high | 2026-09-12 | 多个包同时改造且互相引用时，用"主会话先做共享契约 → 子 Agent 只加不删 → 单独清理 Agent 收尾"三阶段避免编译互锁 | 并行重构、子agent、worktree
   ? 多个包同时重构，子 Agent 怎么避免编译互锁 / Phase 0/1/2 怎么切分任务
 - lessons/patterns-统计ES索引先查文档形态.md | high | 2026-09-05 | 同一索引可能混着两代写入形态；只按 join=resource 统计会漏掉三分之二资源，任何统计/迁移前先做 exists/must_not exists 对账 | ES、join、nested
-- lessons/patterns-长周期生产巡检.md | high | 2026-09-12 | 派子 Agent 做数小时生产巡检的可操作清单（原 98 条经验按主题压缩）：前台等待、隧道 keepalive、复制阶段用 _count 差分而非 progress、watch… | 巡检、bootstrap、子Agent
+- lessons/patterns-长周期生产巡检.md | high | 2026-09-13 | 派子 Agent 做数小时生产巡检的可操作清单（原 98 条经验按主题压缩）：前台等待、隧道 keepalive、复制阶段用 _count 差分而非 progress、watch… | 巡检、bootstrap、子Agent
 - lessons/success-本地代理池打通.md | high | 2026-09-12 | 本地怎么用上代理池、三个会让人查错方向的坑，以及验证方法 | 代理池、蜻蜓代理、白名单
   ? 代理池连不上怎么办，本地怎么用上代理池 / 蜻蜓白名单/出口IP不对怎么查
 - lessons/success-桩网关加cdp浏览器做登录链路联调.md | high | 2026-09-12 | 涉及浏览器交互的改造仅靠静态审查+单测不足以验收, 要造一个只保留被测链路的桩服务并用带登录态的调试浏览器实测, 本次靠它抓到两个"代码看起来完全正确"的阻断级问题 | 桩网关、stubgw、CDP

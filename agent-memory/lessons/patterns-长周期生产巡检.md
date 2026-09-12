@@ -3,7 +3,7 @@ title: 可迁移模式：长周期生产巡检（全量 bootstrap 实战）
 type: lesson
 status: active
 created_at: 2026-09-06T05:50:00+08:00
-updated_at: 2026-09-12T11:25:00+08:00
+updated_at: 2026-09-13T00:45:00+08:00
 priority: high
 keywords: [巡检, bootstrap, 子Agent, 后台进程, 隧道, keepalive, progress, _count 差分, lc-check, watch 脚本, reindex, 吞吐, verify, repair, 对拍, rethrottle, heap]
 summary: 派子 Agent 做数小时生产巡检的可操作清单（原 98 条经验按主题压缩）：前台等待、隧道 keepalive、复制阶段用 _count 差分而非 progress、watch 脚本静默降级要识别；具体吞吐数值另见 knowledge/domain-bootstrap吞吐实测数据.md
@@ -90,3 +90,7 @@ P4 全量 bootstrap（作业 id=8，约 2 天）需要主控派子 Agent 分轮�
 - pause 重作业前先看 `lc-check -jobs` 有无 pending 的其它作业；网关重启会让 leader 漂移，属允许，记录即可。
 - README「线上观测脚本」写明 `lc_reindex_stat.sh` 的局限与 `_count` 差分法；隧道命令补 keepalive 参数。
 </content>
+
+## 补记 2026-09-13：长时投递作业的两条护栏
+- 经 ssh 隧道访问网关的长时作业，隧道必须有守护（断开自动重连 + `ServerAliveInterval`），本机到跳板机的网络抖动（00:30~00:47 res2 SSH 超时 17 min，主机本身正常）会让隧道静默消失。
+- 投递/写入类工具对「对端不可达」要原地退避等待而不是记失败跳过（`tools/lc-recrawl` `77e92bb`），否则断连期间的行全靠事后补投；且 `pkill -f <模式>` 会连同自己的 shell 一起杀掉（模式出现在当前命令行里），改用 `pgrep -f | grep -vx $$` 逐个 kill。
