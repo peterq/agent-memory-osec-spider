@@ -3,10 +3,10 @@ title: 排查：代理池总览/场景明细无数据
 type: procedure
 status: active
 created_at: 2026-09-10T09:30:00+08:00
-updated_at: 2026-09-12T12:10:00+08:00
+updated_at: 2026-09-12T23:15:00+08:00
 priority: medium
 keywords: [proxy-admin-check, 代理池总览, proxy_admin, proxy-monitor, proxyMon, dataSource, 无数据, 全是0, 上报侧未部署, 容器创建时间, Scene, ClassifyResult]
-summary: 后台代理池页全 0/— 时的三步定位（网关 dataSource → 上报侧容器创建时间 → 日志）与直连网关 RPC 的巡检工具 proxy-admin-check；09-10 结论上报侧未重部，已全部重部解决
+summary: 后台代理池页全 0 时三步定位：网关 dataSource → 上报侧是否部署 → tools/proxy-admin-check 只读巡检
 questions:
   - 代理池监控的 Scene 是什么，怎么加新消费端
   - IP 不可用和被站点封禁怎么区分

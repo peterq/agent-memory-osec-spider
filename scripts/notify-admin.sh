@@ -11,6 +11,6 @@ import json, os
 print(json.dumps({"subject": os.environ["SUBJECT"],
                   "htmlContent": os.environ["HTML"],
                   "source": os.environ["SOURCE"]}))')
-curl -sS -m 20 -X POST http://cf-worker.peterq.cn/notify_admin \
+curl -sS -m 20 -X POST https://cf-worker.peterq.cn/notify_admin \
   -H 'Content-Type: application/json' --data "$BODY"
 echo

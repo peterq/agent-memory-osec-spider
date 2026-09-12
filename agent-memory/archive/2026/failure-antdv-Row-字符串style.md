@@ -1,9 +1,9 @@
 ---
 title: 失败经验：给 ant-design-vue 的 Row 传字符串 style 会运行时报错
 type: lesson
-status: active
+status: archived
 created_at: 2026-09-04T23:20:00+08:00
-updated_at: 2026-09-04T23:20:00+08:00
+updated_at: 2026-09-12T23:20:00+08:00
 priority: medium
 keywords:
   - ant-design-vue
@@ -14,7 +14,7 @@ keywords:
   - NC-JS
   - spiderAdmin
 summary: antdv 的 Row/Menu.Item/transButton 用 Object.assign 合并 attrs.style，传字符串会被展开成索引键并抛 "Failed to set an indexed property [0] on 'CSSStyleDeclaration'"
-load: on-demand
+load: rarely
 related:
   - agent-memory/knowledge/architecture-nc-js.md
 ---

@@ -1,13 +1,13 @@
 ---
 title: 成功经验：生命周期改造端到端验收抓出的 5 类坑
 type: lesson
-status: active
+status: archived
 created_at: 2026-09-05T20:00:00+08:00
-updated_at: 2026-09-05T20:00:00+08:00
+updated_at: 2026-09-12T23:20:00+08:00
 priority: high
 keywords: [验收, ES 6.7, refresh, _reindex, BatchUpsert, !id, recover, 作业 panic, 网关崩溃, index_role, 别名判据, 幂等]
 summary: Opus 端到端验收在真实进程链路上抓出的阻塞级缺陷及其规避规则，写网关内长作业/ES 批量操作时对照检查
-load: on-demand
+load: rarely
 related:
   - agent-memory/sessions/2026/2026-09-04-资源生命周期改造PRD.md
   - agent-memory/lessons/patterns-并行重构的分阶段切分.md

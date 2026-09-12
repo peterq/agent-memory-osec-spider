@@ -3,7 +3,7 @@ title: 失败经验：大量小 _reindex 被固定 10 s 轮询间隔拖垮
 type: lesson
 status: active
 created_at: 2026-09-05T15:40:00+08:00
-updated_at: 2026-09-12T12:10:00+08:00
+updated_at: 2026-09-12T23:15:00+08:00
 priority: high
 keywords:
   - bootstrap
@@ -14,7 +14,7 @@ keywords:
   - 吞吐
   - 生命周期
   - 测试替身屏蔽缺陷
-summary: bootstrap 的 B3c copy_child 每 200 个父 id 发一次小 _reindex，却按 10 s 轮询等待，实测 22 s/批 → 单月 21 h、全量 20 天
+summary: bootstrap B3c copy_child 上万个小 reindex 被固定 3 s 轮询拖垮，改指数退避后吞吐恢复
 questions:
   - P4 第二次演练，copy_child 为什么这么慢（轮询空等）
 load: on-demand

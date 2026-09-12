@@ -1,0 +1,54 @@
+---
+title: 失败经验：lifecycle_checker 把资源 md5 当分享 id，116 万有效资源被误判失效并从新旧索引删除
+type: lesson
+status: active
+created_at: 2026-09-12T22:40:00+08:00
+updated_at: 2026-09-12T22:40:00+08:00
+priority: critical
+keywords: [lifecycle_checker, 误删, ShareId, task.Id, invalid_link, 失效率告警, 事故, 恢复]
+questions:
+  - lifecycle_checker 为什么把所有夸克资源判成失效
+  - 116 万条资源误删是怎么回事，怎么恢复
+  - 检测吞吐 valid=0 意味着什么
+  - 代理池 lifecycle_checker 场景成功率 0 的原因
+summary: checker 用 task.Id(md5) 而非 ShareId 探测，115.5 万条 quark/ali 经 lcClear 从新旧索引误删并写 invalid_link；修复 SPIDER b888846，恢复来源 Mongo share_files
+load: on-demand
+related:
+  - agent-memory/current/risks.md
+  - agent-memory/current/tasks.md
+  - agent-memory/lessons/success-网盘失效判定原则.md
+  - agent-memory/lessons/failure-旁路能力初始化拖垮主流程.md
+---
+
+# 失败经验：lifecycle_checker 误传资源 md5
+
+正本（含取证命令与数字）：SPIDER `PRD/res-lifecycle/rollout-2026-09-05.md` §15。
+
+## 问题背景
+资源生命周期改造的独立探测进程 `lifecycle_checker`（`osec-jenkins`，SPIDER `718f160` 09-04 新增）自 09-05 14:43 起消费 `lcCheck:*` 队列。
+09-12 22:17 推进 P5 A' 时发现 `lc-check` 总览 `valid1h=0 / invalid1h=14217 / base7d=1.0`——**7 天里没有一条判有效**。
+
+## 失败表现
+- 代理池监控 `lifecycle_checker_quark` ok=0、httpErr 78%，而同池同站 `quark` 场景成功率 73~88%（09-10 首批数据就有此现象，当时归因"失效响应被记成 httpError"而搁置）。
+- 容器统计：quark `valid=0 invalid=416454`、ali-share `valid=0 invalid=14756`、bnd/xunlei 全部 error（未知响应）。
+- `res_lc_event` `invalid`+`检测判定失效`：**quark 1,115,264 + ali-share 40,007 = 1,155,271**（每天 ≈16 万）；抽样 40/40 已从 `resource` 与 `res_lc_all` 删除、DB status=2。
+
+## 根本原因
+`services/lifecycle_checker/checker.go` `HandleTask` 调 `ValidShareId(ctx, typ, task.Id, task.Pwd)`；`CheckTask.Id` 是资源 md5，分享 id 在 `task.ShareId`。
+夸克/阿里接口收到 md5 回「分享不存在」（已知失效业务码）→ Invalid → `onCheckInvalid` → `lcClear`：删 lc 文档、写 `invalid_link_<type>`（阻止再入库）、推旧 `clearExpire` **直接删旧索引（无复核）**。
+单测 fake 按 shareId 取结果但用例只填 `Id`，两字段同值 → 等价于没测。
+「失效率突增」告警是相对 7 天基线的倍数，基线从第一天起就是 100% → 永远不触发。
+
+## 规避方法（已落地 SPIDER `b888846`）
+- `HandleTask` 改传 `task.ShareId`；ShareId 为空拒绝探测、按 Error 上报（绝不落 Invalid）。
+- 单测里 `Id`/`ShareId` 故意不同值；新增空 shareId 用例。
+- 网关告警新增 `invalid_ratio_absolute`（缺省 0.5，不看基线，样本 ≥500 即告警）。
+
+## 下次行动建议
+1. 任何「判失效 → 不可逆删」的探测器**上线首日看 valid/invalid 绝对数**，valid=0 直接停。
+2. 契约里语义不同的同类型字段（Id/ShareId、resId/shareId），单测必须给不同值，fake 用"错的那个"做键。
+3. 监控里某场景 100% 失败而同站其它场景正常 → 立即查调用方请求构造，不要归因到目标站/代理池。
+4. 恢复路径：`res_lc_event` 取 res_id → 分表取 share_id/url → Mongo `share_files`（STORAGE，按 url upsert，失效清理不动它）取回 → 先删 `invalid_link_*` 对应行 → 分批 `storage.UpsertResource` 走正常入库 → 修复版 checker `TriggerCheck(force)` 复检剔除真失效。
+
+## 适用边界
+lc checker 与 API/SPIDER 两套旧判定实现无关（旧链路传的是分享 id，未受影响）；bnd/xunlei 零误删但 8 天零有效检测，dueBacklog 需在修复上线后消化。

@@ -3,10 +3,10 @@ title: 失败经验：longBoundary 按 time.Now() 计算导致长跑 bootstrap �
 type: lesson
 status: active
 created_at: 2026-09-11T12:10:00+08:00
-updated_at: 2026-09-11T17:00:00+08:00
+updated_at: 2026-09-12T23:15:00+08:00
 priority: critical
 keywords: [bootstrap, longBoundary, shortfallSlices, has_parent, parent_id, copyMode=ids, mover, TriggerMove, 父子跨索引, res_short_202609, res_long_2026]
-summary: id=8 的 89 条 shortfallSlices（420 万）不是子文档丢失，而是 copy_parent 与 copy_child 各自用 time.Now() 算 90 天边界、6 天长跑后漂移，父进 cur 子进 long；copyMode=ids 补搬是错误且危险的做法，正确修法是 mover 让父归位
+summary: shortfall 89 条不是子文档丢失：copy_parent/copy_child 各自取 now 算 90 天边界、长跑漂移致父 cur 子 long；修法是 mover 父归位（已完成），copyMode=ids 禁用；2 个 :cur 窗口取证不搬
 load: on-demand
 related:
   - agent-memory/lessons/patterns-长周期生产巡检.md
@@ -49,6 +49,11 @@ related:
 2. shortfall 记账增加 `parent_id` 口径计数或「目标索引缺失父数」，区分两类成因。
 3. `bootstrapCopyChildrenByIds` 必须尊重 `ctimeFrom/ctimeTo`，或 README 删除「小范围修补」说法。
 4. lc-check 增加 `-trigger-move` 入口（当前只能走后台界面/自写 RPC 客户端）。
+
+## 补记：2 个 `:cur` 半区窗口（09-12 取证，已关闭）
+`t202608290000`/`t202608310000`（gap 20,733 / 718）曾被记为「父在 long、子在 cur」。09-12 只读取证：DB 里两窗口 35,104 个 status=1 父**全部** `index_name=cur`；
+随机 25 + 大父 30（含 6 个 file_count 2 万+）用 `parent_id`(routing) 计数：cur 子数 = legacy 子数、long = 0。
+→ 不存在跨索引，`:cur` 半区 gap 同样是计数口径/时序假象，**不搬**（若按 target=long 投递会把 8 月底新资源错沉 long）。
 
 ## 适用边界
 

@@ -3,7 +3,7 @@ title: 项目变更记录（总览归档）
 type: knowledge
 status: active
 created_at: 2026-09-12T11:30:00+08:00
-updated_at: 2026-09-12T16:50:00+08:00
+updated_at: 2026-09-12T23:20:00+08:00
 priority: low
 keywords: [变更记录, changelog, 历史, 总览归档, 生命周期改造, 队列v2, queue-admin, 站点接入, 配置v2, GitHub OAuth]
 summary: 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪"
@@ -20,6 +20,8 @@ related:
 
 ## 2026-09-12
 
+- 2026-09-12 22:17 🔴 发现 lifecycle_checker 把 md5 当分享 id，115.5 万条误删（quark/ali）；修复 SPIDER `b888846`，止血待人工 → `lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md`、rollout §15
+- 2026-09-12 按 open-questions 答复推进：`:cur` 两窗口取证不搬；阶段 D 改 API 侧自动灰度（sonnet 开发中）→ `decisions/decision-2026-09-12-阶段D改由API侧自动灰度分流.md`；A' 探测驱动 `scripts/lc_legacy_probe_all.sh`
 - 16:34 **P5 阶段 A/B 上线**：D1 旧链路失效同步钩子（网关双机）、API v2 valid 上报 lc + bnd 去 `has_child`（热态 bnd v3 反超 v2 2×）、A' 存量复检工具链；res2 网关重部遇 ssh 超时半完成态，新增 `deploy.sh redeployHost` 补救。→ `decisions/decision-2026-09-12-P5切v3准入门槛与失效同步.md`、`sessions/2026/2026-09-12-P5阶段AB上线.md`、SPIDER rollout §14
 - 16:30 输出切 v3 前的 P5 准入计划（A 失效同步钩子 / B bnd 慢查询 / C 复测门槛 / D 灰度与回滚条件，最短 9 天）。→ SPIDER `PRD/res-lifecycle/p5-plan-2026-09-12.md`（`f42e0f2`）
 - 15:30 P5 前置对拍跑完，**未通过**（首页重合度 84%、语料级 91.7%；4% 坑位是 legacy 已删 lc 未删的死链，其余是 match_phrase_prefix 分片展开彩票），待用户决策 D1~D4。→ `lessons/failure-v3首页重合度受前缀展开分片彩票影响.md`、`current/open-questions.md`、SPIDER rollout §13
@@ -51,12 +53,12 @@ related:
 
 ## 2026-09-07
 
-- 用 archify 产出资源生命周期架构图。→ `sessions/2026/2026-09-07-资源生命周期架构图.md`、`lessons/success-archify画图的几何约束.md`
+- 用 archify 产出资源生命周期架构图。→ `sessions/2026/2026-09-07-资源生命周期架构图.md`、`archive/2026/success-archify画图的几何约束.md`
 
 ## 2026-09-05
 
 - 生命周期改造 P0→P3 全部上线并核验通过（67 张 `res_lc_*` 表、三索引四别名、STORAGE 双写、API v3）；遗留 osec-resdb 的 `es_endpoint` 指向已下线 ES 集群。→ `sessions/2026/2026-09-05-生命周期P0上线.md`、`sessions/2026/2026-09-05-生命周期P3上线.md`、`lessons/failure-resdb的ES端点指向已下线集群.md`
-- Wave 1 五分支合并、生命周期代码五仓完成并推送（Phase 0 契约 → 5 Agent 并行 → 合并 → Opus 端到端验收）。→ `sessions/2026/2026-09-05-生命周期五分支合并.md`、`sessions/2026/2026-09-05-生命周期改造实施.md`、`lessons/success-生命周期改造验收发现.md`
+- Wave 1 五分支合并、生命周期代码五仓完成并推送（Phase 0 契约 → 5 Agent 并行 → 合并 → Opus 端到端验收）。→ `sessions/2026/2026-09-05-生命周期五分支合并.md`、`sessions/2026/2026-09-05-生命周期改造实施.md`、`archive/2026/success-生命周期改造验收发现.md`
 - P4 全量 bootstrap 前三次启动失败与演练。→ `sessions/2026/2026-09-05-生命周期P4启动失败.md`、`sessions/2026/2026-09-05-生命周期P4演练.md`、`sessions/2026/2026-09-05-生命周期P4第三次尝试.md`
 - 生命周期改造 PRD v1.1 定稿；实测更正真实资源总量 ≈ 4440 万（旧索引另有 2966 万无 join 的百度父文档）。→ `decisions/decision-2026-09-04-资源索引生命周期改造方案.md`、`knowledge/architecture-es索引现状.md`
 

@@ -3,10 +3,10 @@ title: 当前任务与进度
 type: task
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T16:50:00+08:00
+updated_at: 2026-09-12T22:55:00+08:00
 priority: critical
 keywords: [任务, 进度, 待办, P5, 队列v2, queue-admin, 全站扫描, fullsweep, 文档爬虫, doc-crawler, FC Chrome, 凭据轮换, 站点发现, kkpans, misoso, 有效性检测]
-summary: 仍在推进/阻塞/待决策的事项；已上线或被取代的任务归档在 archive/2026/tasks-2026-09-已完成.md
+summary: 仍在推进/阻塞/待决策的事项（P0：checker 误删事故止血/部署/恢复；P5 顺序 修复上线→阶段C→A'→阶段D）；已上线任务在 archive
 questions:
   - 当前该做什么，有哪些待办
 load: on-demand
@@ -24,33 +24,22 @@ related:
 
 | 任务 | 状态 | 阻塞/下一步 | 详情文件 |
 |---|---|---|---|
-| 生命周期 P4 全量 bootstrap | ✅ 已完成 | 遗留 5 提交已随 09-12 网关重部生效；2 个 `:cur` 半区窗口待决定 | 归档遗留待办 / archive「生命周期 P4」 |
-| **生命周期 P5 准入** | 阶段 A/B **已上线**，24 h 观察中 | 观察 → 阶段 C 复测 → A' 存量分批 → 阶段 D 切流 | 本文件「进行中」 |
-| 09-08 并行四任务 | 部分已上线 | 文档爬虫 FC 自动化卡 6 项人工事项 | 本文件「2026-09-08 并行四任务」 |
+| **🔴 lifecycle_checker 误删事故** | 止血待人工 | ① 人工 `docker stop` ② 部署 `b888846` ③ 恢复方案待用户决策 | 本文件「进行中」/ `lessons/failure-lifecycle_checker误传资源md5…` |
+| 生命周期 P4 全量 bootstrap | ✅ 已完成 | 2 个 `:cur` 半区窗口 09-12 取证**无需处理**（父子都在 cur） | archive「生命周期 P4」 |
+| **生命周期 P5 准入** | 阶段 A/B 已上线；被事故阻塞 | 修复版 checker 上线 → 阶段 C 复测 → A' 投递 → 阶段 D 灰度（API 侧分流，开发中） | 本文件「进行中」 |
+| 09-08 并行四任务 | 部分已上线 | 文档爬虫 FC 自动化卡 6 项人工事项 | `current/tasks-backlog.md` |
 | 配置 v2/OAuth/配置拆代码 | ✅ 已上线 | `LOCAL_CONFIG_PATH` 回落待修；凭据轮换待决策 | 归档遗留待办 |
 | 资源生命周期改造 P0~P3 | ✅ 已上线 | es_endpoint / `resource_valid` 索引缺失等 | 归档遗留待办 |
 | 管理台合并 | ✅ 已上线 | ARMS 指标、浏览器实测待人工 | 归档遗留待办 |
 | 队列 v2 上线收尾 | 人工进行中 | A~E 待用户执行 | 本文件「待办」 |
 | 5 爬虫全站扫描启动行为改造 | 待办（P0） | 改为 `fullsweep:lastdone` 守卫 | 本文件「待办」 |
 | 安全凭据轮换 | 待用户决策 | 多处硬编码 AK/SK/Token | 归档遗留待办 |
-| 进行中 | 无 | — | — |
 
-## 2026-09-08 并行四任务（监控增强 + 文档爬虫上云）—— 部分已上线，文档爬虫 FC 自动化待人工
-
-①告警后台/队列告警可配 ②代理池后台 ③链接路径追踪 **已随 09-09 网关重启上线**（五仓库均已 push，详情见 session）。
-- **④文档爬虫 FC 自动化仍未落地**，卡在以下人工事项：
-  - [ ] SLS 给 `link_key` 建索引后打开 `services.queue_admin.sls.link_key_indexed`（缺省 false）
-  - [ ] Tampermonkey 扩展包上传 OSS（`fc-chrome/extensions/tampermonkey.zip`），拿到实物后复核 `fc-chrome/tampermonkey.go` DOM 选择器（未验证）
-  - [ ] FC 镜像构建与部署（阿里云 ACR + serverless-devs，函数名 `nc-app-prod-cdp3`），步骤见 COMMON `fc-chrome/README.md`
-  - [ ] 新 FC 域名回填三处：NC-JS `CDP_ENDPOINT`、`task.ts` 的 `eps['prod-v3']`（TODO 占位）、SPIDER `services.doc_crawler.fc_endpoint`
-  - [ ] 云端油猴脚本上传：userscripts `pnpm build:cloud && pnpm upload:cloud`
-  - [ ] doc-crawler 部署主机待确认（`deploy.sh` 暂填 `osec-jenkins` 占位）
-  - [ ] PC 端油猴调度器是否下线，由用户决定（可与 doc-crawler 并存）
-- 详情：`sessions/2026/2026-09-08-并行四任务监控与文档爬虫上云.md`；`agent-tasks/2026-09-08-monitoring-and-doc-fc/`；`lessons/failure-旁路能力初始化拖垮主流程.md`。
+> 09-08 并行四任务（文档爬虫 FC 自动化 6 项人工事项）与 P3 低优先级待办已移至 `current/tasks-backlog.md`。
 
 ## 归档遗留待办（原分散在已归档任务块中，仍未完结）
 
-- [ ] **P1 生命周期 P4 收尾**：2 个 `:cur` 半区窗口（父在 long、子在 cur，21,451 子）是否处理待用户决定；P6 关双写前须补 v3 detail/fileCtx（结构兼容，`knowledge/api-v3-detail-filectx兼容性分析.md`）；P5 进度见「进行中」。
+- [ ] **P1 生命周期 P4 收尾**：2 个 `:cur` 半区窗口已于 09-12 关闭（30/30 抽样父子均在 cur、long=0，「父在 long」前提不成立，不搬）；P6 关双写前须补 v3 detail/fileCtx（结构兼容，`knowledge/api-v3-detail-filectx兼容性分析.md`）；P5 进度见「进行中」。
 - [ ] **P2 排期**：巡检守护提升到 `runBootstrapJob` 级 + heap 阈值可配（0.5~1 人日）；rollout §9 待补写。
 - [ ] **P2 代码待修（配置 v2）**：`LOCAL_CONFIG_PATH` 缺省未回落宿主机 `config.yaml`；删宿主机 `config.yaml` 的时机（回滚现依赖 `spider.old`）留用户决定。
 - [ ] **P2 安全（凭据轮换，待决策）**：`devops_online_env.go` 硬编码 OSS AK/SK 与 ES 口令；`pan_download`/`bnd_download` 测试文件硬编码真实 RefreshToken/BDUSS（建议迁 `.hide.json`）；ali_log ak/sk 曾明文进会话记录，建议评估轮换。
@@ -75,14 +64,7 @@ related:
 - [ ] **P2** 网关 `initEs()` 连不上 ES 直接 panic，导致单个依赖故障拉不起网关；考虑改为重试+告警（待用户决定）。
 - [ ] **P2** res_scheduler 补 ListTask/队列长度观测 RPC（队列 v2 的可观测性缺口）。
 - [ ] **P2** `devops_check_and_push_clear_queue`（线上 4 台）仍用 `queue_task.Queue2` 直连 redis，可迁网关。
-- [ ] **P3** `illuminate/queue-task/queue_test.go` 的 `TestGetTimeoutKeys`/`TestRePush` 既有失败（时间戳断言误差 ~10s）。
-- [ ] **P3** `services/aliyun-drive` 的 `checkRecentUpdate` 用分享 id 而非 `md5(shareLink)` 查 STORAGE，疑似历史 bug，待确认。
 
-- [ ] **P3 清理** 蜻蜓代理的**现行**凭据在 `services/proxy-provider/change_proxy_config.go`，
-      该文件是 gitignore 的（未提交，处理得当）。但仓库里仍留着**过期**凭据：
-      `proxy-provider.go` 硬编码的 `qtWhitelistLink` 与两份 `config*.yaml` 的
-      `providers[].conf`。这些死值会误导排查（我就据此误判过"凭据全过期"），
-      建议清掉或改成从环境变量读。
 - [ ] **P1** 按新口径（单 IP ≥10 条分享链接/分钟）复议 4 个站点：
       `www.pioz.cn`（最有希望：14.6 万条、100% 夸克、免登录，原因只是 10 并发触发 Turnstile）、
       `1.star2.cn`、`tv.yydsys.top`、`xsayang.fun`。见 `site-discovery/history.md` 标注的「待复议」。
@@ -123,12 +105,15 @@ related:
       logrus(1.6→1.8.1)、go-sql-driver/mysql(1.5→1.7)、easyjson，且 `go` 指令从 1.22.0 提到 1.23。
       编译通过不等于行为不变，重点看 S3 上传（save-torrent）与日志输出格式。
 - [ ] **P2** COMMON `Makefile` 的 protoc 目标已过期（路径与实际 proto 文件名不符，新增的 5 个 proto 未纳入）。
-- [ ] **P3** `bnd_resolver_check.go:160` 的 `go vet` 告警（`storage.Resource` 按值传递，含 `sync.Mutex`）。
-      根因是 `resource.SaveBaiduResource` 的全局签名，要改得整体改。
-- [ ] **P3** `devops_res_reindex` 若要在非本地环境跑，需先约定导出目录挂载点（当前直接 panic 退出）。
 
 ## 进行中
 
-- [ ] **P0 生命周期 P5 准入**（阶段 A/B 已上线 09-12 16:34）——决策 `decisions/decision-2026-09-12-P5切v3准入门槛与失效同步.md`；上线/观察项 SPIDER rollout §14；简报 `agent-tasks/2026-09-12-p5-stage-ab/`。
-  - 下一步按序：① 09-13 ≥16:34 跑 rollout §14.3 观察项；② 阶段 C 复测 p5-plan §4（G1~G6）；③ A' 存量 probe 64 表 → `lc-check -trigger-check` 每天 ≤20 万；④ 阶段 D 调用方切 `searchType=match` → 3 天 → 全量。
-  - 已核：`url_check` 近乎空转，旧索引删除几乎全来自 API v2 `validShareLink` → G3 修复点是 API 侧 `ReportInvalid`（已上线），网关钩子只是兜底，`legacy_invalid_hint`≈0 属预期；观察看 `res_lc_event` invalid 含 `api-v2-search` 的条数。
+- [ ] **🔴 P0 lifecycle_checker 误删事故（09-12 22:17 发现）**——正本 SPIDER rollout §15；经验 `lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md`。
+  - ① **人工止血**：`ssh osec-jenkins "docker stop spider-lifecycle_checker"`（Agent 被安全策略拦）。每小时不停 ≈ +7,000 条误删。
+  - ② 部署修复 `b888846`：`./deploy.sh lifecycle_checker`（先停后部，看容器统计出现 valid>0 才算通过）；网关告警护栏随下次网关发版。
+  - ③ **恢复待决策**：Mongo `share_files` 回灌工具（≈1 人日）→ 删 `invalid_link_*` 对应行 → `UpsertResource` → 修复版 `TriggerCheck(force)` 复检；范围 115.5 万（quark 1,115,264 / ali 40,007，res_id 从 `res_lc_event` 取）。
+  - ④ 修复上线后消化 bnd `dueBacklog` 52.8 万（8 天零有效检测）。
+- [ ] **P0 生命周期 P5 准入**（阶段 A/B 已上线 09-12 16:34；**顺序因事故调整**）——决策 `decisions/decision-2026-09-12-P5切v3准入门槛与失效同步.md`、`decision-2026-09-12-阶段D改由API侧自动灰度分流.md`。
+  - 下一步按序：① 事故止血 + 修复上线；② 09-13 ≥16:34 跑 rollout §14.3 观察项 + 阶段 C 复测 p5-plan §4；③ A' 投递：只读探测 `scripts/lc_legacy_probe_all.sh _note/p5-aprime`（09-12 22:29 起在本机后台跑 xunlei，产物在会话 scratchpad `probe-xunlei/`，xunlei_00 缺失率 0.13%）→ 修复版上线后 `lc-check -trigger-check` 每天 ≤20 万；④ 阶段 D：`search_canary` 开发中（sonnet，简报 `agent-tasks/2026-09-12-p5-stage-d-canary/`），门槛全过后 `enabled: true` 重部 API。
+  - 已核：`url_check` 近乎空转，旧索引删除来自 API v2 `validShareLink`（G3 修复点 API 侧 `ReportInvalid`，已上线）**以及本次事故的 lcClear→clearExpire**。
+- [ ] **P2 代理池口径**（09-10 待确认项，Agent 自主判断）：`lifecycle_checker_*` ok=0 已归因为事故（非口径问题）；`keyword_upyunso/funletu/pansearch_me` 近 24 h 仍 ok=0（几乎全 ipUnusable/other），按 `decision-2026-09-03-清理下线爬虫代码.md` 口径列为下线候选，待修复版 checker 上线后再看一次代理池再定。

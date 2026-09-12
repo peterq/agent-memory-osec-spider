@@ -1,13 +1,13 @@
 ---
 title: 成功经验：archify 画 lifecycle / architecture 图时的几何约束与修图顺序
 type: lesson
-status: active
+status: archived
 created_at: 2026-09-07T08:30:00+08:00
-updated_at: 2026-09-07T08:30:00+08:00
+updated_at: 2026-09-12T23:20:00+08:00
 priority: medium
 keywords: [archify, lifecycle, architecture, viewBox, 宽高比, yOffset, via, labelDy, visual-check, 首屏不滚动]
 summary: archify 渲染器的固定布局规则（lifecycle 三带坐标、事件列对齐主轨 2~4 列、阅读区自适应仅在宽高比≥1.55）以及一轮修到 showcase+visual-check 双过的做法
-load: on-demand
+load: rarely
 related:
   - agent-memory/sessions/2026/2026-09-07-资源生命周期架构图.md
 ---

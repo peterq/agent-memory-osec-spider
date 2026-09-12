@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-12T16:47:30+08:00
+updated_at: 2026-09-12T22:36:04+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -16,7 +16,7 @@ load: always
 定位到文件后 `mem.py outline <file>` 看章节，再 `mem.py body <file> --section <标题>` 只读需要的一段。
 维护方式：改目标文件 Front Matter（summary / keywords / questions），然后运行 `scripts/mem/mem.py index --write`。
 
-# agent-memory 启动包（脚本生成, 114 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
+# agent-memory 启动包（脚本生成, 118 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
 
 ## 根目录 (3)
 - 00-overview.md | crit | 2026-09-12 | 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件 | 网盘资源爬取、版权取证、COMMON
@@ -24,16 +24,18 @@ load: always
   ? 各仓库的职责分别是什么 / go.mod replace 现状是怎样的
 - 02-user-preferences.md | high | 2026-09-12 | 用户对语言、脚本沉淀、记忆维护、thinking 长度与敏感信息禁写的明确要求 | 偏好、中文、脚本沉淀
 
-## current/ (4)
-- current/tasks.md | crit | 2026-09-12 | 仍在推进/阻塞/待决策的事项；已上线或被取代的任务归档在 archive/2026/tasks-2026-09-已完成.md | 任务、进度、待办
+## current/ (5)
+- current/tasks.md | crit | 2026-09-12 | 仍在推进/阻塞/待决策的事项（P0：checker 误删事故止血/部署/恢复；P5 顺序 修复上线→阶段C→A'→阶段D）；已上线任务在 archive | 任务、进度、待办
   ? 当前该做什么，有哪些待办
-- current/open-questions.md | high | 2026-09-12 | 待用户确认：P5 A' 存量复检节奏、阶段 D 调用方切流对接，及 :cur 半区窗口、代理池口径等历史项 | P5、待确认、用户确认
+- current/open-questions.md | high | 2026-09-12 | 待用户确认：checker 误删事故的止血执行与 115.5 万条恢复方案；A'/阶段 D 已按答复推进 | 待确认、事故恢复、lifecycle_checker
   ? 当前有哪些待用户确认的问题
-- current/risks.md | high | 2026-09-12 | 影响开发与运维安全的已知风险点 | 风险、阻塞、密钥
+- current/risks.md | high | 2026-09-12 | 影响开发与运维安全的已知风险点；最高 R9 lifecycle_checker 误删 116 万资源（止血待人工、恢复待决策） | lifecycle_checker误删、风险、阻塞
   ? 密钥、安全相关的风险在哪看
 - current/changelog.md | low | 2026-09-12 | 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪 | 变更记录、changelog、历史
+- current/tasks-backlog.md | low | 2026-09-12 | 从 tasks.md 拆出的低优先级/等人工事项：文档爬虫 FC 自动化 6 项人工步骤、P3 代码小修 | backlog、P3、文档爬虫
+  ? 文档爬虫 FC 自动化还差哪些人工步骤 / 有哪些 P3 低优先级待办
 
-## decisions/ (14)
+## decisions/ (15)
 - decisions/decision-2026-09-02-停止磁力资源采集.md | crit | 2026-09-02 | 项目现只采集 4 种网盘类型资源，不再采集或入库磁力/BT 资源；存量索引与接口保留 | 磁力、torrent、magnet
 - decisions/decision-2026-09-03-全站扫描不在启动时触发.md | crit | 2026-09-03 | 全量扫描完成后把时间写进 redis；启动时检查该时间，有则跳过全量，只跑增量 | 全站扫描、全量、启动
 - decisions/decision-2026-09-04-资源索引生命周期改造方案.md | crit | 2026-09-12 | 用短周期(cur/prev)+长周期三索引与 MySQL 分表元数据替代单大索引的失效清理方式；两套方案共存、v3 接口切换、双写保回滚 | 生命周期、lifecycle、三索引
@@ -56,6 +58,8 @@ load: always
   ? 切 v3 前必须满足哪些门槛 / 旧链路判失效为什么只提前复检而不直接置 lc 失效 / bnd 搜索在 v3 慢的原因与修法 / P5 灰度怎么切、怎么回滚
 - decisions/decision-2026-09-12-弃用文档更新类接口.md | high | 2026-09-12 | 用户 2026-09-12 确认——report/likes/dislikes/addViews 这类频繁 update ES 文档的接口已弃用，不做 v3、不再新增同类写法；原… | 弃用、addViews、likes
   ? report/likes/dislikes/views 这些接口还要不要做 v3 / 为什么 v3 detail 不能调 addViews / 哪些接口不允许频繁 update ES 文档
+- decisions/decision-2026-09-12-阶段D改由API侧自动灰度分流.md | high | 2026-09-12 | 用户 09-12 裁定：API 在 /api/v2/search 服务端按比例走 v3，30% 起、无异常每 100 个 v3 请求 +1% 到全量，异常自动回落 0% 并告警，… | 阶段D、灰度、分流
+  ? 搜索流量怎么从 v2 切到 v3，谁来切 / search_canary 是什么，比例怎么涨、异常怎么回滚
 - decisions/decision-2026-09-04-合并sweep-guard分支冲突取舍.md | medi | 2026-09-04 | 合并遗留分支时，master 已修正的旧逻辑不应因"冲突两边都保留"而被恢复，需先判断冲突是否为真实的两个功能重叠 | sweep-guard、全量扫描守卫、merge 冲突
 
 ## procedures/ (9)
@@ -69,7 +73,7 @@ load: always
   ? 编译不过，依赖报错怎么排查 / go mod tidy / replace 问题怎么处理
 - procedures/workflow-站点发现.md | high | 2026-09-12 | 收到 `task site-discovery` / `启动网站发现任务` 时的入口、候选来源渠道与要点；正文流程在 site-discovery/README.md | 站点发现、site-discovery、候选站点
   ? 我要找新的资源站，怎么启动网站发现任务 / task site-discovery 是干什么的
-- procedures/troubleshooting-代理池总览无数据.md | medi | 2026-09-12 | 后台代理池页全 0/— 时的三步定位（网关 dataSource → 上报侧容器创建时间 → 日志）与直连网关 RPC 的巡检工具 proxy-admin-check；09-10… | proxy-admin-check、代理池总览、proxy_admin
+- procedures/troubleshooting-代理池总览无数据.md | medi | 2026-09-12 | 后台代理池页全 0 时三步定位：网关 dataSource → 上报侧是否部署 → tools/proxy-admin-check 只读巡检 | proxy-admin-check、代理池总览、proxy_admin
   ? 代理池监控的 Scene 是什么，怎么加新消费端 / IP 不可用和被站点封禁怎么区分 / 代理池推送 IP 数在哪看 / 代理池总览/场景明细全 0 怎么排查
 - procedures/workflow-带登录态的浏览器自动化.md | medi | 2026-09-12 | 如何启动/复用一个带登录态的调试Chrome并用CDP脚本驱动它, 含"默认profile会被安全策略拦截"的前提坑 | agent-browser、cdp.py、CDP
   ? 我要测浏览器可见的交互，带登录态的浏览器怎么起 / agent-browser.sh / cdp.py 怎么用
@@ -77,30 +81,30 @@ load: always
   ? 部署 / 上线怎么操作，日志在哪看 / 新服务该放哪台机器 / 队列 v2 上线收尾脚本是哪个
 - procedures/workflow-部署-历史补充.md | low | 2026-09-12 | 历次生产上线（2026-09-05~09-10 生命周期 P3/P4 网关多次重部、代理池监控上线等）的一次性踩坑与已固化到 deploy.sh 的加固记录；常规部署流程见 wo… | 生命周期上线、网关重部、dryRun
 
-## lessons/ (32)
+## lessons/ (27)
 - lessons/failure-bootstrap按id排序打爆ES堆.md | crit | 2026-09-12 | P4 bootstrap 的 B1 用 sort:["_id"] 在 15.7 亿文档旧索引上翻页, 触发 _id fielddata 加载, 单页 >550s、堆到 99%、熔… | bootstrap、存量迁移、P4
   ? P4 bootstrap 为什么跑不起来 / 作业 id=1 为什么 failed
-- lessons/failure-longBoundary漂移导致父子跨索引与shortfall误报.md | crit | 2026-09-11 | id=8 的 89 条 shortfallSlices（420 万）不是子文档丢失，而是 copy_parent 与 copy_child 各自用 time.Now() 算 90… | bootstrap、longBoundary、shortfallSlices
+- lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md | crit | 2026-09-12 | checker 用 task.Id(md5) 而非 ShareId 探测，115.5 万条 quark/ali 经 lcClear 从新旧索引误删并写 invalid_link；… | lifecycle_checker、误删、ShareId
+  ? lifecycle_checker 为什么把所有夸克资源判成失效 / 116 万条资源误删是怎么回事，怎么恢复 / 检测吞吐 valid=0 意味着什么 / 代理池 lifecycle_checker 场景成功率 0 的原因
+- lessons/failure-longBoundary漂移导致父子跨索引与shortfall误报.md | crit | 2026-09-12 | shortfall 89 条不是子文档丢失：copy_parent/copy_child 各自取 now 算 90 天边界、长跑漂移致父 cur 子 long；修法是 mover… | bootstrap、longBoundary、shortfallSlices
 - lessons/failure-repair对账在bootstrap未完成时误标数据.md | crit | 2026-09-06 | bootstrap 未完成时跑 repair 的 db_to_es 会把「尚未复制到 ES」的 DB 行误判为丢失并置 status=3，导致 copy_child 静默漏搬子文档 | repair、对账、bootstrap
-- lessons/failure-copy_child小reindex被轮询间隔拖垮.md | high | 2026-09-12 | bootstrap 的 B3c copy_child 每 200 个父 id 发一次小 _reindex，却按 10 s 轮询等待，实测 22 s/批 → 单月 21 h、全量 … | bootstrap、copy_child、reindexPollInterval
+- lessons/failure-copy_child小reindex被轮询间隔拖垮.md | high | 2026-09-12 | bootstrap B3c copy_child 上万个小 reindex 被固定 3 s 轮询拖垮，改指数退避后吞吐恢复 | bootstrap、copy_child、reindexPollInterval
   ? P4 第二次演练，copy_child 为什么这么慢
 - lessons/failure-copy_child真正瓶颈是子文档量.md | high | 2026-09-12 | 修完轮询空等后 copy_child 只快 2.1 倍——因为真正的工作量是 3245 万/单月、7.4 亿/全量的子文档，被 reindex 的 2000 rps 限速卡死 | copy_child、bootstrap、reindex
   ? P4 第三次尝试，作业 id=4 为什么还是 paused / copy_child 修完轮询还是慢，到底要搬多少子文档 / reindex 限速是多少
-- lessons/failure-copy_child计数校验对称差误判重跑.md | high | 2026-09-12 | childCountOk 用 |src-dst| 判窗口是否达标，但 :cur 半区含双写、:long 半区源侧被 url_check 删除，dst>src 是结构性的；重跑是幂… | bootstrap、copy_child、childCountOk
+- lessons/failure-copy_child计数校验对称差误判重跑.md | high | 2026-09-12 | childCountOk 用 |src-dst| 判达标，但 cur 含双写、long 源侧被删，dst>src 是结构性的；重跑幂等补不回，白跑 2.5 h | bootstrap、copy_child、childCountOk
 - lessons/failure-haisou搜索接口收紧.md | high | 2026-09-12 | haisou.cc 搜索接口对代理池 IP 全量 429；傍晚复查排除了积分、请求头、HTTP/2、会话、匿名身份，锁定为按来源网络的端点级拦截 | haisou、13001、限流
   ? haisou 跑不通，13001/请求过于频繁是什么原因 / X-HS-Client-Context 头怎么来的 / haisou 积分额度模型是什么
 - lessons/failure-ncjs构建脚本会自动上传OSS.md | high | 2026-09-04 | admin/*子应用的标准 `pnpm build` 脚本默认会把 dist 上传到生产 OSS 并改写 apps.json, 验证构建前必须先用 { deploy:false … | NC-JS、pnpm build、mfe插件
 - lessons/failure-proto3零值与负一哨兵冲突.md | high | 2026-09-12 | proto3 标量字段不传时零值是 0，若 0 恰好是合法业务值、而"不过滤"哨兵定成 -1，前端漏传就会静默查错数据且不报错 | proto3、零值、哨兵
   ? 筛选参数传了 0 却查不出数据 / proto3 不传字段被当成过滤条件是什么坑
-- lessons/failure-qiankun子应用挂到包裹层导致样式被清空.md | high | 2026-09-08 | 子应用 Vue app.mount 直接挂 qiankun 包裹层会把 <qiankun-head> 内联的全部静态 CSS 删掉(只在线上/被 qiankun 加载时出现); … | NC-JS、qiankun、微前端
+- lessons/failure-qiankun子应用挂到包裹层导致样式被清空.md | high | 2026-09-12 | 子应用 Vue app.mount 直接挂 qiankun 包裹层会把 <qiankun-head> 内联的全部静态 CSS 删掉(只在线上/被 qiankun 加载时出现); … | NC-JS、qiankun、微前端
 - lessons/failure-resdb的ES端点指向已下线集群.md | high | 2026-09-05 | STORAGE worker 所在的 osec-resdb 配置里的 ES 地址是已下线集群，旧代码只打 error 日志继续跑（哑故障），新代码 fail-fast 后进入重启… | osec-resdb、es_endpoint、ES 集群更换
 - lessons/failure-v3首页重合度受前缀展开分片彩票影响.md | high | 2026-09-12 | P5 对拍首页重合度 84%<95% 的两个根因——4% 坑位是 legacy 已删 lc 未删的死链（无反向失效同步）；其余是 match_phrase_prefix 展开集合… | P5、重合度、match_phrase_prefix
   ? P5 对拍为什么没通过，v3 首页和 v2 为什么不一样 / dfs 能不能让新旧索引排序一致 / 旧索引 url_check 删掉的文档新方案会同步失效吗
-- lessons/failure-临时表排序规则不一致导致JOIN报错.md | high | 2026-09-06 | MySQL 8 里 CREATE TEMPORARY TABLE 不写 COLLATE 会继承服务器默认 utf8mb4_0900_ai_ci, 与建表为 utf8mb4_gen… | MySQL、collation、ERROR 1267
 - lessons/failure-前端环境默认值写死本地.md | high | 2026-09-08 | 子应用把 useLocalStorage('gwEndpoint') 默认值写死成 gwAddrs[1](本地 127.0.0.1)，导致生产首次访问卡死；改为按 locatio… | gwEndpoint、gwAddrs、defaultGwAddr
 - lessons/failure-把拆配置理解成拆文件.md | high | 2026-09-09 | 用户说"拆分"时先确认拆的是什么(代码结构/文件/进程); 用运行时断言或"文件里不写某项"来保证隔离, 通常说明方案层级选错了 | 需求理解、拆分对象、复述确认
-- lessons/failure-按进程数分配主机压垮restest.md | high | 2026-09-03 | 只数 spider 进程会严重低估主机真实负载——restest 还跑着 6 个非 spider 容器且内存只有 1G | 部署、主机分配、负载
-- lessons/failure-握手回包附加字段被传输层丢弃.md | high | 2026-09-12 | 网关握手403回包里的needLogin/githubClientId等业务字段无法到达前端业务层, 因为统一取消路径把失败原因重建成了只剩code/message的protob… | RtcTransport、cancelAllPendingCalls、UnaryCallResponse
+- lessons/failure-握手回包附加字段被传输层丢弃.md | high | 2026-09-12 | 网关握手 403 回包的 needLogin/githubClientId 等附加字段被 RTC-gRPC 错误通道丢弃，结构化信息要走专门回调 | RtcTransport、cancelAllPendingCalls、UnaryCallResponse
   ? 握手回包字段传不到前端是什么原因 / 登录失败原因被重试覆盖是怎么回事
 - lessons/failure-旁路能力初始化拖垮主流程.md | high | 2026-09-09 | 用会 log.Fatal/panic 的基础设施函数去初始化"可有可无"的监控, 会让每个子命令随配置缺失或 redis 抖动一起死; 以及埋点只覆盖成功路径会让最严重的故障隐形 | db.Redis、log.Fatal、panic
 - lessons/failure-网关重启暴露ES集群已更换.md | high | 2026-09-12 | 线上网关自 1 月未重启，期间 ES 集群已更换；队列 v2 上线一重启就 panic。教训：长期不重启的服务会掩盖外部依赖变更，重启前先在目标主机验证配置里的每个外部地址 | 网关、gateway、ES
@@ -118,11 +122,7 @@ load: always
   ? 保活 keepalive 该在哪调 / 爬虫空跑为什么不告警
 - lessons/success-爬虫联网集成测试.md | high | 2026-09-12 | 用「假 committer + 独立 redis 键前缀 + 环境变量开关」让爬虫的联网测试可重复运行且不污染线上 | 集成测试、爬虫、联网测试
   ? 我要给爬虫写测试，联网测试怎么不污染线上
-- lessons/success-生命周期改造验收发现.md | high | 2026-09-05 | Opus 端到端验收在真实进程链路上抓出的阻塞级缺陷及其规避规则，写网关内长作业/ES 批量操作时对照检查 | 验收、ES 6.7、refresh
 - lessons/success-网盘失效判定原则.md | high | 2026-09-02 | 靠 message 文案匹配判定网盘失效必然随站点文案漂移而失灵，应改用业务码并把未知响应升级为 error | 失效判定、业务码、限流
-- lessons/failure-antdv-Row-字符串style.md | medi | 2026-09-04 | antdv 的 Row/Menu.Item/transButton 用 Object.assign 合并 attrs.style，传字符串会被展开成索引键并抛 "Failed t… | ant-design-vue、Row、style
-- lessons/success-archify画图的几何约束.md | medi | 2026-09-07 | archify 渲染器的固定布局规则（lifecycle 三带坐标、事件列对齐主轨 2~4 列、阅读区自适应仅在宽高比≥1.55）以及一轮修到 showcase+visual-c… | archify、lifecycle、architecture
-- lessons/success-配置v2上线准备发现的两个衔接问题.md | medi | 2026-09-08 | v1/v2 两份网关配置文件同名字段易贴错目标文件；README §2.7 首次上传前置步骤的表述与 uploadConfigToOss 实际代码逻辑相反 | 配置v2、github_auth、spider.gateway.prod.yaml
 
 ## knowledge/ (19)
 - knowledge/architecture-系统总览.md | crit | 2026-09-02 | 从爬取到入库到检索的完整链路、各服务端口与中间件分工 | 架构、数据链路、网关
@@ -161,9 +161,9 @@ load: always
 - knowledge/reference-github-oauth配置.md | medi | 2026-09-12 | 两个GitHub OAuth App(prod/dev)的名称、client_id、管理页、已注册回调列表与组织第三方应用策略, 不含任何secret | GitHub OAuth App、client_id、redirect_uri
   ? GitHub OAuth App 的 client_id 在哪查 / 1second 组织的回调地址怎么配置
 
-## sessions/ (29 个, 仅列最近 3 个; 其余用 mem.py search 找)
+## sessions/ (30 个, 仅列最近 3 个; 其余用 mem.py search 找)
 - sessions/2026/2026-09-02-kkpans爬虫开发.md | medi | 2026-09-12 | 按 PRD 实现 www.kkpans.com 爬虫（新建 services/bbs 包），联网实测 9 项验收标准全部达标 | kkpans、bbs_kkpans、services/bbs
 - sessions/2026/2026-09-02-kkpans站点调研与PRD.md | medi | 2026-09-12 | 探索 www.kkpans.com 并产出爬虫需求文档，沉淀站点知识、调研工作流与对账脚本 | kkpans、站点调研、PRD
 - sessions/2026/2026-09-02-修复夸克阿里有效性检测.md | medi | 2026-09-12 | 用 15+15 条样本复现并修复三类误判，API 与 SPIDER 两套 checker 结论现已一致 | 有效性检测、validShareLink、夸克
 
-## archive/ (4 个, 已归档不列出; 需要时 mem.py search --dir archive)
+## archive/ (10 个, 已归档不列出; 需要时 mem.py search --dir archive)

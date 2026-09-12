@@ -3,7 +3,7 @@ title: 失败经验：qiankun 子应用把 Vue 挂到包裹层上, 线上静态 
 type: lesson
 status: active
 created_at: 2026-09-08T07:20:00+08:00
-updated_at: 2026-09-08T07:20:00+08:00
+updated_at: 2026-09-12T23:20:00+08:00
 priority: high
 keywords:
   - NC-JS
@@ -23,7 +23,7 @@ load: on-demand
 related:
   - agent-memory/knowledge/architecture-nc-js.md
   - agent-memory/lessons/failure-ncjs构建脚本会自动上传OSS.md
-  - agent-memory/lessons/failure-antdv-Row-字符串style.md
+  - agent-memory/archive/2026/failure-antdv-Row-字符串style.md
   - agent-memory/sessions/2026/2026-09-08-spiderAdmin样式修复.md
 ---
 

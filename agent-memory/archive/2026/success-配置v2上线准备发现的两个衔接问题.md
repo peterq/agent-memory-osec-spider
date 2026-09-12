@@ -1,9 +1,9 @@
 ---
 title: 成功经验：配置 v2 上线准备阶段发现的两个衔接问题
 type: lesson
-status: active
+status: archived
 created_at: 2026-09-08T11:40:00+08:00
-updated_at: 2026-09-08T11:40:00+08:00
+updated_at: 2026-09-12T23:20:00+08:00
 priority: medium
 keywords:
   - 配置v2
@@ -14,7 +14,7 @@ keywords:
   - deploy.sh
   - uploadConfigToOss
 summary: v1/v2 两份网关配置文件同名字段易贴错目标文件；README §2.7 首次上传前置步骤的表述与 uploadConfigToOss 实际代码逻辑相反
-load: on-demand
+load: rarely
 related:
   - agent-memory/current/tasks.md
   - osec-spider-go/PRD/config-v2/README.md

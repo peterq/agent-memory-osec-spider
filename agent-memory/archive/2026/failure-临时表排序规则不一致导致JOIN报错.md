@@ -1,9 +1,9 @@
 ---
 title: 失败经验：临时表未指定排序规则导致 UPDATE ... JOIN 报 ERROR 1267
 type: lesson
-status: active
+status: archived
 created_at: 2026-09-06T09:40:00+08:00
-updated_at: 2026-09-06T09:40:00+08:00
+updated_at: 2026-09-12T23:20:00+08:00
 priority: high
 keywords:
   - MySQL
@@ -16,7 +16,7 @@ keywords:
   - lc_rollback_repair_marked
   - 生产回滚脚本
 summary: MySQL 8 里 CREATE TEMPORARY TABLE 不写 COLLATE 会继承服务器默认 utf8mb4_0900_ai_ci, 与建表为 utf8mb4_general_ci 的业务表 JOIN 时报 ERROR 1267
-load: on-demand
+load: rarely
 related:
   - agent-memory/lessons/failure-repair对账在bootstrap未完成时误标数据.md
 ---
