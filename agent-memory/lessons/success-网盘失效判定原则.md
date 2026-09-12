@@ -3,7 +3,7 @@ title: 成功经验：网盘失效判定要「业务码优先 + 不确定就报�
 type: lesson
 status: active
 created_at: 2026-09-02T16:35:00+08:00
-updated_at: 2026-09-02T16:35:00+08:00
+updated_at: 2026-09-12T00:00:00+08:00
 priority: high
 keywords:
   - 失效判定
@@ -67,3 +67,9 @@ related:
 ## 可迁移范围
 
 百度网盘、迅雷的 checker 同样是文案匹配，有同类风险；下次动到它们时按本文改造。
+
+`[事实]` 2026-09-12：百度网盘已按本文改造完成——SPIDER `services/gateway/valid/bnd_checker.go`
+（commit `06ef50d`/`e16bd98`）与 API `services/valid/bnd-api.go`（commit `0ad7bb3`）改成同名同语义的
+纯函数 `classifyBndShare(statusCode, body) (valid, known bool)`：内嵌 JSON `errno` 优先、
+404/标题兜底、文案只在 `errno` 非 0 时兜底、未知响应一律 `known=false` 报错。
+两边测试用例逐字对齐（12 条真实页面片段，不联网）。迅雷 checker 仍是文案匹配，未改造。
