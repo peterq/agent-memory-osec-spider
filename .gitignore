@@ -3,3 +3,6 @@ __pycache__/
 
 # Agent 复用的浏览器调试 profile(含登录 cookie, 严禁提交)
 .agent-browser/
+
+# mem.py 的 embedding 缓存
+scripts/mem/.cache/

@@ -3,7 +3,7 @@ title: 记忆索引
 type: index
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T07:20:00+08:00
+updated_at: 2026-09-12T10:35:00+08:00
 priority: critical
 keywords: [索引, 关键词, 导航]
 summary: 按关键词与主题定位记忆文件，先看概要再决定是否读正文
@@ -23,7 +23,8 @@ related:
 | 文件 | 类型 | 状态 | 关键词 | 概要 | 更新 |
 |---|---|---|---|---|---|
 | `00-overview.md` | overview | active | 总览、四仓库、当前状态 | 最小可用上下文 | 2026-09-09 |
-| `01-index.md` | index | active | 索引、导航 | 本文件 | 2026-09-02 |
+| `01-index.md` | index | active | 索引、导航 | 本文件 | 2026-09-12 |
+| `decisions/decision-2026-09-12-记忆系统瘦身与脚本化加载.md` | decision | draft | 记忆系统、token、启动包、mem.py、瘦身 | 常驻 5.4 万字的诊断与四步瘦身方案，工具已可用、协议改动待确认 | 2026-09-12 |
 | `02-user-preferences.md` | preference | active | 中文、脚本沉淀、记忆维护 | 用户硬性要求与工作习惯 | 2026-09-02 |
 | `03-project-context.md` | context | active | 仓库、module、replace、依赖、NC-JS | 五仓库（4 Go + 1 前端）职责与 go.mod 现状 | 2026-09-04 |
 | `knowledge/architecture-es索引现状.md` | knowledge | active | ES 6.7、单索引、join 父子、无join、百度存量、墓碑、容量、增速、es_survey | 生产 ES/MySQL 实测基线与读写清理链路代码位置 | 2026-09-05 |
@@ -314,6 +315,10 @@ SPIDER gateway(`115.29.215.228:7542`)。生成 TS 契约：`nc-js/packages/catal
 
 ### 密钥、安全
 → `current/risks.md` R2
+
+### 记忆太大 / 启动 token 太多 / 怎么找记忆文件 / mem.py / 索引怎么生成
+→ `scripts/mem/mem.py`（`boot` 启动包、`search` 检索、`outline` 章节结构、`body --section` 只读一段、`lint` 体检），文档 `scripts/mem/README.md`；
+方案与现状诊断 `decisions/decision-2026-09-12-记忆系统瘦身与脚本化加载.md`。
 
 ### 当前该做什么
 → `current/tasks.md`、`current/open-questions.md`

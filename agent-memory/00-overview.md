@@ -3,7 +3,7 @@ title: 项目总览
 type: overview
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T07:20:00+08:00
+updated_at: 2026-09-12T10:35:00+08:00
 priority: critical
 keywords:
   - 网盘资源爬取
@@ -37,6 +37,7 @@ related:
 
 ## 2. 当前状态
 
+- **进行中（2026-09-12）：记忆系统瘦身**——常驻文件 5.4 万字远超规则；`scripts/mem/mem.py` 已可用（启动包/检索/按章节读/体检），协议改动与内容迁移待用户确认。→ `decisions/decision-2026-09-12-记忆系统瘦身与脚本化加载.md`
 - **已完成（2026-09-10 上午）：代理池监控上线闭环**——「代理池总览」全 0 排查定位为上报侧未部署；`proxy` + 20 个爬虫 service 重部后 5 分钟窗口即有 20 个场景数据。新增只读巡检 `tools/proxy-admin-check`（经隧道直连网关 RPC）。→ `procedures/troubleshooting-代理池总览无数据.md`
 - **已完成（2026-09-09 凌晨，SPIDER `4f5f528`→`883daeb`，**网关已于 09-09 11:53/12:04 部署生效，爬虫容器 + proxy 服务已于 09-10 09:30~09:56 全部重部**）：配置按进程拆代码（用户纠正 09-08 的误解）**——
   `config` 根包只留 section 类型 + `Common`，**删除 `config.Config`/`Get()`/`init()` 加载**；
@@ -389,6 +390,7 @@ related:
 
 | 主题 | 文件 |
 |---|---|
+| 记忆文件怎么找 / 启动 token 太多 | `scripts/mem/mem.py boot|search|outline|body`（`scripts/mem/README.md`），方案 `decisions/decision-2026-09-12-记忆系统瘦身与脚本化加载.md` |
 | 项目背景与仓库职责 | `03-project-context.md` |
 | 用户偏好 | `02-user-preferences.md` |
 | 系统架构与数据链路 | `knowledge/architecture-系统总览.md` |
