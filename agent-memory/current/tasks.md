@@ -3,7 +3,7 @@ title: 当前任务与进度
 type: task
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T23:25:00+08:00
+updated_at: 2026-09-12T23:30:00+08:00
 priority: critical
 keywords: [任务, 进度, 待办, P5, 队列v2, queue-admin, 全站扫描, fullsweep, 文档爬虫, doc-crawler, FC Chrome, 凭据轮换, 站点发现, kkpans, misoso, 有效性检测]
 summary: 仍在推进/阻塞/待决策的事项（P0：checker 误删事故修复已上线、恢复待决策；P5 顺序 阶段C→A'→阶段D）；已上线任务在 archive
@@ -111,7 +111,7 @@ related:
 - [ ] **🔴 P0 lifecycle_checker 误删事故（09-12 22:17 发现）**——正本 SPIDER rollout §15；经验 `lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md`。
   - ✅ ①② 09-12 23:05~23:11 用户授权执行：止血 → 部署 `b888846` → 发现 bnd「违规」tooltip 误判 930 条再停 → 修复 `06ef50d` 重新部署（rollout §15.5）。23:11~23:15 观察：bnd valid 2,086 / invalid 0 / error 468（error 主要是代理 need verify 9019）；quark/ali/xunlei 队列暂无任务（bnd 积压 20 万先消化，≈31k/h）。**`e16bd98`（errno 145/「链接不存在」判失效）已 push 待部署**，未部署前真失效 bnd 只会报错不会被清。
   - ③ **恢复 = 重爬**（用户确认 Mongo 无数据）：导出脚本 `scripts/lc_false_invalid_export.sh` → 投递工具（sonnet 开发中，简报 `agent-tasks/2026-09-12-lc-recrawl/`）限速推 `resourcePreCheck`；导出完成 `_note/lc-recrawl/all.tsv` **1,152,617** 行（quark 1,111,741 / ali 39,946 / bnd 930；比事件数少 3.6k 为同 share_id 去重与已复活行）；投递节奏与 `e16bd98` 部署待用户确认。
-  - ⑤ **P1** API `services/valid/bnd-api.go` 按 SPIDER `classifyBndShare` 对齐（仍拿「不存在」匹配整页）；网关下次发版带上 `06ef50d`（url_check 共用 valid 包）+ `b888846` 告警护栏。
+  - ✅ ⑤ API `bnd-api.go` 已对齐 SPIDER `classifyBndShare`（API `0ad7bb3`，未部署；v3 复用同一 bndApi）。待办：API 与网关下次发版带上（网关 `06ef50d`/`e16bd98` url_check 共用 valid 包 + `b888846` 告警护栏）。
   - ④ 修复上线后消化 bnd `dueBacklog` 52.8 万（8 天零有效检测）。
 - [ ] **P0 生命周期 P5 准入**（阶段 A/B 已上线 09-12 16:34；**顺序因事故调整**）——决策 `decisions/decision-2026-09-12-P5切v3准入门槛与失效同步.md`、`decision-2026-09-12-阶段D改由API侧自动灰度分流.md`。
   - 下一步按序：① 事故止血 + 修复上线；② 09-13 ≥16:34 跑 rollout §14.3 观察项 + 阶段 C 复测 p5-plan §4；③ A' 投递：只读探测 `scripts/lc_legacy_probe_all.sh _note/p5-aprime`——xunlei 已完成（235,205 行、缺失 357=0.15%，`_note/p5-aprime/xunlei_*.ids`）；ali/quark/bnd 09-12 23:20 起本机后台跑（`driver.log`，断点续跑，预计数小时）→ 完成后 `lc-check -trigger-check` 每天 ≤20 万（checker 修复已上线，可投递）；④ 阶段 D：`search_canary` **已开发完成** API `6bbbfb8`（缺省关闭），门槛全过后 `enabled: true` + `notify_url` 重部 API；上线前决定 `step_every_v3_requests`（缺省 100 会在几十分钟内涨满）。
