@@ -6,3 +6,4 @@ __pycache__/
 
 # mem.py 的 embedding 缓存
 scripts/mem/.cache/
+*.log

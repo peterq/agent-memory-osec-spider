@@ -8,8 +8,8 @@ resources:
       region: cn-hangzhou
       domainName: fc-resource-node-api.krzb.net
       protocol: HTTP,HTTPS
-      certConfig:
-        certName: fc-resource-node-api-krzb-net-20260908
+      # certConfig:
+        # certName: fc-resource-node-api-krzb-net-20260908
       authConfig:
         authType: anonymous
       wafConfig:
