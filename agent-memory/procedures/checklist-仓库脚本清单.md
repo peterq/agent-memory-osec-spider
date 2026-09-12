@@ -3,7 +3,7 @@ title: 记忆仓库 scripts/ 脚本清单
 type: procedure
 status: active
 created_at: 2026-09-13T20:10:00+08:00
-updated_at: 2026-09-13T20:40:00+08:00
+updated_at: 2026-09-13T21:20:00+08:00
 priority: medium
 keywords: [scripts, claude-rc, remote-control, systemd, notify-admin, agent-browser, cdp]
 questions:
@@ -31,5 +31,7 @@ related:
 ## 注意
 - `claude remote-control` 子命令不接受 `--add-dir`，多目录放 settings 的 `permissions.additionalDirectories` `[事实]`。顶层 `claude --remote-control <name> --add-dir ...` 需要 TTY，无 TTY 会退化成 `--print` 报错，不适合做服务 `[事实]`（2026-09-13 实测）。
 - 服务无法弹信任对话框：工作区必须先在终端里跑过一次 `claude` 接受信任（`~/.claude.json` 里 `projects[<dir>].hasTrustDialogAccepted`），否则报 `Workspace not trusted` `[事实]`。VSCode 扩展里的会话不会写这个标记。
+- 首次启用 remote-control 会问 `Enable Remote Control? (y/n)`，服务无 stdin 会卡住：先在终端跑一次 `claude remote-control` 按 y 再 Ctrl+C，同意会持久化，之后服务正常 `[事实]`（2026-09-13 实测）。
+- `rc.log` 里的 `[7A[J … Connected · Capacity 1/32` 重复块是 TUI 状态行的 ANSI 重绘，连上后即停止增长（约 60 次/2 分钟后稳定在 ~24KB），不是死循环 `[事实]`。
 - Agent 在 auto 模式下不能改 `.claude/settings*.json`、`~/.claude.json`（自修改被拦），这类改动需用户手动完成 `[事实]`。
 - bash 变量名不能以数字开头，故脚本内用 `ONE_S_ROOT` 而非 CLAUDE.md 里的 `1S_ROOT` 记法。
