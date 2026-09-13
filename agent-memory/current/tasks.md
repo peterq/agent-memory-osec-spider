@@ -3,7 +3,7 @@ title: 当前任务与进度
 type: task
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-13T17:05:00+08:00
+updated_at: 2026-09-13T17:50:00+08:00
 priority: critical
 keywords: [任务, 进度, 待办, P5, 队列v2, queue-admin, 全站扫描, fullsweep, 文档爬虫, doc-crawler, FC Chrome, 凭据轮换, 站点发现, kkpans, misoso, 有效性检测]
 summary: 仍在推进/阻塞/待决策的事项（P0 误删事故重爬中；P5 顺序 阶段C→A'→阶段D）；已上线任务在 archive
@@ -107,5 +107,5 @@ related:
   - ✅ ⑤ API `bnd-api.go` 已对齐 SPIDER `classifyBndShare`（API `0ad7bb3`，未部署；v3 复用同一 bndApi）。待办：API 与网关下次发版带上（网关 `06ef50d`/`e16bd98` url_check 共用 valid 包 + `b888846` 告警护栏）。
   - ④ 修复上线后消化 bnd `dueBacklog` 52.8 万（8 天零有效检测）。
 - [ ] **P0 生命周期 P5 准入**（阶段 A/B 已上线 09-12 16:34；**顺序因事故调整**）——决策 `decisions/decision-2026-09-12-P5切v3准入门槛与失效同步.md`、`decision-2026-09-12-阶段D改由API侧自动灰度分流.md`。
-  - 下一步按序：① ✅ 事故止血 + 修复上线；② **阶段 C 复测改到重爬结束后（预计 09-14 上午）**——重爬期间 ES 持续写入、解析器满负荷，延迟对拍会失真；③ ✅ A' 只读探测 09-13 16:12 完成：64 桶 4,342 万行、缺失 **84,871（0.20%）**（quark 66,358 / bnd 9,698 / ali 8,458 / xunlei 357，远低于 170 万估计），16:50 起 `lc-check -trigger-check`（425 批×200，每批 ≈6 s，`_note/p5-aprime/trigger.log`）；④ 阶段 D：`search_canary` 已开发（API `6bbbfb8`），阶段 C 通过后启用。
+  - 下一步按序：① ✅ 事故止血 + 修复上线；② **阶段 C 复测改到重爬结束后（预计 09-14 上午）**——重爬期间 ES 持续写入、解析器满负荷，延迟对拍会失真；③ ✅ A' 只读探测 09-13 16:12 完成：64 桶 4,342 万行、缺失 **84,871（0.20%）**（quark 66,358 / bnd 9,698 / ali 8,458 / xunlei 357，远低于 170 万估计），16:50~17:35 `lc-check -trigger-check` **425/425 批成功**，`manual_check` 事件 84,791（quark 66,358 / bnd 9,618 / ali 8,458 / xunlei 357；80 条 bnd 已非 status=1 跳过）→ 由 checker 按队列复检，G3 存量部分收口；④ 阶段 D：`search_canary` 已开发（API `6bbbfb8`），阶段 C 通过后启用。
 - [ ] **P2 代理池口径**（09-10 待确认项，Agent 自主判断）：`lifecycle_checker_*` ok=0 已归因为事故（非口径问题）；`keyword_upyunso/funletu/pansearch_me` 近 24 h 仍 ok=0（几乎全 ipUnusable/other），按 `decision-2026-09-03-清理下线爬虫代码.md` 口径列为下线候选，待修复版 checker 上线后再看一次代理池再定。
