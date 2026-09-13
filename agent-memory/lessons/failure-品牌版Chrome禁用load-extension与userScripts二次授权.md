@@ -3,7 +3,7 @@ title: 失败经验：品牌版 Chrome 137+ 忽略 --load-extension、138+ 用�
 type: lesson
 status: active
 created_at: 2026-09-13T11:00:00+08:00
-updated_at: 2026-09-13T11:50:00+08:00
+updated_at: 2026-09-13T14:45:00+08:00
 priority: high
 keywords: [Chrome, load-extension, ExtensionSettings, Tampermonkey, @match, 302 重定向, Allow User Scripts, headless, 企业策略]
 questions:
@@ -24,7 +24,7 @@ related:
 fc-chrome 的"内置 Tampermonkey + 自动装脚本"路径按 `--load-extension` 设计（09-08），09-13 上线才发现在真实 Chrome 149/153 上根本进不了浏览器。
 
 ## 失败方法与表现
-1. `--load-extension=/opt/extensions/tampermonkey`：stderr `WARNING: --load-extension is not allowed in Google Chrome, ignoring.`，`Target.getTargets` 只有 4 个内置组件扩展。headless 与 `display=1` 一样。
+1. `--load-extension=/opt/extensions/tampermonkey`：stderr `WARNING: --load-extension is not allowed in Google Chrome, ignoring.`，`Target.getTargets` 只有 4 个内置组件扩展。headless 与 `display=1` 一样。[14:00 补] 加 `--disable-features=DisableLoadExtensionCommandLineSwitch` 在 153 上同样被忽略；自定义扩展的可行链路见 `success-cdp3策略强装扩展与NAS持久化profile.md`。
 2. 装上后（策略路径）脚本在 dashboard 可见却永不执行：Chrome 138+ 的 `chrome.userScripts` 需要用户在 `chrome://extensions/?id=<id>` 打开 "Allow User Scripts"，官方明确没有等价企业策略。
 3. 用 CDP `Target.attachToTarget` 到任意 `chrome-extension://` target 一律 `-32000 Not allowed`。
 4. 拿 `Target.getTargets` 里"第一个 chrome-extension://"当 Tampermonkey → 选中了内置 Hangouts，打开它的 options.html 报 `ERR_FILE_NOT_FOUND`。

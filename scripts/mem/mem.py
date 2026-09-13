@@ -168,7 +168,7 @@ def _questions(fm: dict) -> list[str]:
 
 
 def render_boot(docs: list[Doc], kw: int = 3, sessions: bool = False, recent_sessions: int = 3, with_questions: bool = True,
-                summary_max: int = 90, max_questions: int = 5) -> str:
+                summary_max: int = 80, max_questions: int = 4) -> str:
     """评测(2026-09-12): 紧凑版(关键词 3 个、summary 截断)比全量更准, 噪声更少。archive/ 只给计数不列条目。"""
     by_dir: dict[str, list[Doc]] = defaultdict(list)
     for d in docs:

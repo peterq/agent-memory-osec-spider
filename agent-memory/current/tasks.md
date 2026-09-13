@@ -3,7 +3,7 @@ title: 当前任务与进度
 type: task
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-13T14:10:00+08:00
+updated_at: 2026-09-13T14:45:00+08:00
 priority: critical
 keywords: [任务, 进度, 待办, P5, 队列v2, queue-admin, 全站扫描, fullsweep, 文档爬虫, doc-crawler, FC Chrome, 凭据轮换, 站点发现, kkpans, misoso, 有效性检测]
 summary: 仍在推进/阻塞/待决策的事项（P0 误删事故重爬中；P5 顺序 阶段C→A'→阶段D）；已上线任务在 archive
@@ -41,6 +41,7 @@ related:
 
 ## 待办
 
+- [ ] **P2 cdp3 profile= 调用方接入**（2026-09-13 上线后遗留）：NC-JS `task.ts`/SPIDER `doc_crawler` 若要用 `profile=`，结束时必须先发 CDP `Browser.close` 等响应再断开（rod/puppeteer 的 `browser.Close()` 即可），否则最多丢 20 s、profile 90 s 内 409 → `decisions/decision-2026-09-13-cdp3持久化会话与扩展机制.md`。NAS `profiles/osec/` 下的 `e2e`（旧目录格式）、`freeze1.tar.new-*`（冻结残留）、`h1.tar` 是测试产物，可删。
 - [ ] **P0 队列 v2 上线收尾（用户人工执行）**：网关/全部消费者已于 2026-09-04 12:30 前上线在跑，
       剩余 A 删 jenkins `spider-xunlei_share`、B 杀两个 2023 年裸进程、C `./deploy.sh ps` 复核、
       D osec-res2 跑 `devops_migrate_legacy_queues`（先 dry-run 再 `--apply --dry-run=false`）、E 看网关 precheck 日志。
