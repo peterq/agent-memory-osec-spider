@@ -3,7 +3,7 @@ title: fc-chrome（阿里云 FC Chrome 运行环境）与云端金山文档爬�
 type: knowledge
 status: active
 created_at: 2026-09-13T11:00:00+08:00
-updated_at: 2026-09-13T11:50:00+08:00
+updated_at: 2026-09-13T12:00:00+08:00
 priority: high
 keywords: [fc-chrome, nc-app-prod-cdp3, Tampermonkey, kdoc.user.js, fc-resource-node-api.krzb.net, doc_crawler, 函数计算]
 questions:
@@ -36,4 +36,4 @@ related:
 - **Tampermonkey 原生路径**（不带 inject）：品牌版 Chrome 不能 `--load-extension`，改企业策略 `ExtensionSettings force_installed` + 带外预热 profile（含 Chrome 138+ "Allow User Scripts" 开关）；线上 2026-09-13 11:41 终验通过（9 s 拿到 result）。曾经"装上不执行"的根因是脚本 `@match` 缺 SSO 首跳域名 `account.kdocs.cn`（见 `lessons/failure-品牌版Chrome禁用load-extension与userScripts二次授权.md`）。
 
 ## 状态
-- 未做：`nc-app-prod-cdp-driver` 切到新实例、SPIDER `doc_crawler` 部署（等 TM 路径结论与用户决定）、ACR `:base` 重推为含策略的版本（现靠叠层补）。
+- [用户确认 2026-09-13] cdp-driver **暂不切**新实例（仍指 v2）；PC 端油猴调度器**不下线**，与云端并存。未做：SPIDER `doc_crawler` 部署主机待定；ACR `:base` 重推为含策略的版本（现靠叠层补）。

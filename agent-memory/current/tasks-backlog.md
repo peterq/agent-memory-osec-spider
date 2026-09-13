@@ -3,7 +3,7 @@ title: 任务后备清单（低优先级 / 等人工事项）
 type: task
 status: active
 created_at: 2026-09-12T22:36:00+08:00
-updated_at: 2026-09-13T11:50:00+08:00
+updated_at: 2026-09-13T12:00:00+08:00
 priority: low
 keywords: [backlog, P3, 文档爬虫, FC, 人工事项]
 questions:
@@ -24,8 +24,8 @@ related:
   Tampermonkey 包/云端脚本已上 OSS，镜像经 jenkins 推 ACR，`nc-app-prod-cdp3` 部署，共用域名 `/cdp3/*` 路由生效，三处地址回填已提交；`inject=1` 路径线上对真实文档全通。
   - [x] Tampermonkey 原生路径 11:41 线上终验通过（根因 `@match` 缺 `account.kdocs.cn`）；doc-crawler 两条路径都可用，仍建议默认 `inject=1`（更快、不依赖扩展状态）
   - [ ] SLS 给 `link_key` 建索引后打开 `services.queue_admin.sls.link_key_indexed`（与 FC 无关，仍待人工）
-  - [ ] doc-crawler 部署（`deploy.sh` 占位 `osec-jenkins`）与 PC 端油猴调度器是否下线，待用户决定
-  - [ ] `nc-app-prod-cdp-driver` 的 `CDP_ENDPOINT` 是否切到新实例，待用户决定（当前仍指旧实例）
+  - [用户确认 2026-09-13] PC 端油猴调度器**不下线**，与云端 doc-crawler 并存；doc-crawler 部署主机仍待定（`deploy.sh` 占位 `osec-jenkins`）
+  - [用户确认 2026-09-13] `nc-app-prod-cdp-driver` 的 `CDP_ENDPOINT` **暂不切**到新实例，继续指旧 v2；新实例先由 doc-crawler/`prod-v3` 入口使用
 - 详情：`sessions/2026/2026-09-08-并行四任务监控与文档爬虫上云.md`；`agent-tasks/2026-09-08-monitoring-and-doc-fc/`；`lessons/failure-旁路能力初始化拖垮主流程.md`。
 
 
