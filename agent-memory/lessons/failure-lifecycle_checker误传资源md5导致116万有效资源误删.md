@@ -3,9 +3,9 @@ title: 失败经验：lifecycle_checker 把资源 md5 当分享 id，116 万有�
 type: lesson
 status: active
 created_at: 2026-09-12T22:40:00+08:00
-updated_at: 2026-09-13T00:15:00+08:00
+updated_at: 2026-09-13T13:59:00+08:00
 priority: critical
-keywords: [lifecycle_checker, 误删, ShareId, 违规tooltip, bnd判定, invalid_link, 失效率告警, 事故, 恢复]
+keywords: [lifecycle_checker, 误删, dry run, ShareId, 违规tooltip, bnd判定, invalid_link, 失效率告警, 事故, 恢复]
 questions:
   - lifecycle_checker 为什么把所有夸克资源判成失效
   - 116 万条资源误删是怎么回事，怎么恢复
@@ -14,6 +14,7 @@ questions:
 summary: checker 用 task.Id(md5) 而非 ShareId 探测，115.5 万条 quark/ali 误删；bnd 再因「违规」tooltip 误判 930 条；修复 b888846/06ef50d 已上线；Mongo 无数据，恢复只能重爬
 load: on-demand
 related:
+  - agent-memory/procedures/checklist-不可逆操作上线.md  # 事故后定下的上线硬规则
   - agent-memory/current/risks.md
   - agent-memory/current/tasks.md
   - agent-memory/lessons/success-网盘失效判定原则.md
@@ -49,7 +50,8 @@ related:
 1. 任何「判失效 → 不可逆删」的探测器**上线首日看 valid/invalid 绝对数**，valid=0 直接停。
 2. 契约里语义不同的同类型字段（Id/ShareId、resId/shareId），单测必须给不同值，fake 用"错的那个"做键。
 3. 监控里某场景 100% 失败而同站其它场景正常 → 立即查调用方请求构造，不要归因到目标站/代理池。
-4. 恢复路径（[用户确认 09-12] Mongo 无数据、ES 唯一数据源 → **只能重爬**）：`res_lc_event` 取 res_id → 分表取 share_id/pwd → 按限速投递 `resourcePreCheck`（`CommitResLink`）→ `*LoadShare` 解析 → `SaveResource` 写新旧索引，lc 上报把 status=2 行复活（rpc_service.go 703）；真失效的由解析器 `SubmitValid(0)`。`invalid_link_*` 只写不读，不拦截。
+4. **[用户确认 09-13] 硬规则**：此类功能上线前必须线上 dry run，再用 CDP/查库等与新功能无关的手段抽样复核，通过才正式开启 → `procedures/checklist-不可逆操作上线.md`。
+5. 恢复路径（[用户确认 09-12] Mongo 无数据、ES 唯一数据源 → **只能重爬**）：`res_lc_event` 取 res_id → 分表取 share_id/pwd → 按限速投递 `resourcePreCheck`（`CommitResLink`）→ `*LoadShare` 解析 → `SaveResource` 写新旧索引，lc 上报把 status=2 行复活（rpc_service.go 703）；真失效的由解析器 `SubmitValid(0)`。`invalid_link_*` 只写不读，不拦截。
 
 ## 补记：第二个误判源（09-12 23:06，修复版上线 2 分钟发现）
 bnd checker 正则 `(不存在|违规|链接已过期)` 匹配整页，而正常分享页模板固定带 `部分文件违规，已被过滤` tooltip → 有效分享判失效，2 分钟 930 条。

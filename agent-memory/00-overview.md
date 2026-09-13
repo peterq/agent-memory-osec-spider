@@ -3,7 +3,7 @@ title: 项目总览
 type: overview
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-13T11:50:00+08:00
+updated_at: 2026-09-13T13:59:00+08:00
 priority: critical
 keywords: [网盘资源爬取, 版权取证, COMMON, SPIDER, STORAGE, API, NC-JS]
 summary: 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件
@@ -69,7 +69,7 @@ related:
 
 ## 6. 高价值经验（正本在 `lessons/` `procedures/`，其余用 `mem.py search`）
 
-- **不可逆删除的探测器上线首日看 valid/invalid 绝对数；同名同型字段单测必须给不同值；相对基线告警要配绝对阈值** → `lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md`
+- **删除等不可逆功能上线前必须线上 dry run，再用 CDP/查库等独立手段复核（禁止复用新功能代码），通过才开启** → `procedures/checklist-不可逆操作上线.md`；首日看 valid/invalid 绝对数、告警配绝对阈值 → `lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md`
 - 跨包重构切三阶段，hub 代码主控逐行审 → `lessons/patterns-并行重构的分阶段切分.md`
 - 失效判定看业务码不看文案，判不准就报错；样本 15 条起 → `lessons/success-网盘失效判定原则.md`
 - 监控/埋点初始化必须可降级，且要覆盖最彻底的失败路径 → `lessons/failure-旁路能力初始化拖垮主流程.md`
@@ -77,10 +77,8 @@ related:
 - 收到「拆分/隔离」需求先复述拆的对象，护栏应做在编译期 → `lessons/failure-把拆配置理解成拆文件.md`
 - NC-JS `pnpm build` 会真实上传生产 OSS，验证前先关 `deploy` → `lessons/failure-ncjs构建脚本会自动上传OSS.md`
 - 长周期生产作业巡检清单 → `lessons/patterns-长周期生产巡检.md`
-- 新爬虫写联网集成测试（假 committer + 独立 redis 前缀 + 环境变量开关）→ `lessons/success-爬虫联网集成测试.md`
 - 新站点调研先挖 JS bundle 接口、`total` 须用 sitemap 对账；**结论有保质期** → `procedures/workflow-新站点调研.md`
 - 生产 API 探针按 res-api 三级漏桶算节奏；排序差异用 `explain` 看 idf → `lessons/failure-v3首页重合度受前缀展开分片彩票影响.md`
-- 部署半完成态用 `deploy.sh call redeployHost <svc> <host>` 补救，别用 `call dockerRun` → `procedures/workflow-部署.md`
 
 ## 7. 待解决问题
 

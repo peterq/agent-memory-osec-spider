@@ -3,10 +3,10 @@ title: 用户偏好与协作约定
 type: preference
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-13T07:55:00+08:00
+updated_at: 2026-09-13T13:59:00+08:00
 priority: high
-keywords: [偏好, 中文, 脚本沉淀, lint双阈值, token, 记忆维护, 子agent, sonnet, 模型选择, 任务简报, agent-tasks, harness记忆, 独立仓库, 敏感信息, AK/SK, 口令, 脱敏]
-summary: 用户对语言、脚本沉淀、记忆维护、thinking 长度与敏感信息禁写的明确要求
+keywords: [偏好, 中文, 脚本沉淀, 不可逆操作, dry run, 二次复核, lint双阈值, token, 记忆维护, 子agent, sonnet, 模型选择, 任务简报, agent-tasks, harness记忆, 独立仓库, 敏感信息, AK/SK, 口令, 脱敏]
+summary: 用户对语言、脚本沉淀、记忆维护、thinking 长度、敏感信息禁写，以及删除类不可逆功能上线前必须线上 dry run + 独立复核的明确要求
 load: always
 related:
   - agent-memory/00-overview.md
@@ -37,6 +37,9 @@ related:
     需要展示配置结构时手工脱敏。风险详情见 `current/risks.md` R2。
 11. **[用户确认 2026-09-13] 记忆文件长度双阈值**：lint 只在 >12,000 字时报「超长」，一旦触发必须一次压到 <6,000，不许只压到刚好低于上限；
     9,000~12,000 只提示不阻塞。原因：单阈值 8,000 时每次改 tasks.md 都反复触发。见 `decisions/decision-2026-09-13-lint长度双阈值.md`。
+12. **[用户确认 2026-09-13] 不可逆操作功能上线前必须线上 dry run + 独立手段二次复核**（数据误删事件警示）：
+    删除/清理/判失效等无法撤销的功能，先在线上以只记录模式跑 dry run，再用与新功能无关的方式（CDP 实测、直接查库/ES 等）
+    复核变更清单；**不能复用新功能的代码做复核**。dry run 确认符合预期才能正式开启。清单见 `procedures/checklist-不可逆操作上线.md`。
 
 ## 推断的工作习惯（未经用户确认，标记为推断）
 

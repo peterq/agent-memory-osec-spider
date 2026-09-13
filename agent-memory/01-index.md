@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-13T13:49:31+08:00
+updated_at: 2026-09-13T13:59:34+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -16,13 +16,13 @@ load: always
 定位到文件后 `mem.py outline <file>` 看章节，再 `mem.py body <file> --section <标题>` 只读需要的一段。
 维护方式：改目标文件 Front Matter（summary / keywords / questions），然后运行 `scripts/mem/mem.py index --write`。
 
-# agent-memory 启动包（脚本生成, 126 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
+# agent-memory 启动包（脚本生成, 127 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
 
 ## 根目录 (3)
 - 00-overview.md | crit | 2026-09-13 | 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件 | 网盘资源爬取、版权取证、COMMON
 - 03-project-context.md | crit | 2026-09-12 | 五个仓库（4 个 Go + 1 个前端）的磁盘路径、module 名、职责、相互依赖与 go.mod replace 现状 | 仓库、module、replace
   ? 各仓库的职责分别是什么 / go.mod replace 现状是怎样的
-- 02-user-preferences.md | high | 2026-09-13 | 用户对语言、脚本沉淀、记忆维护、thinking 长度与敏感信息禁写的明确要求 | 偏好、中文、脚本沉淀
+- 02-user-preferences.md | high | 2026-09-13 | 用户对语言、脚本沉淀、记忆维护、thinking 长度、敏感信息禁写，以及删除类不可逆功能上线前必须线上 dry run + 独立复核的明确要求 | 偏好、中文、脚本沉淀
 
 ## current/ (5)
 - current/tasks.md | crit | 2026-09-13 | 仍在推进/阻塞/待决策的事项（P0 误删事故重爬中；P5 顺序 阶段C→A'→阶段D）；已上线任务在 archive | 任务、进度、待办
@@ -64,7 +64,9 @@ load: always
   ? lint 报超长该压到多少字，上限为什么不是 8000 / tasks.md 反复超长怎么办
 - decisions/decision-2026-09-04-合并sweep-guard分支冲突取舍.md | medi | 2026-09-04 | 合并遗留分支时，master 已修正的旧逻辑不应因"冲突两边都保留"而被恢复，需先判断冲突是否为真实的两个功能重叠 | sweep-guard、全量扫描守卫、merge 冲突
 
-## procedures/ (11)
+## procedures/ (12)
+- procedures/checklist-不可逆操作上线.md | crit | 2026-09-13 | [用户确认 2026-09-13] 数据误删事故后的硬规则：任何删除/清理/判失效等无法撤销的功能，上线前必须先在线上跑 dry run，再用与新功能无关的独立手段（CDP 实测… | 不可逆操作、dry run、二次复核
+  ? 要上线一个会删数据/判失效/清理的功能，上线前必须做什么 / dry run 的结果怎么复核，能不能用新功能自己的日志当依据 / 什么时候才允许正式开启删除类功能
 - procedures/workflow-fc-chrome上线.md | high | 2026-09-13 | 2026-09-13 实测可行的 fc-chrome 上线链路：本机构建→docker save/rsync 到 osec-jenkins→load/push→s deploy（… | fc-chrome、serverless-devs、ACR
   ? 本机推不了 ACR / 拉不了 docker hub 时怎么把 fc-chrome 镜像弄上去 / 怎么给现有 FC 自定义域名加一条路由而不碰证书 / Tampermonkey profile 种子怎么重新生成 / s deploy 报 getAuthorizationToken ETIMEDOUT 怎么办
 - procedures/workflow-子agent任务简报.md | high | 2026-09-12 | 派子 Agent 时任务描述落盘成文件、prompt 只给路径，并列出子 Agent 的常见失败模式与提示词对策 | 子agent、任务描述、agent-tasks
@@ -90,7 +92,7 @@ load: always
 ## lessons/ (30)
 - lessons/failure-bootstrap按id排序打爆ES堆.md | crit | 2026-09-12 | P4 bootstrap 的 B1 用 sort:["_id"] 在 15.7 亿文档旧索引上翻页, 触发 _id fielddata 加载, 单页 >550s、堆到 99%、熔… | bootstrap、存量迁移、P4
   ? P4 bootstrap 为什么跑不起来 / 作业 id=1 为什么 failed
-- lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md | crit | 2026-09-13 | checker 用 task.Id(md5) 而非 ShareId 探测，115.5 万条 quark/ali 误删；bnd 再因「违规」tooltip 误判 930 条；修复 … | lifecycle_checker、误删、ShareId
+- lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md | crit | 2026-09-13 | checker 用 task.Id(md5) 而非 ShareId 探测，115.5 万条 quark/ali 误删；bnd 再因「违规」tooltip 误判 930 条；修复 … | lifecycle_checker、误删、dry run
   ? lifecycle_checker 为什么把所有夸克资源判成失效 / 116 万条资源误删是怎么回事，怎么恢复 / 检测吞吐 valid=0 意味着什么 / 代理池 lifecycle_checker 场景成功率 0 的原因
 - lessons/failure-longBoundary漂移导致父子跨索引与shortfall误报.md | crit | 2026-09-12 | shortfall 89 条不是子文档丢失：copy_parent/copy_child 各自取 now 算 90 天边界、长跑漂移致父 cur 子 long；修法是 mover… | bootstrap、longBoundary、shortfallSlices
 - lessons/failure-repair对账在bootstrap未完成时误标数据.md | crit | 2026-09-06 | bootstrap 未完成时跑 repair 的 db_to_es 会把「尚未复制到 ES」的 DB 行误判为丢失并置 status=3，导致 copy_child 静默漏搬子文档 | repair、对账、bootstrap

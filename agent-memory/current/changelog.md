@@ -3,7 +3,7 @@ title: 项目变更记录（总览归档）
 type: knowledge
 status: active
 created_at: 2026-09-12T11:30:00+08:00
-updated_at: 2026-09-13T11:50:00+08:00
+updated_at: 2026-09-13T13:59:00+08:00
 priority: low
 keywords: [变更记录, changelog, 历史, 总览归档, 生命周期改造, 队列v2, queue-admin, 站点接入, 配置v2, GitHub OAuth]
 summary: 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪"
@@ -20,6 +20,7 @@ related:
 
 ## 2026-09-13
 
+- 13:59 用户定规则：删除等不可逆功能上线前必须线上 dry run + 独立手段（CDP/查库）二次复核，禁止复用新功能代码复核 → `procedures/checklist-不可逆操作上线.md`、`02-user-preferences.md` 第 12 条
 - 11:41 **fc-chrome 上线**：Tampermonkey 5.5.0 上 OSS、镜像经 jenkins 中转推 ACR、`nc-app-prod-cdp3` 部署、共用域名 `/cdp3/*` 路由（用户执行）、三处回填、两条脚本路径线上全通；期间修了 seedprep `/json/list` 解析、叠层缺策略、closeTarget 竞态、脚本 `@match` 缺 SSO 首跳四个问题。→ `sessions/2026/2026-09-13-fc-chrome上线.md`、`knowledge/architecture-fc-chrome文档爬虫上云.md`
 
 - 2026-09-13 08:30 用户要求：commit-msg 违禁词钩子（邮箱正则、卧槽）→ `scripts/git-hooks/`，已装进本仓库 + 1S 五仓库 → `procedures/checklist-仓库脚本清单.md`
