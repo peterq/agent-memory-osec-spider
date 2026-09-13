@@ -3,13 +3,13 @@ title: 决策：cdp3 数据目录约定（NAS）、extensions= 走策略强装�
 type: decision
 status: active
 created_at: 2026-09-13T14:40:00+08:00
-updated_at: 2026-09-13T14:40:00+08:00
+updated_at: 2026-09-13T15:55:00+08:00
 priority: high
 keywords: [cdp3, CDP3DATA, CDP3TEMP, NAS, extensions=, profile=, Browser.close, 定时清理, nc-app-prod-cdp3]
 questions:
   - cdp3 的扩展和会话数据放在哪、目录怎么约定
   - 调用方用 profile= 时要注意什么
-summary: 2026-09-13 用户要求 cdp3 挂 NAS：CDP3DATA=/mnt/nas/apps/cdp3（extensions/ profiles/），CDP3TEMP=/mnt/temp/cdp3 每天 04:30 定时清理；extensions= 只能策略强装；profile=ns/name 存单 tar、锁互斥、客户端须发 Browser.close 才可靠写回
+summary: 2026-09-13 用户要求 cdp3 挂 NAS：CDP3DATA=/mnt/nas/apps/cdp3（extensions/ profiles/），CDP3TEMP=/mnt/temp/cdp3 每天 04:30 定时清理（同时删 30 天未使用 profile）；extensions= 只能策略强装；profile=ns/name 存单 tar、锁互斥、客户端须发 Browser.close 才可靠写回
 load: on-demand
 related:
   - agent-memory/lessons/failure-FC实例在WebSocket断开后立即冻结.md
@@ -28,11 +28,11 @@ related:
 3. **扩展**：`--load-extension` 不可用（含 feature 开关）→ 策略 force_installed + 本机 update_url；解包目录用 Chrome 自身打 crx。`ext=<url>` 同路径修复。
 4. **profile 存储**：目录树 cp → 单 tar（NFS 目录操作 31 s vs 1~2 s）；只含 `Default/`+`Local State`。
 5. **写回时机**：FC 断开即冻结 → 拦截客户端 `Browser.close` 在连接内写回 + 20 s 周期快照兜底 + 写回前校验锁归属；锁过期 90 s。
-6. **定时清理**：timer 触发器 `cleanTempTimer`（`CRON_TZ=Asia/Shanghai 0 30 4 * * *`）→ 事件调用 `Handle` → 删 CDP3TEMP 下最后修改 >24 h 的一级条目（payload `{"maxAgeHours":0}` 全清）。
+6. **定时清理**：timer 触发器 `cleanTempTimer`（`CRON_TZ=Asia/Shanghai 0 30 4 * * *`）→ 事件调用 `Handle` → 删 CDP3TEMP 下最后修改 >24 h 的一级条目（payload `{"maxAgeHours":0}` 全清）；[用户要求 15:40] 同时删 **>30 天未使用**（`PROFILE_TTL_DAYS`，以 tar mtime 计，加载时 touch）的 profile 及锁，锁新鲜的跳过，`.tar.new-*` 残留 1 天即清（payload `{"profileTtlDays":0}` 跳过）。手动触发：`s fc-chrome invoke --event '{"triggerName":"manual","payload":"{}"}'`。镜像 `app-20260913i`。
 
 ## 影响
 - 调用方（NC-JS task、doc_crawler 若用 `profile=`）**必须先发 CDP `Browser.close` 等响应再断开**，否则最多丢 20 s 且 profile 90 s 内不可复用（409）。
-- 线上镜像 `app-20260913h`；NAS 上 `apps/cdp3/README.md` 有目录说明。
+- 线上镜像 `app-20260913i`；NAS 上 `apps/cdp3/README.md` 有目录说明。
 
 ## 复盘条件
 - Chrome 大版本升级后复测 `--pack-extension`、策略安装、`override_update_url`。
