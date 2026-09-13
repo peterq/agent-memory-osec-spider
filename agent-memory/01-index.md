@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-13T10:51:35+08:00
+updated_at: 2026-09-13T11:45:27+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -16,7 +16,7 @@ load: always
 定位到文件后 `mem.py outline <file>` 看章节，再 `mem.py body <file> --section <标题>` 只读需要的一段。
 维护方式：改目标文件 Front Matter（summary / keywords / questions），然后运行 `scripts/mem/mem.py index --write`。
 
-# agent-memory 启动包（脚本生成, 125 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
+# agent-memory 启动包（脚本生成, 126 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
 
 ## 根目录 (3)
 - 00-overview.md | crit | 2026-09-13 | 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件 | 网盘资源爬取、版权取证、COMMON
@@ -109,7 +109,7 @@ load: always
 - lessons/failure-v3首页重合度受前缀展开分片彩票影响.md | high | 2026-09-12 | P5 对拍首页重合度 84%<95% 的两个根因——4% 坑位是 legacy 已删 lc 未删的死链（无反向失效同步）；其余是 match_phrase_prefix 展开集合… | P5、重合度、match_phrase_prefix
   ? P5 对拍为什么没通过，v3 首页和 v2 为什么不一样 / dfs 能不能让新旧索引排序一致 / 旧索引 url_check 删掉的文档新方案会同步失效吗
 - lessons/failure-前端环境默认值写死本地.md | high | 2026-09-08 | 子应用把 useLocalStorage('gwEndpoint') 默认值写死成 gwAddrs[1](本地 127.0.0.1)，导致生产首次访问卡死；改为按 locatio… | gwEndpoint、gwAddrs、defaultGwAddr
-- lessons/failure-品牌版Chrome禁用load-extension与userScripts二次授权.md | high | 2026-09-13 | 2026-09-13 fc-chrome 上线实测：Google Chrome 品牌版（137+）直接忽略 --load-extension/--disable-extensio… | Chrome、load-extension、ExtensionSettings
+- lessons/failure-品牌版Chrome禁用load-extension与userScripts二次授权.md | high | 2026-09-13 | 2026-09-13 fc-chrome 上线实测：品牌版 Chrome 137+ 忽略 --load-extension，改企业策略 force_installed 装 Tam… | Chrome、load-extension、ExtensionSettings
   ? 为什么 headless Chrome 加了 --load-extension 却看不到扩展 / 怎么让容器里的 Chrome 自动装上 Tampermonkey / 油猴脚本装上了但页面不执行是怎么回事 / Tampermonkey 就绪要等多久, 怎么把等待挪到构建期
 - lessons/failure-把拆配置理解成拆文件.md | high | 2026-09-09 | 用户说"拆分"时先确认拆的是什么(代码结构/文件/进程); 用运行时断言或"文件里不写某项"来保证隔离, 通常说明方案层级选错了 | 需求理解、拆分对象、复述确认
 - lessons/failure-握手回包附加字段被传输层丢弃.md | high | 2026-09-12 | 网关握手 403 回包的 needLogin/githubClientId 等附加字段被 RTC-gRPC 错误通道丢弃，结构化信息要走专门回调 | RtcTransport、cancelAllPendingCalls、UnaryCallResponse
@@ -175,9 +175,9 @@ load: always
 - knowledge/reference-github-oauth配置.md | medi | 2026-09-12 | 两个GitHub OAuth App(prod/dev)的名称、client_id、管理页、已注册回调列表与组织第三方应用策略, 不含任何secret | GitHub OAuth App、client_id、redirect_uri
   ? GitHub OAuth App 的 client_id 在哪查 / 1second 组织的回调地址怎么配置
 
-## sessions/ (30 个, 仅列最近 3 个; 其余用 mem.py search 找)
+## sessions/ (31 个, 仅列最近 3 个; 其余用 mem.py search 找)
 - sessions/2026/2026-09-02-kkpans爬虫开发.md | medi | 2026-09-12 | 按 PRD 实现 www.kkpans.com 爬虫（新建 services/bbs 包），联网实测 9 项验收标准全部达标 | kkpans、bbs_kkpans、services/bbs
 - sessions/2026/2026-09-02-kkpans站点调研与PRD.md | medi | 2026-09-12 | 探索 www.kkpans.com 并产出爬虫需求文档，沉淀站点知识、调研工作流与对账脚本 | kkpans、站点调研、PRD
-- sessions/2026/2026-09-02-修复夸克阿里有效性检测.md | medi | 2026-09-12 | 用 15+15 条样本复现并修复三类误判，API 与 SPIDER 两套 checker 结论现已一致 | 有效性检测、validShareLink、夸克
+- sessions/2026/2026-09-13-fc-chrome上线.md | medi | 2026-09-13 | 用户授权后一天内把 09-08 遗留的 6 项人工事项全部落地：FC 部署、共用域名路由、两条脚本路径线上全通；记录派单被分类器拦、镜像经 jenkins 中转、四个根因的排查顺序 | fc-chrome、nc-app-prod-cdp3、Tampermonkey
 
 ## archive/ (10 个, 已归档不列出; 需要时 mem.py search --dir archive)

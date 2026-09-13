@@ -3,7 +3,7 @@ title: fc-chrome 构建/推送/部署/加域名路由的实际可行路径
 type: procedure
 status: active
 created_at: 2026-09-13T11:00:00+08:00
-updated_at: 2026-09-13T11:00:00+08:00
+updated_at: 2026-09-13T11:50:00+08:00
 priority: high
 keywords: [fc-chrome, serverless-devs, ACR, jenkins 中转, fc3-domain, seedprep, 函数计算部署]
 questions:
@@ -36,7 +36,7 @@ make build                                 # bootstrap(静态)
 rsync -az build/seed/chrome-profile-seed.tgz image/Dockerfile.seed image/policies bootstrap Dockerfile osec-jenkins:/home/pplabs/fc-chrome-build/app2/
 ssh osec-jenkins 'cd /home/pplabs/fc-chrome-build/app2 && tar xzf chrome-profile-seed.tgz && sudo docker build --build-arg BASE_IMAGE=registry.cn-hangzhou.aliyuncs.com/1second/fc-chrome:base -t registry.cn-hangzhou.aliyuncs.com/1second/fc-chrome:base-seed -f Dockerfile.seed . && sudo docker build --build-arg BASE_IMAGE=registry.cn-hangzhou.aliyuncs.com/1second/fc-chrome:base-seed -t registry.cn-hangzhou.aliyuncs.com/1second/fc-chrome:app-<日期x> -f Dockerfile . && sudo docker push registry.cn-hangzhou.aliyuncs.com/1second/fc-chrome:base-seed && sudo docker push registry.cn-hangzhou.aliyuncs.com/1second/fc-chrome:app-<日期x>'
 ```
-镜像 tag **带日期**（同名 tag 重推 FC 不一定重拉，且便于回滚）；`s.yaml` 的 `image` 改成新 tag。
+镜像 tag **带日期**（同名 tag 重推 FC 不一定重拉，且便于回滚）；`s.yaml` 的 `image` 改成新 tag。当前线上 `app-20260913e`。
 
 ## 2. 部署与验证
 ```bash

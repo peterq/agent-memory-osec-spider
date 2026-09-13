@@ -128,3 +128,47 @@ go run ./cmd/localverify \
 - `go run ./cmd/localverify -mode inject -timeout 150 -fc wss://fc-resource-node-api.krzb.net/cdp3/chrome -script <OSS kdoc.user.js> -page https://www.kdocs.cn/l/cdXYaQ5EOakI -nonce krzb-inject-1`：
   握手 5 s → `start` → `progress` 200/244/400/574 → **`result ok:true docType=kdocSheet`（quark 链接列表）**，全程 20 s，退出码 0。nonce 完整（角色 20 修复生效）。
 - 待办：Tampermonkey 路径（不带 inject）等角色 13 的 profile 预热方案；随后重建 base/app 镜像 → jenkins 中转推 ACR → `s deploy` → 线上 `-mode tm` 复测。
+
+## 角色 13 —— Chrome profile 预热 + 路径2 选择器核对（找到根因、机制验证通过；构建期自动化本轮未稳定跑通）
+
+commit `cff1561`（COMMON，已 push），改了 `chrome.go`/`tampermonkey.go`/`handler.go`/`Makefile`/`image/Dockerfile`/`README.md`，新增 `cmd/seedprep/`（未碰 `cmd/localverify`）。全部在本机 docker 容器验证，未 push 镜像、未 deploy。
+
+| 事项 | 结果/证据 |
+|---|---|
+| **关键新发现1：CDP 无法 attach chrome-extension:// target** | 品牌版 Chrome(153.0.8010.36) 对 `Target.attachToTarget` attach 到任意 `chrome-extension://` target（页面/ask弹窗/service_worker 全部一样）一律返回 `{"code":-32000,"message":"Not allowed"}`，与 flatten 参数、是否本连接自建无关。角色12"三项证据"其实没走过 attach。**绕过**：先建 `about:blank` 普通页 attach，再 `Page.navigate` 过去。`tampermonkey.go`(`openExtensionPage`)与`cmd/seedprep`都用这招 |
+| 路径2 真实选择器（现场 dump 确认） | Utils 面板输入框 `.updateurl_input`（旧代码猜的 `type=url`/`#url` 全不对），按钮真实文案 **"Install" 不是 "Import"**；点击后独立确认页 `ask.html?aid=...` 上 `input[name=Install].install`；`findTampermonkeyExtensionID` 改为纯 `Target.getTargets` 列表匹配（不再 attach，也不再限定 `service_worker` 类型——同一坑踩了两次） |
+| **关键新发现2：Chrome 138+ "Allow User Scripts" 二次授权** | 脚本能自动装进已安装列表，但**默认不会被执行**，除非在 `chrome://extensions/?id=<id>` 手动打开该开关；Chrome 官方博客称目前无企业策略可替代。已用 CDP 找到真实 DOM（`<extensions-toggle-row id="allow-user-scripts">`→shadow root 内 `<cr-toggle id="crToggle">`）并点击验证：点开后**同一 Chrome 实例**内新开 tab 打开 `sample.html` 收到完整 `[[DOC_SPIDER]]` 协议（start+result）。这是手工验证，不是通过构建期种子自动带过去的 |
+| profile 预热（`image/Dockerfile`+`chrome.go`） | 构建期起 headless Chrome，新增 `cmd/seedprep` 等 Tampermonkey 就绪 + 点开关，成功后清理（只删 `Default/Cache`/`Code Cache`/`GPUCache` 等**已知安全**目录，全部保留 `Service Worker/`）。**真实踩过的坑**：第一版 `find -iname "*Cache*"` 连 `Service Worker/ScriptCache` 一起删了，复制到运行时的 profile 反复 `DidStartWorkerFail`，表现和没预热一样，排查很久才定位。`chrome.go` 新增 `CHROME_PROFILE_SEED`/`copyProfileSeed`，`/health` 加 `profileSeed` 字段 |
+| 路径2 全自动验证（真实 `/chrome` 请求，无人工干预） | `go run ./cmd/localverify -mode tm` 触发的 `installUserScript` 全自动跑完 Utils→ask→dashboard 三步，dashboard 确认脚本进已安装列表，用完的 tab 全部 `closeExtensionPage` 关掉不留残留 |
+| 运行时就绪耗时（3 次实测，用 ScriptCache 修复后的种子） | installUserScript 从连上 CDP 到装脚本流程走完：~2s、~2s、~3s，`TM_READY_TIMEOUT_SEC`(缺省20s)基本用不上 |
+| **构建期自动化本轮未稳定跑通** | `make image-base` 本轮共测 10 次：接入 `cmd/seedprep`/Allow User Scripts 步骤**之前**的 2 次成功（45s、122s）；接入之后 8 次全部在 300s 超时前失败，日志显示"0 个候选 chrome-extension:// target"（Chrome 从未触发过策略检查）。已加"立即点 chrome://extensions 的 Update 按钮强制触发检查"优化（手工验证过 ~1~5s 内生效），加入后仍有失败。已排除本机→OSS 网络不可达（同会话内 `curl`/`docker run curlimages/curl` 反复验证均能快速拿到 200，仅个别请求超时但重试即通）；怀疑是 Chromium `ExtensionUpdater` 抖动窗口在本环境下可能超过 300s，或本机到 OSS 存在更细粒度的间歇性异常，未能实锤根因 |
+| `go build/vet/test` | 全部通过（`test` 无测试文件属正常） |
+| 清理 | 所有测试容器（`tm-seed-test*`/`seedprep-test*`/`fc-chrome-e2e`/`updatebtn-test*`）、`python3 -m http.server 8899`、所有 `go run ./cmd/localverify` 进程均已 kill/删除确认；`docker ps -a` 复查无残留 |
+
+**给主控/后续角色的关键结论**：路径1/2 的**机制**（选择器、CDP attach 绕过、Allow User Scripts 开关）已用真实证据证明可行，但"构建期自动预热到位"这最后一公里本轮未能取得一次成功的 `make image-base`（且怀疑与本会话网络状况有关，非必然可复现的代码 bug）。**doc-crawler 侧在有人实际验证过一次成功的 `make image-base`（并确认种子里 Allow User Scripts 真的被点开）之前，必须继续把 `inject=1` 当唯一可信默认通道**，不能因为本轮的选择器/机制验证通过就切换默认值。下一位接手者：换个网络更稳定的时段/环境重跑 `make image-base` 到成功一次，再用 `go run ./cmd/localverify -mode tm`（不夹带任何手工 CDP 操作）确认能自动收到 `[[DOC_SPIDER]]`，即可解除这个限制。详细排查数据见 COMMON `fc-chrome/README.md`「路径2 最终实现 + profile 预热」一节。
+
+## 角色14 —— 线上"装了脚本却不执行"诊断与修复：根因是 closeTarget 后的目标发现竞态，已修复并验证
+
+commit `f429fca`（COMMON，已 push，含重试：首次 push 因 SSH 连 github 超时失败，重跑成功），只改了 `tampermonkey.go`+`README.md`（未碰 `cmd/localverify`/`Makefile`/`image/`）。全部本机 docker 容器验证，**未 push 镜像、未 `s deploy`**。
+
+**先排除的疑点**：本地起线上同款种子容器 `fc-chrome:app-seed`，用桩脚本(`test-tm-path2.user.js`, `@match http://*/sample.html*`)跑 `installUserScript` 路径1/2，**脚本真的装上且真的执行**（收到完整 `[[DOC_SPIDER]] start+result`），换成 `@run-at document-start` 桩脚本同样成功——证明角色13 头号疑点"Allow User Scripts 开关被 profile 复制丢失"**不成立**，种子本身是好的；`Preferences` 里 `granted_permissions.userScripts` 只是 manifest 必需权限的自动授予，不代表开关状态（未定位到开关真正持久化的 pref key，但不影响结论）。
+
+**真正根因（本机 6 次独立探测复现 2 次，33%）**：`tryInstallViaTampermonkeyOptionsPage` 关闭 Utils/ask/dashboard 三个临时 `chrome-extension://` tab 时，旧代码只等 `Target.closeTarget` 的 ack 就认为关闭完成——但"关闭确认"与"从 `Target.getTargets` 摘除"是两件异步的事，残留页可在列表里多待数百毫秒到数秒，且**探测到过 1 次残留排在真正的 `about:blank` 之前**。doc-crawler/`localverify` 都按"握手后第一个 `type=page` 就是目标页"取页，一旦命中这个窗口就会 attach+navigate 错这个即将消失的扩展页，真实页面（kdocs 等）从未被导航——表现正是线上日志里"报告已点击导入"之后再无任何 `[[DOC_SPIDER]]`（连 `start` 都没有）。
+
+| 事项 | 结果/证据 |
+|---|---|
+| 修复前竞态复现 | 6 次探测 2 次残留（1 次残留 `ask.html`+`options.html#nav=utils` 且排在 `about:blank` 前） |
+| 修复方式 | `closeExtensionPage` 新增 `waitForTargetGone` 轮询 `Target.getTargets` 直到目标真正消失(超时 5s 只警告不阻断)；顺手修正 `installUserScript` 里写死的"未做二次校验"误导性日志(dashboard 校验自 `cff1561` 起已存在并生效，只是文案没更新，线上排障时曾被带偏) |
+| 修复后验证 | 同一探测脚本连续 5 次，0 次残留；`go run ./cmd/localverify -mode tm`(桩页) 连续 3 次全部约 3s 内拿到 `start`+`result final:true`，退出码 0 |
+| 真实 kdocs 页面 | **未做**：本机容器访问 `www.kdocs.cn` 走宿主机代理反复 `SSL handshake failed net_error -100/-101`（与角色13/20 已知本地网络限制一致），60s 内页面从未加载成功，与本次修复无关，不构成反证 |
+| `go build/vet` | 通过（无测试文件） |
+| 是否需要重新出 seed | **不需要**：只改运行时 Go 代码，profile 种子内容未变，重新编译 `bootstrap` 出新 app 镜像即可 |
+| 清理 | 测试容器 `fc14test`/`fc14old`、临时镜像 `app-seed-v2`、`python3 -m http.server 18899` 均已 kill/删除确认；`docker ps -a`/`docker images` 复查无残留 |
+
+**给主控的提示**：这个 33% 概率的竞态可能不是唯一因素（无法排除真实 kdocs 域名多次 SSO 跳转期间是否有额外扩展弹窗、真实网络延迟对窗口大小的影响）。线上重新部署新 `bootstrap` 后建议连续跑 5~10 次 `localverify -mode tm` 而非 1 次；若仍有小概率失败，下一步应在 `handleChrome` 里 `installUserScript` 返回后、WS 升级前整体再 `Target.getTargets` 校验一次，作为比逐个 tab 轮询更彻底的兜底。
+
+### 主控 —— 收尾（2026-09-13 11:45）：两条路径线上全通
+- TM 路径根因 = 云端脚本 `@match` 不含 SSO 首跳域名 `account.kdocs.cn`（302 把 `#taskNonce` 带到该跳，脚本从未运行、拿不到 nonce）；用桩脚本 `test-tm-kdocs.user.js`（`@match https://www.kdocs.cn/*` 等）线上证明 TM 注入本身正常并打印了完整跳转链。userscripts `0e9e9c20`→`0e86ba1` 加 `account.kdocs.cn/*`，脚本 md5 `50ce2cfd…`。
+- 次要因素：角色 14 的 closeTarget 竞态修复（`f429fca`）；角色 13/主控的 seedprep `/json/list` 解析 bug（`06ab3d9`）；叠层缺策略文件（`5961da6`）。
+- 线上镜像 `app-20260913e`（verbose 已关，`TM_READY_TIMEOUT_SEC=40`，timeout 600/2048MB）。终验 11:41：`-mode tm` 9 s、`-mode inject` 5 s 均 `result final:true`。
+- 探针/桩：OSS `fc-chrome/test/` 三个文件；OSS 默认域名 html 强制下载，桩页不可直接作页面。临时 `cmd/tmprobe`/`cmd/wsprobe` 已删。

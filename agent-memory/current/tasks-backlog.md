@@ -3,7 +3,7 @@ title: 任务后备清单（低优先级 / 等人工事项）
 type: task
 status: active
 created_at: 2026-09-12T22:36:00+08:00
-updated_at: 2026-09-13T11:05:00+08:00
+updated_at: 2026-09-13T11:50:00+08:00
 priority: low
 keywords: [backlog, P3, 文档爬虫, FC, 人工事项]
 questions:
@@ -22,7 +22,7 @@ related:
 ①告警后台/队列告警可配 ②代理池后台 ③链接路径追踪 **已随 09-09 网关重启上线**（五仓库均已 push，详情见 session）。
 - **④文档爬虫 FC 自动化——2026-09-13 新版 FC 已上线**（`knowledge/architecture-fc-chrome文档爬虫上云.md`、流程 `procedures/workflow-fc-chrome上线.md`，过程 `agent-tasks/2026-09-13-fc-chrome-online/99-notes.md`）：
   Tampermonkey 包/云端脚本已上 OSS，镜像经 jenkins 推 ACR，`nc-app-prod-cdp3` 部署，共用域名 `/cdp3/*` 路由生效，三处地址回填已提交；`inject=1` 路径线上对真实文档全通。
-  - [ ] Tampermonkey 原生路径线上"装上不执行"诊断中（角色 14），结论出来后决定 doc-crawler 是否只硬依赖 `inject=1`
+  - [x] Tampermonkey 原生路径 11:41 线上终验通过（根因 `@match` 缺 `account.kdocs.cn`）；doc-crawler 两条路径都可用，仍建议默认 `inject=1`（更快、不依赖扩展状态）
   - [ ] SLS 给 `link_key` 建索引后打开 `services.queue_admin.sls.link_key_indexed`（与 FC 无关，仍待人工）
   - [ ] doc-crawler 部署（`deploy.sh` 占位 `osec-jenkins`）与 PC 端油猴调度器是否下线，待用户决定
   - [ ] `nc-app-prod-cdp-driver` 的 `CDP_ENDPOINT` 是否切到新实例，待用户决定（当前仍指旧实例）

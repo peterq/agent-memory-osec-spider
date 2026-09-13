@@ -3,7 +3,7 @@ title: 项目变更记录（总览归档）
 type: knowledge
 status: active
 created_at: 2026-09-12T11:30:00+08:00
-updated_at: 2026-09-13T07:55:00+08:00
+updated_at: 2026-09-13T11:50:00+08:00
 priority: low
 keywords: [变更记录, changelog, 历史, 总览归档, 生命周期改造, 队列v2, queue-admin, 站点接入, 配置v2, GitHub OAuth]
 summary: 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪"
@@ -19,6 +19,8 @@ related:
 > **原文叙述在各自的 session / decision 文件里**，本文件不复制正文。需要细节就按指针读那一个文件。
 
 ## 2026-09-13
+
+- 11:41 **fc-chrome 上线**：Tampermonkey 5.5.0 上 OSS、镜像经 jenkins 中转推 ACR、`nc-app-prod-cdp3` 部署、共用域名 `/cdp3/*` 路由（用户执行）、三处回填、两条脚本路径线上全通；期间修了 seedprep `/json/list` 解析、叠层缺策略、closeTarget 竞态、脚本 `@match` 缺 SSO 首跳四个问题。→ `sessions/2026/2026-09-13-fc-chrome上线.md`、`knowledge/architecture-fc-chrome文档爬虫上云.md`
 
 - 2026-09-13 08:30 用户要求：commit-msg 违禁词钩子（邮箱正则、卧槽）→ `scripts/git-hooks/`，已装进本仓库 + 1S 五仓库 → `procedures/checklist-仓库脚本清单.md`
 - 2026-09-13 07:55 用户要求：lint 长度改双阈值（>12,000 触发、压到 <6,000、9,000 起提示）→ `decisions/decision-2026-09-13-lint长度双阈值.md`
