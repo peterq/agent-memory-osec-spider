@@ -74,10 +74,9 @@ related:
 - 失效判定看业务码不看文案，判不准就报错；样本 15 条起 → `lessons/success-网盘失效判定原则.md`
 - 监控/埋点初始化必须可降级，且要覆盖最彻底的失败路径 → `lessons/failure-旁路能力初始化拖垮主流程.md`
 - 前端验收跑一次清空 localStorage 的首访 + 桩网关/CDP 联调 → `lessons/success-桩网关加cdp浏览器做登录链路联调.md`
-- RTC-gRPC 错误通道会丢附加字段，结构化信息走专门回调 → `lessons/failure-握手回包附加字段被传输层丢弃.md`
 - 收到「拆分/隔离」需求先复述拆的对象，护栏应做在编译期 → `lessons/failure-把拆配置理解成拆文件.md`
 - NC-JS `pnpm build` 会真实上传生产 OSS，验证前先关 `deploy` → `lessons/failure-ncjs构建脚本会自动上传OSS.md`
-- 长周期生产作业巡检清单 → `lessons/patterns-长周期生产巡检.md`（实测吞吐数据 `knowledge/domain-bootstrap吞吐实测数据.md`）
+- 长周期生产作业巡检清单 → `lessons/patterns-长周期生产巡检.md`
 - 新爬虫写联网集成测试（假 committer + 独立 redis 前缀 + 环境变量开关）→ `lessons/success-爬虫联网集成测试.md`
 - 新站点调研先挖 JS bundle 接口、`total` 须用 sitemap 对账；**结论有保质期** → `procedures/workflow-新站点调研.md`
 - 生产 API 探针按 res-api 三级漏桶算节奏；排序差异用 `explain` 看 idf → `lessons/failure-v3首页重合度受前缀展开分片彩票影响.md`
