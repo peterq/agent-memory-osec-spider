@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-13T08:26:59+08:00
+updated_at: 2026-09-13T10:48:43+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -16,7 +16,7 @@ load: always
 定位到文件后 `mem.py outline <file>` 看章节，再 `mem.py body <file> --section <标题>` 只读需要的一段。
 维护方式：改目标文件 Front Matter（summary / keywords / questions），然后运行 `scripts/mem/mem.py index --write`。
 
-# agent-memory 启动包（脚本生成, 121 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
+# agent-memory 启动包（脚本生成, 125 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
 
 ## 根目录 (3)
 - 00-overview.md | crit | 2026-09-13 | 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件 | 网盘资源爬取、版权取证、COMMON
@@ -64,7 +64,9 @@ load: always
   ? lint 报超长该压到多少字，上限为什么不是 8000 / tasks.md 反复超长怎么办
 - decisions/decision-2026-09-04-合并sweep-guard分支冲突取舍.md | medi | 2026-09-04 | 合并遗留分支时，master 已修正的旧逻辑不应因"冲突两边都保留"而被恢复，需先判断冲突是否为真实的两个功能重叠 | sweep-guard、全量扫描守卫、merge 冲突
 
-## procedures/ (10)
+## procedures/ (11)
+- procedures/workflow-fc-chrome上线.md | high | 2026-09-13 | 2026-09-13 实测可行的 fc-chrome 上线链路：本机构建→docker save/rsync 到 osec-jenkins→load/push→s deploy（… | fc-chrome、serverless-devs、ACR
+  ? 本机推不了 ACR / 拉不了 docker hub 时怎么把 fc-chrome 镜像弄上去 / 怎么给现有 FC 自定义域名加一条路由而不碰证书 / Tampermonkey profile 种子怎么重新生成 / s deploy 报 getAuthorizationToken ETIMEDOUT 怎么办
 - procedures/workflow-子agent任务简报.md | high | 2026-09-12 | 派子 Agent 时任务描述落盘成文件、prompt 只给路径，并列出子 Agent 的常见失败模式与提示词对策 | 子agent、任务描述、agent-tasks
   ? 我要派子 Agent，任务描述太长怎么办 / 多个 agent 上下文重复怎么解决
 - procedures/workflow-并行开发多站点爬虫.md | high | 2026-09-12 | 一次接入多个新站点时的分工方式：worktree 隔离、共享资源集中准备、冲突面收敛、合并与验收 | 并行开发、worktree、子agent
@@ -85,7 +87,7 @@ load: always
   ? 部署 / 上线怎么操作，日志在哪看 / 新服务该放哪台机器 / 队列 v2 上线收尾脚本是哪个
 - procedures/workflow-部署-历史补充.md | low | 2026-09-12 | 历次生产上线（2026-09-05~09-10 生命周期 P3/P4 网关多次重部、代理池监控上线等）的一次性踩坑与已固化到 deploy.sh 的加固记录；常规部署流程见 wo… | 生命周期上线、网关重部、dryRun
 
-## lessons/ (28)
+## lessons/ (30)
 - lessons/failure-bootstrap按id排序打爆ES堆.md | crit | 2026-09-12 | P4 bootstrap 的 B1 用 sort:["_id"] 在 15.7 亿文档旧索引上翻页, 触发 _id fielddata 加载, 单页 >550s、堆到 99%、熔… | bootstrap、存量迁移、P4
   ? P4 bootstrap 为什么跑不起来 / 作业 id=1 为什么 failed
 - lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md | crit | 2026-09-13 | checker 用 task.Id(md5) 而非 ShareId 探测，115.5 万条 quark/ali 误删；bnd 再因「违规」tooltip 误判 930 条；修复 … | lifecycle_checker、误删、ShareId
@@ -107,6 +109,8 @@ load: always
 - lessons/failure-v3首页重合度受前缀展开分片彩票影响.md | high | 2026-09-12 | P5 对拍首页重合度 84%<95% 的两个根因——4% 坑位是 legacy 已删 lc 未删的死链（无反向失效同步）；其余是 match_phrase_prefix 展开集合… | P5、重合度、match_phrase_prefix
   ? P5 对拍为什么没通过，v3 首页和 v2 为什么不一样 / dfs 能不能让新旧索引排序一致 / 旧索引 url_check 删掉的文档新方案会同步失效吗
 - lessons/failure-前端环境默认值写死本地.md | high | 2026-09-08 | 子应用把 useLocalStorage('gwEndpoint') 默认值写死成 gwAddrs[1](本地 127.0.0.1)，导致生产首次访问卡死；改为按 locatio… | gwEndpoint、gwAddrs、defaultGwAddr
+- lessons/failure-品牌版Chrome禁用load-extension与userScripts二次授权.md | high | 2026-09-13 | 2026-09-13 fc-chrome 上线实测：Google Chrome 品牌版（137+）直接忽略 --load-extension/--disable-extensio… | Chrome、load-extension、ExtensionSettings
+  ? 为什么 headless Chrome 加了 --load-extension 却看不到扩展 / 怎么让容器里的 Chrome 自动装上 Tampermonkey / 油猴脚本装上了但页面不执行是怎么回事 / Tampermonkey 就绪要等多久, 怎么把等待挪到构建期
 - lessons/failure-把拆配置理解成拆文件.md | high | 2026-09-09 | 用户说"拆分"时先确认拆的是什么(代码结构/文件/进程); 用运行时断言或"文件里不写某项"来保证隔离, 通常说明方案层级选错了 | 需求理解、拆分对象、复述确认
 - lessons/failure-握手回包附加字段被传输层丢弃.md | high | 2026-09-12 | 网关握手 403 回包的 needLogin/githubClientId 等附加字段被 RTC-gRPC 错误通道丢弃，结构化信息要走专门回调 | RtcTransport、cancelAllPendingCalls、UnaryCallResponse
   ? 握手回包字段传不到前端是什么原因 / 登录失败原因被重试覆盖是怎么回事
@@ -129,8 +133,10 @@ load: always
 - lessons/success-爬虫联网集成测试.md | high | 2026-09-12 | 用「假 committer + 独立 redis 键前缀 + 环境变量开关」让爬虫的联网测试可重复运行且不污染线上 | 集成测试、爬虫、联网测试
   ? 我要给爬虫写测试，联网测试怎么不污染线上
 - lessons/success-网盘失效判定原则.md | high | 2026-09-12 | 靠 message 文案匹配判定网盘失效必然随站点文案漂移而失灵，应改用业务码并把未知响应升级为 error | 失效判定、业务码、限流
+- lessons/failure-fc-chrome上线踩坑合集.md | medi | 2026-09-13 | 2026-09-13 fc-chrome 上线踩到的 5 个具体坑与对策：Chrome /json/list 是 JSON 数组不是 {targetInfos}；docker e… | /json/list、pkill -f、docker exec
+  ? seedprep 为什么永远等不到扩展 target / docker exec 里 pkill -f 之后命令立刻结束是为什么 / FC 上 WebSocket 连接 120 s 就断是为什么 / 叠层镜像和本地验证过的镜像行为不一样先查什么
 
-## knowledge/ (19)
+## knowledge/ (20)
 - knowledge/architecture-系统总览.md | crit | 2026-09-02 | 从爬取到入库到检索的完整链路、各服务端口与中间件分工 | 架构、数据链路、网关
 - knowledge/api-rpc契约.md | high | 2026-09-12 | COMMON 仓库中各 proto 服务的方法清单、核心消息结构与代码生成流程 | proto、gRPC、StorageRpc
   ? 我要改 gRPC 协议 / proto，改完怎么生成 / 某个 rpc 方法的入参/出参消息结构是什么 / proto 改完要同步哪些下游仓库
@@ -140,6 +146,8 @@ load: always
   ? 我要改查询接口/限流/搜索 / 后台怎么看 res_lc_* 分表数据
 - knowledge/architecture-es索引现状.md | high | 2026-09-12 | 阿里云 ES 6.7 单索引的分片/容量/父子文档结构/入库增速与读写清理链路代码位置，是生命周期改造方案的事实基线 | ES、Elasticsearch、6.7
   ? 生产 ES 有多大，怎么查生产 ES / 无 join 索引和 join 父子索引的区别
+- knowledge/architecture-fc-chrome文档爬虫上云.md | high | 2026-09-13 | 2026-09-13 上线的 nc-app-prod-cdp3（COMMON fc-chrome，Chrome 153 + Tampermonkey 5.5.0 + 预热 pro… | fc-chrome、nc-app-prod-cdp3、Tampermonkey
+  ? 新版 FC Chrome 部署在哪、地址是什么、怎么健康检查 / 云端金山文档爬虫脚本在哪、怎么更新 / 共用 FC 域名 fc-resource-node-api.krzb.net 有哪些路由 / doc_crawler 应该连哪个 fc_endpoint
 - knowledge/architecture-nc-js-qiankun与后台页面.md | high | 2026-09-12 | qiankun 主应用注册/子应用生命周期、本地开发流程；spiderAdmin 新增后台页面写法与落点（队列监控、资源生命周期各页、架构图页、res_lc 分表数据只读页面）；… | qiankun、微前端、spiderAdmin
   ? 我要改后台前端，加一个后台页面该怎么加 / qiankun 子应用 / NC ADMIN / apps.json 是什么 / 后台怎么看 res_lc_* 分表数据，资源列表/分表统计/事件流水/表诊断页面在哪
 - knowledge/architecture-nc-js-网关对接.md | high | 2026-09-12 | NC-JS 后台前端与 SPIDER gateway 之间没有 REST，只有 WebRTC DataChannel 上自实现的 gRPC 传输；鉴权已改 GitHub OAut… | WebRTC、gRPC、protobuf-ts
