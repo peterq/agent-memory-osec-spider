@@ -3,7 +3,7 @@ title: 失败经验：lifecycle_checker 把资源 md5 当分享 id，116 万有�
 type: lesson
 status: active
 created_at: 2026-09-12T22:40:00+08:00
-updated_at: 2026-09-13T13:59:00+08:00
+updated_at: 2026-09-13T14:50:00+08:00
 priority: critical
 keywords: [lifecycle_checker, 误删, dry run, ShareId, 违规tooltip, bnd判定, invalid_link, 失效率告警, 事故, 恢复]
 questions:
@@ -61,6 +61,7 @@ API 侧 `bnd-api.go` 早已特判「部分文件违规」，SPIDER 没同步。�
 ## 补记：恢复执行（09-12 23:34 起）
 `tools/lc-recrawl`（SPIDER `240a71a`）+ `scripts/lc_false_invalid_export.sh`（`a81c351`）：导出 1,152,617 条 → `-rate 10` 投递 `resourcePreCheck`。
 试点 1,000 条 25 min 内 498 条复活，其余为解析器判真失效（41031/41004/41012/41011）→ 恢复率约 50%，即误删集合里约一半在网盘侧本就已死。
+解析器判失效部分抽 1,000 条用 FC 云端 Chrome（`tools/quark-cdp-verify`）实测：1,000/1,000 一致，业务码逐条相同。
 **直连 `drive.quark.cn` 从服务器 IP 探测一律回 14020 "file not found"（含已知有效分享），不能当判据；核验要走解析链路（代理池）。**
 
 ## 适用边界

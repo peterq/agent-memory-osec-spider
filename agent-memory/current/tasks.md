@@ -3,7 +3,7 @@ title: 当前任务与进度
 type: task
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-13T14:45:00+08:00
+updated_at: 2026-09-13T14:50:00+08:00
 priority: critical
 keywords: [任务, 进度, 待办, P5, 队列v2, queue-admin, 全站扫描, fullsweep, 文档爬虫, doc-crawler, FC Chrome, 凭据轮换, 站点发现, kkpans, misoso, 有效性检测]
 summary: 仍在推进/阻塞/待决策的事项（P0 误删事故重爬中；P5 顺序 阶段C→A'→阶段D）；已上线任务在 archive
@@ -102,7 +102,7 @@ related:
 - [ ] **🔴 P0 lifecycle_checker 误删事故（09-12 22:17 发现）**——正本 SPIDER rollout §15；经验 `lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md`。
   - ✅ ①② 09-12 23:05~23:11 用户授权执行：止血 → 部署 `b888846` → 发现 bnd「违规」tooltip 误判 930 条再停 → 修复 `06ef50d` 重新部署（rollout §15.5）。`e16bd98`（errno 145 判失效）23:34 已部署；观察数据见 rollout §15.5。
   - ③ **恢复 = 重爬**（用户确认 Mongo 无数据）：导出脚本 `scripts/lc_false_invalid_export.sh` → 投递工具 `tools/lc-recrawl`（SPIDER `240a71a`，dry-run 过：1,152,617 条、6,129 个脏 pwd 归一化为空）限速推 `resourcePreCheck`；运行方式：本机 `LOCAL_CONFIG_PATH=<scratchpad>/spider.recrawl.yaml`（`spider_gateway` 指向隧道 127.0.0.1:18082）`go run ./tools/lc-recrawl -file _note/lc-recrawl/all.tsv -rate 10 -state _note/lc-recrawl/state`；导出完成 `_note/lc-recrawl/all.tsv` **1,152,617** 行（quark 1,111,741 / ali 39,946 / bnd 930；比事件数少 3.6k 为同 share_id 去重与已复活行）；[用户确认 09-12 23:33] 节奏按建议：23:34 试点前 1,000 条（`-rate 10`，`_note/lc-recrawl/pilot.log`），1 分钟内 ES 已见 `client=lc-recrawl-2609` 文档；试点结果（00:00）：投递 1000/1000 零失败、队列清空、**498 条回库复活（status=1）**，其余 502 条为解析器判真失效（近 45 min 夸克解析失败码：41031 封禁 645 / 41004 不存在 513 / 41012 取消 288 / 41011 过期 134）→ 预期恢复率 ≈50%。**00:05:58 全量开始**（`_note/lc-recrawl/full.log`，≈31 h），持久 Monitor 每 30 min 上报。00:30~00:47 隧道掉线 302 行记失败（`failed-round1.tsv` 已补投）；工具加断连熔断 `77e92bb`，00:43 续投；隧道改由守护脚本（scratchpad `tunnel-18082.sh`）自动重连。09-13 07:40 进度 263,231/1,152,617（≈23%，≈35k/h，预计还需 ≈25 h），`state.failed` 305 条待补投。`e16bd98` 已于 23:34 部署 checker。
-  - **[用户要求 09-13 13:50] 解析器判失效部分抽 1,000 条走云端 Chrome（CDP）实测**：样本 `_note/lc-recrawl/cdp-sample-1000.tsv`（从 res1/res2 `v2quarkLoadShare` 09:17~13:45 日志取 66,399 条与重爬集合交集后随机抽；41031 655 / 41012 157 / 41004 101 / 41011 47 / 41019 20 / 41010 20）；工具 `tools/quark-cdp-verify`（SPIDER `badf831`+`a18b513`）**已完成并 push**，`-limit 5` 实测 5/5 一致。**待主控跑全量 1000**。
+  - ✅ **[用户要求 09-13 13:50] 解析器判失效部分抽 1,000 条走云端 Chrome（CDP）实测**：样本 `_note/lc-recrawl/cdp-sample-1000.tsv`（41031 655 / 41012 157 / 41004 101 / 41011 47 / 41019 20 / 41010 20），工具 `tools/quark-cdp-verify`（SPIDER `badf831`，并发 20）14:07 跑完：**1,000/1,000 一致、0 不一致**（3 条超时重测后同样 41031），CDP 业务码与解析器逐条相同 → 解析器判失效可信。报告 `_note/lc-recrawl/cdp-verify/report.md`、rollout §15.6。
   - 修复版 checker 可信度核验：23:21~23:32 判失效的 4,713 条 quark 中抽 4 条交解析链路（`client=lc-verify-2609`），解析器同样返回 41031 → 判定正确；近 1 h `valid1h=23,308 / invalid1h=5,942`（ratio 0.20，基线 0.98 会在 7 天内自然回落）。
   - ✅ ⑤ API `bnd-api.go` 已对齐 SPIDER `classifyBndShare`（API `0ad7bb3`，未部署；v3 复用同一 bndApi）。待办：API 与网关下次发版带上（网关 `06ef50d`/`e16bd98` url_check 共用 valid 包 + `b888846` 告警护栏）。
   - ④ 修复上线后消化 bnd `dueBacklog` 52.8 万（8 天零有效检测）。
