@@ -3,7 +3,7 @@ title: 生产部署流程
 type: procedure
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T22:36:00+08:00
+updated_at: 2026-09-13T18:36:00+08:00
 priority: medium
 keywords: [auto模式, 权限分类器, 部署, config.yaml 宿主机改配置, fail-fast, lc-check, deploy.sh, docker, ssh, OSS 配置, 主机, supervisor, 主机选型, 负载, 重启前检查, ES, 外部依赖]
 summary: SPIDER deploy.sh 的常规用法、服务到主机的映射方式、判断线上现役服务的唯一判据、新服务选主机方法、配置分发机制与安全提醒；历次上线（生命周期/网关重部/代理池等）的一次性踩坑记录移至 workflow-部署-历史补充.md
@@ -141,6 +141,9 @@ ssh osec-res1 'url=$(grep es_endpoint /home/pplabs/enfi-resource-storage/config.
 - **多命令条目不生效**：`deployService` 只部署 `serviceToCmd` 的第一个词，一个 service 只能挂一个命令
   （2026-09-04 已把 `v2bnd` 拆成 `v2bndInputPwd`/`v2bndLoadShare` 两条）。
 - **改名后的旧容器要手动删**：`dockerRun` 只 `rm -f` 同名容器，命令改名（如 `quark_share`→`v2quarkLoadShare`）后旧容器会继续跑。
+
+## 网关双机 `./deploy.sh gateway` 半完成态复现（2026-09-13 18:27，第二次）
+输出停在 `+ dockerRun osec-res1 gateway` 后退出码 0，res1 容器已删未建、res2 未动。补救仍是 `./deploy.sh call redeployHost gateway osec-res1` → 验证 `docker ps` → 再 `… osec-res2`。**网关部署后一律双机 `docker ps` 核对**，不要信 deploy.sh 的退出码。启动后 `gateway.go:313 try again`（res_scheduler `ErrAgain` 110201，消费者空队列轮询）是常规噪声，不是故障。
 
 ## 安全提醒
 
