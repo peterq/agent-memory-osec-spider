@@ -3,10 +3,10 @@ title: 未解决的问题
 type: question
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T23:40:00+08:00
+updated_at: 2026-09-13T19:05:00+08:00
 priority: high
 keywords: [待确认, 事故恢复, lifecycle_checker, P5, 灰度, 用户确认]
-summary: 当前无待用户确认问题；误删资源重爬已按确认节奏开始（进度在 tasks.md），A'/阶段 D 已按答复推进
+summary: 待确认：转存下载链路账号池是否续期；误删资源重爬已按确认节奏开始（进度在 tasks.md），A'/阶段 D 已按答复推进
 questions:
   - 当前有哪些待用户确认的问题
 load: on-demand
@@ -19,6 +19,15 @@ related:
    只保留未答复的待确认问题, 以免占用context. 3. `答复`段落由用户编辑, 但可由Agent在合适时随问题一起清理掉.
 
 # 未解决的问题
+
+## 转存下载链路账号池是否续期（2026-09-13 体检发现）
+
+正本 `knowledge/domain-转存下载链路.md` §6。链路当前无新任务且账号全失效：阿里 3 个在队账号 refresh token 失效、百度 0 可用账号。
+
+- [待确认] 近期是否还有新的下载批次？若无，可先 `SetEnablePanAccount(false)` 把 3 个失效阿里账号出队，止住每分钟的无效重试日志。
+- [待确认] 若要恢复，需人工提供新的阿里 refresh token / 百度账号，Agent 只能投递不能获取凭据。
+
+用户答复：
 
 ## 🔴 lifecycle_checker 误判事故（2026-09-12 22:17 发现）——需人工止血 + 恢复决策
 

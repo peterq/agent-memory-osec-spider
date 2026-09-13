@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-13T18:46:53+08:00
+updated_at: 2026-09-13T18:55:05+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -16,7 +16,7 @@ load: always
 定位到文件后 `mem.py outline <file>` 看章节，再 `mem.py body <file> --section <标题>` 只读需要的一段。
 维护方式：改目标文件 Front Matter（summary / keywords / questions），然后运行 `scripts/mem/mem.py index --write`。
 
-# agent-memory 启动包（脚本生成, 131 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
+# agent-memory 启动包（脚本生成, 133 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
 
 ## 根目录 (3)
 - 00-overview.md | crit | 2026-09-13 | 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件 | 网盘资源爬取、版权取证、COMMON
@@ -27,7 +27,7 @@ load: always
 ## current/ (5)
 - current/tasks.md | crit | 2026-09-13 | 仍在推进/阻塞/待决策的事项（P0 误删事故重爬中；P5 顺序 阶段C→A'→阶段D）；已上线任务在 archive | 任务、进度、待办
   ? 当前该做什么，有哪些待办
-- current/open-questions.md | high | 2026-09-12 | 当前无待用户确认问题；误删资源重爬已按确认节奏开始（进度在 tasks.md），A'/阶段 D 已按答复推进 | 待确认、事故恢复、lifecycle_checker
+- current/open-questions.md | high | 2026-09-13 | 待确认：转存下载链路账号池是否续期；误删资源重爬已按确认节奏开始（进度在 tasks.md），A'/阶段 D 已按答复推进 | 待确认、事故恢复、lifecycle_checker
   ? 当前有哪些待用户确认的问题
 - current/risks.md | high | 2026-09-12 | 影响开发与运维安全的已知风险点；最高 R9 lifecycle_checker 误删 115.6 万资源（修复已上线、恢复待决策） | lifecycle_checker误删、风险、阻塞
   ? 密钥、安全相关的风险在哪看
@@ -144,7 +144,7 @@ load: always
 - lessons/success-cdp3策略强装扩展与NAS持久化profile.md | medi | 2026-09-13 | 2026-09-13 fc-chrome 实测可行的扩展启用链路（解包目录→chrome --pack-extension→本机 /cdp3-ext upda… | 扩展安装、ExtensionSettings、override_update_url
   ? 怎么让品牌版 headless Chrome 装 NAS 上的自定义扩展 / 策略强装的扩展改了版本为什么不更新 / Chrome profile 存 NAS 为什么慢、怎么存
 
-## knowledge/ (20)
+## knowledge/ (21)
 - knowledge/architecture-系统总览.md | crit | 2026-09-02 | 从爬取到入库到检索的完整链路、各服务端口与中间件分工 | 架构、数据链路、网关
 - knowledge/api-rpc契约.md | high | 2026-09-12 | COMMON 仓库中各 proto 服务的方法清单、核心消息结构与代码生成流程 | proto、gRPC、StorageRpc
   ? 我要改 gRPC 协议 / proto，改完怎么生成 / 某个 rpc 方法的入参/出参消息结构是什么 / proto 改完要同步哪些下游仓库
@@ -171,6 +171,8 @@ load: always
   ? dyyjmax/fuxipan/feikuai/kuakes 是什么站，各自的坑是什么 / 2609 批次都接了哪些站
 - knowledge/domain-网盘有效性检测.md | high | 2026-09-12 | 两套有效性检测实现的位置、各网盘的判定接口与业务码表、联网自测方法 | 有效性检测、validShareLink、失效
   ? 链接失效检测怎么做，validShareLink 返回 -1 是什么意思 / 夸克/阿里网盘判定不准怎么排查 / 误删资源怎么避免
+- knowledge/domain-转存下载链路.md | high | 2026-09-13 | SPIDER 下载调度链路的代码结构、redis 键/MySQL 表、阿里/百度解析方式、三条下载路径，以及 2026-09-13 体检结论：链路空转，阿里 … | 转存下载、share_download、resolve_link
+  ? 分享链接里的文件是怎么被转存、解析成下载地址并落到 OSS 的 / 转存下载链路的进程跑在哪台机器，队列和账号池在 redis 哪些键 / 怎么检查转存下载链路是否通畅，脚本在哪 / 为什么 share_download_resolve_link 一直报 InvalidParameter.RefreshToken
 - knowledge/architecture-spider-队列约定.md | medi | 2026-09-12 | SPIDER 队列 v2（2026-09-04 起）的固定队列名、去重键、消费者并发度与通用队列（gateway_v2）命名空间约定；写新队列消费者或排查任务… | 队列、队列v2、resourcePreCheck
   ? 我要写新的网关队列消费者，代码放哪 / 关键词站点怎么收关键词 / 爬虫怎么提交链接给网关
 - knowledge/concept-术语表.md | medi | 2026-09-12 | 代码里高频出现的缩写、字段含义与命名来历，避免误读 | 术语、bnd、valid
@@ -183,9 +185,9 @@ load: always
 - knowledge/reference-github-oauth配置.md | medi | 2026-09-12 | 两个GitHub OAuth App(prod/dev)的名称、client_id、管理页、已注册回调列表与组织第三方应用策略, 不含任何secret | GitHub OAuth App、client_id、redirect_uri
   ? GitHub OAuth App 的 client_id 在哪查 / 1second 组织的回调地址怎么配置
 
-## sessions/ (32 个, 仅列最近 3 个; 其余用 mem.py search 找)
-- sessions/2026/2026-09-02-kkpans爬虫开发.md | medi | 2026-09-12 | 按 PRD 实现 www.kkpans.com 爬虫（新建 services/bbs 包），联网实测 9 项验收标准全部达标 | kkpans、bbs_kkpans、services/bbs
+## sessions/ (33 个, 仅列最近 3 个; 其余用 mem.py search 找)
 - sessions/2026/2026-09-13-cdp3挂NAS与持久化会话.md | medi | 2026-09-13 | 2026-09-13 13:00~14:45：按用户要求给 nc-app-prod-cdp3 挂 NAS 并实现 extensions=/profile=/定… | cdp3、NAS、CDP3DATA
 - sessions/2026/2026-09-13-fc-chrome上线.md | medi | 2026-09-13 | 用户授权后一天内把 09-08 遗留的 6 项人工事项全部落地：FC 部署、共用域名路由、两条脚本路径线上全通；记录派单被分类器拦、镜像经 jenkins 中… | fc-chrome、nc-app-prod-cdp3、Tampermonkey
+- sessions/2026/2026-09-13-转存下载链路体检.md | medi | 2026-09-13 | 用户要求检查"网盘分享链接文件下载"链路是否通畅；结论是链路空转且账号池全失效，沉淀了知识文件与体检脚本 | 转存下载、链路体检、refresh token
 
 ## archive/ (10 个, 已归档不列出; 需要时 mem.py search --dir archive)
