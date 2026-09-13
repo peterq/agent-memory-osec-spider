@@ -3,7 +3,7 @@ title: 任务后备清单（低优先级 / 等人工事项）
 type: task
 status: active
 created_at: 2026-09-12T22:36:00+08:00
-updated_at: 2026-09-12T23:36:00+08:00
+updated_at: 2026-09-13T11:05:00+08:00
 priority: low
 keywords: [backlog, P3, 文档爬虫, FC, 人工事项]
 questions:
@@ -20,14 +20,12 @@ related:
 ## 2026-09-08 并行四任务（监控增强 + 文档爬虫上云）—— 部分已上线，文档爬虫 FC 自动化待人工
 
 ①告警后台/队列告警可配 ②代理池后台 ③链接路径追踪 **已随 09-09 网关重启上线**（五仓库均已 push，详情见 session）。
-- **④文档爬虫 FC 自动化仍未落地**，卡在以下人工事项：
-  - [ ] SLS 给 `link_key` 建索引后打开 `services.queue_admin.sls.link_key_indexed`（缺省 false）
-  - [ ] Tampermonkey 扩展包上传 OSS（`fc-chrome/extensions/tampermonkey.zip`），拿到实物后复核 `fc-chrome/tampermonkey.go` DOM 选择器（未验证）
-  - [ ] FC 镜像构建与部署（阿里云 ACR + serverless-devs，函数名 `nc-app-prod-cdp3`），步骤见 COMMON `fc-chrome/README.md`
-  - [ ] 新 FC 域名回填三处：NC-JS `CDP_ENDPOINT`、`task.ts` 的 `eps['prod-v3']`（TODO 占位）、SPIDER `services.doc_crawler.fc_endpoint`
-  - [ ] 云端油猴脚本上传：userscripts `pnpm build:cloud && pnpm upload:cloud`
-  - [ ] doc-crawler 部署主机待确认（`deploy.sh` 暂填 `osec-jenkins` 占位）
-  - [ ] PC 端油猴调度器是否下线，由用户决定（可与 doc-crawler 并存）
+- **④文档爬虫 FC 自动化——2026-09-13 新版 FC 已上线**（`knowledge/architecture-fc-chrome文档爬虫上云.md`、流程 `procedures/workflow-fc-chrome上线.md`，过程 `agent-tasks/2026-09-13-fc-chrome-online/99-notes.md`）：
+  Tampermonkey 包/云端脚本已上 OSS，镜像经 jenkins 推 ACR，`nc-app-prod-cdp3` 部署，共用域名 `/cdp3/*` 路由生效，三处地址回填已提交；`inject=1` 路径线上对真实文档全通。
+  - [ ] Tampermonkey 原生路径线上"装上不执行"诊断中（角色 14），结论出来后决定 doc-crawler 是否只硬依赖 `inject=1`
+  - [ ] SLS 给 `link_key` 建索引后打开 `services.queue_admin.sls.link_key_indexed`（与 FC 无关，仍待人工）
+  - [ ] doc-crawler 部署（`deploy.sh` 占位 `osec-jenkins`）与 PC 端油猴调度器是否下线，待用户决定
+  - [ ] `nc-app-prod-cdp-driver` 的 `CDP_ENDPOINT` 是否切到新实例，待用户决定（当前仍指旧实例）
 - 详情：`sessions/2026/2026-09-08-并行四任务监控与文档爬虫上云.md`；`agent-tasks/2026-09-08-monitoring-and-doc-fc/`；`lessons/failure-旁路能力初始化拖垮主流程.md`。
 
 
