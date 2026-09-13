@@ -3,7 +3,7 @@ title: 项目变更记录（总览归档）
 type: knowledge
 status: active
 created_at: 2026-09-12T11:30:00+08:00
-updated_at: 2026-09-13T15:55:00+08:00
+updated_at: 2026-09-13T16:45:00+08:00
 priority: low
 keywords: [变更记录, changelog, 历史, 总览归档, 生命周期改造, 队列v2, queue-admin, 站点接入, 配置v2, GitHub OAuth]
 summary: 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪"
@@ -20,6 +20,7 @@ related:
 
 ## 2026-09-13
 
+- 16:35 profile 锁改 2 s 心跳/6 s 过期/被占不等待 409（用户要求，`app-20260913k`），修冻结实例被重试唤醒续锁 → `lessons/failure-FC实例在WebSocket断开后立即冻结.md`
 - 15:50 定时清理增加删 >30 天未使用 profile（用户要求，镜像 `app-20260913i`）→ `decisions/decision-2026-09-13-cdp3持久化会话与扩展机制.md`
 - 14:30 **cdp3 挂 NAS 上线**（镜像 `app-20260913h`）：VPC+两个挂载点、`CDP3DATA`/`CDP3TEMP`、`extensions=` 策略强装、`profile=` 单 tar 持久化+锁、每日 04:30 定时清理；发现 FC 断开即冻结实例 → `decisions/decision-2026-09-13-cdp3持久化会话与扩展机制.md`、`sessions/2026/2026-09-13-cdp3挂NAS与持久化会话.md`
 - 13:59 用户定规则：删除等不可逆功能上线前必须线上 dry run + 独立手段（CDP/查库）二次复核，禁止复用新功能代码复核 → `procedures/checklist-不可逆操作上线.md`、`02-user-preferences.md` 第 12 条

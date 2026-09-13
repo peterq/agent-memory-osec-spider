@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-13T15:54:18+08:00
+updated_at: 2026-09-13T16:37:37+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -60,7 +60,7 @@ load: always
   ? report/likes/dislikes/views 这些接口还要不要做 v3 / 为什么 v3 detail 不能调 addViews / 哪些接口不允许频繁 update ES 文档
 - decisions/decision-2026-09-12-阶段D改由API侧自动灰度分流.md | high | 2026-09-12 | 用户 09-12 裁定：API 在 /api/v2/search 服务端按比例走 v3，30% 起、无异常每 100 个 v3 请求 +1% 到全量，异常自动… | 阶段D、灰度、分流
   ? 搜索流量怎么从 v2 切到 v3，谁来切 / search_canary 是什么，比例怎么涨、异常怎么回滚
-- decisions/decision-2026-09-13-cdp3持久化会话与扩展机制.md | high | 2026-09-13 | 2026-09-13 用户要求 cdp3 挂 NAS：CDP3DATA=/mnt/nas/apps/cdp3（extensions/ profiles/），C… | cdp3、CDP3DATA、CDP3TEMP
+- decisions/decision-2026-09-13-cdp3持久化会话与扩展机制.md | high | 2026-09-13 | 2026-09-13 用户要求 cdp3 挂 NAS（锁心跳 2 s/6 s 过期/被占不等待直接 409）：CDP3DATA=/mnt/nas/apps/c… | cdp3、CDP3DATA、CDP3TEMP
   ? cdp3 的扩展和会话数据放在哪、目录怎么约定 / 调用方用 profile= 时要注意什么
 - decisions/decision-2026-09-13-lint长度双阈值.md | high | 2026-09-13 | 超长改为 >12,000 触发、触发后必须压到 <6,000，9,000 起只提示；避免 8,000 单线反复报警 | lint、超长、双阈值
   ? lint 报超长该压到多少字，上限为什么不是 8000 / tasks.md 反复超长怎么办

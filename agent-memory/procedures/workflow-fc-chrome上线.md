@@ -3,7 +3,7 @@ title: fc-chrome 构建/推送/部署/加域名路由的实际可行路径
 type: procedure
 status: active
 created_at: 2026-09-13T11:00:00+08:00
-updated_at: 2026-09-13T15:55:00+08:00
+updated_at: 2026-09-13T16:45:00+08:00
 priority: high
 keywords: [fc-chrome, serverless-devs, ACR, jenkins 中转, fc3-domain, seedprep, 函数计算部署]
 questions:
@@ -35,8 +35,8 @@ make build                                 # bootstrap(静态)
 rsync -az build/seed/chrome-profile-seed.tgz image/Dockerfile.seed image/policies bootstrap Dockerfile osec-jenkins:/home/pplabs/fc-chrome-build/app2/
 ssh osec-jenkins 'cd /home/pplabs/fc-chrome-build/app2 && tar xzf chrome-profile-seed.tgz && sudo docker build --build-arg BASE_IMAGE=registry.cn-hangzhou.aliyuncs.com/1second/fc-chrome:base -t registry.cn-hangzhou.aliyuncs.com/1second/fc-chrome:base-seed -f Dockerfile.seed . && sudo docker build --build-arg BASE_IMAGE=registry.cn-hangzhou.aliyuncs.com/1second/fc-chrome:base-seed -t registry.cn-hangzhou.aliyuncs.com/1second/fc-chrome:app-<日期x> -f Dockerfile . && sudo docker push registry.cn-hangzhou.aliyuncs.com/1second/fc-chrome:base-seed && sudo docker push registry.cn-hangzhou.aliyuncs.com/1second/fc-chrome:app-<日期x>'
 ```
-镜像 tag **带日期**（同名 tag 重推 FC 不一定重拉，且便于回滚）；`s.yaml` 的 `image` 改成新 tag。当前线上 `app-20260913i`。
-只改 Go 代码时的快路径（14:00 起实测）：`make build` → `rsync -az bootstrap Dockerfile osec-jenkins:/home/pplabs/fc-chrome-build/app2/` → jenkins 上叠 `:base-seed` build+push（~1 min）→ 改 tag → `s fc-chrome deploy -y`（网络抖动重试）。只改 s.yaml 环境变量不必重建镜像。
+镜像 tag **带日期**（同名 tag 重推 FC 不一定重拉，且便于回滚）；`s.yaml` 的 `image` 改成新 tag。当前线上 `app-20260913k`。
+只改 Go 代码时的快路径（14:00 起实测；到 jenkins 的 ssh/rsync 偶发超时，rsync 加 `--timeout=120 --partial` 重试）：`make build` → `rsync -az bootstrap Dockerfile osec-jenkins:/home/pplabs/fc-chrome-build/app2/` → jenkins 上叠 `:base-seed` build+push（~1 min）→ 改 tag → `s fc-chrome deploy -y`（网络抖动重试）。只改 s.yaml 环境变量不必重建镜像。
 本地联调不用 FC：`docker run -p 19000:9000 -v $PWD/bootstrap:/app/bootstrap:ro -v <目录>:/mnt/nas -e CDP3DATA=/mnt/nas/apps/cdp3 -e CDP3TEMP=/mnt/nas/temp/cdp3 -e CHROME_PATH=/opt/google/chrome/google-chrome -e INSTANCE_RECYCLE_EVERY=0 --entrypoint /app/bootstrap fc-chrome:base-seed`，再 `go run ./cmd/cdp3verify`；模拟定时触发 `curl -X POST :19000/invoke -H 'x-fc-control-path: /invoke' -d '{"triggerName":"cleanTempTimer","payload":"{}"}'`。
 **本地 docker 全通不等于线上通**：FC 断开即冻结实例这类平台行为只能线上验（见 `lessons/failure-FC实例在WebSocket断开后立即冻结.md`）。
 

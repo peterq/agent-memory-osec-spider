@@ -3,7 +3,7 @@ title: 失败经验：FC 在 WebSocket 断开、调用结束后立刻冻结实�
 type: lesson
 status: active
 created_at: 2026-09-13T14:40:00+08:00
-updated_at: 2026-09-13T14:40:00+08:00
+updated_at: 2026-09-13T16:45:00+08:00
 priority: high
 keywords: [FC 冻结, WebSocket, Browser.close, 持久化 profile, 冻结实例, 断开即冻结, custom-container, instanceConcurrency]
 questions:
@@ -32,8 +32,9 @@ FC 以"HTTP 响应结束"判定调用结束；WebSocket 被 hijack 后，客户�
 ## 规避方法（已实现）
 1. **收尾工作必须在连接存活期内完成**：`wsproxy.go` 拦截客户端发来的顶层 CDP `Browser.close`（puppeteer/rod 的 `browser.close()` 就是它），在连接里同步做完 Chrome 正常关闭 → tar 写回 → 释放锁，再回包、关连接。线上 ack 0.3~0.6 s。
 2. **周期快照兜底**（`PROFILE_SNAPSHOT_SEC`=20，有变化才写）：客户端直接断开最多丢 20 s。
-3. **写回前校验锁仍归自己**：被冻结很久后醒来的实例，锁可能已被抢占并写入了更新状态，绝不能用本地旧副本覆盖。锁过期改 90 s（3 次心跳）让直接断开的锁尽快可回收。
-4. 排查时用 `Runtime.evaluate` 之外的旁证：NAS 上锁文件的心跳时间戳是最直接的"实例有没有在跑"的证据。
+3. **写回前校验锁仍归自己**：被冻结很久后醒来的实例，锁可能已被抢占并写入了更新状态，绝不能用本地旧副本覆盖。
+4. **冻结实例会被请求"点亮"几毫秒**：心跳改 2 s/6 s 过期后线上发现，客户端每次重试都把冻结实例唤醒一瞬，ticker 趁机刷新心跳，<6 s 的重试让锁永远新鲜。对策：收尾一开始就停心跳；ticker 发现自己睡过头（>3 个周期）= 曾被冻结 = 调用早结束，停止续锁。**任何"周期性续约"的东西在 FC 上都要加这个自检。**
+5. 排查时用 `Runtime.evaluate` 之外的旁证：NAS 上锁文件的心跳时间戳是最直接的"实例有没有在跑"的证据。
 
 ## 适用边界
 - 所有在 FC custom-container 上做长连接的服务：任何"断开后再做"的逻辑（清理、上报、写回）都不可靠，要么放到连接内，要么放到下一次调用开头。
