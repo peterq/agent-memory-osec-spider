@@ -3,7 +3,7 @@ title: 当前任务与进度
 type: task
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-13T17:50:00+08:00
+updated_at: 2026-09-13T18:25:00+08:00
 priority: critical
 keywords: [任务, 进度, 待办, P5, 队列v2, queue-admin, 全站扫描, fullsweep, 文档爬虫, doc-crawler, FC Chrome, 凭据轮换, 站点发现, kkpans, misoso, 有效性检测]
 summary: 仍在推进/阻塞/待决策的事项（P0 误删事故重爬中；P5 顺序 阶段C→A'→阶段D）；已上线任务在 archive
@@ -105,7 +105,7 @@ related:
   - ✅ **[用户要求 09-13 13:50] 解析器判失效部分抽 1,000 条走云端 Chrome（CDP）实测**：样本 `_note/lc-recrawl/cdp-sample-1000.tsv`（41031 655 / 41012 157 / 41004 101 / 41011 47 / 41019 20 / 41010 20），工具 `tools/quark-cdp-verify`（SPIDER `badf831`，并发 20）14:07 跑完：**1,000/1,000 一致、0 不一致**（3 条超时重测后同样 41031），CDP 业务码与解析器逐条相同 → 解析器判失效可信。报告 `_note/lc-recrawl/cdp-verify/report.md`、rollout §15.6。
   - 修复版 checker 可信度核验：23:21~23:32 判失效的 4,713 条 quark 中抽 4 条交解析链路（`client=lc-verify-2609`），解析器同样返回 41031 → 判定正确；近 1 h `valid1h=23,308 / invalid1h=5,942`（ratio 0.20，基线 0.98 会在 7 天内自然回落）。
   - ✅ ⑤ API `bnd-api.go` 已对齐 SPIDER `classifyBndShare`（API `0ad7bb3`，未部署；v3 复用同一 bndApi）。待办：API 与网关下次发版带上（网关 `06ef50d`/`e16bd98` url_check 共用 valid 包 + `b888846` 告警护栏）。
-  - ④ 修复上线后消化 bnd `dueBacklog` 52.8 万（8 天零有效检测）。
+  - ④ bnd `dueBacklog` 09-13 17:46 涨到 72.8 万触发积压告警（阈值 50 万，每小时一封）。**[用户裁定 09-13 18:10] 并发按类型分开配置**：新增 `services.lifecycle_checker.consumer_number_by_type`（SPIDER `37cd265`），现网配置 `bnd: 150`（其余缺省 50），18:21 部署 checker 生效（日志 `bnd consumers=150`）。观察：代理池 `lifecycle_checker_bnd` 请求量/成功率、积压是否回落；告警阈值放宽（需重部网关）待用户决定。
 - [ ] **P0 生命周期 P5 准入**（阶段 A/B 已上线 09-12 16:34；**顺序因事故调整**）——决策 `decisions/decision-2026-09-12-P5切v3准入门槛与失效同步.md`、`decision-2026-09-12-阶段D改由API侧自动灰度分流.md`。
   - 下一步按序：① ✅ 事故止血 + 修复上线；② **阶段 C 复测改到重爬结束后（预计 09-14 上午）**——重爬期间 ES 持续写入、解析器满负荷，延迟对拍会失真；③ ✅ A' 只读探测 09-13 16:12 完成：64 桶 4,342 万行、缺失 **84,871（0.20%）**（quark 66,358 / bnd 9,698 / ali 8,458 / xunlei 357，远低于 170 万估计），16:50~17:35 `lc-check -trigger-check` **425/425 批成功**，`manual_check` 事件 84,791（quark 66,358 / bnd 9,618 / ali 8,458 / xunlei 357；80 条 bnd 已非 status=1 跳过）→ 由 checker 按队列复检，G3 存量部分收口；④ 阶段 D：`search_canary` 已开发（API `6bbbfb8`），阶段 C 通过后启用。
 - [ ] **P2 代理池口径**（09-10 待确认项，Agent 自主判断）：`lifecycle_checker_*` ok=0 已归因为事故（非口径问题）；`keyword_upyunso/funletu/pansearch_me` 近 24 h 仍 ok=0（几乎全 ipUnusable/other），按 `decision-2026-09-03-清理下线爬虫代码.md` 口径列为下线候选，待修复版 checker 上线后再看一次代理池再定。

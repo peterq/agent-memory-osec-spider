@@ -3,7 +3,7 @@ title: 项目背景与仓库职责
 type: context
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T12:10:00+08:00
+updated_at: 2026-09-13T18:25:00+08:00
 priority: critical
 keywords: [仓库, module, replace, 目录结构, 依赖, 职责, NC-JS, 前端]
 summary: 五个仓库（4 个 Go + 1 个前端）的磁盘路径、module 名、职责、相互依赖与 go.mod replace 现状
@@ -107,3 +107,4 @@ NC-JS  ── gRPC over WebRTC ──> SPIDER gateway（后台管理，:7542/udp
 > 约定：跨仓库 replace 一律写**相对路径**（原先 API 里有两条写死 `/home/peterq/...` 的绝对路径，已改为相对）。
 > STORAGE `go.mod` 里还留着一行注释掉的 `//replace github.com/PPIO/enfi-go-util => ../../pplabs/enfi-go-util`，
 > 是失效的历史残留（实际依赖是 `github.com/PPSub/enfi-go-util`），未删除。
+- [事实 2026-09-13] 现网 `spider.prod.yaml` 已含 `services.lifecycle_checker.consumer_number_by_type: {bnd: 150}`（其余类型缺省 50）；`services.lifecycle` 节仍未分发，生命周期 `enabled` 靠 redis 热参数。
