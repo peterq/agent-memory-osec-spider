@@ -3,14 +3,15 @@ title: 记忆仓库 scripts/ 脚本清单
 type: procedure
 status: active
 created_at: 2026-09-13T20:10:00+08:00
-updated_at: 2026-09-13T21:20:00+08:00
+updated_at: 2026-09-13T08:35:00+08:00
 priority: medium
-keywords: [scripts, claude-rc, remote-control, systemd, notify-admin, agent-browser, cdp]
+keywords: [scripts, git-hooks, commit-msg, 违禁词, claude-rc, remote-control, systemd, notify-admin, agent-browser, cdp]
 questions:
   - 怎么后台启动当前工作空间的 Claude Remote Control 会话
   - 记忆仓库 scripts/ 下有哪些可复用脚本，各自做什么
   - 怎么给管理员发邮件通知
-summary: MEMORY 仓库 scripts/ 下可复用脚本一览（claude-rc systemd 用户服务托管 Remote Control、notify-admin 邮件、agent-browser/cdp 带登录态浏览器、mem 记忆工具），含用法与注意事项
+  - 提交信息违禁词钩子在哪，怎么加词或装到新仓库
+summary: MEMORY 仓库 scripts/ 下可复用脚本一览（git-hooks 提交信息违禁词钩子、claude-rc systemd 托管 Remote Control、notify-admin 邮件、agent-browser/cdp 浏览器、mem 记忆工具）
 load: on-demand
 related:
   - agent-memory/procedures/workflow-带登录态的浏览器自动化.md
@@ -24,6 +25,7 @@ related:
 |---|---|---|
 | `scripts/claude-rc.sh` + `scripts/claude-rc.service` | headless `claude remote-control` 服务，由 systemd 用户服务托管：开机自启（已 `enable-linger`）、日志 `rc.log`（gitignore）、失败自动重启；五个业务仓库靠 `.claude/settings.local.json` 的 `permissions.additionalDirectories` 挂载 | 首次 `systemctl --user enable --now $PWD/scripts/claude-rc.service`；日常 `systemctl --user status\|restart\|stop claude-rc`；`~/.local/bin/claude-rc` 是脚本软链 |
 | `scripts/notify-admin.sh` | 经 cf-worker 给管理员发 HTML 邮件 | `scripts/notify-admin.sh "<主题>" "<html>" [source]` |
+| `scripts/git-hooks/` | `commit-msg` 提交信息违禁词钩子（正则表 `banned-patterns.txt`，初始：邮箱地址、「卧槽」；远端拒绝含邮箱的提交，本地兜底）。[事实 09-13] 已以符号链接装进本仓库 + 1S 五个仓库的 `.git/hooks/` | 改表即生效；换机器重跑 `scripts/git-hooks/install.sh`；细节 `scripts/git-hooks/README.md` |
 | `scripts/agent-browser.sh` | 启动/查看项目内独立 profile 的 Chrome 调试会话（9222，带登录态） | `start [url]` / `status` |
 | `scripts/cdp.py` | 通过 CDP 驱动上述浏览器 | 见文件头 docstring |
 | `scripts/mem/mem.py` | 记忆库检索/索引/lint | 见 `scripts/mem/README.md` |

@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-13T07:50:15+08:00
+updated_at: 2026-09-13T08:26:59+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -75,8 +75,8 @@ load: always
   ? 编译不过，依赖报错怎么排查 / go mod tidy / replace 问题怎么处理
 - procedures/workflow-站点发现.md | high | 2026-09-12 | 收到 `task site-discovery` / `启动网站发现任务` 时的入口、候选来源渠道与要点；正文流程在 site-discovery/README.md | 站点发现、site-discovery、候选站点
   ? 我要找新的资源站，怎么启动网站发现任务 / task site-discovery 是干什么的
-- procedures/checklist-仓库脚本清单.md | medi | 2026-09-13 | MEMORY 仓库 scripts/ 下可复用脚本一览（claude-rc systemd 用户服务托管 Remote Control、notify-admin 邮件、agent… | scripts、claude-rc、remote-control
-  ? 怎么后台启动当前工作空间的 Claude Remote Control 会话 / 记忆仓库 scripts/ 下有哪些可复用脚本，各自做什么 / 怎么给管理员发邮件通知
+- procedures/checklist-仓库脚本清单.md | medi | 2026-09-13 | MEMORY 仓库 scripts/ 下可复用脚本一览（git-hooks 提交信息违禁词钩子、claude-rc systemd 托管 Remote Control、notif… | scripts、git-hooks、commit-msg
+  ? 怎么后台启动当前工作空间的 Claude Remote Control 会话 / 记忆仓库 scripts/ 下有哪些可复用脚本，各自做什么 / 怎么给管理员发邮件通知 / 提交信息违禁词钩子在哪，怎么加词或装到新仓库
 - procedures/troubleshooting-代理池总览无数据.md | medi | 2026-09-12 | 后台代理池页全 0 时三步定位：网关 dataSource → 上报侧是否部署 → tools/proxy-admin-check 只读巡检 | proxy-admin-check、代理池总览、proxy_admin
   ? 代理池监控的 Scene 是什么，怎么加新消费端 / IP 不可用和被站点封禁怎么区分 / 代理池推送 IP 数在哪看 / 代理池总览/场景明细全 0 怎么排查
 - procedures/workflow-带登录态的浏览器自动化.md | medi | 2026-09-12 | 如何启动/复用一个带登录态的调试Chrome并用CDP脚本驱动它, 含"默认profile会被安全策略拦截"的前提坑 | agent-browser、cdp.py、CDP

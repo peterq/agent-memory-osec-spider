@@ -1,0 +1,93 @@
+#!/usr/bin/env python3
+"""commit-msg 钩子: 用正则违禁词表检查提交信息, 命中即拒绝提交.
+
+违禁词表: 与本脚本同目录的 banned-patterns.txt(一行一个 Python 正则, # 开头为注释, 空行忽略);
+若安装到 .git/hooks 后同目录没有该文件, 则依次回退到环境变量 GIT_BANNED_PATTERNS 指定的文件、
+仓库根 .git-banned-patterns.txt、安装脚本记录的源目录(.git/hooks/commit-msg.src).
+临时跳过: git commit --no-verify(慎用, 远端会拒绝含邮箱的提交).
+"""
+import os
+import re
+import subprocess
+import sys
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+LIST_NAME = "banned-patterns.txt"
+
+
+def find_list() -> str:
+    cands = [os.path.join(HERE, LIST_NAME), os.environ.get("GIT_BANNED_PATTERNS", "")]
+    try:
+        top = subprocess.run(["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True).stdout.strip()
+        cands.append(os.path.join(top, ".git-banned-patterns.txt"))
+    except Exception:
+        pass
+    src = os.path.join(HERE, "commit-msg.src")  # 安装脚本写入的源目录路径
+    if os.path.exists(src):
+        cands.append(os.path.join(open(src).read().strip(), LIST_NAME))
+    for c in cands:
+        if c and os.path.isfile(c):
+            return c
+    return ""
+
+
+def load_patterns(path: str) -> list[tuple[str, re.Pattern]]:
+    pats = []
+    for i, raw in enumerate(open(path, encoding="utf-8"), 1):
+        line = raw.rstrip("\n")
+        if not line.strip() or line.lstrip().startswith("#"):
+            continue
+        try:
+            pats.append((line, re.compile(line)))
+        except re.error as e:
+            print(f"[commit-msg] 违禁词表 {path}:{i} 不是合法正则: {e}", file=sys.stderr)
+            sys.exit(1)
+    return pats
+
+
+def message_lines(path: str) -> list[tuple[int, str]]:
+    """去掉注释行与 scissors 之后的 diff(git commit -v), 只检查真正会入库的内容."""
+    comment = "#"
+    try:
+        cc = subprocess.run(["git", "config", "core.commentChar"], capture_output=True, text=True).stdout.strip()
+        if cc and cc != "auto":
+            comment = cc
+    except Exception:
+        pass
+    out = []
+    for i, raw in enumerate(open(path, encoding="utf-8", errors="replace"), 1):
+        line = raw.rstrip("\n")
+        if line.startswith(comment + " ------------------------ >8 ------------------------"):
+            break
+        if line.startswith(comment):
+            continue
+        out.append((i, line))
+    return out
+
+
+def main() -> int:
+    if len(sys.argv) < 2:
+        print("用法: commit-msg <提交信息文件>", file=sys.stderr)
+        return 2
+    lst = find_list()
+    if not lst:
+        print(f"[commit-msg] 未找到违禁词表 {LIST_NAME}, 跳过检查(请重新运行 scripts/git-hooks/install.sh)", file=sys.stderr)
+        return 0
+    pats = load_patterns(lst)
+    hits = []
+    for no, line in message_lines(sys.argv[1]):
+        for src, p in pats:
+            m = p.search(line)
+            if m:
+                hits.append((no, src, m.group(0), line))
+    if not hits:
+        return 0
+    print("[commit-msg] 提交信息命中违禁词, 已拒绝提交:", file=sys.stderr)
+    for no, src, frag, line in hits:
+        print(f"  第 {no} 行 命中 /{src}/ -> 「{frag}」: {line.strip()}", file=sys.stderr)
+    print(f"违禁词表: {lst}\n改好提交信息后重新 commit; 确需跳过用 --no-verify", file=sys.stderr)
+    return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

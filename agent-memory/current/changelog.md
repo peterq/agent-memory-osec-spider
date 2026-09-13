@@ -20,6 +20,7 @@ related:
 
 ## 2026-09-13
 
+- 2026-09-13 08:30 用户要求：commit-msg 违禁词钩子（邮箱正则、卧槽）→ `scripts/git-hooks/`，已装进本仓库 + 1S 五仓库 → `procedures/checklist-仓库脚本清单.md`
 - 2026-09-13 07:55 用户要求：lint 长度改双阈值（>12,000 触发、压到 <6,000、9,000 起提示）→ `decisions/decision-2026-09-13-lint长度双阈值.md`
 - 2026-09-13 07:40 状态核实：重爬 263k/1,152k（≈23%）；A' 探测 bnd_03 05:31 因 MySQL 查询失败停止待续跑 → `current/tasks.md`「进行中」
 
