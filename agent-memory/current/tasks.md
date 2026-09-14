@@ -3,7 +3,7 @@ title: 当前任务与进度
 type: task
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-15T05:55:00+08:00
+updated_at: 2026-09-15T07:45:00+08:00
 priority: critical
 keywords: [任务, 进度, 待办, P5, 队列v2, queue-admin, 全站扫描, fullsweep, 文档爬虫, doc-crawler, FC Chrome, 凭据轮换, 站点发现, kkpans, misoso, 有效性检测]
 summary: 仍在推进/阻塞/待决策的事项（P0 误删事故重爬中；P5 顺序 阶段C→A'→阶段D）；已上线任务在 archive
@@ -31,6 +31,7 @@ related:
 | 配置 v2/OAuth/配置拆代码 | ✅ 已上线 | `LOCAL_CONFIG_PATH` 回落待修；凭据轮换待决策 | `current/tasks-backlog.md` |
 | 资源生命周期改造 P0~P3 | ✅ 已上线 | es_endpoint / `resource_valid` 索引缺失等 | `current/tasks-backlog.md` |
 | 管理台合并 | ✅ 已上线 | ARMS 指标、浏览器实测待人工 | `current/tasks-backlog.md` |
+| **xlLoadShare 失败率 39%** | 已定位，待决策修复 | 顶层文件丢弃 + 空文件夹 + 状态码全重试 → 修客户端/消费者 | `knowledge/domain-迅雷分享爬取.md` |
 | 队列 v2 上线收尾 | 人工进行中 | A~E 待用户执行 | 本文件「待办」 |
 | 5 爬虫全站扫描启动行为改造 | 待办（P0） | 改为 `fullsweep:lastdone` 守卫 | 本文件「待办」 |
 | 安全凭据轮换 | 待用户决策 | 多处硬编码 AK/SK/Token | `current/tasks-backlog.md` |
@@ -41,6 +42,7 @@ related:
 
 ## 待办
 
+- [ ] **P1 xlLoadShare 失败率修复**（2026-09-15 定位）：① `xl-client.go` 顶层文件入 `task.files`；② 消费者对 FileCount==0/DELETED/SENSITIVE/PASS_CODE_* 走永久失败并按需 SubmitValid；③ 修后重投历史失败分享。方案与依据 → `knowledge/domain-迅雷分享爬取.md` §5，待用户确认后开工。
 - [ ] **P2 cdp3 profile= 调用方接入**（2026-09-13 上线后遗留）：NC-JS `task.ts`/SPIDER `doc_crawler` 若要用 `profile=`，结束时必须先发 CDP `Browser.close` 等响应再断开（rod/puppeteer 的 `browser.Close()` 即可），否则最多丢 20 s；被占直接 409 需客户端退避重试（≥3 s） → `decisions/decision-2026-09-13-cdp3持久化会话与扩展机制.md`。NAS `profiles/osec/` 下的 `e2e`（旧目录格式）、`freeze1.tar.new-*`（冻结残留）、`h1.tar` 是测试产物，可删。
 - [ ] **P0 队列 v2 上线收尾（用户人工执行）**：网关/全部消费者已于 2026-09-04 12:30 前上线在跑，
       剩余 A 删 jenkins `spider-xunlei_share`、B 杀两个 2023 年裸进程、C `./deploy.sh ps` 复核、
@@ -107,5 +109,5 @@ related:
   - ✅ ⑤ API `bnd-api.go` 已对齐 SPIDER `classifyBndShare`（API `0ad7bb3`，未部署；v3 复用同一 bndApi）。待办：API 与网关下次发版带上（网关 `06ef50d`/`e16bd98` url_check 共用 valid 包 + `b888846` 告警护栏）。
   - ④ bnd `dueBacklog` 09-13 17:46 涨到 72.8 万触发积压告警（阈值 50 万，每小时一封）。**[用户裁定 09-13 18:10] 并发按类型分开配置**：新增 `services.lifecycle_checker.consumer_number_by_type`（SPIDER `37cd265`），现网配置 `bnd: 150`（其余缺省 50），18:21 部署 checker 生效（日志 `bnd consumers=150`）。观察：代理池 `lifecycle_checker_bnd` 请求量/成功率、积压是否回落。**[用户裁定 09-13 18:25] 检测队列背压也按类型分开**：扫描器改为每个 `lcCheck:<type>` 各自与 `check_queue_max_waiting` 比较（SPIDER `e26bd79`），bnd 积压不再卡住 quark/ali/xunlei 入队；18:27~18:31 网关双机重部（`./deploy.sh gateway` 在 res1 dockerRun 后中断成半完成态，用 `call redeployHost gateway osec-res1/2` 补救），顺带上线 `b888846` 告警护栏与 `06ef50d/e16bd98` 百度判定（url_check 共用）。res2 首次 `redeployHost` 用了旧二进制（18:31~18:43），补 scp 后 18:43 重启修正；18:45 leader=res1 日志 `skip type bnd`，`pushed1h` 15,943→47,966，验证生效。告警阈值放宽待用户决定。
 - [ ] **P0 生命周期 P5 准入**（阶段 A/B 已上线 09-12 16:34；**顺序因事故调整**）——决策 `decisions/decision-2026-09-12-P5切v3准入门槛与失效同步.md`、`decision-2026-09-12-阶段D改由API侧自动灰度分流.md`。
-  - 下一步按序：① ✅ 事故止血 + 修复上线；② **阶段 C 复测进行中**：09-14 10:24 抽 50 个真实关键词、10:32 第 1 轮完成（对拍脚本 `build_qs` 签名 bug 已修）；编排脚本因 `pgrep` 自匹配卡住一夜，09-15 05:45 重排：第 2 轮 → +30 min 第 3 轮 → +30 min page-size 100 → 4 份报告（`_note/p5-recheck/p5-recheck-20260915-*.md`），≈07:00 出结果；③ ✅ A' 只读探测 09-13 16:12 完成：64 桶 4,342 万行、缺失 **84,871（0.20%）**（quark 66,358 / bnd 9,698 / ali 8,458 / xunlei 357，远低于 170 万估计），16:50~17:35 `lc-check -trigger-check` **425/425 批成功**，`manual_check` 事件 84,791（quark 66,358 / bnd 9,618 / ali 8,458 / xunlei 357；80 条 bnd 已非 status=1 跳过）→ 由 checker 按队列复检，G3 存量部分收口；④ 阶段 D：`search_canary` 已开发（API `6bbbfb8`），阶段 C 通过后启用。
+  - 下一步按序：① ✅ 事故止血 + 修复上线；② **阶段 C 复测完成（09-15 07:06，rollout §16）**：G2 语料级均值 92.36% ✓（<70% 关键词 4 个，超 1）、G5 三轮合并 P50 0.47×/P95 0.83× ✓、G6 三接口一致 ✓、G4 唯一差异是旧索引残留死链（v3 正确）✓、G1 3 个小 total 关键词 v3 多 1~13 条（字面超 1%）⚠️、G3 22 条 v3 独有已强制复检待结果；**是否进入阶段 D（30% 灰度）待用户决定**。原记录：09-14 10:24 抽 50 个真实关键词、10:32 第 1 轮完成（对拍脚本 `build_qs` 签名 bug 已修）；编排脚本因 `pgrep` 自匹配卡住一夜，09-15 05:45 重排：第 2 轮 → +30 min 第 3 轮 → +30 min page-size 100 → 4 份报告（`_note/p5-recheck/p5-recheck-20260915-*.md`），≈07:00 出结果；③ ✅ A' 只读探测 09-13 16:12 完成：64 桶 4,342 万行、缺失 **84,871（0.20%）**（quark 66,358 / bnd 9,698 / ali 8,458 / xunlei 357，远低于 170 万估计），16:50~17:35 `lc-check -trigger-check` **425/425 批成功**，`manual_check` 事件 84,791（quark 66,358 / bnd 9,618 / ali 8,458 / xunlei 357；80 条 bnd 已非 status=1 跳过）→ 由 checker 按队列复检，G3 存量部分收口；④ 阶段 D：`search_canary` 已开发（API `6bbbfb8`），阶段 C 通过后启用。
 - [ ] **P2 代理池口径**（09-10 待确认项，Agent 自主判断）：`lifecycle_checker_*` ok=0 已归因为事故（非口径问题）；`keyword_upyunso/funletu/pansearch_me` 近 24 h 仍 ok=0（几乎全 ipUnusable/other），按 `decision-2026-09-03-清理下线爬虫代码.md` 口径列为下线候选，待修复版 checker 上线后再看一次代理池再定。

@@ -3,7 +3,7 @@ title: 项目变更记录（总览归档）
 type: knowledge
 status: active
 created_at: 2026-09-12T11:30:00+08:00
-updated_at: 2026-09-13T19:05:00+08:00
+updated_at: 2026-09-15T06:46:00+08:00
 priority: low
 keywords: [变更记录, changelog, 历史, 总览归档, 生命周期改造, 队列v2, queue-admin, 站点接入, 配置v2, GitHub OAuth]
 summary: 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪"
@@ -17,6 +17,10 @@ related:
 
 > `00-overview.md` §2 只保留最近 7 天。更早的条目压缩成「日期 + 一句话 + 指针」放这里，
 > **原文叙述在各自的 session / decision 文件里**，本文件不复制正文。需要细节就按指针读那一个文件。
+
+## 2026-09-15
+
+- 06:46 xlLoadShare 失败率排查：任务级 39% 失败 = 客户端丢顶层文件 75% + 空文件夹 25%，状态码全当临时错误重试放大；新增探针 `scripts/xl_share_probe.sh` → `knowledge/domain-迅雷分享爬取.md`、`sessions/2026/2026-09-15-xlLoadShare失败率排查.md`
 
 ## 2026-09-13
 

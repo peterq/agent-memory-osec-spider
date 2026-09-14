@@ -3,7 +3,7 @@ title: 记忆仓库 scripts/ 脚本清单
 type: procedure
 status: active
 created_at: 2026-09-13T20:10:00+08:00
-updated_at: 2026-09-13T08:35:00+08:00
+updated_at: 2026-09-15T06:46:00+08:00
 priority: medium
 keywords: [scripts, git-hooks, commit-msg, 违禁词, claude-rc, remote-control, systemd, notify-admin, agent-browser, cdp]
 questions:
@@ -11,7 +11,7 @@ questions:
   - 记忆仓库 scripts/ 下有哪些可复用脚本，各自做什么
   - 怎么给管理员发邮件通知
   - 提交信息违禁词钩子在哪，怎么加词或装到新仓库
-summary: MEMORY 仓库 scripts/ 下可复用脚本一览（git-hooks 提交信息违禁词钩子、claude-rc systemd 托管 Remote Control、notify-admin 邮件、agent-browser/cdp 浏览器、mem 记忆工具）
+summary: MEMORY 仓库 scripts/ 下可复用脚本一览（git-hooks 提交信息违禁词钩子、claude-rc systemd 托管 Remote Control、notify-admin 邮件、agent-browser/cdp 浏览器、mem 记忆工具、xl_share_probe 迅雷分享探针）
 load: on-demand
 related:
   - agent-memory/procedures/workflow-带登录态的浏览器自动化.md
@@ -29,6 +29,8 @@ related:
 | `scripts/agent-browser.sh` | 启动/查看项目内独立 profile 的 Chrome 调试会话（9222，带登录态） | `start [url]` / `status` |
 | `scripts/cdp.py` | 通过 CDP 驱动上述浏览器 | 见文件头 docstring |
 | `scripts/mem/mem.py` | 记忆库检索/索引/lint | 见 `scripts/mem/README.md` |
+
+- `scripts/xl_share_probe.sh <host> <shareId> [pwd]`：经线上 `:9527` 调试代理查迅雷分享顶层结构与首个文件夹详情（排查 xlLoadShare 失败），`RAW=1` 出原始 JSON → `knowledge/domain-迅雷分享爬取.md` §6
 
 ## 注意
 - `claude remote-control` 子命令不接受 `--add-dir`，多目录放 settings 的 `permissions.additionalDirectories` `[事实]`。顶层 `claude --remote-control <name> --add-dir ...` 需要 TTY，无 TTY 会退化成 `--print` 报错，不适合做服务 `[事实]`（2026-09-13 实测）。
