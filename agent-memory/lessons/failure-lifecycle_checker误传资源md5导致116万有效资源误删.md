@@ -3,7 +3,7 @@ title: 失败经验：lifecycle_checker 把资源 md5 当分享 id，116 万有�
 type: lesson
 status: active
 created_at: 2026-09-12T22:40:00+08:00
-updated_at: 2026-09-13T14:50:00+08:00
+updated_at: 2026-09-14T10:30:00+08:00
 priority: critical
 keywords: [lifecycle_checker, 误删, dry run, ShareId, 违规tooltip, bnd判定, invalid_link, 失效率告警, 事故, 恢复]
 questions:
@@ -63,6 +63,9 @@ API 侧 `bnd-api.go` 早已特判「部分文件违规」，SPIDER 没同步。�
 试点 1,000 条 25 min 内 498 条复活，其余为解析器判真失效（41031/41004/41012/41011）→ 恢复率约 50%，即误删集合里约一半在网盘侧本就已死。
 解析器判失效部分抽 1,000 条用 FC 云端 Chrome（`tools/quark-cdp-verify`）实测：1,000/1,000 一致，业务码逐条相同。
 **直连 `drive.quark.cn` 从服务器 IP 探测一律回 14020 "file not found"（含已知有效分享），不能当判据；核验要走解析链路（代理池）。**
+
+## 终态（09-14 10:21）
+1,152,617 条 32 h 投完；回库 637,886（quark 56.2%）；bnd 以新 md5 行复活（规范化链接不同）；ali 受解析器吞吐（2×20 并发 ≈1,500/h）与预检阻塞式背压（`preCheckBackpressureThreshold=2000`，ali 任务在队头拖慢全队列）限制，尾部 ≈8 h。下次大批量重爬：**按类型分文件、ali 单独限速**（≤0.3/s），避免把预检队列堵住。
 
 ## 适用边界
 lc checker 与 API/SPIDER 两套旧判定实现无关（旧链路传的是分享 id，未受影响）；bnd/xunlei 零误删但 8 天零有效检测，dueBacklog 需在修复上线后消化。

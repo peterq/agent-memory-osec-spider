@@ -3,7 +3,7 @@ title: 当前风险与阻塞
 type: risk
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T23:40:00+08:00
+updated_at: 2026-09-14T10:30:00+08:00
 priority: high
 keywords: [lifecycle_checker误删, 风险, 阻塞, 密钥, AK/SK, 生产, 测试, 依赖升级, 队列v2, 无回滚, 上线收尾]
 summary: 影响开发与运维安全的已知风险点；最高 R9 lifecycle_checker 误删 115.6 万资源（修复已上线、恢复待决策）
@@ -16,7 +16,7 @@ related:
 
 # 当前风险与阻塞
 
-## 🔴 R9 lifecycle_checker 误判事故：115.6 万有效资源已从新旧索引删除（2026-09-12 22:17 发现，23:11 修复版上线止血，恢复待决策）
+## 🟡 R9 lifecycle_checker 误判事故：115.6 万条误删，重爬已恢复 63.8 万（≈55%，其余网盘侧本就失效）；ali 尾部 ≈1.2 万排队中（2026-09-14 10:21）
 
 - 根因 `task.Id`(md5) 误当分享 id（`b888846`）+ bnd「违规」tooltip 文案误判（`06ef50d`），均已部署到 checker；网关侧 url_check 共用 valid 包，下次发版带上。
 - 已删 quark 1,115,264 / ali-share 40,007 / bnd 930；旧索引 `resource` 同步被删（v2 搜索也少这些）；`invalid_link_*` 已写入，阻止爬虫重新入库。
