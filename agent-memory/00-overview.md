@@ -27,7 +27,7 @@ related:
 
 - 09-13 **转存下载链路空转不可用**：阿里 3 在队账号 token 全失效、百度 0 可用；体检脚本 `scripts/dl_chain_health.sh` → `knowledge/domain-转存下载链路.md`
 - 09-13 **新版 FC Chrome 上线**（`nc-app-prod-cdp3`，`/cdp3/*`）；**14:30 挂 NAS**（`app-20260913k`）：`CDP3DATA=/mnt/nas/apps/cdp3`、`CDP3TEMP`、`extensions=`、`profile=ns/name`（调用方须发 `Browser.close`）。→ `decisions/decision-2026-09-13-cdp3持久化会话与扩展机制.md`
-- 09-12 22:17 **🔴 事故：lifecycle_checker 把资源 md5 当分享 id，115.5 万条有效资源（quark/ali）被误判失效并从新旧索引删除**。修复 `b888846` + bnd「违规」tooltip 误判修复 `06ef50d` **23:11 已部署 checker**；**Mongo 无数据，恢复只能重爬**：`tools/lc-recrawl` 09-14 08:47 投完，回库 63.8 万（≈55%，余者网盘侧已失效），ali 尾部排队中。→ `lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md`、`current/open-questions.md`
+- 09-12 22:17 **🔴 事故：lifecycle_checker 把资源 md5 当分享 id，115.5 万条有效资源（quark/ali）被误判失效并从新旧索引删除**。修复 `b888846`/`06ef50d` 已部署；**Mongo 无数据，恢复只能重爬**：`tools/lc-recrawl` 09-14 08:47 投完，回库 63.8 万（≈55%，余者网盘侧已失效），ali 尾部排队中。→ `lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md`、`current/open-questions.md`
 - 09-12 `:cur` 两窗口不搬；阶段 D 改 API 侧自动灰度分流（开发中）；A' 进度见 `current/tasks.md`。→ `decisions/decision-2026-09-12-阶段D改由API侧自动灰度分流.md`
 - 09-12 16:34 **P5 阶段 A/B 已上线**（D1 钩子；API v2 valid 上报 lc；bnd 去 `has_child`）；顺序：阶段 C 复测 → A' → 阶段 D。→ `decisions/decision-2026-09-12-P5切v3准入门槛与失效同步.md`
 - 阻塞：无；重爬进行中；风险见 `current/risks.md` R9。
