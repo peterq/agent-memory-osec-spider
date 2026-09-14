@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-13T18:55:05+08:00
+updated_at: 2026-09-14T08:48:36+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -25,7 +25,7 @@ load: always
 - 02-user-preferences.md | high | 2026-09-13 | 用户对语言、脚本沉淀、记忆维护、thinking 长度、敏感信息禁写，以及删除类不可逆功能上线前必须线上 dry run + 独立复核的明确要求 | 偏好、中文、脚本沉淀
 
 ## current/ (5)
-- current/tasks.md | crit | 2026-09-13 | 仍在推进/阻塞/待决策的事项（P0 误删事故重爬中；P5 顺序 阶段C→A'→阶段D）；已上线任务在 archive | 任务、进度、待办
+- current/tasks.md | crit | 2026-09-14 | 仍在推进/阻塞/待决策的事项（P0 误删事故重爬中；P5 顺序 阶段C→A'→阶段D）；已上线任务在 archive | 任务、进度、待办
   ? 当前该做什么，有哪些待办
 - current/open-questions.md | high | 2026-09-13 | 待确认：转存下载链路账号池是否续期；误删资源重爬已按确认节奏开始（进度在 tasks.md），A'/阶段 D 已按答复推进 | 待确认、事故恢复、lifecycle_checker
   ? 当前有哪些待用户确认的问题
