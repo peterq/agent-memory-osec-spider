@@ -3,7 +3,7 @@ title: 失败经验：临时表未指定排序规则导致 UPDATE ... JOIN 报 E
 type: lesson
 status: archived
 created_at: 2026-09-06T09:40:00+08:00
-updated_at: 2026-09-12T22:36:00+08:00
+updated_at: 2026-09-15T23:59:00+08:00
 priority: high
 keywords:
   - MySQL

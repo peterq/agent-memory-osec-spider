@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-16T06:39:17+08:00
+updated_at: 2026-09-16T06:39:46+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -178,8 +178,8 @@ load: always
   ? GitHub OAuth App 的 client_id 在哪查 / 1second 组织的回调地址怎么配置
 
 ## sessions/ (35 个, 仅列最近 3 个; 其余用 mem.py search 找)
-- sessions/2026/2026-09-13-cdp3挂NAS与持久化会话.md | medi | 2026-09-13 | 2026-09-13 13:00~14:45：按用户要求给 nc-app-prod-cdp3 挂 NAS 并实现 extensions=/profile=/定… | cdp3、NAS、CDP3DATA
-- sessions/2026/2026-09-15-xlLoadShare修复上线.md | medi | 2026-09-15 | 09-15 上午把迅雷分享爬取三处缺陷修复并上线两台机，从 SLS 导出 7 天内 288 条失败分享重投；失效上报按不可逆清单先 dry run | xlLoadShare、迅雷、修复上线
-- sessions/2026/2026-09-15-xlLoadShare失败率排查.md | medi | 2026-09-15 | xlLoadShare 失败率排查过程；结论在 knowledge/domain-迅雷分享爬取.md | xlLoadShare、迅雷、失败率
+- sessions/2026/2026-09-05-生命周期P4启动失败.md | high | 2026-09-15 | STORAGE 双机重部并核验首写继承生效, 用新工具补齐双写窗口 3551 条文档, P4 bootstrap 启动 10 分钟后因两个实现缺陷失败并停止(… | 生命周期、P4、bootstrap
+- sessions/2026/2026-09-05-生命周期P4演练.md | high | 2026-09-15 | 网关双机重部热修分支成功；缺陷 A/B 在生产验证通过；新发现 copy_child 轮询瓶颈，全量未启动 | P4、bootstrap、演练
+- sessions/2026/2026-09-03-并行开发6站爬虫.md | medi | 2026-09-15 | 用 4 并发子 Agent + worktree 接入 6 个站点，5 站验收通过并合并，haisou 因站点收紧未能验收 | 并行开发、worktree、6站爬虫
 
 ## archive/ (18 个, 已归档不列出; 需要时 mem.py search --dir archive)
