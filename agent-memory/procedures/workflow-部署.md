@@ -3,7 +3,7 @@ title: 生产部署流程
 type: procedure
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-13T18:50:00+08:00
+updated_at: 2026-09-15T09:00:00+08:00
 priority: medium
 keywords: [auto模式, 权限分类器, 部署, config.yaml 宿主机改配置, fail-fast, lc-check, deploy.sh, docker, ssh, OSS 配置, 主机, supervisor, 主机选型, 负载, 重启前检查, ES, 外部依赖]
 summary: SPIDER deploy.sh 的常规用法、服务到主机的映射方式、判断线上现役服务的唯一判据、新服务选主机方法、配置分发机制与安全提醒；历次上线（生命周期/网关重部/代理池等）的一次性踩坑记录移至 workflow-部署-历史补充.md
@@ -145,6 +145,11 @@ ssh osec-res1 'url=$(grep es_endpoint /home/pplabs/enfi-resource-storage/config.
 ## 网关双机 `./deploy.sh gateway` 半完成态复现（2026-09-13 18:27，第二次）
 输出停在 `+ dockerRun osec-res1 gateway` 后退出码 0，res1 容器已删未建、res2 未动。补救仍是 `./deploy.sh call redeployHost gateway osec-res1` → 验证 `docker ps` → 再 `… osec-res2`。**网关部署后一律双机 `docker ps` 核对**，不要信 deploy.sh 的退出码。
 **`redeployHost` 只重启不 scp**：若 `deploy.sh gateway` 在第一台就中断，第二台的二进制还是旧的，直接 `redeployHost` 会用旧版重启（09-13 18:31 res2 就这样跑了 12 分钟旧版并当上 leader）。补救前先比对三处 md5（本地 / res1 / res2 `/home/pplabs/enfi-spider-go/spider`），不一致时照 `deploy()` 的做法 `ssh <host> "mv spider spider.old"` → `scp -C spider <host>:…` → 再 `redeployHost`。SSH 抖动期间：`mv` 可能已执行但回包丢失（表现为远端 `spider` 不存在、只有 `spider.old`），务必 `ls` 确认再 scp；直连超时可用 `-J osec-res1 pplabs@<res2 公网IP>` 跳转（root 跳转不通）。启动后 `gateway.go:313 try again`（res_scheduler `ErrAgain` 110201，消费者空队列轮询）是常规噪声，不是故障。
+
+## API（osec-resource-api）部署要点（2026-09-15）
+- `./deploy.sh`（无参）= 本地静态编译 → res1/res2 依次 `mv api-starter.old` + scp + `docker rm -f`/`run`；`./deploy.sh restart <1|2>` 只 `docker restart`；不上传任何配置。
+- 配置是**宿主机文件** `/home/pplabs/enfi-resource-api/config.yaml`，两台各自维护（内容略有差异，如 `spidergateway` 指向）。改配置 = 备份 + 追加/编辑 + restart；先 scp 回本地 `yaml.safe_load` 校验再重启。
+- 09-15 教训：把 `search_canary` 加到 OSS `config/resource/search/config.prod.yaml` 并重部两次都不生效——那是另一个服务的 11 行配置，已恢复原文。`uploadConfigToOss` 成功后会把本地文件覆盖成 `oss.last`，**恢复时不能拿 oss.last 当原文**，要从上传前的下载副本或去掉追加块重建。
 
 ## 安全提醒
 

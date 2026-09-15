@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-15T08:25:43+08:00
+updated_at: 2026-09-15T08:32:07+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -20,7 +20,7 @@ load: always
 
 ## 根目录 (3)
 - 00-overview.md | crit | 2026-09-15 | 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件 | 网盘资源爬取、版权取证、COMMON
-- 03-project-context.md | crit | 2026-09-13 | 五个仓库（4 个 Go + 1 个前端）的磁盘路径、module 名、职责、相互依赖与 go.mod replace 现状 | 仓库、module、replace
+- 03-project-context.md | crit | 2026-09-15 | 五个仓库（4 个 Go + 1 个前端）的磁盘路径、module 名、职责、相互依赖与 go.mod replace 现状 | 仓库、module、replace
   ? 各仓库的职责分别是什么 / go.mod replace 现状是怎样的
 - 02-user-preferences.md | high | 2026-09-13 | 用户对语言、脚本沉淀、记忆维护、thinking 长度、敏感信息禁写，以及删除类不可逆功能上线前必须线上 dry run + 独立复核的明确要求 | 偏好、中文、脚本沉淀
 
@@ -87,7 +87,7 @@ load: always
   ? 代理池监控的 Scene 是什么，怎么加新消费端 / IP 不可用和被站点封禁怎么区分 / 代理池推送 IP 数在哪看 / 代理池总览/场景明细全 0 怎么排查
 - procedures/workflow-带登录态的浏览器自动化.md | medi | 2026-09-12 | 如何启动/复用一个带登录态的调试Chrome并用CDP脚本驱动它, 含"默认profile会被安全策略拦截"的前提坑 | agent-browser、cdp.py、CDP
   ? 我要测浏览器可见的交互，带登录态的浏览器怎么起 / agent-browser.sh / cdp.py 怎么用
-- procedures/workflow-部署.md | medi | 2026-09-13 | SPIDER deploy.sh 的常规用法、服务到主机的映射方式、判断线上现役服务的唯一判据、新服务选主机方法、配置分发机制与安全提醒；历次上线（生命周期/… | auto模式、权限分类器、部署
+- procedures/workflow-部署.md | medi | 2026-09-15 | SPIDER deploy.sh 的常规用法、服务到主机的映射方式、判断线上现役服务的唯一判据、新服务选主机方法、配置分发机制与安全提醒；历次上线（生命周期/… | auto模式、权限分类器、部署
   ? 部署 / 上线怎么操作，日志在哪看 / 新服务该放哪台机器 / 队列 v2 上线收尾脚本是哪个
 - procedures/workflow-部署-历史补充.md | low | 2026-09-12 | 历次生产上线（2026-09-05~09-10 生命周期 P3/P4 网关多次重部、代理池监控上线等）的一次性踩坑与已固化到 deploy.sh 的加固记录；… | 生命周期上线、网关重部、dryRun
 

@@ -3,7 +3,7 @@ title: 项目背景与仓库职责
 type: context
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-13T18:25:00+08:00
+updated_at: 2026-09-15T09:00:00+08:00
 priority: critical
 keywords: [仓库, module, replace, 目录结构, 依赖, 职责, NC-JS, 前端]
 summary: 五个仓库（4 个 Go + 1 个前端）的磁盘路径、module 名、职责、相互依赖与 go.mod replace 现状
@@ -108,3 +108,4 @@ NC-JS  ── gRPC over WebRTC ──> SPIDER gateway（后台管理，:7542/udp
 > STORAGE `go.mod` 里还留着一行注释掉的 `//replace github.com/PPIO/enfi-go-util => ../../pplabs/enfi-go-util`，
 > 是失效的历史残留（实际依赖是 `github.com/PPSub/enfi-go-util`），未删除。
 - [事实 2026-09-13] 现网 `spider.prod.yaml` 已含 `services.lifecycle_checker.consumer_number_by_type: {bnd: 150}`（其余类型缺省 50）；`services.lifecycle` 节仍未分发，生命周期 `enabled` 靠 redis 热参数。
+- [事实 2026-09-15] **API（res-api）生产配置 = 宿主机 `/home/pplabs/enfi-resource-api/config.yaml`（res1/res2 各一份，`CONFIG_FILE=config.yaml` 直接读文件，`OSS_CONFIG_URL` 只给 URL 型字段用）**；OSS `config/resource/search/config.prod.yaml`（11 行）是另一个服务的配置，改它对 res-api 无效。改配置：备份 → 追加 → `./deploy.sh restart 1/2`。
