@@ -3,7 +3,7 @@ title: 项目总览
 type: overview
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-15T06:46:00+08:00
+updated_at: 2026-09-15T08:20:00+08:00
 priority: critical
 keywords: [网盘资源爬取, 版权取证, COMMON, SPIDER, STORAGE, API, NC-JS]
 summary: 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件
@@ -29,7 +29,7 @@ related:
 - 09-13 **新版 FC Chrome 上线**（`nc-app-prod-cdp3`，`/cdp3/*`）；**14:30 挂 NAS**（`app-20260913k`）：`CDP3DATA=/mnt/nas/apps/cdp3`、`CDP3TEMP`、`extensions=`、`profile=ns/name`（调用方须发 `Browser.close`）。→ `decisions/decision-2026-09-13-cdp3持久化会话与扩展机制.md`
 - 09-12 22:17 **🔴 事故：lifecycle_checker 把资源 md5 当分享 id，115.5 万条有效资源（quark/ali）被误判失效并从新旧索引删除**。修复 `b888846`/`06ef50d` 已部署；**Mongo 无数据，恢复只能重爬**：`tools/lc-recrawl` 09-14 08:47 投完，回库 63.8 万（≈55%，余者网盘侧已失效），ali 尾部排队中。→ `lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md`、`current/open-questions.md`
 - 09-15 **xlLoadShare 任务级失败 39%**：客户端丢顶层文件 75% + 空文件夹 25%，状态码全当临时错误重试 3 次；待拍板修复 → `knowledge/domain-迅雷分享爬取.md`
-- 09-12 16:34 **P5 阶段 A/B 已上线**（D1 钩子；API v2 valid 上报 lc；bnd 去 `has_child`）；顺序：阶段 C 复测 → A' → 阶段 D。→ `decisions/decision-2026-09-12-P5切v3准入门槛与失效同步.md`
+- 09-15 **P5 阶段 D 灰度已启用**（API 侧 `search_canary` 30% 起、每 2 万 v3 请求 +1%、异常自动回落）；阶段 C 复测 G2~G6 过、G1/G2 两处字面超限用户接受（rollout §16/§17）；A' 84,791 条复检已完成。→ `decisions/decision-2026-09-12-P5切v3准入门槛与失效同步.md`
 - 阻塞：无；重爬进行中；风险见 `current/risks.md` R9。
 
 ## 3. 核心事实

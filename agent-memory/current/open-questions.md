@@ -3,10 +3,10 @@ title: 未解决的问题
 type: question
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-15T07:50:00+08:00
+updated_at: 2026-09-15T08:20:00+08:00
 priority: high
 keywords: [待确认, xlLoadShare, 迅雷, 事故恢复, lifecycle_checker, P5, 灰度, 用户确认]
-summary: 待用户确认：阶段 C 复测两处小幅超限是否接受、是否启用阶段 D 灰度（search_canary）
+summary: 当前无待用户确认问题（阶段 D 已按裁定启用；进度在 tasks.md）
 questions:
   - 当前有哪些待用户确认的问题
 load: on-demand
@@ -19,13 +19,6 @@ related:
    只保留未答复的待确认问题, 以免占用context. 3. `答复`段落由用户编辑, 但可由Agent在合适时随问题一起清理掉.
 
 # 未解决的问题
-
-## P5 阶段 C 复测结果与是否进入阶段 D（2026-09-15 07:45）
-
-rollout §16：G2/G5/G6 通过；G4 的 1 条差异是旧索引残留死链（v3 正确）；G1 有 3 个小 total 关键词 v3 多 1~13 条（相二 9→10 等，字面超 1%）；G2 的「<70% 关键词 ≤3」实测 4 个（Python 40%、庄周的蝴蝶 51%、封神英雄 68%、黑袍纠察队5 69%，均为排序差异非召回缺失）；G3 22 条 v3 独有文档强制复检：21 有效（旧索引误删）、1 失效已清 → G3 ✅。
-- [待确认] 两处小幅超限是否接受、进入阶段 D（API 侧 `search_canary` 30% 起自动灰度，异常自动回落 0%）？启用步骤：配置 `search_canary.enabled: true` + `notify_url`（建议 `step_every_v3_requests` 调大到 20,000 以贴近 3 天观察）→ 重部 API 双机。
-
-用户答复：
 
 
 ## 转存下载链路账号池是否续期（2026-09-13 体检发现）
