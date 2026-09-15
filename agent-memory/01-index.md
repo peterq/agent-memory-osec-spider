@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-15T08:48:33+08:00
+updated_at: 2026-09-15T14:15:02+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -16,7 +16,7 @@ load: always
 定位到文件后 `mem.py outline <file>` 看章节，再 `mem.py body <file> --section <标题>` 只读需要的一段。
 维护方式：改目标文件 Front Matter（summary / keywords / questions），然后运行 `scripts/mem/mem.py index --write`。
 
-# agent-memory 启动包（脚本生成, 135 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
+# agent-memory 启动包（脚本生成, 136 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
 
 ## 根目录 (3)
 - 00-overview.md | crit | 2026-09-15 | 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件 | 网盘资源爬取、版权取证、COMMON
@@ -58,7 +58,7 @@ load: always
   ? 切 v3 前必须满足哪些门槛 / 旧链路判失效为什么只提前复检而不直接置 lc 失效 / bnd 搜索在 v3 慢的原因与修法 / P5 灰度怎么切、怎么回滚
 - decisions/decision-2026-09-12-弃用文档更新类接口.md | high | 2026-09-12 | 用户 2026-09-12 确认——report/likes/dislikes/addViews 这类频繁 update ES 文档的接口已弃用，不做 v3、… | 弃用、addViews、likes
   ? report/likes/dislikes/views 这些接口还要不要做 v3 / 为什么 v3 detail 不能调 addViews / 哪些接口不允许频繁 update ES 文档
-- decisions/decision-2026-09-12-阶段D改由API侧自动灰度分流.md | high | 2026-09-12 | 用户 09-12 裁定：API 在 /api/v2/search 服务端按比例走 v3，30% 起、无异常每 100 个 v3 请求 +1% 到全量，异常自动… | 阶段D、灰度、分流
+- decisions/decision-2026-09-12-阶段D改由API侧自动灰度分流.md | high | 2026-09-15 | 用户 09-12 裁定：API 在 /api/v2/search 服务端按比例走 v3，30% 起、无异常每 100 个 v3 请求 +1% 到全量，异常自动… | 阶段D、灰度、分流
   ? 搜索流量怎么从 v2 切到 v3，谁来切 / search_canary 是什么，比例怎么涨、异常怎么回滚
 - decisions/decision-2026-09-13-cdp3持久化会话与扩展机制.md | high | 2026-09-13 | 2026-09-13 用户要求 cdp3 挂 NAS（锁心跳 2 s/6 s 过期/被占不等待直接 409）：CDP3DATA=/mnt/nas/apps/c… | cdp3、CDP3DATA、CDP3TEMP
   ? cdp3 的扩展和会话数据放在哪、目录怎么约定 / 调用方用 profile= 时要注意什么
@@ -130,7 +130,7 @@ load: always
   ? 多个包同时重构，子 Agent 怎么避免编译互锁 / Phase 0/1/2 怎么切分任务
 - lessons/patterns-统计ES索引先查文档形态.md | high | 2026-09-05 | 同一索引可能混着两代写入形态；只按 join=resource 统计会漏掉三分之二资源，任何统计/迁移前先做 exists/must_not exists 对账 | ES、join、nested
 - lessons/patterns-长周期生产巡检.md | high | 2026-09-15 | 派子 Agent 做数小时生产巡检的可操作清单（原 98 条经验按主题压缩）：前台等待、隧道 keepalive、复制阶段用 _count 差分而非 prog… | 巡检、bootstrap、子Agent
-- lessons/success-本地代理池打通.md | high | 2026-09-12 | 本地怎么用上代理池、三个会让人查错方向的坑，以及验证方法 | 代理池、蜻蜓代理、白名单
+- lessons/success-本地代理池打通.md | high | 2026-09-15 | 本地怎么用上代理池、三个会让人查错方向的坑，以及验证方法 | 代理池、蜻蜓代理、白名单
   ? 代理池连不上怎么办，本地怎么用上代理池 / 蜻蜓白名单/出口IP不对怎么查
 - lessons/success-桩网关加cdp浏览器做登录链路联调.md | high | 2026-09-12 | 涉及浏览器交互的改造仅靠静态审查+单测不足以验收, 要造一个只保留被测链路的桩服务并用带登录态的调试浏览器实测, 本次靠它抓到两个"代码看起来完全正确"的阻断… | 桩网关、stubgw、CDP
   ? 桩服务验收怎么做，为什么静态审查+单测不够
@@ -173,8 +173,8 @@ load: always
   ? 链接失效检测怎么做，validShareLink 返回 -1 是什么意思 / 夸克/阿里网盘判定不准怎么排查 / 误删资源怎么避免
 - knowledge/domain-转存下载链路.md | high | 2026-09-13 | SPIDER 下载调度链路的代码结构、redis 键/MySQL 表、阿里/百度解析方式、三条下载路径，以及 2026-09-13 体检结论：链路空转，阿里 … | 转存下载、share_download、resolve_link
   ? 分享链接里的文件是怎么被转存、解析成下载地址并落到 OSS 的 / 转存下载链路的进程跑在哪台机器，队列和账号池在 redis 哪些键 / 怎么检查转存下载链路是否通畅，脚本在哪 / 为什么 share_download_resolve_link 一直报 InvalidParameter.RefreshToken
-- knowledge/domain-迅雷分享爬取.md | high | 2026-09-15 | xlLoadShare 失败率排查结论：丢顶层文件 75%、空文件夹 25%、状态码全重试放大；接口/头部/探针用法与修复建议 | xlLoadShare、迅雷、xunleipan
-  ? xlLoadShare 队列为什么失败率高，失败都是什么原因 / 怎么不经爬虫直接查一个迅雷分享的顶层结构和文件夹内容 / 迅雷分享状态码该重试还是判失效
+- knowledge/domain-迅雷分享爬取.md | high | 2026-09-15 | xlLoadShare 失败率修复(09-15 已上线)：顶层文件入批次、状态码按共用码表判定、空分享永久失败；失效上报仍 dry run；接口/探针/导出重… | xlLoadShare、迅雷、xunleipan
+  ? xlLoadShare 队列为什么失败率高，失败都是什么原因 / 怎么不经爬虫直接查一个迅雷分享的顶层结构和文件夹内容 / 迅雷分享状态码该重试还是判失效 / 迅雷失效上报 dry run 开关在哪，怎么正式开启
 - knowledge/architecture-spider-队列约定.md | medi | 2026-09-12 | SPIDER 队列 v2（2026-09-04 起）的固定队列名、去重键、消费者并发度与通用队列（gateway_v2）命名空间约定；写新队列消费者或排查任务… | 队列、队列v2、resourcePreCheck
   ? 我要写新的网关队列消费者，代码放哪 / 关键词站点怎么收关键词 / 爬虫怎么提交链接给网关
 - knowledge/concept-术语表.md | medi | 2026-09-12 | 代码里高频出现的缩写、字段含义与命名来历，避免误读 | 术语、bnd、valid
@@ -187,9 +187,9 @@ load: always
 - knowledge/reference-github-oauth配置.md | medi | 2026-09-12 | 两个GitHub OAuth App(prod/dev)的名称、client_id、管理页、已注册回调列表与组织第三方应用策略, 不含任何secret | GitHub OAuth App、client_id、redirect_uri
   ? GitHub OAuth App 的 client_id 在哪查 / 1second 组织的回调地址怎么配置
 
-## sessions/ (34 个, 仅列最近 3 个; 其余用 mem.py search 找)
+## sessions/ (35 个, 仅列最近 3 个; 其余用 mem.py search 找)
 - sessions/2026/2026-09-13-cdp3挂NAS与持久化会话.md | medi | 2026-09-13 | 2026-09-13 13:00~14:45：按用户要求给 nc-app-prod-cdp3 挂 NAS 并实现 extensions=/profile=/定… | cdp3、NAS、CDP3DATA
-- sessions/2026/2026-09-13-fc-chrome上线.md | medi | 2026-09-13 | 用户授权后一天内把 09-08 遗留的 6 项人工事项全部落地：FC 部署、共用域名路由、两条脚本路径线上全通；记录派单被分类器拦、镜像经 jenkins 中… | fc-chrome、nc-app-prod-cdp3、Tampermonkey
+- sessions/2026/2026-09-15-xlLoadShare修复上线.md | medi | 2026-09-15 | 09-15 上午把迅雷分享爬取三处缺陷修复并上线两台机，从 SLS 导出 7 天内 288 条失败分享重投；失效上报按不可逆清单先 dry run | xlLoadShare、迅雷、修复上线
 - sessions/2026/2026-09-15-xlLoadShare失败率排查.md | medi | 2026-09-15 | xlLoadShare 失败率排查过程；结论在 knowledge/domain-迅雷分享爬取.md | xlLoadShare、迅雷、失败率
 
 ## archive/ (10 个, 已归档不列出; 需要时 mem.py search --dir archive)

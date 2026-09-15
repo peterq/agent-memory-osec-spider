@@ -3,14 +3,16 @@ title: 迅雷分享爬取（xlLoadShare）：客户端行为、接口、失败�
 type: knowledge
 status: active
 created_at: 2026-09-15T06:46:00+08:00
-updated_at: 2026-09-15T06:46:00+08:00
+updated_at: 2026-09-15T10:05:00+08:00
 priority: high
-keywords: [xlLoadShare, 迅雷, xunleipan, 失败率, 顶层文件, 空文件夹, share status, captcha token, xl_share_probe, v2xlLoadShare]
+keywords: [xlLoadShare, 迅雷, xunleipan, 失败率, 顶层文件, 空文件夹, share_status, ShareStatusError, submitInvalidDryRun, xl-fail-export, xl_share_probe, v2xlLoadShare]
 questions:
   - xlLoadShare 队列为什么失败率高，失败都是什么原因
   - 怎么不经爬虫直接查一个迅雷分享的顶层结构和文件夹内容
   - 迅雷分享状态码该重试还是判失效
-summary: xlLoadShare 失败率排查结论：丢顶层文件 75%、空文件夹 25%、状态码全重试放大；接口/头部/探针用法与修复建议
+  - 迅雷失效上报 dry run 开关在哪，怎么正式开启
+  - 历史失败的迅雷分享怎么导出重投
+summary: xlLoadShare 失败率修复(09-15 已上线)：顶层文件入批次、状态码按共用码表判定、空分享永久失败；失效上报仍 dry run；接口/探针/导出重投工具用法
 load: on-demand
 related:
   - agent-memory/knowledge/domain-网盘有效性检测.md   # 网关侧迅雷状态码表 invalidXunleiShareLinkCodes
@@ -42,18 +44,24 @@ related:
 
 事件级失败 ≈ 50%（411 失败 vs 416 成功）：因为上述全部被当临时错误由网关重试 3 次（Retry 1/2/3 各占 1/3），一个坏分享贡献 3~4 次失败。
 
-## 4. 根因 [事实]
+## 4. 根因 [事实]（修复前）
 
-1. **客户端丢顶层文件**：`LoadShareById` 只把 `r.FileList` 里 `Isdir==1` 的顶层条目放进 `folderQueue`，顶层文件既不进 `task.files` 也不计入 `FileCount`；分享顶层是单个 mp4 时 handleBatchFiles 从未被调用 → 临时目录不存在 → `SaveBigResource` 报 list dir error。混合分享（顶层文件+文件夹）会**静默漏掉顶层文件**。对照夸克 `services/quark/quark-client.go` 会先把全部顶层条目 append 进 `fileItemSlice`。该缺陷在队列 v2 之前的旧 `load-xl-share-service.go` 即存在（4b15c9c 只改了导出名）。
-2. **空文件夹分享**：分享状态 OK、文件夹详情 0 文件（内容已被清理，来源多为 feikuai.tv），同样落到"无临时文件"分支并被重试。
-3. **状态码全当临时错误**：消费者只把 `ShareLink.Cancelled/Forbidden` 当永久失效上报 SubmitValid；`DELETED/SENSITIVE_RESOURCE`（网关 `invalidXunleiShareLinkCodes` 已判失效）、`PASS_CODE_ERROR/PASS_CODE_EMPTY`（提取码错/缺）都返回普通 error → 重试 3 次且不上报。
+1. **客户端丢顶层文件**：`LoadShareById` 只把顶层 `Isdir==1` 条目入 `folderQueue`，顶层文件既不进 `task.files` 也不计 `FileCount`；顶层单文件分享从不触发 handleBatchFiles → 临时目录不存在 → `SaveBigResource` 报 list dir error；混合分享静默漏顶层文件。旧 `load-xl-share-service.go` 即如此。
+2. **空文件夹分享**：状态 OK、文件夹详情 0 文件（多为 feikuai.tv 来源），同样落到"无临时文件"并重试。
+3. **状态码全当临时错误**：消费者只认 `ShareLink.Cancelled/Forbidden` 文案（迅雷根本不返回），`DELETED/SENSITIVE_RESOURCE/PASS_CODE_*` 都重试 3 次且不上报。
 
-## 5. 修复建议 [推断，待用户拍板]
+## 5. 修复 [事实]（SPIDER `3270e10`，09-15 jenkins 08:51 / resngix 08:58 / restest 09:51 三机全部上线（restest ssh 反复超时，scp 重试 20 次才成功））
 
-- 客户端：顶层 `drive#file` 先 append 进 `task.files`、累加 `Size/FileCount`（照夸克实现）；无文件夹时直接走 handleBatch 的 last batch。
-- 消费者：遍历完 `FileCount==0` → 永久失败并按空分享处理（是否 `SubmitValid Valid=0` 待确认，见 open-questions）；`DELETED/SENSITIVE_RESOURCE/PASS_CODE_*` 走 `MarkPermanentError`，前两者同时 SubmitValid 失效，与网关状态码表对齐（改判定两套要一起看 → `domain-网盘有效性检测.md`）。
-- 修复后历史失败的顶层文件分享需重投（去重键 `resDealAt` 6h 后自然可重投；批量重投走网关 `CommitResource`）。
+- 客户端：顶层条目全部进批次并累加 `Size/FileCount`（照夸克），`r.FileList=nil`；非 OK 状态返回类型化 `*xunlei_pan.ShareStatusError{Status,Text}`。
+- 码表唯一正本 `services/xunlei-pan/share_status.go`：`InvalidShareStatusCodes`(SENSITIVE_RESOURCE/NOT_FOUND/EXPIRED/DELETED)、`ValidShareStatusCodes`(OK/PASS_CODE_EMPTY)、`PassCodeShareStatusCodes`；网关 `xunlei_checker.go` 改引用同一张表（两套判定从此同源）。
+- 消费者 `xl_load_share.go`：`errors.As` 取码 → 失效码 `submitInvalid`+`MarkPermanentError`；提取码错/缺永久失败不上报；未知码仍重试。遍历完 `FileCount==0` → `empty-share` 永久失败、**不上报失效**（链接可打开，空内容≠失效，失效会不可逆删 ES）。
+- **失效上报处于 dry run**：`const submitInvalidDryRun = true`，只打 `submit-invalid-dry-run` 日志（含 status/pwd）。按 `procedures/checklist-不可逆操作上线.md`：收集清单 → `scripts/xl_share_probe.sh` 独立复核 → 用户拍板后改 false 重新部署。首例 `VP0Q3NoLKSSXkLlaVbg6nEk9A1` SENSITIVE_RESOURCE 探针复核一致。
+- 验证：联网测试 `XL_IT=1 LOCAL_CONFIG_PATH=<本地yaml> go test ./services/xunlei-pan/ -run TestLiveLoadShareById`（顶层文件/文件夹回归/空文件夹/DELETED/PASS_CODE_ERROR 5 例全过，走本地代理池）。重投 288 条后 5 分钟：入库 173、empty-share 78、expire 1、503 重试 1，**原先 100% 失败的顶层文件分享已全部入库**。
 
-## 6. 探针 [事实]
+## 6. 历史失败重投 [事实]
 
-`scripts/xl_share_probe.sh <host> <shareId> [pwd]`（本仓库）：经该机 `:9527` 调试代理取 token、查分享信息与首个文件夹详情，打印中文摘要；`RAW=1` 输出原始 JSON。无需远端 python。批量分类时按 §2 注意每分享单独取 token、并行 ≤3。
+消费者容器重建后 docker logs 清空，只能从 SLS 找：`go run ./tools/xl-fail-export -addr 127.0.0.1:18082 -days 7 -out _note/xl-refix/no-temp-file.tsv`（经 res2 网关隧道调 `queue_admin.SearchLogs`：`finishQueuedTask` 拿 taskKey，`preCheck.handle` 全文匹配 `"xunleipan:<id>"` 拿 pwd；`queueName`/`link_key` 不是 SLS 索引键，只能全文匹配）→ `lc-recrawl -file … -rate 10 -client xl-refix-2609` 投递。09-15 09:09 投 288/288（7 天窗口，pwd 全齐）。预检去重 `resDealAt` TTL 6h：6h 内刚失败的会被判 repeat，需要时 6h 后再导一次。
+
+## 7. 探针 [事实]
+
+`scripts/xl_share_probe.sh <host> <shareId> [pwd]`（本仓库）：经该机 `:9527` 调试代理取 token、查分享信息与首个文件夹详情，打印中文摘要；`RAW=1` 输出原始 JSON。无需远端 python。批量分类时按 §2 注意每分享单独取 token、并行 ≤3。远端偶发 `Traceback ... 'NoneType'` 是该分享响应非 JSON（代理抖动），重跑即可。

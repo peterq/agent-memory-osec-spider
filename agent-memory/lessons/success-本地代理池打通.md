@@ -3,7 +3,7 @@ title: 成功经验：打通本地开发的 IP 代理池
 type: lesson
 status: active
 created_at: 2026-09-03T17:30:00+08:00
-updated_at: 2026-09-12T12:10:00+08:00
+updated_at: 2026-09-15T09:25:00+08:00
 priority: high
 keywords: [代理池, 蜻蜓代理, 白名单, redis-topic-sync, 出口IP, localIp, 重复推送, 秒拨, 住宅宽带, RDAP, 蜻蜓]
 summary: 本地怎么用上代理池、三个会让人查错方向的坑，以及验证方法
@@ -95,6 +95,11 @@ python3 site-discovery/tools/pancheck.py --file links.txt --require-proxy
   `tools/sync-sak/`、`tools/sync-old-index/`、`devops_online_env.go`、
   `change_proxy_config.go`），**全新 clone/worktree 编译不过**。
   开 worktree 用 `osec-spider-go/scripts/new_worktree.sh`，它会一并补齐。
+
+- Go 联网集成测试/工具还需要 `LOCAL_CONFIG_PATH` 指向一份最小 yaml（go test 空配置下 `NewClient` 会 panic
+  `services.proxy.redis / pubchannel 未配置`）：`services.proxy.redis: local2`、`pubchannel: proxy_subject`、
+  `redises.local2: {host: 127.0.0.1, port: 6379, db: 2}`；`dev_add_local_ip_to_qingting` 同样需要它。
+  投递工具再加一行 `spider_gateway: 127.0.0.1:18082`（res2 隧道）。[实测 2026-09-15]
 
 ## 代理池的真实形态：住宅宽带秒拨池，不是机房 IP（2026-09-03 RDAP 实测）
 

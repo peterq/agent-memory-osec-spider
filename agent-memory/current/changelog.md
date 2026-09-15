@@ -3,7 +3,7 @@ title: 项目变更记录（总览归档）
 type: knowledge
 status: active
 created_at: 2026-09-12T11:30:00+08:00
-updated_at: 2026-09-15T06:46:00+08:00
+updated_at: 2026-09-15T09:25:00+08:00
 priority: low
 keywords: [变更记录, changelog, 历史, 总览归档, 生命周期改造, 队列v2, queue-admin, 站点接入, 配置v2, GitHub OAuth]
 summary: 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪"
@@ -20,6 +20,7 @@ related:
 
 ## 2026-09-15
 
+- 09:00 xlLoadShare 失败率修复上线（SPIDER `3270e10`：顶层文件入批次、状态码共用码表、空分享永久失败、失效上报 dry run）；SLS 导出工具 `tools/xl-fail-export` + 重投 288 条 → `knowledge/domain-迅雷分享爬取.md` §5/§6、`sessions/2026/2026-09-15-xlLoadShare修复上线.md`
 - 06:46 xlLoadShare 失败率排查：任务级 39% 失败 = 客户端丢顶层文件 75% + 空文件夹 25%，状态码全当临时错误重试放大；新增探针 `scripts/xl_share_probe.sh` → `knowledge/domain-迅雷分享爬取.md`、`sessions/2026/2026-09-15-xlLoadShare失败率排查.md`
 
 ## 2026-09-13

@@ -3,7 +3,7 @@ title: 决策：P5 阶段 D 切流改由 API 工程服务端自动灰度分流�
 type: decision
 status: active
 created_at: 2026-09-12T22:45:00+08:00
-updated_at: 2026-09-12T22:50:00+08:00
+updated_at: 2026-09-15T14:20:00+08:00
 priority: high
 keywords: [阶段D, 灰度, 分流, search_canary, v3切流, 自动回落]
 questions:
@@ -42,3 +42,5 @@ API 工程在 `/api/v2/search` 的 controller 层分流：命中则按同样的 
 **已完成开发** API `6bbbfb8`（主控复核 controller 接入与 `decideStep`；build/test 过），缺省关闭、未部署。
 启用步骤见 API `services/search-canary/README.md`：配置 `search_canary.enabled: true` + `notify_url` → 重部 res1/res2 → `go run ./tools/search-canary -status`。
 ⚠️ 参数提醒：按"每 100 个 v3 请求 +1%"，30% 起在实际流量下 30%→100% 可能只需几十分钟；若要贴近 p5-plan 的 3 天观察，把 `step_every_v3_requests` 调大（如 20,000）。
+
+**执行（09-15）**：08:47/08:50 两台宿主机 `config.yaml` 追加 `search_canary` 生效（rollout §17）；用户 14:05 把步长改为每 4,000 个 v3 请求 +1%，并要求每半小时邮件汇报（`osec-resource-api/scripts/search_canary_report.sh`）。首 20 分钟 v3 占 32%、错误 0、v3 P50/P95 151/608 ms 优于 v2 290/1305。
