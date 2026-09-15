@@ -14,7 +14,7 @@ related:
   - agent-memory/current/open-questions.md
 ---
 
-> 2026-09-12 归档：P4 全量 bootstrap 已于 09-11 done，本决策仅供复盘；有效结论已提炼到 `lessons/patterns-长周期生产巡检.md` 与 `knowledge/domain-bootstrap吞吐实测数据.md`。
+> 2026-09-12 归档：P4 全量 bootstrap 已于 09-11 done，本决策仅供复盘；有效结论已提炼到 `lessons/patterns-长周期生产巡检.md` 与 `archive/2026/domain-bootstrap吞吐实测数据.md`。
 
 # 决策：全量 bootstrap 吞吐熔断后原地 resume
 

@@ -3,7 +3,7 @@ title: 项目总览
 type: overview
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-15T10:05:00+08:00
+updated_at: 2026-09-15T15:45:00+08:00
 priority: critical
 keywords: [网盘资源爬取, 版权取证, COMMON, SPIDER, STORAGE, API, NC-JS]
 summary: 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件
@@ -25,9 +25,9 @@ related:
 
 ## 2. 当前状态（最近 7 天；更早见 `current/changelog.md`）
 
-- 09-13 **转存下载链路空转**：阿里/百度账号全失效；体检 `scripts/dl_chain_health.sh` → `knowledge/domain-转存下载链路.md`
-- 09-13 **新版 FC Chrome 上线**（`nc-app-prod-cdp3`，`/cdp3/*`）；**14:30 挂 NAS**（`app-20260913k`）：`CDP3DATA=/mnt/nas/apps/cdp3`、`CDP3TEMP`、`extensions=`、`profile=ns/name`（调用方须发 `Browser.close`）。→ `decisions/decision-2026-09-13-cdp3持久化会话与扩展机制.md`
-- 09-12 22:17 **🔴 事故：lifecycle_checker 把资源 md5 当分享 id，115.5 万条有效资源（quark/ali）被误判失效并从新旧索引删除**。修复 `b888846`/`06ef50d` 已部署；**Mongo 无数据，恢复只能重爬**：`tools/lc-recrawl` 09-14 08:47 投完，回库 63.8 万（≈55%，余者网盘侧已失效），ali 尾部排队中。→ `lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md`、`current/open-questions.md`
+- 09-13 **转存下载链路空转**（阿里/百度账号全失效）→ `knowledge/domain-转存下载链路.md`
+- 09-13 **新版 FC Chrome 上线**（`nc-app-prod-cdp3`，`/cdp3/*`，挂 NAS，`profile=` 调用方须发 `Browser.close`）→ `decisions/decision-2026-09-13-cdp3持久化会话与扩展机制.md`
+- 09-12 22:17 **🔴 事故：lifecycle_checker 把资源 md5 当分享 id，115.5 万条有效资源（quark/ali）被误判失效并从新旧索引删除**。修复已部署；**只能重爬**：`tools/lc-recrawl` 09-14 投完，回库 63.8 万（≈55%），ali 尾部排队中。→ `lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md`、`current/open-questions.md`
 - 09-15 **xlLoadShare 修复上线**（`3270e10`）：顶层文件入批次、状态码共用码表、空分享永久失败；重投 288 条历史失败。**失效上报仍 dry run，待复核后开启**；三机已全部上线 → `knowledge/domain-迅雷分享爬取.md` §5
 - 09-15 **P5 阶段 D 灰度已启用**（API 侧 `search_canary` 30% 起、每 2 万 v3 请求 +1%、异常自动回落）；阶段 C 复测过（两处字面超限用户接受，rollout §16/§17）；A' 复检已完成。→ `decisions/decision-2026-09-12-P5切v3准入门槛与失效同步.md`
 - 阻塞：无；风险见 `current/risks.md` R9。
@@ -49,6 +49,7 @@ related:
 ## 4. 用户与协作偏好
 
 - 全中文输出（展示/注释/记忆）；有复用价值的脚本落盘写文档，按路径调用省 token。
+- **用户常不在电脑旁：长任务开始/里程碑/完成、任何异常或阻塞都要主动发邮件**，`scripts/mail/notify.py -s 主题 -f body.md -l progress|done|warn|error`（Markdown→HTML 卡片）→ `procedures/workflow-任务进度邮件汇报.md`
 - 编码/验收/合并派 sonnet 子 Agent；任务描述落盘 `agent-tasks/` 而非写进 prompt。
 - 禁用 harness 记忆，只写 `agent-memory/`（独立仓库，单独 commit+push）。
 - **配置文件里的明文 AK/SK 与库口令禁止写进记忆文件或对外输出，只记路径。** → `02-user-preferences.md`

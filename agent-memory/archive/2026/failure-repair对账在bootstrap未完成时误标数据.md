@@ -1,9 +1,9 @@
 ---
 title: 失败经验：repair 对账作业在 bootstrap 未完成时把 DB 行误标为 deleted
 type: lesson
-status: active
+status: archived
 created_at: 2026-09-06T07:45:00+08:00
-updated_at: 2026-09-06T09:20:00+08:00
+updated_at: 2026-09-15T15:50:00+08:00
 priority: critical
 keywords:
   - repair
@@ -15,11 +15,13 @@ keywords:
   - jobRunner
   - 生命周期
 summary: bootstrap 未完成时跑 repair 的 db_to_es 会把「尚未复制到 ES」的 DB 行误判为丢失并置 status=3，导致 copy_child 静默漏搬子文档
-load: on-demand
+load: rarely
 related:
   - agent-memory/lessons/patterns-长周期生产巡检.md
-  - agent-memory/lessons/failure-copy_child真正瓶颈是子文档量.md
+  - agent-memory/archive/2026/failure-copy_child真正瓶颈是子文档量.md
 ---
+
+> [已归档 2026-09-15] P4 全量 bootstrap 已完成（2026-09-12 收口），本文归档；仅供复盘，`mem.py search --dir archive` 可检索。
 
 # 失败经验：repair 对账在 bootstrap 未完成时误标数据
 

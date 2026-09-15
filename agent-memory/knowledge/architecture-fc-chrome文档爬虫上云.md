@@ -3,13 +3,12 @@ title: fc-chrome（阿里云 FC Chrome 运行环境）与云端金山文档爬�
 type: knowledge
 status: active
 created_at: 2026-09-13T11:00:00+08:00
-updated_at: 2026-09-13T16:45:00+08:00
+updated_at: 2026-09-15T15:50:00+08:00
 priority: high
 keywords: [fc-chrome, nc-app-prod-cdp3, Tampermonkey, kdoc.user.js, fc-resource-node-api.krzb.net, doc_crawler, 函数计算, NAS, CDP3DATA, extensions=, profile=]
 questions:
   - 新版 FC Chrome 部署在哪、地址、健康检查
   - cdp3 的 NAS 目录/extensions=/profile= 怎么用
-  - 共用 FC 域名 fc-resource-node-api.krzb.net 有哪些路由
 summary: 2026-09-13 上线的 nc-app-prod-cdp3（14:30 起挂 NAS：CDP3DATA/CDP3TEMP、extensions=、profile=、每日定时清理）（COMMON fc-chrome，Chrome 153 + Tampermonkey 5.5.0 + 预热 profile）的地址、共用域名 /cdp3/* 路由、OSS 对象、镜像 tag 与各仓库回填点；inject=1 与 Tampermonkey 两条路径线上都已跑通真实文档
 load: on-demand
 related:

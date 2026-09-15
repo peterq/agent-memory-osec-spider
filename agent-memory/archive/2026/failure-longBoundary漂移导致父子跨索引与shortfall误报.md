@@ -1,18 +1,20 @@
 ---
 title: 失败经验：longBoundary 按 time.Now() 计算导致长跑 bootstrap 父子跨索引、shortfall 全部误报
 type: lesson
-status: active
+status: archived
 created_at: 2026-09-11T12:10:00+08:00
-updated_at: 2026-09-12T22:36:00+08:00
+updated_at: 2026-09-15T15:50:00+08:00
 priority: critical
 keywords: [bootstrap, longBoundary, shortfallSlices, has_parent, parent_id, copyMode=ids, mover, TriggerMove, 父子跨索引, res_short_202609, res_long_2026]
 summary: shortfall 89 条不是子文档丢失：copy_parent/copy_child 各自取 now 算 90 天边界、长跑漂移致父 cur 子 long；修法是 mover 父归位（已完成），copyMode=ids 禁用；2 个 :cur 窗口取证不搬
-load: on-demand
+load: rarely
 related:
   - agent-memory/lessons/patterns-长周期生产巡检.md
-  - agent-memory/lessons/failure-copy_child计数校验对称差误判重跑.md
+  - agent-memory/archive/2026/failure-copy_child计数校验对称差误判重跑.md
   - agent-memory/current/tasks.md
 ---
+
+> [已归档 2026-09-15] P4 全量 bootstrap 已完成（2026-09-12 收口），本文归档；仅供复盘，`mem.py search --dir archive` 可检索。
 
 # 失败经验：longBoundary 漂移导致父子跨索引
 

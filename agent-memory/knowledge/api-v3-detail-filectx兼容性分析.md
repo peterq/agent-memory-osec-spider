@@ -3,13 +3,12 @@ title: v3 detail/fileCtx 对 lc 索引结构的兼容性分析
 type: knowledge
 status: active
 created_at: 2026-09-12T14:40:00+08:00
-updated_at: 2026-09-12T15:00:00+08:00
+updated_at: 2026-09-15T15:50:00+08:00
 priority: high
 keywords: [v3 detail, fileCtx, res_lc_all, 生命周期, LocateIndex, addViews, size 字符串]
 questions:
-  - detail/fileCtx 能不能直接查 res_lc_all
-  - 补 v3 detail/fileCtx 要改哪些地方
-  - 为什么 /api/v2/detail 会报 size 反序列化错误
+  - detail/fileCtx 能不能直接查 res_lc_all，要改哪
+  - /api/v2/detail 为什么报 size 反序列化错误
 summary: 结论——lc 索引结构与 v2 detail/fileCtx 的查询方式兼容（nested filelist、join file、fid/parent、routing 均保留），补 v3 只需换索引 + 去重 + 数字字段容错，并删掉已弃用的 addViews；无需改 mapping
 load: on-demand
 related:

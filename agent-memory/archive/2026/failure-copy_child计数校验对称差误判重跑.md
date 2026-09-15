@@ -1,17 +1,19 @@
 ---
 title: 失败经验：copy_child 子文档计数校验用对称差，目标多出也被判不达标而整窗白跑
 type: lesson
-status: active
+status: archived
 created_at: 2026-09-07T08:00:00+08:00
-updated_at: 2026-09-12T22:36:00+08:00
+updated_at: 2026-09-15T15:50:00+08:00
 priority: high
 keywords: [bootstrap, copy_child, childCountOk, version_conflicts, 重跑, FailedSlices, 双写, url_check, 对称差]
 summary: childCountOk 用 |src-dst| 判达标，但 cur 含双写、long 源侧被删，dst>src 是结构性的；重跑幂等补不回，白跑 2.5 h
-load: on-demand
+load: rarely
 related:
   - agent-memory/lessons/patterns-长周期生产巡检.md
   - agent-memory/archive/2026/decision-2026-09-06-全量bootstrap动态rps守护续跑.md
 ---
+
+> [已归档 2026-09-15] P4 全量 bootstrap 已完成（2026-09-12 收口），本文归档；仅供复盘，`mem.py search --dir archive` 可检索。
 
 # 失败经验：计数校验对称差误判
 

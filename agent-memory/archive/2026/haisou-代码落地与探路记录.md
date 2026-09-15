@@ -12,13 +12,13 @@ questions:
   - haisou 已落地但未验收的代码在哪
 load: rarely
 related:
-  - agent-memory/lessons/failure-haisou搜索接口收紧.md
+  - agent-memory/archive/2026/failure-haisou搜索接口收紧.md
   - agent-memory/decisions/decision-2026-09-03-下线haisou.md
 ---
 
 # haisou.cc 已落地代码与常态化探路记录
 
-由 `lessons/failure-haisou搜索接口收紧.md` 于 2026-09-12 拆出，原文保留。
+由 `archive/2026/failure-haisou搜索接口收紧.md` 于 2026-09-12 拆出，原文保留。
 
 ### 已落地的代码（2026-09-03 傍晚，SPIDER 未提交）
 

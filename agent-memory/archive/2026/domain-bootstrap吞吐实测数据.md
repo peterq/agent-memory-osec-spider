@@ -1,16 +1,18 @@
 ---
 title: P4 全量 bootstrap 吞吐实测数据
 type: knowledge
-status: active
+status: archived
 created_at: 2026-09-12T11:25:00+08:00
-updated_at: 2026-09-12T11:25:00+08:00
+updated_at: 2026-09-15T15:50:00+08:00
 priority: medium
 keywords: [bootstrap, copy_parent, copy_child, 吞吐, docs/s, _count 差分, db_join, db_bnd, 实测, P4]
 summary: P4 全量 bootstrap（作业 id=8）巡检各轮实测的 copy_parent/copy_child/建库吞吐数值（docs/s），供估算完成时间时查表引用，不含判断方法（判断方法见 lessons/patterns-长周期生产巡检.md）
-load: on-demand
+load: rarely
 related:
   - agent-memory/lessons/patterns-长周期生产巡检.md
 ---
+
+> [已归档 2026-09-15] P4 全量 bootstrap 已完成（2026-09-12 收口），本文归档；仅供复盘，`mem.py search --dir archive` 可检索。
 
 # P4 全量 bootstrap 吞吐实测数据
 

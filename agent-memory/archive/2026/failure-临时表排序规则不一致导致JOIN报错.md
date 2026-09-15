@@ -18,7 +18,7 @@ keywords:
 summary: MySQL 8 里 CREATE TEMPORARY TABLE 不写 COLLATE 会继承服务器默认 utf8mb4_0900_ai_ci, 与建表为 utf8mb4_general_ci 的业务表 JOIN 时报 ERROR 1267
 load: rarely
 related:
-  - agent-memory/lessons/failure-repair对账在bootstrap未完成时误标数据.md
+  - agent-memory/archive/2026/failure-repair对账在bootstrap未完成时误标数据.md
 ---
 
 # 失败经验：临时表排序规则不一致导致 JOIN 报错

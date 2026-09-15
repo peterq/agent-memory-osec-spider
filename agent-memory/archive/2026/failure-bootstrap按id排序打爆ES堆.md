@@ -1,9 +1,9 @@
 ---
 title: 失败经验：bootstrap 按 _id 排序翻页打爆生产 ES 堆
 type: lesson
-status: active
+status: archived
 created_at: 2026-09-05T13:30:00+08:00
-updated_at: 2026-09-12T12:10:00+08:00
+updated_at: 2026-09-15T15:50:00+08:00
 priority: critical
 keywords:
   - bootstrap
@@ -22,11 +22,13 @@ summary: P4 bootstrap 的 B1 用 sort:["_id"] 在 15.7 亿文档旧索引上翻�
 questions:
   - P4 bootstrap 为什么跑不起来
   - 作业 id=1 为什么 failed
-load: on-demand
+load: rarely
 related:
   - agent-memory/sessions/2026/2026-09-05-生命周期P4启动失败.md
   - agent-memory/knowledge/architecture-es索引现状.md
 ---
+
+> [已归档 2026-09-15] P4 全量 bootstrap 已完成（2026-09-12 收口），本文归档；仅供复盘，`mem.py search --dir archive` 可检索。
 
 # 失败经验：bootstrap 按 `_id` 排序翻页打爆生产 ES 堆
 

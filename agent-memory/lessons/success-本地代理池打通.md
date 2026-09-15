@@ -3,7 +3,7 @@ title: 成功经验：打通本地开发的 IP 代理池
 type: lesson
 status: active
 created_at: 2026-09-03T17:30:00+08:00
-updated_at: 2026-09-15T09:25:00+08:00
+updated_at: 2026-09-15T15:50:00+08:00
 priority: high
 keywords: [代理池, 蜻蜓代理, 白名单, redis-topic-sync, 出口IP, localIp, 重复推送, 秒拨, 住宅宽带, RDAP, 蜻蜓]
 summary: 本地怎么用上代理池、三个会让人查错方向的坑，以及验证方法
@@ -130,4 +130,4 @@ python3 site-discovery/tools/pancheck.py --file links.txt --require-proxy
 **可迁移教训**：判断代理是不是"机房 IP"要查 RDAP 的网段归属，不要凭代理商的品类名脑补。
 判错了会把排查方向整个带偏（"换住宅代理"这个建议其实是原地打转，因为用的就已经是住宅 IP）。
 
-（本节由 `lessons/failure-haisou搜索接口收紧.md` 迁入，2026-09-12）
+（本节由 `archive/2026/failure-haisou搜索接口收紧.md` 迁入，2026-09-12）

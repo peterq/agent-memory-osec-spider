@@ -3,7 +3,7 @@ title: 工作流：用并行子 Agent + git worktree 同时开发多个站点爬
 type: procedure
 status: active
 created_at: 2026-09-03T15:45:00+08:00
-updated_at: 2026-09-12T12:10:00+08:00
+updated_at: 2026-09-15T15:50:00+08:00
 priority: high
 keywords: [并行开发, worktree, 子agent, 合并, 冲突, 代理池共享, Monitor卡死]
 summary: 一次接入多个新站点时的分工方式：worktree 隔离、共享资源集中准备、冲突面收敛、合并与验收
@@ -14,7 +14,7 @@ load: on-demand
 related:
   - agent-memory/procedures/workflow-新站点调研.md
   - agent-memory/lessons/success-本地代理池打通.md
-  - agent-memory/lessons/failure-haisou搜索接口收紧.md
+  - agent-memory/archive/2026/failure-haisou搜索接口收紧.md
 ---
 
 # 并行开发多站点爬虫
@@ -98,7 +98,7 @@ kuakes 还改了 `deploy.sh` 和 `.vscode/launch.json`；后两批加了约束�
   lastmod 停在 2025-03-07），真正在用的是 `misoso.cc` 的 robots.txt 指向的那份（1254 个文件）；
   且越界的 `disk-N.xml` 返回**假 200**（SPA 兜底 HTML）而不是 404。
 - **haisou**：上午还能跑通的搜索接口，下午对代理池 IP 全量 429。
-  见 `lessons/failure-haisou搜索接口收紧.md`。
+  见 `archive/2026/failure-haisou搜索接口收紧.md`。
 
 ## 8. 合并
 

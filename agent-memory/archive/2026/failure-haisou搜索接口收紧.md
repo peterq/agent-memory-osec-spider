@@ -1,9 +1,9 @@
 ---
 title: 失败经验：haisou.cc 搜索接口在调研当天被收紧，爬虫无法联网验收
 type: lesson
-status: active
+status: archived
 created_at: 2026-09-03T15:40:00+08:00
-updated_at: 2026-09-12T12:10:00+08:00
+updated_at: 2026-09-15T15:50:00+08:00
 priority: high
 keywords: [haisou, 13001, 限流, 代理网段, 调研结论过期, 联网验收, keyword_haisou, 积分, X-HS-Client-Context, FingerprintJS, visitorId]
 summary: haisou.cc 搜索接口对代理池 IP 全量 429；傍晚复查排除了积分、请求头、HTTP/2、会话、匿名身份，锁定为按来源网络的端点级拦截
@@ -11,12 +11,14 @@ questions:
   - haisou 跑不通，13001/请求过于频繁是什么原因
   - X-HS-Client-Context 头怎么来的
   - haisou 积分额度模型是什么
-load: on-demand
+load: rarely
 related:
   - agent-memory/archive/2026/haisou-代码落地与探路记录.md
   - agent-memory/procedures/workflow-新站点调研.md
   - agent-memory/lessons/success-本地代理池打通.md
 ---
+
+> [已归档 2026-09-15] haisou 已下线（decision-2026-09-03-下线haisou），本文归档；仅供复盘，`mem.py search --dir archive` 可检索。
 
 # 失败经验：haisou.cc 搜索接口在调研当天被收紧
 

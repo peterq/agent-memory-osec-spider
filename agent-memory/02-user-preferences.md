@@ -3,10 +3,10 @@ title: 用户偏好与协作约定
 type: preference
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-13T13:59:00+08:00
+updated_at: 2026-09-15T15:40:00+08:00
 priority: high
-keywords: [偏好, 中文, 脚本沉淀, 不可逆操作, dry run, 二次复核, lint双阈值, token, 记忆维护, 子agent, sonnet, 模型选择, 任务简报, agent-tasks, harness记忆, 独立仓库, 敏感信息, AK/SK, 口令, 脱敏]
-summary: 用户对语言、脚本沉淀、记忆维护、thinking 长度、敏感信息禁写，以及删除类不可逆功能上线前必须线上 dry run + 独立复核的明确要求
+keywords: [偏好, 中文, 邮件汇报, 脚本沉淀, 不可逆操作, dry run, 二次复核, lint双阈值, token, 记忆维护, 子agent, sonnet, 模型选择, 任务简报, agent-tasks, harness记忆, 独立仓库, 敏感信息, AK/SK, 口令, 脱敏]
+summary: 用户对语言、脚本沉淀、记忆维护、thinking 长度、敏感信息禁写、任务进度与异常必须及时邮件汇报（scripts/mail/notify.py），以及删除类不可逆功能上线前必须线上 dry run + 独立复核的明确要求
 load: always
 related:
   - agent-memory/00-overview.md
@@ -40,6 +40,10 @@ related:
 12. **[用户确认 2026-09-13] 不可逆操作功能上线前必须线上 dry run + 独立手段二次复核**（数据误删事件警示）：
     删除/清理/判失效等无法撤销的功能，先在线上以只记录模式跑 dry run，再用与新功能无关的方式（CDP 实测、直接查库/ES 等）
     复核变更清单；**不能复用新功能的代码做复核**。dry run 确认符合预期才能正式开启。清单见 `procedures/checklist-不可逆操作上线.md`。
+13. **[用户确认 2026-09-15] 任务进度与异常必须及时邮件汇报**：用户经常不在电脑旁，长任务的开始/里程碑/完成、
+    任何异常或阻塞都要**主动**发邮件，不能只写在会话里等用户回来看。要求「简约美观」：正文写 Markdown，
+    用 `scripts/mail/notify.py` 渲染成 HTML 卡片发送（级别 progress/done/warn/error/info）。
+    何时发、怎么写见 `procedures/workflow-任务进度邮件汇报.md`。
 
 ## 推断的工作习惯（未经用户确认，标记为推断）
 

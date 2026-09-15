@@ -3,14 +3,12 @@ title: 失败经验：品牌版 Chrome 137+ 忽略 --load-extension、138+ 用�
 type: lesson
 status: active
 created_at: 2026-09-13T11:00:00+08:00
-updated_at: 2026-09-13T14:45:00+08:00
+updated_at: 2026-09-15T15:50:00+08:00
 priority: high
 keywords: [Chrome, load-extension, ExtensionSettings, Tampermonkey, @match, 302 重定向, Allow User Scripts, headless, 企业策略]
 questions:
-  - 为什么 headless Chrome 加了 --load-extension 却看不到扩展
-  - 怎么让容器里的 Chrome 自动装上 Tampermonkey
+  - headless Chrome 加了 --load-extension 为什么看不到扩展
   - 油猴脚本装上了但页面不执行是怎么回事
-  - Tampermonkey 就绪要等多久, 怎么把等待挪到构建期
 summary: 2026-09-13 fc-chrome 上线实测：品牌版 Chrome 137+ 忽略 --load-extension，改企业策略 force_installed 装 Tampermonkey；138+ 还要打开 Allow User Scripts（预热 profile 种子解决）；CDP 不能 attach chrome-extension:// target；油猴路径"装上不执行"最终是 @match 没覆盖 SSO 302 首跳页
 load: on-demand
 related:

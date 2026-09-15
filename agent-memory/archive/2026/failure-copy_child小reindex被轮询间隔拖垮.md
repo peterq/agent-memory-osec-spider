@@ -1,9 +1,9 @@
 ---
 title: 失败经验：大量小 _reindex 被固定 10 s 轮询间隔拖垮
 type: lesson
-status: active
+status: archived
 created_at: 2026-09-05T15:40:00+08:00
-updated_at: 2026-09-12T22:36:00+08:00
+updated_at: 2026-09-15T15:50:00+08:00
 priority: high
 keywords:
   - bootstrap
@@ -17,11 +17,13 @@ keywords:
 summary: bootstrap B3c copy_child 上万个小 reindex 被固定 3 s 轮询拖垮，改指数退避后吞吐恢复
 questions:
   - P4 第二次演练，copy_child 为什么这么慢（轮询空等）
-load: on-demand
+load: rarely
 related:
-  - agent-memory/lessons/failure-bootstrap按id排序打爆ES堆.md
+  - agent-memory/archive/2026/failure-bootstrap按id排序打爆ES堆.md
   - agent-memory/sessions/2026/2026-09-05-生命周期P4演练.md
 ---
+
+> [已归档 2026-09-15] P4 全量 bootstrap 已完成（2026-09-12 收口），本文归档；仅供复盘，`mem.py search --dir archive` 可检索。
 
 # 失败经验：大量小 `_reindex` 被固定轮询间隔拖垮
 

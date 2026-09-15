@@ -3,23 +3,23 @@ title: 可迁移模式：长周期生产巡检（全量 bootstrap 实战）
 type: lesson
 status: active
 created_at: 2026-09-06T05:50:00+08:00
-updated_at: 2026-09-15T05:55:00+08:00
+updated_at: 2026-09-15T15:50:00+08:00
 priority: high
 keywords: [巡检, bootstrap, 子Agent, 后台进程, 隧道, keepalive, progress, _count 差分, lc-check, watch 脚本, reindex, 吞吐, verify, repair, 对拍, rethrottle, heap]
-summary: 派子 Agent 做数小时生产巡检的可操作清单（原 98 条经验按主题压缩）：前台等待、隧道 keepalive、复制阶段用 _count 差分而非 progress、watch 脚本静默降级要识别；具体吞吐数值另见 knowledge/domain-bootstrap吞吐实测数据.md
+summary: 派子 Agent 做数小时生产巡检的可操作清单（原 98 条经验按主题压缩）：前台等待、隧道 keepalive、复制阶段用 _count 差分而非 progress、watch 脚本静默降级要识别；具体吞吐数值另见 archive/2026/domain-bootstrap吞吐实测数据.md
 load: on-demand
 related:
   - agent-memory/current/tasks.md
   - agent-memory/procedures/workflow-部署.md
-  - agent-memory/lessons/failure-copy_child真正瓶颈是子文档量.md
-  - agent-memory/knowledge/domain-bootstrap吞吐实测数据.md
+  - agent-memory/archive/2026/failure-copy_child真正瓶颈是子文档量.md
+  - agent-memory/archive/2026/domain-bootstrap吞吐实测数据.md
 ---
 
 # 可迁移模式：长周期生产巡检
 
 ## 问题
 
-P4 全量 bootstrap（作业 id=8，约 2 天）需要主控派子 Agent 分轮巡检 4~6 小时。多轮巡检沉淀出以下可直接照做的清单；具体实测吞吐数值见 `knowledge/domain-bootstrap吞吐实测数据.md`。
+P4 全量 bootstrap（作业 id=8，约 2 天）需要主控派子 Agent 分轮巡检 4~6 小时。多轮巡检沉淀出以下可直接照做的清单；具体实测吞吐数值见 `archive/2026/domain-bootstrap吞吐实测数据.md`。
 
 ## 经验清单（按主题分组，可直接照做）
 
@@ -49,7 +49,7 @@ P4 全量 bootstrap（作业 id=8，约 2 天）需要主控派子 Agent 分轮�
 - 幂等补跑窗口 `created≈0`，进度只能看 `version_conflicts`；补跑段结束信号是 vconf 从千万级归零 + `created` 与 `total` 同量级（比 `_count` 转正早约 20~25 分钟），是否处于重跑段要单独判断（`_tasks.total` 大而 `created≈0`、vconf 巨大 = 无效整窗重跑，非稀疏窗口），完成时间估算必须分段（重跑段 / 非重跑段差异可达 1.7×）。
 - resume 后旧 `failedSlices` 会被自动重跑（`done` 只来自 `progress.Slices`，被清掉的失败键不在 done 里）；判据是 `created≈0` + vconf 巨大 + `shortfallSlices` 增量≈槽增量同时出现，此时 `_count` 差分（含负值）无意义，改用 `child:` 槽速率估算，且要把整段时间加回总完成时间。
 - 「剩余窗口数 ÷ 窗口推进速率」可与 `_count` 差分交叉验证提高可信度，但剩余段窗口体量不均时两口径会显著背离（曾差 2.5 倍），此时以 `_count` 差分为主，槽口径只用于判断是否卡死。
-- 不同时段（夜间/清晨/白天/尾段）、不同窗口体量下 copy_child 吞吐差异很大，且与 r%（真实慢请求占比）、窗口体量强相关，完成时间必须按昼夜和窗口体量分段加权估算，不能用单一均值——具体数值见 `knowledge/domain-bootstrap吞吐实测数据.md`。
+- 不同时段（夜间/清晨/白天/尾段）、不同窗口体量下 copy_child 吞吐差异很大，且与 r%（真实慢请求占比）、窗口体量强相关，完成时间必须按昼夜和窗口体量分段加权估算，不能用单一均值——具体数值见 `archive/2026/domain-bootstrap吞吐实测数据.md`。
 - `res_long_2026` `join=file` `_count` 是净值，会被业务 dual_write 的 `delete-by-query` 抵消，晚高峰可能出现持续净负增长；判别：连采仍降 + `created/total` 正常 + child 槽仍在涨 = 业务删除而非故障，非双写小时段该口径才可信。
 - 尾段（progress>0.9）主口径切换为 child 槽/progress 线性推进，`_count` 仅作数据体量参考。
 

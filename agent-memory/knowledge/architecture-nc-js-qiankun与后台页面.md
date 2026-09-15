@@ -3,14 +3,14 @@ title: NC-JS 架构：qiankun 微前端机制与后台页面写法
 type: knowledge
 status: active
 created_at: 2026-09-12T11:25:00+08:00
-updated_at: 2026-09-12T12:10:00+08:00
+updated_at: 2026-09-15T15:50:00+08:00
 priority: high
 keywords: [qiankun, 微前端, spiderAdmin, 后台页面, 新增页面, 队列监控, 资源生命周期, 架构图页, res_lc, 分表, 资源列表, 事件流水, 表诊断, qiankun-head, 样式丢失]
 summary: qiankun 主应用注册/子应用生命周期、本地开发流程；spiderAdmin 新增后台页面写法与落点（队列监控、资源生命周期各页、架构图页、res_lc 分表数据只读页面）；页面/样式相关坑
 questions:
-  - 我要改后台前端，加一个后台页面该怎么加
-  - qiankun 子应用 / NC ADMIN / apps.json 是什么
-  - 后台怎么看 res_lc_* 分表数据，资源列表/分表统计/事件流水/表诊断页面在哪
+  - 后台前端加一个页面该怎么加
+  - qiankun 子应用 / apps.json 是什么
+  - 后台哪里看 res_lc_* 分表数据
 load: on-demand
 related:
   - agent-memory/knowledge/architecture-nc-js.md

@@ -3,7 +3,7 @@ title: 决策：下线 haisou.cc，代码保留但默认不启动
 type: decision
 status: active
 created_at: 2026-09-03T21:20:00+08:00
-updated_at: 2026-09-12T12:10:00+08:00
+updated_at: 2026-09-15T15:50:00+08:00
 priority: high
 keywords: [haisou, 下线, 13001, 端点级拦截, 站点放弃, keyword_haisou, 探路]
 summary: haisou.cc 被站点端点级拦截且单 IP 产出上限极低，决定下线；代码保留、默认不启动、探路 cron 撤除
@@ -12,7 +12,7 @@ questions:
   - haisou 还能不能复活
 load: on-demand
 related:
-  - agent-memory/lessons/failure-haisou搜索接口收紧.md
+  - agent-memory/archive/2026/failure-haisou搜索接口收紧.md
   - agent-memory/knowledge/domain-站点-2609接入批次.md
 ---
 

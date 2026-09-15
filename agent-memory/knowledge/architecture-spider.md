@@ -3,15 +3,14 @@ title: SPIDER 爬虫仓库结构
 type: knowledge
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T12:10:00+08:00
+updated_at: 2026-09-15T15:50:00+08:00
 priority: high
 keywords: [SPIDER, osec-spider-go, 爬虫, gateway, 子命令, bnd, 下载调度, bbs, kkpans, 配置节, yaml, Duration, 线上配置同步, 缺省值, 配置怎么读]
 summary: osec-spider-go 的入口子命令、目录分层、编译状态、bnd_resolver 关键类型、写新爬虫可复用要点（含配置节 yaml/Duration/缺省值写法）与多角色配置读取机制；队列约定（resourcePreCheck/gw_remote_queue 等）已拆到 knowledge/architecture-spider-队列约定.md
 questions:
-  - 我要改爬虫/加一个站点，该看哪个子命令
-  - 新增服务配置节，yaml 怎么解析 Duration
-  - 泛型队列 PushTask 怎么写，GwQueue 类型对不上怎么办
-  - 任务队列怎么消费，seq 是什么，永久失败怎么处理
+  - 我要改爬虫/加站点，该看哪个子命令
+  - 新增配置节 yaml 怎么解析 Duration
+  - 泛型队列 PushTask 怎么写，seq/永久失败是什么
 load: on-demand
 related:
   - agent-memory/knowledge/architecture-系统总览.md

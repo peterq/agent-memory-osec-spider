@@ -3,15 +3,12 @@ title: 网盘分享文件转存下载链路（resolve → download → OSS）
 type: knowledge
 status: active
 created_at: 2026-09-13T19:05:00+08:00
-updated_at: 2026-09-13T19:05:00+08:00
+updated_at: 2026-09-15T15:50:00+08:00
 priority: high
 keywords: [转存下载, share_download, resolve_link, download_scheduler, 账号池, refresh token, InvalidParameter.RefreshToken, download2oss, 下载组, 链路体检]
 questions:
-  - 分享链接里的文件是怎么被转存、解析成下载地址并落到 OSS 的
-  - 转存下载链路的进程跑在哪台机器，队列和账号池在 redis 哪些键
-  - 怎么检查转存下载链路是否通畅，脚本在哪
-  - 为什么 share_download_resolve_link 一直报 InvalidParameter.RefreshToken
-  - 下载组进度（解析了多少、下载了多少）在哪张表
+  - 分享文件怎么被转存、解析成下载地址落到 OSS
+  - 转存下载链路进程/队列/账号池在哪，怎么体检
 summary: SPIDER 下载调度链路的代码结构、redis 键/MySQL 表、阿里/百度解析方式、三条下载路径，以及 2026-09-13 体检结论：链路空转，阿里 3 个账号 refresh token 全失效、百度 0 可用账号；体检脚本 scripts/dl_chain_health.sh
 load: on-demand
 related:

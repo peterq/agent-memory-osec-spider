@@ -3,15 +3,13 @@ title: 迅雷分享爬取（xlLoadShare）：客户端行为、接口、失败�
 type: knowledge
 status: active
 created_at: 2026-09-15T06:46:00+08:00
-updated_at: 2026-09-15T10:05:00+08:00
+updated_at: 2026-09-15T15:50:00+08:00
 priority: high
 keywords: [xlLoadShare, 迅雷, xunleipan, 失败率, 顶层文件, 空文件夹, share_status, ShareStatusError, submitInvalidDryRun, xl-fail-export, xl_share_probe, v2xlLoadShare]
 questions:
-  - xlLoadShare 队列为什么失败率高，失败都是什么原因
-  - 怎么不经爬虫直接查一个迅雷分享的顶层结构和文件夹内容
-  - 迅雷分享状态码该重试还是判失效
-  - 迅雷失效上报 dry run 开关在哪，怎么正式开启
-  - 历史失败的迅雷分享怎么导出重投
+  - xlLoadShare 失败率高是什么原因
+  - 怎么直接查一个迅雷分享的结构
+  - 迅雷失效上报 dry run 开关在哪
 summary: xlLoadShare 失败率修复(09-15 已上线)：顶层文件入批次、状态码按共用码表判定、空分享永久失败；失效上报仍 dry run；接口/探针/导出重投工具用法
 load: on-demand
 related:

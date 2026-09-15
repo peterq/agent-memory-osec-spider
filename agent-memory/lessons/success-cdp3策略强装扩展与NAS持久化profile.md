@@ -3,13 +3,12 @@ title: 成功经验：品牌版 Chrome 用企业策略 + 本机 update_url 装 N
 type: lesson
 status: active
 created_at: 2026-09-13T14:40:00+08:00
-updated_at: 2026-09-13T14:40:00+08:00
+updated_at: 2026-09-15T15:50:00+08:00
 priority: medium
 keywords: [扩展安装, ExtensionSettings, override_update_url, pack-extension, disable-background-networking, developerPrivate.autoUpdate, NAS, tar, profile 持久化, NFS 性能]
 questions:
-  - 怎么让品牌版 headless Chrome 装 NAS 上的自定义扩展
+  - 怎么让 headless Chrome 装 NAS 上的自定义扩展
   - 策略强装的扩展改了版本为什么不更新
-  - Chrome profile 存 NAS 为什么慢、怎么存
 summary: 2026-09-13 fc-chrome 实测可行的扩展启用链路（解包目录→chrome --pack-extension→本机 /cdp3-ext update.xml→策略 force_installed+override_update_url→去掉 --disable-background-networking→autoUpdate 主动升级）与 profile 持久化要点（只打包 Default/+Local State 成单 tar、Browser.close 而非 SIGTERM）
 load: on-demand
 related:

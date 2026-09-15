@@ -3,15 +3,13 @@ title: 失败经验：CDP 主世界注入脚本用 console.log 回传，被页�
 type: lesson
 status: active
 created_at: 2026-09-13T15:50:00+08:00
-updated_at: 2026-09-13T15:50:00+08:00
+updated_at: 2026-09-15T15:50:00+08:00
 priority: high
 keywords: [console.log, CDP, addScriptToEvaluateOnNewDocument, 主世界注入, fc-chrome, kdocCloud, DOC_SPIDER, 油猴, Tampermonkey, monkey-patch]
 summary: fc-chrome + kdocCloud.ts 真实文档只回传一条 start 就彻底沉默——根因是金山文档自己的代码加载后整体替换了 window.console.log，之后所有 console.log 调用都进了替换后的函数，CDP 完全看不到；JS 其实一直在正常跑
 questions:
-  - 为什么 CDP 注入脚本只打出第一条日志就再也没有输出了
-  - 用 console.log 给 doc-crawler/上层回传协议，什么情况下会突然全部收不到
-  - 页面看起来"卡死"，但定时器明明还在跑，可能是什么原因
-  - fc-chrome inject=1 主世界注入脚本调试思路
+  - CDP 注入脚本为什么只打出第一条日志就沉默
+  - 用 console.log 回传协议什么情况会全部收不到
 load: on-demand
 related:
   - agent-memory/agent-tasks/2026-09-13-fc-chrome-online/99-notes.md

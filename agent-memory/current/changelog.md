@@ -3,7 +3,7 @@ title: 项目变更记录（总览归档）
 type: knowledge
 status: active
 created_at: 2026-09-12T11:30:00+08:00
-updated_at: 2026-09-15T09:25:00+08:00
+updated_at: 2026-09-15T15:50:00+08:00
 priority: low
 keywords: [变更记录, changelog, 历史, 总览归档, 生命周期改造, 队列v2, queue-admin, 站点接入, 配置v2, GitHub OAuth]
 summary: 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪"
@@ -20,6 +20,7 @@ related:
 
 ## 2026-09-15
 
+- **2026-09-15** 新增 `scripts/mail/notify.py` Markdown→HTML 邮件汇报脚本（用户要求进度/异常及时邮件）→ `procedures/workflow-任务进度邮件汇报.md`、`02-user-preferences.md` 第 13 条
 - 09:00 xlLoadShare 失败率修复上线（SPIDER `3270e10`：顶层文件入批次、状态码共用码表、空分享永久失败、失效上报 dry run）；SLS 导出工具 `tools/xl-fail-export` + 重投 288 条 → `knowledge/domain-迅雷分享爬取.md` §5/§6、`sessions/2026/2026-09-15-xlLoadShare修复上线.md`
 - 06:46 xlLoadShare 失败率排查：任务级 39% 失败 = 客户端丢顶层文件 75% + 空文件夹 25%，状态码全当临时错误重试放大；新增探针 `scripts/xl_share_probe.sh` → `knowledge/domain-迅雷分享爬取.md`、`sessions/2026/2026-09-15-xlLoadShare失败率排查.md`
 
@@ -48,7 +49,7 @@ related:
 - 15:00 用户确认弃用 report/likes/dislikes/addViews 等 update ES 文档的接口，不做 v3；v3 detail/fileCtx 结构兼容性核对完成。→ `decisions/decision-2026-09-12-弃用文档更新类接口.md`、`knowledge/api-v3-detail-filectx兼容性分析.md`
 - 07:00 记忆目录迁至独立仓库 `~/dev/projects/peterq/agent-memory-osec-spider`。→ `02-user-preferences.md`
 - 启动记忆系统瘦身（常驻 5.4 万字超规则，`scripts/mem/mem.py` 落地）。→ `decisions/decision-2026-09-12-记忆系统瘦身与脚本化加载.md`
-- 02:17 P4 shortfall 89 条定性为 longBoundary 漂移（零丢失），mover 归位 102,601 父文档，终态对拍 0.001% 级。→ `lessons/failure-longBoundary漂移导致父子跨索引与shortfall误报.md`
+- 02:17 P4 shortfall 89 条定性为 longBoundary 漂移（零丢失），mover 归位 102,601 父文档，终态对拍 0.001% 级。→ `archive/2026/failure-longBoundary漂移导致父子跨索引与shortfall误报.md`
 
 ## 2026-09-11
 
@@ -94,7 +95,7 @@ related:
 
 - 按 `./deploy.sh ps` 清理线上无进程的爬虫代码（21 个命令、26,228 行，含 09-04 第二轮补删）。→ `decisions/decision-2026-09-03-清理下线爬虫代码.md`
 - 并行开发并合并站点发现首轮筛出的 6 个站点爬虫（4 个子 Agent + 独立 worktree）。→ `sessions/2026/2026-09-03-并行开发6站爬虫.md`、`knowledge/domain-站点-2609接入批次.md`、`procedures/workflow-并行开发多站点爬虫.md`
-- 下线 `haisou.cc`（搜索端点对代理网段做端点级拦截 `13001`，客户端侧改造全部绕不开）。→ `decisions/decision-2026-09-03-下线haisou.md`、`lessons/failure-haisou搜索接口收紧.md`
+- 下线 `haisou.cc`（搜索端点对代理网段做端点级拦截 `13001`，客户端侧改造全部绕不开）。→ `decisions/decision-2026-09-03-下线haisou.md`、`archive/2026/failure-haisou搜索接口收紧.md`
 - 统一 7 个新爬虫的保活语义（`alive()` 改为 `CommitResLink` 返回 nil 时调用）。→ `lessons/success-爬虫保活语义.md`
 - 建立常态化「站点发现」任务并跑完首轮（初筛 47 / 深挖 23 / 合格 6）。→ `procedures/workflow-站点发现.md`、`sessions/2026/2026-09-03-站点发现任务首轮.md`
 - 决定全站扫描不在启动时触发。→ `decisions/decision-2026-09-03-全站扫描不在启动时触发.md`

@@ -3,7 +3,7 @@ title: 站点知识：2026-09 接入的 5 个资源站（dyyjmax/fuxipan/feikuai
 type: knowledge
 status: active
 created_at: 2026-09-03T15:50:00+08:00
-updated_at: 2026-09-12T12:10:00+08:00
+updated_at: 2026-09-15T15:50:00+08:00
 priority: high
 keywords: [dyyjmax, fuxipan, feikuai, kuakes, haisou, Flarum, 苹果CMS, magicpost, 站点接入, 子命令]
 summary: 本批 5 个站点的形态、子命令、规模、各自的坑与实现状态；详细规格见各自 PRD
@@ -14,7 +14,7 @@ load: on-demand
 related:
   - agent-memory/knowledge/domain-站点-misoso.md
   - agent-memory/knowledge/domain-站点-kkpans.md
-  - agent-memory/lessons/failure-haisou搜索接口收紧.md
+  - agent-memory/archive/2026/failure-haisou搜索接口收紧.md
   - agent-memory/procedures/workflow-并行开发多站点爬虫.md
 ---
 
@@ -76,7 +76,7 @@ PRD 一律在 `osec-spider-go/PRD/2609/<域名>.md`；
 - **百度 `share_code` 已自带开头的 `1`**，正确拼接是 `pan.baidu.com/s/{share_code}`，
   再套 `s/1{code}` 模板会双写导致全部失效。
 - **当前跑不通**：`shares/search` 对代理池 IP 一律返回 `13001`(HTTP 429)，
-  全新代理 IP 首次请求即被拒。详见 `lessons/failure-haisou搜索接口收紧.md`。
+  全新代理 IP 首次请求即被拒。详见 `archive/2026/failure-haisou搜索接口收紧.md`。
 
 ## 共同约定（本批 6 站一致）
 

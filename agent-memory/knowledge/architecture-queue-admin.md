@@ -3,16 +3,13 @@ title: queue-admin 队列监控管理系统
 type: knowledge
 status: active
 created_at: 2026-09-04T18:10:00+08:00
-updated_at: 2026-09-12T12:10:00+08:00
+updated_at: 2026-09-15T15:50:00+08:00
 priority: high
 keywords: [queue-admin, 队列监控, QueueAdminRpc, detailSchema, 7542, 抢主锁, dlock, 巡检, 告警, fail_window, link_key]
 summary: 队列 v2 的监控管理系统：已并入网关进程的架构、端口、schema 解耦机制、抢主锁、巡检工具与已知数据缺口
 questions:
-  - 队列告警怎么配，失败率窗口和阈值是多少
-  - 告警历史在哪看，告警为什么没发
-  - queue-admin 队列出问题了怎么看，任务详情 schema 哪来的
-  - 队列监控端口连不上怎么办
-  - 一条链接为什么没入库，怎么看它的完整时间线
+  - 队列告警怎么配，阈值多少，历史在哪看
+  - queue-admin 队列出问题怎么看，端口连不上怎么办
 load: on-demand
 related:
   - agent-memory/knowledge/architecture-spider.md
