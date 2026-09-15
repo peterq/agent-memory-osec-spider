@@ -3,7 +3,7 @@ title: haisou.cc 已落地代码与常态化探路记录（已下线，归档）
 type: archive
 status: archived
 created_at: 2026-09-12T11:35:00+08:00
-updated_at: 2026-09-15T23:59:00+08:00
+updated_at: 2026-09-16T10:40:00+08:00
 priority: low
 keywords: [haisou, keyword_haisou, haisou_watch.py, 积分账本, 探路, 归档]
 summary: haisou 下线前已写的爬虫代码（积分账本、未联网验收）与每日探路脚本的实现记录；站点已于 2026-09-03 下线，只在考虑复活 haisou 时读

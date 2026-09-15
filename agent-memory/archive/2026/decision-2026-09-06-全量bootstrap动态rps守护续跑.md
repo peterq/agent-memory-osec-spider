@@ -3,7 +3,7 @@ title: 决策：v2 延迟熔断后以 rps 2500 起步 + 动态峰值守护续跑
 type: archive
 status: archived
 created_at: 2026-09-06T11:50:00+08:00
-updated_at: 2026-09-15T23:59:00+08:00
+updated_at: 2026-09-16T10:40:00+08:00
 priority: high
 keywords: [bootstrap, id=8, v2 延迟, 熔断, rps, 动态峰值, 守护, rethrottle, res_lc_job params, lc_adaptive_rps]
 summary: 11:08 v2 搜索延迟 13.5× 熔断后，用户选择 rps 2500 起步并由监测程序按 10 分钟区间的慢请求占比动态调峰续跑；参数经 UPDATE res_lc_job 持久化 + _rethrottle 即时生效

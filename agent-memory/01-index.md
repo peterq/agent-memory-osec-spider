@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-16T06:39:46+08:00
+updated_at: 2026-09-16T06:54:18+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -16,7 +16,7 @@ load: always
 定位到文件后 `mem.py outline <file>` 看章节，再 `mem.py body <file> --section <标题>` 只读需要的一段。
 维护方式：改目标文件 Front Matter（summary / keywords / questions），然后运行 `scripts/mem/mem.py index --write`。
 
-# agent-memory 启动包（脚本生成, 137 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
+# agent-memory 启动包（脚本生成, 138 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
 
 ## 根目录 (3)
 - 00-overview.md | crit | 2026-09-15 | 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件 | 网盘资源爬取、版权取证、COMMON
@@ -24,13 +24,15 @@ load: always
   ? 各仓库的职责分别是什么 / go.mod replace 现状是怎样的
 - 02-user-preferences.md | high | 2026-09-15 | 用户对语言、脚本沉淀、记忆维护、thinking 长度、敏感信息禁写、任务进度与异常必须及时邮件汇报（scripts/mail/notify.py），以及删除… | 偏好、中文、邮件汇报
 
-## current/ (5)
+## current/ (6)
 - current/tasks.md | crit | 2026-09-16 | 仍在推进/阻塞/待决策的事项（P0 误删事故重爬中；P5 顺序 阶段C→A'→阶段D）；已上线任务在 archive | 任务、进度、待办
   ? 当前该做什么，有哪些待办
 - current/open-questions.md | high | 2026-09-15 | 当前无待用户确认问题（阶段 D 已按裁定启用；进度在 tasks.md） | 待确认、xlLoadShare、迅雷
   ? 当前有哪些待用户确认的问题
 - current/risks.md | high | 2026-09-14 | 影响开发与运维安全的已知风险点；最高 R9 lifecycle_checker 误删 115.6 万资源（修复已上线、恢复待决策） | lifecycle_checker误删、风险、阻塞
   ? 密钥、安全相关的风险在哪看
+- current/proposals-需求与优化候选.md [draft] | medi | 2026-09-16 | Agent 基于事故/风险/待办提出的 12 条候选需求与优化（取证包、软删可回滚、删除熔断、checker 统一、CI、密钥治理、部署回滚等），每条附依据与… | 需求候选、优化提案、取证包
+  ? 项目下一步有哪些值得做的需求或优化 / 取证证据链、软删除、删除熔断这些提案的依据是什么
 - current/changelog.md | low | 2026-09-15 | 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪 | 变更记录、changelog、历史
 - current/tasks-backlog.md | low | 2026-09-13 | 从 tasks.md 拆出的低优先级/等人工/归档遗留事项：文档爬虫 FC 6 项人工步骤、归档任务遗留待办、P3 代码小修 | backlog、P3、文档爬虫
   ? 文档爬虫 FC 自动化还差哪些人工步骤 / 有哪些 P3 低优先级待办
@@ -178,8 +180,8 @@ load: always
   ? GitHub OAuth App 的 client_id 在哪查 / 1second 组织的回调地址怎么配置
 
 ## sessions/ (35 个, 仅列最近 3 个; 其余用 mem.py search 找)
-- sessions/2026/2026-09-05-生命周期P4启动失败.md | high | 2026-09-15 | STORAGE 双机重部并核验首写继承生效, 用新工具补齐双写窗口 3551 条文档, P4 bootstrap 启动 10 分钟后因两个实现缺陷失败并停止(… | 生命周期、P4、bootstrap
-- sessions/2026/2026-09-05-生命周期P4演练.md | high | 2026-09-15 | 网关双机重部热修分支成功；缺陷 A/B 在生产验证通过；新发现 copy_child 轮询瓶颈，全量未启动 | P4、bootstrap、演练
-- sessions/2026/2026-09-03-并行开发6站爬虫.md | medi | 2026-09-15 | 用 4 并发子 Agent + worktree 接入 6 个站点，5 站验收通过并合并，haisou 因站点收紧未能验收 | 并行开发、worktree、6站爬虫
+- sessions/2026/2026-09-05-生命周期P4启动失败.md | high | 2026-09-16 | STORAGE 双机重部并核验首写继承生效, 用新工具补齐双写窗口 3551 条文档, P4 bootstrap 启动 10 分钟后因两个实现缺陷失败并停止(… | 生命周期、P4、bootstrap
+- sessions/2026/2026-09-05-生命周期P4演练.md | high | 2026-09-16 | 网关双机重部热修分支成功；缺陷 A/B 在生产验证通过；新发现 copy_child 轮询瓶颈，全量未启动 | P4、bootstrap、演练
+- sessions/2026/2026-09-03-并行开发6站爬虫.md | medi | 2026-09-16 | 用 4 并发子 Agent + worktree 接入 6 个站点，5 站验收通过并合并，haisou 因站点收紧未能验收 | 并行开发、worktree、6站爬虫
 
 ## archive/ (18 个, 已归档不列出; 需要时 mem.py search --dir archive)

@@ -3,7 +3,7 @@ title: 决策：全量 bootstrap 吞吐熔断后原地 resume 而非重跑
 type: archive
 status: archived
 created_at: 2026-09-06T07:35:00+08:00
-updated_at: 2026-09-15T23:59:00+08:00
+updated_at: 2026-09-16T10:40:00+08:00
 priority: high
 keywords: [bootstrap, id=8, 熔断, resume, 吞吐, windowTargetDocs, copy_parent, 窗口固定开销]
 summary: 09-06 07:22 作业 id=8 因 copy_parent 吞吐 <2000 docs/s 被 pause；主控判定为作业侧窗口固定开销而非集群压力，决定原地 resume 并修订吞吐熔断条款
