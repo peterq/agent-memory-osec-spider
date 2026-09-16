@@ -3,7 +3,7 @@ title: 项目变更记录（总览归档）
 type: knowledge
 status: active
 created_at: 2026-09-12T11:30:00+08:00
-updated_at: 2026-09-16T09:30:00+08:00
+updated_at: 2026-09-16T09:50:00+08:00
 priority: low
 keywords: [变更记录, changelog, 历史, 总览归档, 生命周期改造, 队列v2, queue-admin, 站点接入, 配置v2, GitHub OAuth]
 summary: 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪"
@@ -19,6 +19,7 @@ related:
 > **原文叙述在各自的 session / decision 文件里**，本文件不复制正文。需要细节就按指针读那一个文件。
 
 ## 2026-09-16
+- 文档爬虫新增腾讯文档表格解析（云端脚本双格式 + 前端识别），本地端到端 6 文档全通，待用户确认合并 → `sessions/2026/2026-09-16-腾讯文档表格解析.md`、`knowledge/domain-腾讯文档表格解析.md`
 
 - 2026-09-16 飞书文档解析接入开发完成（docx + 多维表格，云端脚本拆 runtime/站点，14 条真实文档验证），待用户确认合并 → `sessions/2026/2026-09-16-飞书文档解析接入.md`、`knowledge/domain-飞书文档解析.md`
 - 08:30 修 `scripts/mail/notify.py` 邮件正文未渲染（`env python3` 命中 miniforge 无 markdown 模块，静默退化 `<pre>`）：shebang 固定系统 python + 自动换解释器 + 内置兜底渲染器 → `lessons/failure-notify脚本静默降级把原始Markdown发成邮件.md`

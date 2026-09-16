@@ -3,7 +3,7 @@ title: 领域知识：腾讯文档(docs.qq.com)表格的取数接口与两种数
 type: knowledge
 status: active
 created_at: 2026-09-16T08:55:00+08:00
-updated_at: 2026-09-16T09:20:00+08:00
+updated_at: 2026-09-16T09:55:00+08:00
 priority: high
 keywords: [腾讯文档, docs.qq.com, opendoc, dop-api, protobuf, dver, 文档爬虫, qqSheet, kdocCloud]
 questions:
@@ -33,7 +33,7 @@ related:
 
 ## 3. 格式 A：`dver 3.0.0`（`text[0]` 是对象，含 `block_datas`）[事实]
 - `initialAttributedText.text[0].block_datas[i].related_sheet` = base64 → zlib（头 `78 01`）→ protobuf。
-- 结构：`root.f1` → 重复 `f5` 区段 `{f1: type}`；**type 18** 的 `f19` 是单元格数据：`f5` 共享字符串表（重复 `f1{f1:纯文本}` → plain[]；重复 `f2{重复 f3 run{f3{f1:文本}, f7{f11{f1:超链接}}}}` → rich[]，两张表各自按顺序编号），重复 `f6` 单元格 `{f1:row, f2:col, f3{f1:类型, f2{f1:索引}}}`：类型 4 → plain[索引]，6 → rich[索引]，**2 → numbers[索引]**（`f5` 的第三种条目 `f3{f1: fixed64 double}` 按顺序编号；序号/年份/纯数字提取码都走这里，文档 `DYU5Idmdid2JjVmxj` 一个 sheet 就有 2,846 个），0 → 空样式；0 值字段在 wire 上省略。
+- 结构：`root.f1` → 重复 `f5` 区段 `{f1: type}`；**type 18** 的 `f19` 是单元格数据：`f5` 共享字符串表（重复 `f1{f1:纯文本}` → plain[]；重复 `f2{重复 f3 run{f3{f1:文本}, f7{f11{f1:超链接}}}}` → rich[]，两张表各自按顺序编号），重复 `f6` 单元格 `{f1:row, f2:col, f3{f1:类型, f2{f1:索引}}}`：类型 4 → plain[索引]，6 → rich[索引]，**2 → numbers[索引]**（`f5` 的第三种条目 `f3{f1: fixed64 double}` 按顺序编号；序号/年份/纯数字提取码都走这里，文档 `DYU5Idmdid2JjVmxj` 一个 sheet 就有 2,846 个），0 → 空样式；0 值字段在 wire 上省略。[待确认] `DYU5Idmdid2JjVmxj` 首 sheet 2,846 个类型 2 索引各不相同但 numbers 表只有 2,718 条，尾部 129 个（行 ≥1360）越界；实现按空单元格处理、不计 unknownCellTypes。想复核可单独请求 1300~1481 行区块看表是否补全（本次两次请求都网络超时未做）。
 - 区块范围由 `block_start_row/block_end_row` 控制，可一次请求 0~4999 拿整表（按 `max_row` 截断）；**越界不报错而是退回第一块**，循环必须以 `maxRow` 为终止并校验返回块 `end_row_index >= start`。
 - 对账：doc `DR1paWVp2cWxmc3NW` tab BB08J2 1024 行 968 个唯一分享 id，与原始字节正则一致（正则多出的全是 URL 后跟长度字节 `h` 的伪 id）。
 

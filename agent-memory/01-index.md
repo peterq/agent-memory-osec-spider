@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-16T09:05:53+08:00
+updated_at: 2026-09-16T09:17:19+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -16,7 +16,7 @@ load: always
 定位到文件后 `mem.py outline <file>` 看章节，再 `mem.py body <file> --section <标题>` 只读需要的一段。
 维护方式：改目标文件 Front Matter（summary / keywords / questions），然后运行 `scripts/mem/mem.py index --write`。
 
-# agent-memory 启动包（脚本生成, 154 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
+# agent-memory 启动包（脚本生成, 158 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
 
 ## 根目录 (3)
 - 00-overview.md | crit | 2026-09-16 | 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件 | 网盘资源爬取、版权取证、COMMON
@@ -25,7 +25,7 @@ load: always
 - 02-user-preferences.md | high | 2026-09-15 | 用户对语言、脚本沉淀、记忆维护、thinking 长度、敏感信息禁写、任务进度与异常必须及时邮件汇报（scripts/mail/notify.py），以及删除… | 偏好、中文、邮件汇报
 
 ## current/ (6)
-- current/tasks.md | crit | 2026-09-16 | 仍在推进/阻塞/待决策的事项：腾讯文档表格解析开发中（worktree，合并前需确认）、十项提案并行开发、P5 阶段 D 灰度爬坡、误删事故收尾；长尾待办在 … | 任务、进度、待办
+- current/tasks.md | crit | 2026-09-16 | 仍在推进/阻塞/待决策的事项：腾讯文档表格解析已完成待用户确认合并、十项提案并行开发、P5 阶段 D 灰度爬坡、误删事故收尾；长尾待办在 tasks-back… | 任务、进度、待办
   ? 当前该做什么，有哪些待办 / 腾讯文档解析任务进展到哪了
 - current/open-questions.md | high | 2026-09-15 | 当前无待用户确认问题（阶段 D 已按裁定启用；进度在 tasks.md） | 待确认、xlLoadShare、迅雷
   ? 当前有哪些待用户确认的问题
@@ -66,7 +66,7 @@ load: always
 - decisions/decision-2026-09-16-阿里云盘空目录分享判定为有效.md | high | 2026-09-16 | 阿里云盘 file_count==0 时新旧实现结论不同，裁定判 Valid（无业务码不主动认定失效） | panvalid、阿里云盘、file_count
 - decisions/decision-2026-09-04-合并sweep-guard分支冲突取舍.md | medi | 2026-09-04 | 合并遗留分支时，master 已修正的旧逻辑不应因"冲突两边都保留"而被恢复，需先判断冲突是否为真实的两个功能重叠 | sweep-guard、全量扫描守卫、merge 冲突
 
-## procedures/ (14)
+## procedures/ (15)
 - procedures/checklist-不可逆操作上线.md | crit | 2026-09-13 | [用户确认 2026-09-13] 数据误删事故后的硬规则：任何删除/清理/判失效等无法撤销的功能，上线前必须先在线上跑 dry run，再用与新功能无关的独… | 不可逆操作、dry run、二次复核
   ? 要上线一个会删数据/判失效/清理的功能，上线前必须做什么 / dry run 的结果怎么复核，能不能用新功能自己的日志当依据 / 什么时候才允许正式开启删除类功能
 - procedures/workflow-fc-chrome上线.md | high | 2026-09-16 | fc-chrome 上线链路：本机构建 → docker save/rsync → ACR 推镜像 → s deploy → 共用域名路由 → 健康检查与真实… | fc-chrome、serverless-devs、ACR
@@ -76,6 +76,8 @@ load: always
   ? 我要派子 Agent，任务描述太长怎么办 / 多个 agent 上下文重复怎么解决
 - procedures/workflow-并行开发多站点爬虫.md | high | 2026-09-15 | 一次接入多个新站点时的分工方式：worktree 隔离、共享资源集中准备、冲突面收敛、合并与验收 | 并行开发、worktree、子agent
   ? 我要一次接入多个站点，worktree 怎么分工 / 多站点并行开发怎么处理合并冲突
+- procedures/workflow-文档发现.md | high | 2026-09-16 | 收到 `task doc-discovery` / `启动文档发现任务` 时的入口、验收口径、候选渠道性价比与分工；正文流程与脚本在 COMMON site-… | 文档发现、doc-discovery、docfind
+  ? 怎么找包含网盘链接的在线文档 / task doc-discovery / 启动文档发现任务 该怎么做 / 文档发现的候选渠道有哪些、哪个性价比高
 - procedures/workflow-新站点调研.md | high | 2026-09-12 | 接到"探索某资源站并输出爬虫 PRD"时的标准步骤：先找结构化接口，再验证全量可枚举性，最后对账 | 站点调研、爬虫、PRD
   ? 我要调研一个新的资源站，怎么写爬虫 PRD / 怎么找一个站点的公开接口
 - procedures/workflow-本地构建与验证.md | high | 2026-09-16 | 四仓库编译命令、CI(vet/test 白名单 + live 标签隔离连生产测试)、make proto 生成流程与验收口径 | CI、go build、go vet
@@ -89,12 +91,14 @@ load: always
 - procedures/workflow-部署.md | medi | 2026-09-15 | SPIDER deploy.sh 的常规用法、服务到主机的映射方式、判断线上现役服务的唯一判据、新服务选主机方法、配置分发机制与安全提醒；历次上线（生命周期/… | auto模式、权限分类器、部署
 - procedures/workflow-部署-历史补充.md | low | 2026-09-12 | 历次生产上线（2026-09-05~09-10 生命周期 P3/P4 网关多次重部、代理池监控上线等）的一次性踩坑与已固化到 deploy.sh 的加固记录；… | 生命周期上线、网关重部、dryRun
 
-## lessons/ (30)
+## lessons/ (31)
 - lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md | crit | 2026-09-15 | checker 用 task.Id(md5) 而非 ShareId 探测，115.5 万条 quark/ali 误删；bnd 再因「违规」tooltip 误判… | lifecycle_checker、误删、dry run
   ? lifecycle_checker 为什么把夸克资源全判失效 / 116 万条资源误删是怎么回事，怎么恢复
 - lessons/failure-FC实例在WebSocket断开后立即冻结.md | high | 2026-09-16 | 客户端断开 WebSocket 后 FC 立即冻结实例，收尾/写回必须在连接内完成（拦截 Browser.close） | FC 冻结、WebSocket、Browser.close
 - lessons/failure-SLS字段检索按分词匹配误命中其他stage.md | high | 2026-09-16 | SLS 检索 `field:value` 是分词匹配，同一 logstore 里 `stage=GET:/api/v2/search` 的访问日志会被 `st… | SLS、分词、字段检索
   ? 用 SLS 按 stage/字段值统计时为什么数字翻倍或出现 null 行 / SLS 检索语句怎么做字段精确匹配
+- lessons/failure-link3接口按IP限流直连百次即429.md | high | 2026-09-16 | link3 的 no_auth/user 接口直连 6 并发约 100 次后全部 429（按 IP），且 429 不是 pancheck 那种退避能解决的；切… | link3.cc、429、限流
+  ? link3.cc 批量抓主页为什么 429，怎么绕 / 代理池只有几个 IP 时 link3 全量该怎么跑
 - lessons/failure-ncjs构建脚本会自动上传OSS.md | high | 2026-09-04 | admin/*子应用的标准 `pnpm build` 脚本默认会把 dist 上传到生产 OSS 并改写 apps.json, 验证构建前必须先用 { dep… | NC-JS、pnpm build、mfe插件
 - lessons/failure-notify脚本静默降级把原始Markdown发成邮件.md | high | 2026-09-16 | notify.py 被 miniforge python 执行时缺 markdown 模块静默降级，原文当 <pre> 发出；一律走 shebang 系统 p… | notify.py、邮件汇报、Markdown未渲染
   ? 邮件里为什么收到的是原始 Markdown 而不是渲染后的卡片 / 脚本用 env python3 有什么坑 / 依赖缺失时脚本该怎么降级才不会坑用户
@@ -135,7 +139,7 @@ load: always
 - lessons/success-cdp3策略强装扩展与NAS持久化profile.md | medi | 2026-09-16 | 品牌版 Chrome 用企业策略 force_installed 装扩展 + 预热 profile 存 NAS 复用登录态 | 扩展安装、ExtensionSettings、override_update_url
 - lessons/success-在线文档解析优先用页面自带接口.md | medi | 2026-09-16 | 解析 SPA 文档站优先 fetch 页面自带接口：performance 资源列表 + 全局变量 + bundle 搜路径常量找到分页接口，比啃 DOM/r… | 在线文档、内部接口、performance.getEntriesByType
 
-## knowledge/ (25)
+## knowledge/ (26)
 - knowledge/architecture-系统总览.md | crit | 2026-09-02 | 从爬取到入库到检索的完整链路、各服务端口与中间件分工 | 架构、数据链路、网关
 - knowledge/api-rpc契约.md | high | 2026-09-12 | COMMON 仓库中各 proto 服务的方法清单、核心消息结构与代码生成流程 | proto、gRPC、StorageRpc
   ? 我要改 gRPC 协议 / proto，改完怎么生成 / 某个 rpc 方法的入参/出参消息结构是什么 / proto 改完要同步哪些下游仓库
@@ -158,6 +162,8 @@ load: always
   ? 我要改爬虫/加站点，该看哪个子命令 / 新增配置节 yaml 怎么解析 Duration / 泛型队列 PushTask 怎么写，seq/永久失败是什么
 - knowledge/architecture-storage.md | high | 2026-09-12 | enfi-resource-storage 的三个子命令、写入流程、ES 索引名与幂等策略 | STORAGE、enfi-resource-storage、入库
   ? 我要改入库逻辑，查资源为什么没写进去 / ES 索引幂等/version 判重是怎么回事
+- knowledge/domain-在线文档免登录取数.md | high | 2026-09-16 | 2026-09-16 实测的腾讯/飞书/石墨/金山四平台匿名取正文与修改时间的接口、数据格式（腾讯 sheet 的 base64+zlib 分块与 tab 枚… | 腾讯文档、dop-api/opendoc、金山文档
+  ? 腾讯文档表格/文档怎么不登录拿到全部内容和修改时间 / 金山文档、飞书、石墨能不能免登录抓正文，各用什么接口 / 腾讯 sheet 多个子表
 - knowledge/domain-站点-2609接入批次.md | high | 2026-09-15 | 本批 5 个站点的形态、子命令、规模、各自的坑与实现状态；详细规格见各自 PRD | dyyjmax、fuxipan、feikuai
   ? dyyjmax/fuxipan/feikuai/kuakes 是什么站，各自的坑是什么 / 2609 批次都接了哪些站
 - knowledge/domain-网盘有效性检测.md | high | 2026-09-16 | 两套有效性检测已合并为 COMMON panvalid 一套实现（分支 feat/valid-unify，未合并 master）；本文件存历史背景，权威码表/… | panvalid、有效性检测、validShareLink
@@ -170,14 +176,14 @@ load: always
   ? xlLoadShare 失败率高是什么原因 / 怎么直接查一个迅雷分享的结构 / 迅雷失效上报 dry run 开关在哪
 - knowledge/domain-飞书文档解析.md | high | 2026-09-16 | 飞书 docx/多维表格解析依据：匿名可读、client_vars/clientvars 接口与分页、objType 映射、3000 行上限、登录墙与已删除判… | 飞书文档、feishu、多维表格
   ? 飞书文档的网盘链接用哪些接口解析、怎么分页 / 飞书 wiki 怎么区分 docx 与多维表格 / 飞书文档需登录/已删除时怎么处理
-- knowledge/architecture-spider-sitecrawler骨架.md | medi | 2026-09-16 | sitecrawler 骨架接口设计、kkpans/feikuai 迁移前后 redis 键对照、6 站迁移状态 | sitecrawler、爬虫骨架、kkpans
+- knowledge/architecture-spider-sitecrawler骨架.md | medi | 2026-09-16 | sitecrawler 骨架接口设计(含 WrapAwareSite)、6 站迁移前后 redis 键逐一对照、SiteCommonConfig 内嵌与导入环… | sitecrawler、爬虫骨架、WrapAwareSite
 - knowledge/architecture-spider-队列约定.md | medi | 2026-09-16 | SPIDER 队列 v2 的固定队列名、去重键、消费者并发度与通用队列接口约定 | 队列、队列v2、resourcePreCheck
 - knowledge/concept-术语表.md | medi | 2026-09-12 | 代码里高频出现的缩写、字段含义与命名来历，避免误读 | 术语、bnd、valid
 - knowledge/domain-站点-kkpans.md | medi | 2026-09-12 | kkpans 的公开 JSON API、分页陷阱、数据规模与采集范围（只采 quark/xunlei/baidu 4295 条）；爬虫已于 2026-09-0… | kkpans、KK网盘、站点调研
 - knowledge/domain-站点-misoso.md | medi | 2026-09-12 | misoso.cc 实际抓取域名是 melost.cn；sitemap 有"过期快照"与"越界文件假200"两个陷阱；爬虫已于 2026-09-03 实现为 … | misoso、melost.cn、影盘社
 - knowledge/reference-github-oauth配置.md | medi | 2026-09-16 | 两个 GitHub OAuth App（prod/dev）的名称、client_id 存放位置、管理页与回调地址约定 | GitHub OAuth App、client_id、redirect_uri
 
-## sessions/ (37 个, 仅列最近 3 个; 其余用 mem.py search 找)
+## sessions/ (38 个, 仅列最近 3 个; 其余用 mem.py search 找)
 - sessions/2026/2026-09-05-生命周期P4启动失败.md | high | 2026-09-16 | STORAGE 双机重部并核验首写继承生效, 用新工具补齐双写窗口 3551 条文档, P4 bootstrap 启动 10 分钟后因两个实现缺陷失败并停止(… | 生命周期、P4、bootstrap
 - sessions/2026/2026-09-05-生命周期P4演练.md | high | 2026-09-16 | 网关双机重部热修分支成功；缺陷 A/B 在生产验证通过；新发现 copy_child 轮询瓶颈，全量未启动 | P4、bootstrap、演练
 - sessions/2026/2026-09-03-并行开发6站爬虫.md | medi | 2026-09-16 | 用 4 并发子 Agent + worktree 接入 6 个站点，5 站验收通过并合并，haisou 因站点收紧未能验收 | 并行开发、worktree、6站爬虫
