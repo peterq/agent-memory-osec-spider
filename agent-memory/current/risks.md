@@ -3,7 +3,7 @@ title: 当前风险与阻塞
 type: risk
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-14T10:30:00+08:00
+updated_at: 2026-09-16T08:35:00+08:00
 priority: high
 keywords: [lifecycle_checker误删, 风险, 阻塞, 密钥, AK/SK, 生产, 测试, 依赖升级, 队列v2, 无回滚, 上线收尾]
 summary: 影响开发与运维安全的已知风险点；最高 R9 lifecycle_checker 误删 115.6 万资源（修复已上线、恢复待决策）
@@ -73,6 +73,11 @@ SPIDER `services/devops/` 下按时间分了 `2408/2409/2511/26/...` 多个目�
 
 `deploy` 只比对 md5 后 scp 覆盖，`dockerRun` 先 `docker rm -f` 再起新容器，中间有服务中断窗口。
 **处理**：部署前确认该服务是否可短暂中断；gateway 有两台（res1/res2），可逐台执行。
+[2026-09-16 进展] 提案10已在三仓库 `feat/deploy-rollback` 分支（`spider/api/storage-wt-deploy-rollback`
+worktree）实现 releases/current 发布目录+`rollback`+部署后健康检查+多机逐台灰度，方案与用法见各仓库
+`scripts/deploy.md`；**只做过 `--dry-run` 验证，未在任何主机上实际执行过**，合并 master 前需要用户在
+`osec-restest` 演练，验收清单见提交汇报。中断窗口本身（`docker rm -f` 后到新容器起来之间）未消除，
+新增的是"起错了/起不来能自动回滚+不再需要人工判断上一版是谁"。
 
 ## R6 STORAGE 依赖版本被 `go mod tidy` 顺带升级（新增）
 

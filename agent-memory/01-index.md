@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-16T08:25:37+08:00
+updated_at: 2026-09-16T08:29:06+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -16,7 +16,7 @@ load: always
 定位到文件后 `mem.py outline <file>` 看章节，再 `mem.py body <file> --section <标题>` 只读需要的一段。
 维护方式：改目标文件 Front Matter（summary / keywords / questions），然后运行 `scripts/mem/mem.py index --write`。
 
-# agent-memory 启动包（脚本生成, 143 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
+# agent-memory 启动包（脚本生成, 146 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
 
 ## 根目录 (3)
 - 00-overview.md | crit | 2026-09-16 | 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件 | 网盘资源爬取、版权取证、COMMON
@@ -25,16 +25,16 @@ load: always
 - 02-user-preferences.md | high | 2026-09-15 | 用户对语言、脚本沉淀、记忆维护、thinking 长度、敏感信息禁写、任务进度与异常必须及时邮件汇报（scripts/mail/notify.py），以及删除… | 偏好、中文、邮件汇报
 
 ## current/ (6)
-- current/tasks.md | crit | 2026-09-16 | 仍在推进/阻塞/待决策的事项（P0 误删事故重爬中；P5 顺序 阶段C→A'→阶段D）；已上线任务在 archive | 任务、进度、待办
-  ? 当前该做什么，有哪些待办
+- current/tasks.md | crit | 2026-09-16 | 仍在推进/阻塞/待决策的事项：腾讯文档表格解析开发中（worktree，合并前需确认）、十项提案并行开发、P5 阶段 D 灰度爬坡、误删事故收尾；长尾待办在 … | 任务、进度、待办
+  ? 当前该做什么，有哪些待办 / 腾讯文档解析任务进展到哪了
 - current/open-questions.md | high | 2026-09-15 | 当前无待用户确认问题（阶段 D 已按裁定启用；进度在 tasks.md） | 待确认、xlLoadShare、迅雷
   ? 当前有哪些待用户确认的问题
-- current/risks.md | high | 2026-09-14 | 影响开发与运维安全的已知风险点；最高 R9 lifecycle_checker 误删 115.6 万资源（修复已上线、恢复待决策） | lifecycle_checker误删、风险、阻塞
+- current/risks.md | high | 2026-09-16 | 影响开发与运维安全的已知风险点；最高 R9 lifecycle_checker 误删 115.6 万资源（修复已上线、恢复待决策） | lifecycle_checker误删、风险、阻塞
   ? 密钥、安全相关的风险在哪看
 - current/proposals-需求与优化候选.md [draft] | medi | 2026-09-16 | Agent 基于事故/风险/待办提出的 12 条候选需求与优化（取证包、软删可回滚、删除熔断、checker 统一、CI、密钥治理、部署回滚等），每条附依据与… | 需求候选、优化提案、取证包
   ? 项目下一步有哪些值得做的需求或优化 / 取证证据链、软删除、删除熔断这些提案的依据是什么
 - current/changelog.md | low | 2026-09-16 | 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪 | 变更记录、changelog、历史
-- current/tasks-backlog.md | low | 2026-09-13 | 从 tasks.md 拆出的低优先级/等人工/归档遗留事项：文档爬虫 FC 6 项人工步骤、归档任务遗留待办、P3 代码小修 | backlog、P3、文档爬虫
+- current/tasks-backlog.md | low | 2026-09-16 | 从 tasks.md 拆出的低优先级/等人工/归档遗留事项：文档爬虫 FC 6 项人工步骤、归档任务遗留待办、P3 代码小修、2026-09-16 移入的 P… | backlog、P3、文档爬虫
   ? 文档爬虫 FC 自动化还差哪些人工步骤 / 有哪些 P3 低优先级待办
 
 ## decisions/ (18)
@@ -97,7 +97,7 @@ load: always
   ? 部署 / 上线怎么操作，日志在哪看 / 新服务该放哪台机器 / 队列 v2 上线收尾脚本是哪个
 - procedures/workflow-部署-历史补充.md | low | 2026-09-12 | 历次生产上线（2026-09-05~09-10 生命周期 P3/P4 网关多次重部、代理池监控上线等）的一次性踩坑与已固化到 deploy.sh 的加固记录；… | 生命周期上线、网关重部、dryRun
 
-## lessons/ (27)
+## lessons/ (28)
 - lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md | crit | 2026-09-15 | checker 用 task.Id(md5) 而非 ShareId 探测，115.5 万条 quark/ali 误删；bnd 再因「违规」tooltip 误判… | lifecycle_checker、误删、dry run
   ? lifecycle_checker 为什么把夸克资源全判失效 / 116 万条资源误删是怎么回事，怎么恢复
 - lessons/failure-FC实例在WebSocket断开后立即冻结.md | high | 2026-09-13 | 2026-09-13 线上实测：客户端断开 WebSocket 后 FC 视为调用结束并立刻冻结实例，handler 中 kill Chrome→写回 NAS… | FC 冻结、WebSocket、Browser.close
@@ -125,6 +125,8 @@ load: always
 - lessons/failure-网关重启暴露ES集群已更换.md | high | 2026-09-12 | 线上网关自 1 月未重启，期间 ES 集群已更换；队列 v2 上线一重启就 panic。教训：长期不重启的服务会掩盖外部依赖变更，重启前先在目标主机验证配置里… | 网关、gateway、ES
   ? 网关起不来，报 no such host 怎么查 / 重启网关前要检查什么
 - lessons/failure-配置v2二进制无本地回落导致老容器重启即挂.md | high | 2026-09-09 | v2 二进制只认 OSS_CONFIG_URL/LOCAL_CONFIG_PATH，不读宿主机 config.yaml；deploy.sh 替换宿主机 spi… | 配置 v2、OSS_CONFIG_URL、config.yaml
+- lessons/failure-验收部署脚本时误连生产主机.md | high | 2026-09-16 | deploy.sh 里"纯只读"的 releases/health 子命令不像 deploy/rollback 那样受 --dry-run 保护，验收时只要参… | deploy.sh、--dry-run、ssh 生产主机
+  ? 为什么 deploy.sh 加了 --dry-run 还是连上了生产主机 / 验收/测试新写的部署脚本子命令要注意什么 / releases 和 health 子命令为什么不受 --dry-run 保护
 - lessons/patterns-并行重构的分阶段切分.md | high | 2026-09-12 | 多个包同时改造且互相引用时，用"主会话先做共享契约 → 子 Agent 只加不删 → 单独清理 Agent 收尾"三阶段避免编译互锁 | 并行重构、子agent、worktree
   ? 多个包同时重构，子 Agent 怎么避免编译互锁 / Phase 0/1/2 怎么切分任务
 - lessons/patterns-统计ES索引先查文档形态.md | high | 2026-09-05 | 同一索引可能混着两代写入形态；只按 join=resource 统计会漏掉三分之二资源，任何统计/迁移前先做 exists/must_not exists 对账 | ES、join、nested
@@ -143,7 +145,7 @@ load: always
 - lessons/success-cdp3策略强装扩展与NAS持久化profile.md | medi | 2026-09-15 | 2026-09-13 fc-chrome 实测可行的扩展启用链路（解包目录→chrome --pack-extension→本机 /cdp3-ext upda… | 扩展安装、ExtensionSettings、override_update_url
   ? 怎么让 headless Chrome 装 NAS 上的自定义扩展 / 策略强装的扩展改了版本为什么不更新
 
-## knowledge/ (22)
+## knowledge/ (23)
 - knowledge/architecture-系统总览.md | crit | 2026-09-02 | 从爬取到入库到检索的完整链路、各服务端口与中间件分工 | 架构、数据链路、网关
 - knowledge/api-rpc契约.md | high | 2026-09-12 | COMMON 仓库中各 proto 服务的方法清单、核心消息结构与代码生成流程 | proto、gRPC、StorageRpc
   ? 我要改 gRPC 协议 / proto，改完怎么生成 / 某个 rpc 方法的入参/出参消息结构是什么 / proto 改完要同步哪些下游仓库
@@ -172,6 +174,8 @@ load: always
   ? dyyjmax/fuxipan/feikuai/kuakes 是什么站，各自的坑是什么 / 2609 批次都接了哪些站
 - knowledge/domain-网盘有效性检测.md | high | 2026-09-12 | 两套有效性检测实现的位置、各网盘的判定接口与业务码表、联网自测方法 | 有效性检测、validShareLink、失效
   ? 链接失效检测怎么做，validShareLink 返回 -1 是什么意思 / 夸克/阿里网盘判定不准怎么排查 / 误删资源怎么避免
+- knowledge/domain-腾讯文档表格解析.md | high | 2026-09-16 | 2026-09-16 实测：公开表格匿名可访问；同源 GET dop-api/opendoc（需页面 Cookie，t/xsrf 非必需）返回 JSONP；数… | 腾讯文档、docs.qq.com、opendoc
+  ? 腾讯文档表格的单元格数据从哪个接口拿、要不要登录 / 腾讯文档 opendoc 返回的 protobuf 区块怎么解 / 为什么腾讯文档有的返回 block_datas 有的返回 JSON op 数组 / 腾讯文档分块拉取越界时会怎样
 - knowledge/domain-转存下载链路.md | high | 2026-09-15 | SPIDER 下载调度链路的代码结构、redis 键/MySQL 表、阿里/百度解析方式、三条下载路径，以及 2026-09-13 体检结论：链路空转，阿里 … | 转存下载、share_download、resolve_link
   ? 分享文件怎么被转存、解析成下载地址落到 OSS / 转存下载链路进程/队列/账号池在哪，怎么体检
 - knowledge/domain-迅雷分享爬取.md | high | 2026-09-15 | xlLoadShare 失败率修复(09-15 已上线)：顶层文件入批次、状态码按共用码表判定、空分享永久失败；失效上报仍 dry run；接口/探针/导出重… | xlLoadShare、迅雷、xunleipan
@@ -192,4 +196,4 @@ load: always
 - sessions/2026/2026-09-05-生命周期P4演练.md | high | 2026-09-16 | 网关双机重部热修分支成功；缺陷 A/B 在生产验证通过；新发现 copy_child 轮询瓶颈，全量未启动 | P4、bootstrap、演练
 - sessions/2026/2026-09-03-并行开发6站爬虫.md | medi | 2026-09-16 | 用 4 并发子 Agent + worktree 接入 6 个站点，5 站验收通过并合并，haisou 因站点收紧未能验收 | 并行开发、worktree、6站爬虫
 
-## archive/ (18 个, 已归档不列出; 需要时 mem.py search --dir archive)
+## archive/ (19 个, 已归档不列出; 需要时 mem.py search --dir archive)

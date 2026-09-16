@@ -3,114 +3,51 @@ title: 当前任务与进度
 type: task
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-16T11:30:00+08:00
+updated_at: 2026-09-16T08:50:00+08:00
 priority: critical
-keywords: [任务, 进度, 待办, P5, 队列v2, queue-admin, 全站扫描, fullsweep, 文档爬虫, doc-crawler, FC Chrome, 凭据轮换, 站点发现, kkpans, misoso, 有效性检测]
-summary: 仍在推进/阻塞/待决策的事项（P0 误删事故重爬中；P5 顺序 阶段C→A'→阶段D）；已上线任务在 archive
+keywords: [任务, 进度, 待办, 腾讯文档, qqdoc, 十项提案, P5灰度, lifecycle_checker, xlLoadShare, 队列v2, 全站扫描]
+summary: 仍在推进/阻塞/待决策的事项：腾讯文档表格解析开发中（worktree，合并前需确认）、十项提案并行开发、P5 阶段 D 灰度爬坡、误删事故收尾；长尾待办在 tasks-backlog，历史原文在 archive
 questions:
   - 当前该做什么，有哪些待办
+  - 腾讯文档解析任务进展到哪了
 load: on-demand
 related:
   - agent-memory/current/risks.md
+  - agent-memory/current/tasks-backlog.md
+  - agent-memory/archive/2026/tasks-2026-09-16-压缩前快照.md
   - agent-memory/archive/2026/tasks-2026-09-已完成.md
-  - agent-memory/procedures/workflow-本地构建与验证.md
 ---
-
-# 当前任务与进度
-
-> 已完成且已上线（或被后续方案取代）的任务块已原文移入 `archive/2026/tasks-2026-09-已完成.md`（P4 全量 bootstrap、配置 v2 上线、GitHub OAuth、配置按进程拆代码、管理台合并、资源生命周期改造 P0~P3 等）。本文件只留仍在推进/阻塞/待决策的事项。
 
 ## 一眼总表
 
-| 任务 | 状态 | 阻塞/下一步 | 详情文件 |
+| 任务 | 状态 | 阻塞/下一步 | 详情 |
 |---|---|---|---|
-| **🔴 lifecycle_checker 误删事故** | 止血待人工 | ① 人工 `docker stop` ② 部署 `b888846` ③ 恢复方案待用户决策 | 本文件「进行中」/ `lessons/failure-lifecycle_checker误传资源md5…` |
-| 生命周期 P4 全量 bootstrap | ✅ 已完成 | 2 个 `:cur` 半区窗口 09-12 取证**无需处理**（父子都在 cur） | archive「生命周期 P4」 |
-| **生命周期 P5 准入** | 阶段 A/B 已上线；被事故阻塞 | 修复版 checker 上线 → 阶段 C 复测 → A' 投递 → 阶段 D 灰度（API 侧分流，开发中） | 本文件「进行中」 |
-| 09-08 并行四任务 | 部分已上线 | 文档爬虫 FC 自动化卡 6 项人工事项 | `current/tasks-backlog.md` |
-| 配置 v2/OAuth/配置拆代码 | ✅ 已上线 | `LOCAL_CONFIG_PATH` 回落待修；凭据轮换待决策 | `current/tasks-backlog.md` |
-| 资源生命周期改造 P0~P3 | ✅ 已上线 | es_endpoint / `resource_valid` 索引缺失等 | `current/tasks-backlog.md` |
-| 管理台合并 | ✅ 已上线 | ARMS 指标、浏览器实测待人工 | `current/tasks-backlog.md` |
-| **xlLoadShare 失败率修复** | ✅ 09-15 三机上线 | 失效上报 dry run 待用户开启 | `knowledge/domain-迅雷分享爬取.md` §5 |
-| **P6 分享链接/搜索总览纳入后台 + p90 关匿名搜索** | ✅ 09-16 已上线（网关/API/前端） | 观察防护巡检一周；ES 父文档过滤线上对拍；前端浏览器实测 | `knowledge/architecture-search-admin.md`、`sessions/2026/2026-09-16-分享链接与搜索总览纳入后台.md` |
-| 队列 v2 上线收尾 | 人工进行中 | A~E 待用户执行 | 本文件「待办」 |
-| 5 爬虫全站扫描启动行为改造 | 待办（P0） | 改为 `fullsweep:lastdone` 守卫 | 本文件「待办」 |
-| 安全凭据轮换 | 待用户决策 | 多处硬编码 AK/SK/Token | `current/tasks-backlog.md` |
-
-> 09-08 并行四任务（文档爬虫 FC 自动化 6 项人工事项）与 P3 低优先级待办已移至 `current/tasks-backlog.md`。
-
-> 「归档遗留待办」（P4 收尾/配置 v2 回落/凭据轮换/resdb ES 端点/resource_valid 缺失/proto go_package/管理台人工验证）已移至 `current/tasks-backlog.md`。
-
-## 待办
-
-- [ ] **P1 xlLoadShare 修复收尾**（09-15 09:00 `3270e10` 已上线 jenkins/resngix，288 条历史失败已重投，173 入库）：① ~~restest~~ 09:51 已上线（三机齐）；② **失效上报 dry run**（`submitInvalidDryRun=true`）：收集 `submit-invalid-dry-run` 日志清单 → `scripts/xl_share_probe.sh` 抽样复核 → 用户拍板改 false 重部；③ 6h 后可再跑 `tools/xl-fail-export` 补投这段时间被去重挡下的失败分享。→ `knowledge/domain-迅雷分享爬取.md` §5/§6。
-- [ ] **P2 cdp3 profile= 调用方接入**（2026-09-13 上线后遗留）：NC-JS `task.ts`/SPIDER `doc_crawler` 若要用 `profile=`，结束时必须先发 CDP `Browser.close` 等响应再断开（rod/puppeteer 的 `browser.Close()` 即可），否则最多丢 20 s；被占直接 409 需客户端退避重试（≥3 s） → `decisions/decision-2026-09-13-cdp3持久化会话与扩展机制.md`。NAS `profiles/osec/` 下的 `e2e`（旧目录格式）、`freeze1.tar.new-*`（冻结残留）、`h1.tar` 是测试产物，可删。
-- [ ] **P0 队列 v2 上线收尾（用户人工执行）**：网关/全部消费者已于 2026-09-04 12:30 前上线在跑，
-      剩余 A 删 jenkins `spider-xunlei_share`、B 杀两个 2023 年裸进程、C `./deploy.sh ps` 复核、
-      D osec-res2 跑 `devops_migrate_legacy_queues`（先 dry-run 再 `--apply --dry-run=false`）、E 看网关 precheck 日志。
-      脚本 `osec-spider-go/scripts/queue_v2_cutover_finish.sh`，文档同名 `.md`。**无回滚路径**（旧命令已删、旧 ES 已下线）。
-- [ ] **P1** 删除已合并的 6 个 worktree/分支 `spider-wt-queue-v2-*`（`git merge-base --is-ancestor` 确认后 `git worktree remove` + `git branch -d`）。
-- [ ] **P1** `keyword_funletu` 上线后每个任务都因 TLS 证书不匹配失败：`v.funletu.com` 返回的证书签给 `bq.funletu.com`。
-      站点侧问题（2026-09-04 上线时发现，与队列 v2 无关）。要么改请求域名/加 SNI，要么确认站点已换域名；
-      长期失败考虑按 `decision-2026-09-03-清理下线爬虫代码.md` 的口径下线。
-- [ ] **P1 待确认** API 仓库 `osec-resource-api/config.yaml` 的 ES 主机 `es-cn-oew1qf4gx000pr1ap` 与 STORAGE/网关现用的
-      `es-cn-vcg4txxrn00021s9s` 不一致，可能同样是过期集群（见 `lessons/failure-网关重启暴露ES集群已更换.md`）。
-- [ ] **P2** 网关 `initEs()` 连不上 ES 直接 panic，导致单个依赖故障拉不起网关；考虑改为重试+告警（待用户决定）。
-- [ ] **P2** res_scheduler 补 ListTask/队列长度观测 RPC（队列 v2 的可观测性缺口）。
-- [ ] **P2** `devops_check_and_push_clear_queue`（线上 4 台）仍用 `queue_task.Queue2` 直连 redis，可迁网关。
-
-- [ ] **P1** 按新口径（单 IP ≥10 条分享链接/分钟）复议 4 个站点：
-      `www.pioz.cn`（最有希望：14.6 万条、100% 夸克、免登录，原因只是 10 并发触发 Turnstile）、
-      `1.star2.cn`、`tv.yydsys.top`、`xsayang.fun`。见 `site-discovery/history.md` 标注的「待复议」。
-
-- [ ] **P0** 按 `decisions/decision-2026-09-03-全站扫描不在启动时触发.md` 改造 5 个爬虫的
-      启动行为：`bbs_kkpans` / `bbs_dyyjmax` / `bbs_fuxipan` / `bbs_misoso` / `bbs_kuakes`
-      现在都是**启动即全站扫描**。改为全量整轮成功后写 redis `<site>:fullsweep:lastdone`，
-      启动时读该键，未超 `FullSweepInterval` 就跳过全量只跑增量。
-      `bbs_feikuai` 的游标分批全量天然合规，可作参照。
-      ⚠️ 这 5 个已经上线在跑，每次重启/重新部署都会重扫全站，优先级高。
-- [ ] **P1 待用户手动执行** 清理遗留 ②：用户已确认 `osec-resdb` 上两个废弃容器**不需要了**，
-      但删除命令需要 `sudo`（`pplabs` 直连 docker.sock 是 permission denied），
-      被 Claude Code 自动模式安全策略拦截，需要人工在终端跑：
-
-      ```bash
-      ssh pplabs@osec-resdb "sudo docker rm -f \
-        spider-share_download_push_resolve_alipan_241226 \
-        spider-share_download_push_resolve_qb-250225"
-      ```
-
-      ⚠️ 只删这两个，**不要动** `spider-share_download_push_resolve_ali_250918`
-      （对应 `deploy.sh` 的 `dl_push`，仍在服役）。
-- [ ] **P2** misoso 上线前待确认（PRD §9）：一轮全量遍历真实耗时未知（影响 `SeenTTL`）、
-      626 万条去重键的 redis 容量评估。
-- [ ] **P2** 各站遗留的待确认项：dyyjmax 全量精确对账未实跑（命令已就绪，约 1 小时）、
-      feikuai 的 `ali-share` 分支无样本未端到端验证、kuakes 的 ajax `code≠0` 业务语义无样本、
-      fuxipan 的 `Crawl-delay:10` 归属有歧义（当前按实测 4 req/s 执行）。
-- [ ] **P2** 把夸克业务码 `41031`（分享者被封）补进两处生产 checker 的 `quarkInvalidCodes`：
-      `osec-resource-api/services/valid/quark-api.go`、`osec-spider-go/services/gateway/valid/quark_checker.go`。
-      现在只靠 message 兜底正则命中，依赖文案不变，很脆弱。
-- [ ] **P1** 夸克/阿里有效性检测修复**上线后**观察 `/v2/validShareLink` 的 `-1` 比例是否下降；
-      同时确认 `clear_expire` 没有出现异常的批量删除。
-- [ ] **P2** 百度（`bnd`）、迅雷（`xunleipan`）的 checker 仍是纯中文文案匹配，
-      有和夸克同样的漏判风险，下次动到时按 `lessons/success-网盘失效判定原则.md` 改造。
-- [ ] **P1** kkpans 爬虫上线后核对验收项 #5：ES 中能按 `client=www.kkpans.com` 检索到资源。
-      部署命令 `./deploy.sh kkpans`，然后 `./deploy.sh ps` / `./deploy.sh log kkpans`。
-- [ ] **P1** STORAGE 上线前做运行时回归：`go mod tidy` 顺带升级了 aws-sdk-go(1.25→1.40)、
-      logrus(1.6→1.8.1)、go-sql-driver/mysql(1.5→1.7)、easyjson，且 `go` 指令从 1.22.0 提到 1.23。
-      编译通过不等于行为不变，重点看 S3 上传（save-torrent）与日志输出格式。
-- [ ] **P2** COMMON `Makefile` 的 protoc 目标已过期（路径与实际 proto 文件名不符，新增的 5 个 proto 未纳入）。
+| **腾讯文档(docs.qq.com)表格解析** | 🟡 09-16 开发中（2 个 sonnet 子 Agent，worktree） | 验收 → 网上多文档验证 → FC 端到端 → **合并前用户确认** → 上传云端脚本 | `agent-tasks/2026-09-16-qqdoc-sheet/`，知识 `knowledge/domain-腾讯文档表格解析.md` |
+| **十项提案并行开发** | 🟡 09-16 启动，9 个 worktree | 合并 master 前必须用户确认 | `agent-tasks/2026-09-16-ten-proposals/`（`99-notes.md` 记重叠文件） |
+| **P5 阶段 D 灰度** | 🟡 API `search_canary` 爬坡中 | 09-16 06:3x 改每 500 个 v3 请求 +2%，≈9 h 到 100%，全量后再观察 3 天即 P5 完成 | rollout §16/§17；`decisions/decision-2026-09-12-P5切v3准入门槛与失效同步.md` |
+| **🔴 lifecycle_checker 误删事故** | 修复已上线，重爬终态回库 ≈56% | 剩余 quark 真失效不可恢复；bnd 积压告警阈值放宽待用户定 | rollout §15；`lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md` |
+| xlLoadShare 修复 | ✅ 09-15 三机上线 | 失效上报 dry run → 抽样复核 → 用户拍板开启 | `knowledge/domain-迅雷分享爬取.md` §5/§6 |
+| P6 分享链接/搜索总览 + p90 关匿名 | ✅ 09-16 上线 | 观察防护巡检一周；ES 父文档过滤线上对拍 | `knowledge/architecture-search-admin.md` |
+| 队列 v2 上线收尾 | 人工进行中 | A~E 待用户执行（`scripts/queue_v2_cutover_finish.sh`），**无回滚路径** | 快照 archive「待办」 |
+| 5 爬虫全站扫描启动行为改造 | 待办 P0 | 改为 `<site>:fullsweep:lastdone` 守卫 | `decisions/decision-2026-09-03-全站扫描不在启动时触发.md` |
+| 其余长尾待办 | 见 backlog | 凭据轮换/站点复议/checker 业务码/STORAGE 回归等 | `current/tasks-backlog.md` |
 
 ## 进行中
 
-- [ ] **P1 十项提案并行开发（2026-09-16 启动）**：用户裁定第 3~12 项全部开发（取证包/软删两项暂不做）。9 个开发子 Agent 并行，各自 worktree（`/home/peterq/dev/projects/1s/{common,spider,api,storage}-wt-<短名>`，分支 `feat/<短名>`：delete-breaker / valid-unify / startup-selfcheck / health-observe / ci / secrets / deploy-rollback / crawler-skeleton / search-config），NC-JS 前端待契约后派。**合并 master 前必须用户确认**。简报与合并顺序 `agent-tasks/2026-09-16-ten-proposals/`（`99-notes.md` 记重叠文件）。
+- [ ] **P1 腾讯文档表格解析（09-16）**：方案 = 同一份云端脚本（userscripts `src/cloud/kdocCloud.ts`）按 host 分派，页面内同源 fetch `dop-api/opendoc` 解两种格式（3.0.0 protobuf 区块 / 2.x JSON op），前端 `spiderUtil.ts` 识别 `docs.qq.com/sheet/*`；网关/doc-crawler/契约不改。工作树 `userscripts-wt-qqdoc`(`feat/qqdoc-cloud`)、`ncjs-wt-qqdoc`(`feat/qqdoc`)。上线动作：合并 → `pnpm build:cloud && pnpm upload:cloud`（覆盖线上 `fc-chrome/userscripts/kdoc.user.js`）→ 前端发版。本地 fc-chrome 端到端方法见 `procedures/workflow-fc-chrome上线.md`。
+- [ ] **P1 十项提案并行开发（09-16）**：用户裁定第 3~12 项全部开发；分支 `feat/<短名>`（delete-breaker / valid-unify / startup-selfcheck / health-observe / ci / secrets / deploy-rollback / crawler-skeleton / search-config），NC-JS 待契约后派。
+- [ ] **P0 P5 阶段 D**：阶段 C 复测 09-15 通过（G1 字面超限用户接受）；灰度 09-15 08:1x 起 30%，09-16 改 `step_every_v3_requests: 500 / step_percent: 2`（两台 res-api 宿主机 `config.yaml` + restart）。半小时邮件由 API `scripts/search_canary_report.sh 30` 发。A' 存量复检 84,791 条已入队完成。过程原文见快照 archive。
+- [ ] **🔴 P0 误删事故收尾**：重爬 1,152,617 条 09-14 10:21 终态回库 637,886（quark 56.2%），解析器判失效经 1,000 条 CDP 复核 100% 一致；bnd 并发按类型拆分（`consumer_number_by_type`，bnd 150）与按类型背压均已上线。待办：API `0ad7bb3`（bnd 判定对齐）下次发版带上；告警阈值放宽待用户决定。
+- [ ] **P1 xlLoadShare 收尾**：`submitInvalidDryRun=true` 日志清单 → `scripts/xl_share_probe.sh` 抽样 → 用户拍板改 false 重部；6h 后 `tools/xl-fail-export` 补投。
 
-- [ ] **🔴 P0 lifecycle_checker 误删事故（09-12 22:17 发现）**——正本 SPIDER rollout §15；经验 `lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md`。
-  - ✅ ①② 09-12 23:05~23:11 用户授权执行：止血 → 部署 `b888846` → 发现 bnd「违规」tooltip 误判 930 条再停 → 修复 `06ef50d` 重新部署（rollout §15.5）。`e16bd98`（errno 145 判失效）23:34 已部署；观察数据见 rollout §15.5。
-  - ③ **恢复 = 重爬**（用户确认 Mongo 无数据）：**09-14 08:47 全量投递完成**（1,136,375 + 试点 1,000 + 补投 302+11 = 全部 1,152,617 条，0 未投），08:50 预检队列剩 4.5 万在途，**终态（10:21）**：回库 637,886 父文档（quark 624,191=56.2% / ali 13,695；bnd 以新行复活 339），仍 status=2 513,680（quark 486,574 真失效；ali 26,176 中 ≈1.2 万仍在预检/ali 队列排队，ali 解析器 2×20 并发 ≈1,500/h，预检对下游 2,000 的阻塞式背压让 ali 队头拖慢其余类型，≈8 h 消化完）。rollout §15.7。09-15 05:42 预检/ali 队列已清零；**[用户裁定 09-15] ali 解析并发 20→25**（SPIDER `2016bd1` 常量，05:49~05:51 `./deploy.sh aliyun` 双机上线，md5 一致）。导出脚本 `scripts/lc_false_invalid_export.sh` → 投递工具 `tools/lc-recrawl`（SPIDER `240a71a`，dry-run 过：1,152,617 条、6,129 个脏 pwd 归一化为空）限速推 `resourcePreCheck`；运行方式：本机 `LOCAL_CONFIG_PATH=<scratchpad>/spider.recrawl.yaml`（`spider_gateway` 指向隧道 127.0.0.1:18082）`go run ./tools/lc-recrawl -file _note/lc-recrawl/all.tsv -rate 10 -state _note/lc-recrawl/state`；导出完成 `_note/lc-recrawl/all.tsv` **1,152,617** 行（quark 1,111,741 / ali 39,946 / bnd 930；比事件数少 3.6k 为同 share_id 去重与已复活行）；[用户确认 09-12 23:33] 节奏按建议：23:34 试点前 1,000 条（`-rate 10`，`_note/lc-recrawl/pilot.log`），1 分钟内 ES 已见 `client=lc-recrawl-2609` 文档；试点结果（00:00）：投递 1000/1000 零失败、队列清空、**498 条回库复活（status=1）**，其余 502 条为解析器判真失效（近 45 min 夸克解析失败码：41031 封禁 645 / 41004 不存在 513 / 41012 取消 288 / 41011 过期 134）→ 预期恢复率 ≈50%。**00:05:58 全量开始**（`_note/lc-recrawl/full.log`，≈31 h），持久 Monitor 每 30 min 上报。00:30~00:47 隧道掉线 302 行记失败（`failed-round1.tsv` 已补投）；工具加断连熔断 `77e92bb`，00:43 续投；隧道改由守护脚本（scratchpad `tunnel-18082.sh`）自动重连。09-13 07:40 进度 263,231/1,152,617（≈23%，≈35k/h，预计还需 ≈25 h），`state.failed` 305 条待补投。`e16bd98` 已于 23:34 部署 checker。
-  - ✅ **[用户要求 09-13 13:50] 解析器判失效部分抽 1,000 条走云端 Chrome（CDP）实测**：样本 `_note/lc-recrawl/cdp-sample-1000.tsv`（41031 655 / 41012 157 / 41004 101 / 41011 47 / 41019 20 / 41010 20），工具 `tools/quark-cdp-verify`（SPIDER `badf831`，并发 20）14:07 跑完：**1,000/1,000 一致、0 不一致**（3 条超时重测后同样 41031），CDP 业务码与解析器逐条相同 → 解析器判失效可信。报告 `_note/lc-recrawl/cdp-verify/report.md`、rollout §15.6。
-  - 修复版 checker 可信度核验：23:21~23:32 判失效的 4,713 条 quark 中抽 4 条交解析链路（`client=lc-verify-2609`），解析器同样返回 41031 → 判定正确；近 1 h `valid1h=23,308 / invalid1h=5,942`（ratio 0.20，基线 0.98 会在 7 天内自然回落）。
-  - ✅ ⑤ API `bnd-api.go` 已对齐 SPIDER `classifyBndShare`（API `0ad7bb3`，未部署；v3 复用同一 bndApi）。待办：API 与网关下次发版带上（网关 `06ef50d`/`e16bd98` url_check 共用 valid 包 + `b888846` 告警护栏）。
-  - ④ bnd `dueBacklog` 09-13 17:46 涨到 72.8 万触发积压告警（阈值 50 万，每小时一封）。**[用户裁定 09-13 18:10] 并发按类型分开配置**：新增 `services.lifecycle_checker.consumer_number_by_type`（SPIDER `37cd265`），现网配置 `bnd: 150`（其余缺省 50），18:21 部署 checker 生效（日志 `bnd consumers=150`）。观察：代理池 `lifecycle_checker_bnd` 请求量/成功率、积压是否回落。**[用户裁定 09-13 18:25] 检测队列背压也按类型分开**：扫描器改为每个 `lcCheck:<type>` 各自与 `check_queue_max_waiting` 比较（SPIDER `e26bd79`），bnd 积压不再卡住 quark/ali/xunlei 入队；18:27~18:31 网关双机重部（`./deploy.sh gateway` 在 res1 dockerRun 后中断成半完成态，用 `call redeployHost gateway osec-res1/2` 补救），顺带上线 `b888846` 告警护栏与 `06ef50d/e16bd98` 百度判定（url_check 共用）。res2 首次 `redeployHost` 用了旧二进制（18:31~18:43），补 scp 后 18:43 重启修正；18:45 leader=res1 日志 `skip type bnd`，`pushed1h` 15,943→47,966，验证生效。告警阈值放宽待用户决定。
-- [ ] **P0 生命周期 P5 准入**（阶段 A/B 已上线 09-12 16:34；**顺序因事故调整**）——决策 `decisions/decision-2026-09-12-P5切v3准入门槛与失效同步.md`、`decision-2026-09-12-阶段D改由API侧自动灰度分流.md`。
-  - 下一步按序：① ✅ 事故止血 + 修复上线；② **阶段 C 复测完成（09-15 07:06，rollout §16）**：G2 语料级均值 92.36% ✓（<70% 关键词 4 个，超 1）、G5 三轮合并 P50 0.47×/P95 0.83× ✓、G6 三接口一致 ✓、G4 唯一差异是旧索引残留死链（v3 正确）✓、G1 3 个小 total 关键词 v3 多 1~13 条（字面超 1%）⚠️、G3 22 条 v3 独有复检：21 有效（旧索引误删）/ 1 失效已清 ✓；**[用户裁定 09-15 08:05] 接受超限、进入阶段 D**：API 生产配置加 `search_canary.enabled: true / step_every_v3_requests: 20000 / notify_url`（OSS 三方比对上传），08:1x `./deploy.sh` 双机重部 + 08:47/08:50 宿主机 `config.yaml` 追加配置后 restart 生效（首分钟 `canaryPercent=30`；20 min 抽样 v3 占 32%、错误 0、v3 P50/P95 151/608 ms 优于 v2 290/1305；OSS 误改已恢复，rollout §17）；**[用户 09-15 14:05] `step_every_v3_requests` 20000→4000**（两台宿主机 config.yaml 改后 restart，14:10 生效，14:13 已升到 31%），**每半小时邮件汇报**：API `scripts/search_canary_report.sh 30`（采样两台 res-api 日志按 backend 统计，POST notify_admin），会话内持久 Monitor 每 1800 s 调一次（首封 14:14 `email_send_ok`）。09-15 升到 31/32/33%（18:46/23:19），错误 0。**[用户 09-16 06:3x] 改为每 500 个 v3 请求 +2%**（`step_every_v3_requests: 500` + `step_percent: 2`，两台 restart），预计 ≈9 h 到 100%；观察至全量再 3 天即 P5 完成。原记录：09-14 10:24 抽 50 个真实关键词、10:32 第 1 轮完成（对拍脚本 `build_qs` 签名 bug 已修）；编排脚本因 `pgrep` 自匹配卡住一夜，09-15 05:45 重排：第 2 轮 → +30 min 第 3 轮 → +30 min page-size 100 → 4 份报告（`_note/p5-recheck/p5-recheck-20260915-*.md`），≈07:00 出结果；③ ✅ A' 只读探测 09-13 16:12 完成：64 桶 4,342 万行、缺失 **84,871（0.20%）**（quark 66,358 / bnd 9,698 / ali 8,458 / xunlei 357，远低于 170 万估计），16:50~17:35 `lc-check -trigger-check` **425/425 批成功**，`manual_check` 事件 84,791（quark 66,358 / bnd 9,618 / ali 8,458 / xunlei 357；80 条 bnd 已非 status=1 跳过）→ 由 checker 按队列复检，G3 存量部分收口；④ 阶段 D：`search_canary` 已开发（API `6bbbfb8`），阶段 C 通过后启用。
-- [ ] **P2 代理池口径**（09-10 待确认项，Agent 自主判断）：`lifecycle_checker_*` ok=0 已归因为事故（非口径问题）；`keyword_upyunso/funletu/pansearch_me` 近 24 h 仍 ok=0（几乎全 ipUnusable/other），按 `decision-2026-09-03-清理下线爬虫代码.md` 口径列为下线候选，待修复版 checker 上线后再看一次代理池再定。
+## 待办（P0/P1）
+
+- [ ] **P0 队列 v2 收尾（用户人工）**：A 删 jenkins `spider-xunlei_share`、B 杀两个 2023 裸进程、C `./deploy.sh ps` 复核、D osec-res2 跑 `devops_migrate_legacy_queues`（先 dry-run）、E 看网关 precheck 日志。
+- [ ] **P0 5 爬虫全站扫描改造**：`bbs_kkpans/dyyjmax/fuxipan/misoso/kuakes` 启动即全站扫描，改为全量成功后写 redis `<site>:fullsweep:lastdone`，未超 `FullSweepInterval` 只跑增量（参照 `bbs_feikuai`）。
+- [ ] **P1** 删除已合并的 6 个 `spider-wt-queue-v2-*` worktree/分支；十项提案与腾讯文档任务合并后同样清理。
+- [ ] **P1 待用户手动** `osec-resdb` 删两个废弃容器（需 sudo，命令见快照 archive「待办」）；**不要动** `..._ali_250918`。
+- [ ] **P1** 夸克/阿里有效性检测修复上线后观察 `/v2/validShareLink` 的 `-1` 比例；确认 `clear_expire` 无异常批量删除。
+- [ ] **P1 待确认** API `config.yaml` 的 ES 主机与 STORAGE/网关不一致，可能是过期集群。
+- [ ] **P2 cdp3 `profile=` 调用方接入**：结束前必须发 CDP `Browser.close` 等响应；409 需退避重试 → `decisions/decision-2026-09-13-cdp3持久化会话与扩展机制.md`。
+
+> 其余 P1/P2 长尾（funletu TLS、initEs panic、res_scheduler 观测、devops_check 迁网关、4 站点复议、misoso/dyyjmax/feikuai/kuakes 待确认、夸克 41031 业务码、bnd/xunlei checker 文案匹配、kkpans #5、STORAGE 依赖升级回归、COMMON Makefile、代理池口径）已移至 `current/tasks-backlog.md`。
