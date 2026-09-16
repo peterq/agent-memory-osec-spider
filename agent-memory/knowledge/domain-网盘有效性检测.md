@@ -15,11 +15,9 @@ keywords:
   - 业务码
   - 限流
   - 41031
-summary: 两套有效性检测已于 2026-09-16 合并为 COMMON panvalid 一套实现（分支 feat/valid-unify，未合并 master）；本文件保留历史背景与各网盘判定要点，权威码表/差异表/联网自测方法见 panvalid/README.md
+summary: 两套有效性检测已合并为 COMMON panvalid 一套实现（分支 feat/valid-unify，未合并 master）；本文件存历史背景，权威码表/差异表见 panvalid/README.md
 questions:
   - 链接失效检测怎么做，validShareLink 返回 -1 是什么意思
-  - 夸克/阿里网盘判定不准怎么排查
-  - 误删资源怎么避免
   - panvalid 是什么，和旧的两套实现什么关系
 load: on-demand
 related:
@@ -27,6 +25,7 @@ related:
   - agent-memory/knowledge/architecture-spider.md
   - agent-memory/lessons/success-网盘失效判定原则.md
   - agent-tasks/2026-09-16-ten-proposals/20-valid-unify.md
+  - agent-memory/decisions/decision-2026-09-16-阿里云盘空目录分享判定为有效.md
 ---
 
 # 网盘链接有效性检测
@@ -142,6 +141,13 @@ SPIDER `bj29.api.aliyunpds.com` 那条 3 次请求(`get_share_by_anonymous` 判c
 差异只在请求次数，少请求的一边更优。SPIDER `AliPanValidChecker.CheckValid2`(历史遗留,
 供 `services/devops/2409/ali_download` 用)因此额外多做一次 `has_pwd` 探测请求来还原
 "是否需要提取码"，其余调用方不受影响。
+
+**`[决策]` 分享根目录为空(`file_count==0`)时新旧实现结论不同**：旧 SPIDER
+`dirFileCount` 判 `l>0` 即失效（空目录=失效），旧 API/合并后统一走的单请求实现只在
+`file_count>0 且 file_infos 为空` 时才判失效，`file_count==0` 落到有效分支。
+2026-09-16 主控裁定采用后者（判 `Valid`）：没有业务码/结构化证据支持"失效"这个结论时
+不应该主动认定失效。详见
+`decisions/decision-2026-09-16-阿里云盘空目录分享判定为有效.md`。
 
 ## 4. 联网自测
 

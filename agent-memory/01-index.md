@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-16T08:30:41+08:00
+updated_at: 2026-09-16T08:52:21+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -16,7 +16,7 @@ load: always
 定位到文件后 `mem.py outline <file>` 看章节，再 `mem.py body <file> --section <标题>` 只读需要的一段。
 维护方式：改目标文件 Front Matter（summary / keywords / questions），然后运行 `scripts/mem/mem.py index --write`。
 
-# agent-memory 启动包（脚本生成, 147 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
+# agent-memory 启动包（脚本生成, 149 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
 
 ## 根目录 (3)
 - 00-overview.md | crit | 2026-09-16 | 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件 | 网盘资源爬取、版权取证、COMMON
@@ -37,7 +37,7 @@ load: always
 - current/tasks-backlog.md | low | 2026-09-16 | 从 tasks.md 拆出的低优先级/等人工/归档遗留事项：文档爬虫 FC 6 项人工步骤、归档任务遗留待办、P3 代码小修、2026-09-16 移入的 P… | backlog、P3、文档爬虫
   ? 文档爬虫 FC 自动化还差哪些人工步骤 / 有哪些 P3 低优先级待办
 
-## decisions/ (18)
+## decisions/ (19)
 - decisions/decision-2026-09-02-停止磁力资源采集.md | crit | 2026-09-02 | 项目现只采集 4 种网盘类型资源，不再采集或入库磁力/BT 资源；存量索引与接口保留 | 磁力、torrent、magnet
 - decisions/decision-2026-09-03-全站扫描不在启动时触发.md | crit | 2026-09-03 | 全量扫描完成后把时间写进 redis；启动时检查该时间，有则跳过全量，只跑增量 | 全站扫描、全量、启动
 - decisions/decision-2026-09-04-资源索引生命周期改造方案.md | crit | 2026-09-12 | 用短周期(cur/prev)+长周期三索引与 MySQL 分表元数据替代单大索引的失效清理方式；两套方案共存、v3 接口切换、双写保回滚 | 生命周期、lifecycle、三索引
@@ -68,6 +68,7 @@ load: always
   ? lint 报超长该压到多少字，上限为什么不是 8000 / tasks.md 反复超长怎么办
 - decisions/decision-2026-09-16-搜索p90告警关闭匿名搜索与总览数据源.md | high | 2026-09-16 | 2026-09-16 用户需求裁定：搜索总览走 SLS(SQL 优先、拉日志降级)；p90 超阈值由网关 leader 巡检→邮件+共享 redis 键关闭匿… | search_guard、匿名搜索、p90
   ? 匿名搜索为什么会被关闭, 谁关的, 怎么手动开放 / 搜索总览/Top 榜的数据从哪来, SLS SQL 不可用怎么办 / 分享链接总览的新增/检测/更新/失效各是什么口径 / search_guard 的 redis 键约定是什么
+- decisions/decision-2026-09-16-阿里云盘空目录分享判定为有效.md | high | 2026-09-16 | 阿里云盘 file_count==0 时新旧实现结论不同，裁定判 Valid（无业务码不主动认定失效） | panvalid、阿里云盘、file_count
 - decisions/decision-2026-09-04-合并sweep-guard分支冲突取舍.md | medi | 2026-09-04 | 合并遗留分支时，master 已修正的旧逻辑不应因"冲突两边都保留"而被恢复，需先判断冲突是否为真实的两个功能重叠 | sweep-guard、全量扫描守卫、merge 冲突
 
 ## procedures/ (13)
@@ -83,8 +84,8 @@ load: always
   ? 我要一次接入多个站点，worktree 怎么分工 / 多站点并行开发怎么处理合并冲突
 - procedures/workflow-新站点调研.md | high | 2026-09-12 | 接到"探索某资源站并输出爬虫 PRD"时的标准步骤：先找结构化接口，再验证全量可枚举性，最后对账 | 站点调研、爬虫、PRD
   ? 我要调研一个新的资源站，怎么写爬虫 PRD / 怎么找一个站点的公开接口
-- procedures/workflow-本地构建与验证.md | high | 2026-09-12 | 四个仓库当前的可编译状态、编译命令、已知失败原因，以及编译/go vet 的验收口径，改代码前必读 | 构建、go build、replace
-  ? 编译不过，依赖报错怎么排查 / go mod tidy / replace 问题怎么处理
+- procedures/workflow-本地构建与验证.md | high | 2026-09-16 | 四仓库编译命令、CI(vet/test 白名单 + live 标签隔离连生产测试)、make proto 生成流程与验收口径 | CI、go build、go vet
+  ? 编译不过，依赖报错怎么排查 / CI 怎么跑，哪些测试会连生产
 - procedures/workflow-站点发现.md | high | 2026-09-12 | 收到 `task site-discovery` / `启动网站发现任务` 时的入口、候选来源渠道与要点；正文流程在 site-discovery/READM… | 站点发现、site-discovery、候选站点
   ? 我要找新的资源站，怎么启动网站发现任务 / task site-discovery 是干什么的
 - procedures/checklist-仓库脚本清单.md | medi | 2026-09-15 | MEMORY 仓库 scripts/ 下可复用脚本一览（git-hooks 提交信息违禁词钩子、claude-rc systemd 托管 Remote Con… | scripts、邮件汇报、notify.py
@@ -125,8 +126,8 @@ load: always
 - lessons/failure-网关重启暴露ES集群已更换.md | high | 2026-09-12 | 线上网关自 1 月未重启，期间 ES 集群已更换；队列 v2 上线一重启就 panic。教训：长期不重启的服务会掩盖外部依赖变更，重启前先在目标主机验证配置里… | 网关、gateway、ES
   ? 网关起不来，报 no such host 怎么查 / 重启网关前要检查什么
 - lessons/failure-配置v2二进制无本地回落导致老容器重启即挂.md | high | 2026-09-09 | v2 二进制只认 OSS_CONFIG_URL/LOCAL_CONFIG_PATH，不读宿主机 config.yaml；deploy.sh 替换宿主机 spi… | 配置 v2、OSS_CONFIG_URL、config.yaml
-- lessons/failure-验收部署脚本时误连生产主机.md | high | 2026-09-16 | deploy.sh 里"纯只读"的 releases/health 子命令不像 deploy/rollback 那样受 --dry-run 保护，验收时只要参… | deploy.sh、--dry-run、ssh 生产主机
-  ? 为什么 deploy.sh 加了 --dry-run 还是连上了生产主机 / 验收/测试新写的部署脚本子命令要注意什么 / releases 和 health 子命令为什么不受 --dry-run 保护
+- lessons/failure-验收部署脚本时误连生产主机.md | high | 2026-09-16 | releases/health 子命令其实和 deploy/rollback 一样全部支持 --dry-run，验收时纯粹是漏加了参数、又用真实主机名，才误连… | deploy.sh、--dry-run、ssh 生产主机
+  ? 验收/测试新写的部署脚本子命令要注意什么
 - lessons/patterns-并行重构的分阶段切分.md | high | 2026-09-12 | 多个包同时改造且互相引用时，用"主会话先做共享契约 → 子 Agent 只加不删 → 单独清理 Agent 收尾"三阶段避免编译互锁 | 并行重构、子agent、worktree
   ? 多个包同时重构，子 Agent 怎么避免编译互锁 / Phase 0/1/2 怎么切分任务
 - lessons/patterns-统计ES索引先查文档形态.md | high | 2026-09-05 | 同一索引可能混着两代写入形态；只按 join=resource 统计会漏掉三分之二资源，任何统计/迁移前先做 exists/must_not exists 对账 | ES、join、nested
@@ -145,7 +146,7 @@ load: always
 - lessons/success-cdp3策略强装扩展与NAS持久化profile.md | medi | 2026-09-16 | 品牌版 Chrome 用企业策略 force_installed 装扩展 + 带外预热 profile 种子 + NAS tar 持久化会话的可行做法与关键参数 | 扩展安装、ExtensionSettings、override_update_url
   ? 怎么让 headless Chrome 装 NAS 上的自定义扩展 / 策略强装的扩展改了版本为什么不更新
 
-## knowledge/ (23)
+## knowledge/ (24)
 - knowledge/architecture-系统总览.md | crit | 2026-09-02 | 从爬取到入库到检索的完整链路、各服务端口与中间件分工 | 架构、数据链路、网关
 - knowledge/api-rpc契约.md | high | 2026-09-12 | COMMON 仓库中各 proto 服务的方法清单、核心消息结构与代码生成流程 | proto、gRPC、StorageRpc
   ? 我要改 gRPC 协议 / proto，改完怎么生成 / 某个 rpc 方法的入参/出参消息结构是什么 / proto 改完要同步哪些下游仓库
@@ -172,14 +173,16 @@ load: always
   ? 我要改入库逻辑，查资源为什么没写进去 / ES 索引幂等/version 判重是怎么回事
 - knowledge/domain-站点-2609接入批次.md | high | 2026-09-15 | 本批 5 个站点的形态、子命令、规模、各自的坑与实现状态；详细规格见各自 PRD | dyyjmax、fuxipan、feikuai
   ? dyyjmax/fuxipan/feikuai/kuakes 是什么站，各自的坑是什么 / 2609 批次都接了哪些站
-- knowledge/domain-网盘有效性检测.md | high | 2026-09-16 | 两套有效性检测已于 2026-09-16 合并为 COMMON panvalid 一套实现（分支 feat/valid-unify，未合并 master）；本… | panvalid、有效性检测、validShareLink
-  ? 链接失效检测怎么做，validShareLink 返回 -1 是什么意思 / 夸克/阿里网盘判定不准怎么排查 / 误删资源怎么避免 / panvalid 是什么，和旧的两套实现什么关系
+- knowledge/domain-网盘有效性检测.md | high | 2026-09-16 | 两套有效性检测已合并为 COMMON panvalid 一套实现（分支 feat/valid-unify，未合并 master）；本文件存历史背景，权威码表/… | panvalid、有效性检测、validShareLink
+  ? 链接失效检测怎么做，validShareLink 返回 -1 是什么意思 / panvalid 是什么，和旧的两套实现什么关系
 - knowledge/domain-腾讯文档表格解析.md | high | 2026-09-16 | 2026-09-16 实测：公开表格匿名可访问；同源 GET dop-api/opendoc（需页面 Cookie，t/xsrf 非必需）返回 JSONP；数… | 腾讯文档、docs.qq.com、opendoc
   ? 腾讯文档表格的单元格数据从哪个接口拿、要不要登录 / 腾讯文档 opendoc 返回的 protobuf 区块怎么解 / 为什么腾讯文档有的返回 block_datas 有的返回 JSON op 数组 / 腾讯文档分块拉取越界时会怎样
 - knowledge/domain-转存下载链路.md | high | 2026-09-15 | SPIDER 下载调度链路的代码结构、redis 键/MySQL 表、阿里/百度解析方式、三条下载路径，以及 2026-09-13 体检结论：链路空转，阿里 … | 转存下载、share_download、resolve_link
   ? 分享文件怎么被转存、解析成下载地址落到 OSS / 转存下载链路进程/队列/账号池在哪，怎么体检
 - knowledge/domain-迅雷分享爬取.md | high | 2026-09-15 | xlLoadShare 失败率修复(09-15 已上线)：顶层文件入批次、状态码按共用码表判定、空分享永久失败；失效上报仍 dry run；接口/探针/导出重… | xlLoadShare、迅雷、xunleipan
   ? xlLoadShare 失败率高是什么原因 / 怎么直接查一个迅雷分享的结构 / 迅雷失效上报 dry run 开关在哪
+- knowledge/architecture-spider-sitecrawler骨架.md | medi | 2026-09-16 | sitecrawler 骨架接口设计、kkpans/feikuai 迁移前后 redis 键对照、6 站迁移状态 | sitecrawler、爬虫骨架、kkpans
+  ? services/bbs 爬虫的通用骨架长什么样 / kkpans/feikuai 迁移后行为有没有变 / 6 站哪些迁移了骨架、哪些没有
 - knowledge/architecture-spider-队列约定.md | medi | 2026-09-12 | SPIDER 队列 v2（2026-09-04 起）的固定队列名、去重键、消费者并发度与通用队列（gateway_v2）命名空间约定；写新队列消费者或排查任务… | 队列、队列v2、resourcePreCheck
   ? 我要写新的网关队列消费者，代码放哪 / 关键词站点怎么收关键词 / 爬虫怎么提交链接给网关
 - knowledge/concept-术语表.md | medi | 2026-09-12 | 代码里高频出现的缩写、字段含义与命名来历，避免误读 | 术语、bnd、valid
