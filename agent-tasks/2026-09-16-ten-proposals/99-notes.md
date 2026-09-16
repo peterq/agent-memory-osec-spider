@@ -6,3 +6,7 @@
 
 ## 交付/验收进度
 - ✅ 85 search-config：`api-wt-search-config` `7677fcf`，验收通过（search_canary 未接 featureflag 为授权简化；keywords.txt 与 PRD p5-recheck 对拍表逐行一致）。待用户确认合并。
+- ✅ 40 health-observe：COMMON `common-wt-health-observe` `69acf64`（health_rpc 契约 + queue_admin.proto absThreshold 字段，45 前端可依赖）；SPIDER `spider-wt-health-observe` `161483b`（新模块 `services/gateway/health` 账号池探测+站点巡检、`download_scheduler/probe.go`、queue_admin absThreshold+SiteRecentStats、修复 `spider_gateway_service.go` ListQueue 的 SCAN 游标 bug）。`go build ./...` 全过；`go vet`/`go test` 覆盖改动包，新增 20 个用例全绿（本机 redis db15，无生产依赖）。待主控在生产验证：账号探测真实调用效果、ListQueue 修复后前端/其它调用方是否受影响（此前恒为空，行为变化）。45 前端可基于此契约开工。
+- 📦 70 deploy-rollback：SPIDER `8c40e6e` / API `f26023b` / STORAGE `a0e9cf2`，验收中。⚠️ 开发中只读误连 osec-res1 两次（无写操作），已邮件通报、追加硬规则 §7。
+- 📦 20 valid-unify：COMMON `7d1712d` / SPIDER `5942c38`+`a48662e` / API `47040af`+`23eba5d`，验收中。阿里改单请求实现；41031 已入码表。
+- 记忆仓库同时有另一会话在提交（腾讯文档任务），本任务提交一律用 pathspec `-- agent-tasks ...`。
