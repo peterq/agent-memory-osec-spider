@@ -10,3 +10,7 @@
 - 📦 70 deploy-rollback：SPIDER `8c40e6e` / API `f26023b` / STORAGE `a0e9cf2`，验收中。⚠️ 开发中只读误连 osec-res1 两次（无写操作），已邮件通报、追加硬规则 §7。
 - 📦 20 valid-unify：COMMON `7d1712d` / SPIDER `5942c38`+`a48662e` / API `47040af`+`23eba5d`，验收中。阿里改单请求实现；41031 已入码表。
 - 记忆仓库同时有另一会话在提交（腾讯文档任务），本任务提交一律用 pathspec `-- agent-tasks ...`。
+- 📦 30 startup-selfcheck：SPIDER `4873c60` / API `665d2e8` / STORAGE `50a7d8d`，返工中（STORAGE metrics 端口改可配、README 写清降级语义差异）。
+- 📦 50 ci：COMMON `4b522ba` / SPIDER `bdedb7e` / API `94a6356` / STORAGE `a8a376f`，验收中。需用户在 GitHub 配 4 个 secret（COMMON_REPO_TOKEN / PAN_REPO_TOKEN / PAN_CLIENT_CORE_REPO_TOKEN / SPIDER_REPO_TOKEN）。COMMON 重生成了 `common_message.pb.go`、`rpc/storage/rpc.pb.go`（PPIO 描述符修正）——与 valid-unify/health-observe 的 COMMON 分支合并时留意生成物冲突。
+- 🔁 80 crawler-skeleton：`e9b4fe6` 只迁 kkpans/feikuai，已打回继续迁其余 4 站。
+- ⚠️ 经验：简报里让 ci 角色「跑 `go test ./...` 看连接失败找漏网测试」等于让测试真的连生产；正确做法是 `unshare -rn` 无网络环境下跑。已在验收要求中改正，收尾时提炼进 lessons。
