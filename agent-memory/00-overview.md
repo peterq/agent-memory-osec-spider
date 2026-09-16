@@ -3,7 +3,7 @@ title: 项目总览
 type: overview
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-16T09:50:00+08:00
+updated_at: 2026-09-16T18:40:00+08:00
 priority: critical
 keywords: [网盘资源爬取, 版权取证, COMMON, SPIDER, STORAGE, API, NC-JS]
 summary: 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件
@@ -26,7 +26,7 @@ related:
 ## 2. 当前状态（最近 7 天；更早见 `current/changelog.md`）
 
 - 09-16 **腾讯文档(docs.qq.com)表格解析开发+验证完成，待用户确认合并**（userscripts `feat/qqdoc-cloud`、nc-js `feat/qqdoc`；上线 = 合并 → `pnpm upload:cloud` → 前端发版）→ `knowledge/domain-腾讯文档表格解析.md`
-- 09-16 **十项提案并行开发启动**（9 个 worktree，合并前需用户确认）→ `agent-tasks/2026-09-16-ten-proposals/`
+- 09-16 **十项提案（删除熔断/检测统一/启动自检/健康告警/CI/密钥/部署回滚/爬虫骨架/搜索配置化）全部开发验收完成，集成分支 CI 全绿，待用户确认合并** → `agent-tasks/2026-09-16-ten-proposals/95-merge-plan.md`
 - 09-16 **分享链接总览 + 搜索总览 + p90 自动关匿名搜索已上线** → `knowledge/architecture-search-admin.md`
 - 09-15 **P5 阶段 D 灰度爬坡中**（09-16 起每 500 个 v3 请求 +2%）；**xlLoadShare 修复上线，失效上报仍 dry run** → `current/tasks.md`
 - 09-12 **🔴 事故：lifecycle_checker 误删 115.5 万 quark/ali 资源**，修复已部署，重爬回库 ≈56% → `lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md`
@@ -71,7 +71,7 @@ related:
 ## 6. 高价值经验（正本在 `lessons/` `procedures/`，其余用 `mem.py search`）
 
 - **删除等不可逆功能上线前必须线上 dry run，再用 CDP/查库等独立手段复核（禁止复用新功能代码），通过才开启** → `procedures/checklist-不可逆操作上线.md`；首日看 valid/invalid 绝对数、告警配绝对阈值 → `lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md`
-- 跨包重构切三阶段，hub 代码主控逐行审 → `lessons/patterns-并行重构的分阶段切分.md`
+- 跨包重构切三阶段，hub 代码主控逐行审 → `lessons/patterns-并行重构的分阶段切分.md`；多线并行改造：断网跑测试、假主机名、逐线验收、`scripts/dev/integration_check.sh` 合并预演 → `procedures/workflow-并行多任务开发与合并预演.md`
 - 失效判定看业务码不看文案，判不准就报错；样本 15 条起 → `lessons/success-网盘失效判定原则.md`
 - 监控/埋点初始化必须可降级，且要覆盖最彻底的失败路径 → `lessons/failure-旁路能力初始化拖垮主流程.md`
 - NC-JS `pnpm build` 会真实上传生产 OSS，验证前先关 `deploy` → `lessons/failure-ncjs构建脚本会自动上传OSS.md`

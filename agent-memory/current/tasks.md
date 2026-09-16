@@ -3,7 +3,7 @@ title: 当前任务与进度
 type: task
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-16T09:50:00+08:00
+updated_at: 2026-09-16T18:40:00+08:00
 priority: critical
 keywords: [任务, 进度, 待办, 腾讯文档, qqdoc, 十项提案, P5灰度, lifecycle_checker, xlLoadShare, 队列v2, 全站扫描]
 summary: 仍在推进/阻塞/待决策的事项：腾讯文档表格解析已完成待用户确认合并、十项提案并行开发、P5 阶段 D 灰度爬坡、误删事故收尾；长尾待办在 tasks-backlog，历史原文在 archive
@@ -37,7 +37,7 @@ related:
 - [ ] **飞书文档解析接入（2026-09-16 开发完成，待用户确认合并）**：三个 worktree 已提交未 push——userscripts `feat/feishu-cloud`(`bf4c36d`, 云端脚本拆 runtime/kdoc/feishu, 产物改名 `doc-cloud.user.js`)、NC-JS `feat/feishu-doc`(`c10ce3e`, 提交框识别飞书链接)、SPIDER `feat/feishu-doc`(`bc4b25f`, doc_crawler 默认脚本地址)。真实文档验证 14 条全部符合预期。**合并 master 前须用户确认**；合并后人工 `pnpm build:cloud && pnpm upload:cloud`、发布 spiderAdmin。风险：PC 端油猴调度器不过滤飞书任务。→ `knowledge/domain-飞书文档解析.md`、`agent-tasks/2026-09-16-feishu-doc/99-notes.md`
 
 - [ ] **P1 腾讯文档表格解析（09-16，待用户确认合并）**：方案 = 同一份云端脚本（userscripts `src/cloud/kdocCloud.ts`）按 host 分派，页面内同源 fetch `dop-api/opendoc` 解两种格式（3.0.0 protobuf 区块 / 2.x JSON op），前端 `spiderUtil.ts` 识别 `docs.qq.com/sheet/*`；网关/doc-crawler/契约不改。工作树 `userscripts-wt-qqdoc`(`feat/qqdoc-cloud`)、`ncjs-wt-qqdoc`(`feat/qqdoc`)。上线动作：合并 → `pnpm build:cloud && pnpm upload:cloud`（覆盖线上 `fc-chrome/userscripts/kdoc.user.js`）→ 前端发版。本地 fc-chrome 端到端方法见 `procedures/workflow-fc-chrome上线.md`。
-- [ ] **P1 十项提案并行开发（09-16）**：用户裁定第 3~12 项全部开发；分支 `feat/<短名>`（delete-breaker / valid-unify / startup-selfcheck / health-observe / ci / secrets / deploy-rollback / crawler-skeleton / search-config），NC-JS 待契约后派。
+- [ ] **P1 十项提案并行开发（09-16 全部完成，待用户确认合并）**：9 条线 + NC-JS 前端全部交付并验收通过（4 条经返工）；四仓库集成分支 `integration/ten-proposals`（COMMON `c0dca69`/SPIDER `7e79501`/API `6c413b6`/STORAGE `1a47033`）+ nc-js `feat/health-observe`(`66ec854`) 断网 CI 全绿。合并步骤、上线前置项（GitHub 4 个 secret、FC 函数 OSS 环境变量、restest 演练 deploy.sh、熔断器 dry_run 观察）见 `agent-tasks/2026-09-16-ten-proposals/95-merge-plan.md`。**未合并、未 push。**
 - [ ] **P0 P5 阶段 D**：阶段 C 复测 09-15 通过（G1 字面超限用户接受）；灰度 09-15 08:1x 起 30%，09-16 改 `step_every_v3_requests: 500 / step_percent: 2`（两台 res-api 宿主机 `config.yaml` + restart）。半小时邮件由 API `scripts/search_canary_report.sh 30` 发。A' 存量复检 84,791 条已入队完成。过程原文见快照 archive。
 - [ ] **🔴 P0 误删事故收尾**：重爬 1,152,617 条 09-14 10:21 终态回库 637,886（quark 56.2%），解析器判失效经 1,000 条 CDP 复核 100% 一致；bnd 并发按类型拆分（`consumer_number_by_type`，bnd 150）与按类型背压均已上线。待办：API `0ad7bb3`（bnd 判定对齐）下次发版带上；告警阈值放宽待用户决定。
 - [ ] **P1 xlLoadShare 收尾**：`submitInvalidDryRun=true` 日志清单 → `scripts/xl_share_probe.sh` 抽样 → 用户拍板改 false 重部；6h 后 `tools/xl-fail-export` 补投。
@@ -53,6 +53,9 @@ related:
       续跑"语义，新增 `sitecrawler.WrapAwareSite` 可选接口支持，`fullsweep:lastdone` 值编码
       从 RFC3339Nano 改成 Unix 秒，上线后第一次可能多跑一次全量，安全方向可接受)。
       `SiteCommonConfig` 内嵌进 5 站配置结构体(misoso 语义不同未内嵌)。
+      09-16 验收发现并修复一处系统性遗漏：dyyjmax/fuxipan/kuakes/misoso 迁移时漏传
+      `EngineConfig.MinRequestInterval`，导致这 4 站的全局限速被静默关闭；已修复 + 补了
+      防回归单测 `TestEngineConfigMinRequestIntervalNotDropped`(`services/bbs/sitecrawler_engine_config_test.go`)。
       详见 `knowledge/architecture-spider-sitecrawler骨架.md`。
 - [ ] **P1** 删除已合并的 6 个 `spider-wt-queue-v2-*` worktree/分支；十项提案与腾讯文档任务合并后同样清理。
 - [ ] **P1 待用户手动** `osec-resdb` 删两个废弃容器（需 sudo，命令见快照 archive「待办」）；**不要动** `..._ali_250918`。

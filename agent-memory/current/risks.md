@@ -3,7 +3,7 @@ title: 当前风险与阻塞
 type: risk
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-16T10:40:00+08:00
+updated_at: 2026-09-16T11:20:00+08:00
 priority: high
 keywords: [lifecycle_checker误删, 风险, 阻塞, 密钥, AK/SK, 生产, 测试, 依赖升级, 队列v2, 无回滚, 上线收尾]
 summary: 影响开发与运维安全的已知风险点；最高 R9 lifecycle_checker 误删 115.6 万资源（修复已上线、恢复待决策）
@@ -31,7 +31,8 @@ related:
 ## R7 仓库测试文件硬编码真实网盘凭据（2026-09-08 发现，2026-09-16 已在 `feat/secrets` 分支修复，未合并 master）
 
 - [事实] `services/gateway/download_scheduler/pan_download/alipan_download/alipan_dl_test.go`、`bnd_download/bnd_dl_test.go` 直接把真实 RefreshToken/BDUSS 写在源码里（历史提交已明文入库，git 历史可查）。
-- [2026-09-16 进展] secrets 角色（提案9）四仓库 `feat/secrets` 分支已修复**当前源码里**发现的全部硬编码真实凭据(共约 15 处，含 SPIDER 的 OSS AK/SK×3、bnd/alipan/quark 网盘账号凭据、生产 Redis 密码、Grafana 密码、蜻蜓代理过期 token、COMMON 的 ARMS Prometheus JWT)：测试统一改读本地 `*.hide.json`(配 `*.example.json` 占位模板)或环境变量，缺失时 `t.Skip`/报明确错误而非 panic；四仓库新增 `.gitleaks.toml` + `.github/workflows/secrets.yml`(只扫 PR diff) + `scripts/pre-commit-secrets.sh`。**只清了当前工作区，未改写 git 历史、未轮换任何凭据**——历史提交里这些值仍可查，轮换清单见提交里的汇报（未收敛进本记忆库，避免明文扩散；需要时找主控要那次汇报）。
+- [2026-09-16 进展] secrets 角色（提案9）四仓库 `feat/secrets` 分支已修复**当前源码里**发现的全部硬编码真实凭据(共约 21 处，含 SPIDER 的 OSS AK/SK×6、bnd/alipan/quark 网盘账号凭据、生产 Redis 密码、Grafana 密码、蜻蜓代理过期 token、COMMON 的 ARMS Prometheus JWT、`tools/devops_note/esRun.mjs` 的 ES 密码)：测试统一改读本地 `*.hide.json`(配 `*.example.json` 占位模板)或环境变量，缺失时 `t.Skip`/报明确错误而非 panic；四仓库新增 `.gitleaks.toml` + `.github/workflows/secrets.yml`(只扫 PR diff) + `scripts/pre-commit-secrets.sh`。**只清了当前工作区，未改写 git 历史、未轮换任何凭据**——历史提交里这些值仍可查，轮换清单见提交里的汇报（未收敛进本记忆库，避免明文扩散；需要时找主控要那次汇报）。
+- [2026-09-16 验收返工] 首轮只按字段名 grep 漏了 6 处（`ak=xxx&sk=xxx` 这种 query-string DSL 写法、`.mjs` 里的 JS 变量声明），验收方按"已知敏感值反查"（逐个 `git grep -F`）二次核验后补齐，经验见 `procedures/workflow-密钥治理约定.md`「§4 一次性排查到的、有代表性的坑」。**⚠️ 部署前置项**：`download2oss.go` 部署的 FC 函数 `resource_download_fc` 必须在**阿里云函数计算控制台**单独配置 `OSS_ACCESS_KEY_ID`/`OSS_ACCESS_KEY_SECRET`（`deploy.sh` 管不到 FC 函数这一层，容易漏配），详见 SPIDER `PRD/config-v2/README.md` §7。gitleaks 自定义规则(`[[rules]]`)跟本仓库 `.gitleaks.toml` 已有的 `[extend]` 一起用会静默失效，改用 `scripts/pre-commit-secrets.sh` 里的结构化 grep 兜底，详见同一份 procedures 文件。
 - [事实,待处理] SPIDER `services/gateway/download_scheduler/download_edge_script/download.es`(CDN 边缘脚本) 与 `download_scheduler_util/res_dl_scheduler.go` 共用一个硬编码 AES 密钥/IV 做下载链接加解密，两端必须保持一致，**未处理**（改一侧会破坏线上功能，需协调发布，不是"改代码就完事"）。
 - 处置建议：轮换上述真实账号/密码类凭据（`feat/secrets` 分支不做轮换）；`download.es`/`res_dl_scheduler.go` 的共享 AES key 如需下线需同时改 CDN 边缘脚本与 Go 侧并协调发布窗口。与 R2（配置文件含明文密钥）同类。
 

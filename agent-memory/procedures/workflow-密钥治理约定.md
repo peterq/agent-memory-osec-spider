@@ -3,14 +3,15 @@ title: 密钥治理约定（测试凭据/配置敏感字段/gitleaks）
 type: procedure
 status: active
 created_at: 2026-09-16T10:40:00+08:00
-updated_at: 2026-09-16T10:40:00+08:00
+updated_at: 2026-09-16T11:20:00+08:00
 priority: medium
 keywords: [密钥治理, gitleaks, hide.json, 环境变量覆盖, secrets, AK/SK]
-summary: 2026-09-16 secrets 角色（提案9）在四仓库落地的密钥治理约定：测试凭据用 *.hide.json、配置敏感字段用 ${VAR} 环境变量覆盖、gitleaks 扫描三件套
+summary: 2026-09-16 secrets 角色（提案9）在四仓库落地的密钥治理约定：测试凭据用 *.hide.json、配置敏感字段用 ${VAR} 环境变量覆盖、gitleaks 扫描三件套；含 gitleaks 自定义规则跟 [extend] 一起用会静默失效的坑
 questions:
   - 测试文件需要真实账号凭据时该怎么写不进 git
   - 配置文件里的敏感字段怎么支持环境变量覆盖又不用改 yaml
   - gitleaks 密钥扫描怎么在四仓库用
+  - gitleaks 自定义规则不生效怎么排查
 load: on-demand
 related:
   - agent-memory/current/risks.md
@@ -82,6 +83,30 @@ API/STORAGE 四仓库 `feat/secrets` 分支（未合并 master）落地，供后
 2026-09-16 现状扫描结果（`feat/secrets` 分支，值不贴，仅计数）：SPIDER 19→2（剩 2 处是
 CDN 边缘脚本与后端共享的 AES 签名密钥, 见 risks.md R7, 未处理）、API 11→6（剩 6 处都在
 `config.yaml`, 按约定不改）、STORAGE 3→3（`config_dev.yaml`, 同上）、COMMON 2→0。
+**同日验收返工后二次扫描**（按字段名 grep 之外，改成对每个已确认真实值做 `git grep -F`
+逐一反查，四仓库排除 `config*.yaml`/`deploy.sh` 后合计 0 命中；`deploy.sh`/`config.yaml`/
+`config_dev.yaml` 里的已知值不算新发现，按约定不动）。
+
+### gitleaks 自定义规则失效（`[extend]` + `[[rules]]` 组合坑）
+
+**现象**：`.gitleaks.toml` 里只要同时有 `[extend]`（`useDefault = true` 或 `path = "..."`
+两种都一样）和自己写的 `[[rules]]`，那条自定义规则会被**静默吃掉**——不报错、`gitleaks
+detect` 正常跑完、就是永远匹配不到，哪怕拿掉 `[extend]` 单独跑这条规则完全正常。
+本机版本：`go install github.com/zricethezav/gitleaks/v8@latest` 装到的 v8.30.1。
+
+**复现**：建一个只有一行 `ak=xxx&sk=yyy` 的 `.go` 文件 + 一份 `[[rules]] regex =
+'''ak=...&sk=...'''` 的 `.gitleaks.toml`：不加 `[extend]` 能扫到，加了
+`[extend]\nuseDefault = true`（或换成 `path` 指向手动导出的默认配置副本）就扫不到。看过
+`config/config.go` 的 `Translate()`/`extend()` 源码，逻辑上不应该丢规则（`extend()` 只应该
+**追加**默认规则集里我没有的 ID），没查出根因，怀疑是 viper 处理 `[[rules]]`（数组表）与
+其他顶层 key 混排时的已知类问题，没有继续深挖（性价比不高）。
+
+**结论**：**不要**在同时用 `[extend]` 的 `.gitleaks.toml` 里加 `[[rules]]` 期望它生效——
+会造成"看起来配置了防护、实际没有"的假安全感，比不配置更危险。默认规则集认不出的模式
+（比如 SPIDER 这次的 `ak=xxx&sk=yyy` 自定义 DSL），改成在 `scripts/pre-commit-secrets.sh`
+里加一段独立于 gitleaks 的结构化 `grep -P`（对 `git diff --cached -U0` 的新增行做检查），
+连带在 `.gitleaks.toml` 顶部写清楚"为什么这里没有对应的 `[[rules]]`"，避免后人重复踩坑。
+升级 gitleaks 大版本后可以重新验证这个坑是否修复，修复了再把 grep 兜底换回 `[[rules]]`。
 
 ## 4. 一次性排查到的、有代表性的坑
 
@@ -98,3 +123,14 @@ CDN 边缘脚本与后端共享的 AES 签名密钥, 见 risks.md R7, 未处理�
   `onRedis` 函数开头就是 `return`（原作者自己注释"谁把redis hard code在这了"），但 return 之后
   的死代码仍把生产 Redis 密码明文提交进了 git——`go vet`/编译器都不会提示这种"死代码里的
   凭据"，只能靠 gitleaks 或人工通读发现。
+- **按字段名/关键词 grep 会漏掉不常见的写法**：第一轮只 grep
+  `AccessKeySecret|access_key_secret|BDUSS|refresh_token|password:|passwd|secret` 一类
+  字段名，漏掉了 `fc_config_util.InvokerByConf("...&ak=<AK>&sk=<SK>")` 这种 query-string DSL
+  （`ak=`/`sk=` 不匹配任何字段名模式）和 `esRun.mjs` 里 `const password = 'xxx'`（JS 变量声明,
+  之前的 grep 命令行只覆盖了 `.go`/`.yaml`/`.sh`/`.json`, 没覆盖 `.mjs`）。验收返工时改成按
+  **已确认的敏感值**（不是字段名）逐个 `git grep -F` 反查全仓库才补全；同一份 AK/SK 最终
+  在 SPIDER 一共重复硬编码了 **6 处**（`devops_online_env.go`/`update_fc_loop.go`/
+  `download2oss.go`/`web_res/download_url.go`/`download_worker/download_mgr.go` 生产代码
+  各一处 + `download_fc_test.go`/`bing_pdf_test.go` 测试各一处，`deploy.sh` 里还有第 7 处但
+  那是它的合法来源、不算硬编码问题）。教训：**排查完字段名之后一定要再按"已确认的具体
+  值"补一轮 `git grep -F`**，两种搜法覆盖的是不同的写法习惯，互相不能替代。

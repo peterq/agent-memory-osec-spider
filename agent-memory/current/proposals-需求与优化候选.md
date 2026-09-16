@@ -8,8 +8,7 @@ priority: medium
 keywords: [需求候选, 优化提案, 取证包, 软删除, 熔断, 密钥治理, CI]
 questions:
   - 项目下一步有哪些值得做的需求或优化
-  - 取证证据链、软删除、删除熔断这些提案的依据是什么
-summary: Agent 基于事故/风险/待办提出的 12 条候选需求与优化（取证包、软删可回滚、删除熔断、checker 统一、CI、密钥治理、部署回滚等），每条附依据与落点；用户未拍板，仅供挑选
+summary: 12 条候选需求（取证包、软删可回滚、删除熔断、checker 统一、CI、密钥治理、部署回滚等）；09-16 用户裁定 3~12 已开发，1~2 未做
 load: on-demand
 related:
   - agent-memory/current/risks.md

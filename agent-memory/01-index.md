@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-16T09:17:19+08:00
+updated_at: 2026-09-16T09:43:45+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -16,7 +16,7 @@ load: always
 定位到文件后 `mem.py outline <file>` 看章节，再 `mem.py body <file> --section <标题>` 只读需要的一段。
 维护方式：改目标文件 Front Matter（summary / keywords / questions），然后运行 `scripts/mem/mem.py index --write`。
 
-# agent-memory 启动包（脚本生成, 158 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
+# agent-memory 启动包（脚本生成, 161 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
 
 ## 根目录 (3)
 - 00-overview.md | crit | 2026-09-16 | 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件 | 网盘资源爬取、版权取证、COMMON
@@ -31,7 +31,7 @@ load: always
   ? 当前有哪些待用户确认的问题
 - current/risks.md | high | 2026-09-16 | 影响开发与运维安全的已知风险点；最高 R9 lifecycle_checker 误删 115.6 万资源（修复已上线、恢复待决策） | lifecycle_checker误删、风险、阻塞
   ? 密钥、安全相关的风险在哪看
-- current/proposals-需求与优化候选.md [draft] | medi | 2026-09-16 | Agent 基于事故/风险/待办提出的 12 条候选需求与优化（取证包、软删可回滚、删除熔断、checker 统一、CI、密钥治理、部署回滚等），每条附依据与… | 需求候选、优化提案、取证包
+- current/proposals-需求与优化候选.md [draft] | medi | 2026-09-16 | 12 条候选需求（取证包、软删可回滚、删除熔断、checker 统一、CI、密钥治理、部署回滚等）；09-16 用户裁定 3~12 已开发，1~2 未做 | 需求候选、优化提案、取证包
 - current/changelog.md | low | 2026-09-16 | 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪 | 变更记录、changelog、历史
 - current/tasks-backlog.md | low | 2026-09-16 | 从 tasks.md 拆出的低优先级/等人工/归档遗留事项：文档爬虫 FC 6 项人工步骤、归档任务遗留待办、P3 代码小修、2026-09-16 移入的 P… | backlog、P3、文档爬虫
 
@@ -66,7 +66,7 @@ load: always
 - decisions/decision-2026-09-16-阿里云盘空目录分享判定为有效.md | high | 2026-09-16 | 阿里云盘 file_count==0 时新旧实现结论不同，裁定判 Valid（无业务码不主动认定失效） | panvalid、阿里云盘、file_count
 - decisions/decision-2026-09-04-合并sweep-guard分支冲突取舍.md | medi | 2026-09-04 | 合并遗留分支时，master 已修正的旧逻辑不应因"冲突两边都保留"而被恢复，需先判断冲突是否为真实的两个功能重叠 | sweep-guard、全量扫描守卫、merge 冲突
 
-## procedures/ (15)
+## procedures/ (16)
 - procedures/checklist-不可逆操作上线.md | crit | 2026-09-13 | [用户确认 2026-09-13] 数据误删事故后的硬规则：任何删除/清理/判失效等无法撤销的功能，上线前必须先在线上跑 dry run，再用与新功能无关的独… | 不可逆操作、dry run、二次复核
   ? 要上线一个会删数据/判失效/清理的功能，上线前必须做什么 / dry run 的结果怎么复核，能不能用新功能自己的日志当依据 / 什么时候才允许正式开启删除类功能
 - procedures/workflow-fc-chrome上线.md | high | 2026-09-16 | fc-chrome 上线链路：本机构建 → docker save/rsync → ACR 推镜像 → s deploy → 共用域名路由 → 健康检查与真实… | fc-chrome、serverless-devs、ACR
@@ -74,6 +74,8 @@ load: always
   ? 任务进行中什么时候该给用户发邮件 / 进度/异常邮件怎么写、用什么脚本发 / 用户不在电脑旁怎么通知他
 - procedures/workflow-子agent任务简报.md | high | 2026-09-12 | 派子 Agent 时任务描述落盘成文件、prompt 只给路径，并列出子 Agent 的常见失败模式与提示词对策 | 子agent、任务描述、agent-tasks
   ? 我要派子 Agent，任务描述太长怎么办 / 多个 agent 上下文重复怎么解决
+- procedures/workflow-并行多任务开发与合并预演.md | high | 2026-09-16 | 简报落盘 → new_worktree_all 建跨仓库 worktree → 并行派单 → 逐线验收/返工 → integration_check 合并预演… | 并行开发、worktree、合并预演
+  ? 用户让我并行开发多项需求、合并前确认，标准流程是什么 / 合并前怎么提前发现冲突并验证编译
 - procedures/workflow-并行开发多站点爬虫.md | high | 2026-09-15 | 一次接入多个新站点时的分工方式：worktree 隔离、共享资源集中准备、冲突面收敛、合并与验收 | 并行开发、worktree、子agent
   ? 我要一次接入多个站点，worktree 怎么分工 / 多站点并行开发怎么处理合并冲突
 - procedures/workflow-文档发现.md | high | 2026-09-16 | 收到 `task doc-discovery` / `启动文档发现任务` 时的入口、验收口径、候选渠道性价比与分工；正文流程与脚本在 COMMON site-… | 文档发现、doc-discovery、docfind
@@ -91,7 +93,7 @@ load: always
 - procedures/workflow-部署.md | medi | 2026-09-15 | SPIDER deploy.sh 的常规用法、服务到主机的映射方式、判断线上现役服务的唯一判据、新服务选主机方法、配置分发机制与安全提醒；历次上线（生命周期/… | auto模式、权限分类器、部署
 - procedures/workflow-部署-历史补充.md | low | 2026-09-12 | 历次生产上线（2026-09-05~09-10 生命周期 P3/P4 网关多次重部、代理池监控上线等）的一次性踩坑与已固化到 deploy.sh 的加固记录；… | 生命周期上线、网关重部、dryRun
 
-## lessons/ (31)
+## lessons/ (32)
 - lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md | crit | 2026-09-15 | checker 用 task.Id(md5) 而非 ShareId 探测，115.5 万条 quark/ali 误删；bnd 再因「违规」tooltip 误判… | lifecycle_checker、误删、dry run
   ? lifecycle_checker 为什么把夸克资源全判失效 / 116 万条资源误删是怎么回事，怎么恢复
 - lessons/failure-FC实例在WebSocket断开后立即冻结.md | high | 2026-09-16 | 客户端断开 WebSocket 后 FC 立即冻结实例，收尾/写回必须在连接内完成（拦截 Browser.close） | FC 冻结、WebSocket、Browser.close
@@ -121,6 +123,8 @@ load: always
 - lessons/failure-配置v2二进制无本地回落导致老容器重启即挂.md | high | 2026-09-16 | v2 二进制只认 OSS_CONFIG_URL/LOCAL_CONFIG_PATH 不读宿主机旧配置，老容器重启即挂；需本地回落 | 配置 v2、OSS_CONFIG_URL、config.yaml
 - lessons/failure-验收部署脚本时误连生产主机.md | high | 2026-09-16 | releases/health 子命令其实和 deploy/rollback 一样全部支持 --dry-run，验收时纯粹是漏加了参数、又用真实主机名，才误连… | deploy.sh、--dry-run、ssh 生产主机
   ? 验收/测试新写的部署脚本子命令要注意什么
+- lessons/patterns-并行多角色开发的验收与集成.md | high | 2026-09-16 | 9 条线 5 仓库并行改造的复盘：断网跑测试、假主机名、逐线验收、合并预演；验收抓到的典型漏项（漏传字段、按字段名盘点漏值、缺 dry-run、只迁一半） | 并行开发、子agent、验收
+  ? 多个子 Agent 并行改多个仓库时怎么提前发现冲突、怎么保证测试不连生产 / 验收 Agent 最常抓到开发 Agent 哪些漏项
 - lessons/patterns-并行重构的分阶段切分.md | high | 2026-09-12 | 多个包同时改造且互相引用时，用"主会话先做共享契约 → 子 Agent 只加不删 → 单独清理 Agent 收尾"三阶段避免编译互锁 | 并行重构、子agent、worktree
   ? 多个包同时重构，子 Agent 怎么避免编译互锁 / Phase 0/1/2 怎么切分任务
 - lessons/patterns-统计ES索引先查文档形态.md | high | 2026-09-05 | 同一索引可能混着两代写入形态；只按 join=resource 统计会漏掉三分之二资源，任何统计/迁移前先做 exists/must_not exists 对账 | ES、join、nested
@@ -176,14 +180,14 @@ load: always
   ? xlLoadShare 失败率高是什么原因 / 怎么直接查一个迅雷分享的结构 / 迅雷失效上报 dry run 开关在哪
 - knowledge/domain-飞书文档解析.md | high | 2026-09-16 | 飞书 docx/多维表格解析依据：匿名可读、client_vars/clientvars 接口与分页、objType 映射、3000 行上限、登录墙与已删除判… | 飞书文档、feishu、多维表格
   ? 飞书文档的网盘链接用哪些接口解析、怎么分页 / 飞书 wiki 怎么区分 docx 与多维表格 / 飞书文档需登录/已删除时怎么处理
-- knowledge/architecture-spider-sitecrawler骨架.md | medi | 2026-09-16 | sitecrawler 骨架接口设计(含 WrapAwareSite)、6 站迁移前后 redis 键逐一对照、SiteCommonConfig 内嵌与导入环… | sitecrawler、爬虫骨架、WrapAwareSite
+- knowledge/architecture-spider-sitecrawler骨架.md | medi | 2026-09-16 | sitecrawler 骨架接口设计(含 WrapAwareSite)、6 站迁移前后 redis 键逐一对照、SiteCommonConfig 内嵌避坑、E… | sitecrawler、爬虫骨架、WrapAwareSite
 - knowledge/architecture-spider-队列约定.md | medi | 2026-09-16 | SPIDER 队列 v2 的固定队列名、去重键、消费者并发度与通用队列接口约定 | 队列、队列v2、resourcePreCheck
 - knowledge/concept-术语表.md | medi | 2026-09-12 | 代码里高频出现的缩写、字段含义与命名来历，避免误读 | 术语、bnd、valid
 - knowledge/domain-站点-kkpans.md | medi | 2026-09-12 | kkpans 的公开 JSON API、分页陷阱、数据规模与采集范围（只采 quark/xunlei/baidu 4295 条）；爬虫已于 2026-09-0… | kkpans、KK网盘、站点调研
 - knowledge/domain-站点-misoso.md | medi | 2026-09-12 | misoso.cc 实际抓取域名是 melost.cn；sitemap 有"过期快照"与"越界文件假200"两个陷阱；爬虫已于 2026-09-03 实现为 … | misoso、melost.cn、影盘社
 - knowledge/reference-github-oauth配置.md | medi | 2026-09-16 | 两个 GitHub OAuth App（prod/dev）的名称、client_id 存放位置、管理页与回调地址约定 | GitHub OAuth App、client_id、redirect_uri
 
-## sessions/ (38 个, 仅列最近 3 个; 其余用 mem.py search 找)
+## sessions/ (39 个, 仅列最近 3 个; 其余用 mem.py search 找)
 - sessions/2026/2026-09-05-生命周期P4启动失败.md | high | 2026-09-16 | STORAGE 双机重部并核验首写继承生效, 用新工具补齐双写窗口 3551 条文档, P4 bootstrap 启动 10 分钟后因两个实现缺陷失败并停止(… | 生命周期、P4、bootstrap
 - sessions/2026/2026-09-05-生命周期P4演练.md | high | 2026-09-16 | 网关双机重部热修分支成功；缺陷 A/B 在生产验证通过；新发现 copy_child 轮询瓶颈，全量未启动 | P4、bootstrap、演练
 - sessions/2026/2026-09-03-并行开发6站爬虫.md | medi | 2026-09-16 | 用 4 并发子 Agent + worktree 接入 6 个站点，5 站验收通过并合并，haisou 因站点收紧未能验收 | 并行开发、worktree、6站爬虫
