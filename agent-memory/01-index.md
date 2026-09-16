@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-16T09:03:17+08:00
+updated_at: 2026-09-16T09:05:53+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -32,10 +32,8 @@ load: always
 - current/risks.md | high | 2026-09-16 | 影响开发与运维安全的已知风险点；最高 R9 lifecycle_checker 误删 115.6 万资源（修复已上线、恢复待决策） | lifecycle_checker误删、风险、阻塞
   ? 密钥、安全相关的风险在哪看
 - current/proposals-需求与优化候选.md [draft] | medi | 2026-09-16 | Agent 基于事故/风险/待办提出的 12 条候选需求与优化（取证包、软删可回滚、删除熔断、checker 统一、CI、密钥治理、部署回滚等），每条附依据与… | 需求候选、优化提案、取证包
-  ? 项目下一步有哪些值得做的需求或优化 / 取证证据链、软删除、删除熔断这些提案的依据是什么
 - current/changelog.md | low | 2026-09-16 | 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪 | 变更记录、changelog、历史
 - current/tasks-backlog.md | low | 2026-09-16 | 从 tasks.md 拆出的低优先级/等人工/归档遗留事项：文档爬虫 FC 6 项人工步骤、归档任务遗留待办、P3 代码小修、2026-09-16 移入的 P… | backlog、P3、文档爬虫
-  ? 文档爬虫 FC 自动化还差哪些人工步骤 / 有哪些 P3 低优先级待办
 
 ## decisions/ (19)
 - decisions/decision-2026-09-02-停止磁力资源采集.md | crit | 2026-09-02 | 项目现只采集 4 种网盘类型资源，不再采集或入库磁力/BT 资源；存量索引与接口保留 | 磁力、torrent、magnet
@@ -55,7 +53,7 @@ load: always
 - decisions/decision-2026-09-08-后台登录改为github-oauth.md | high | 2026-09-12 | 固定管理秘钥改为 GitHub OAuth 登录并校验 1second 组织成员身份的四个关键设计取舍与原因 | GitHub OAuth、后台登录、RtcToken
   ? 后台登录为什么改成 GitHub OAuth / 管理秘钥去哪了，needLogin/githubClientId 是什么
 - decisions/decision-2026-09-12-P5切v3准入门槛与失效同步.md | high | 2026-09-12 | 用户 2026-09-12 采纳 D1~D4——旧链路失效只提前 lc 复检、重合度改语料级三项、bnd 去 has_child、门槛全过才切流；阶段 A/B… | P5、准入门槛、legacy→lc 失效同步
-  ? 切 v3 前必须满足哪些门槛 / 旧链路判失效为什么只提前复检而不直接置 lc 失效 / bnd 搜索在 v3 慢的原因与修法 / P5 灰度怎么切、怎么回滚
+  ? 切 v3 前必须满足哪些门槛 / 旧链路判失效为什么只提前复检而不直接置 lc 失效 / bnd 搜索在 v3 慢的原因与修法
 - decisions/decision-2026-09-12-弃用文档更新类接口.md | high | 2026-09-16 | 用户 2026-09-12 确认——report/likes/dislikes/addViews 这类频繁 update ES 文档的接口已弃用，不做 v3、… | 弃用、addViews、likes
 - decisions/decision-2026-09-12-阶段D改由API侧自动灰度分流.md | high | 2026-09-15 | 用户 09-12 裁定：API 在 /api/v2/search 服务端按比例走 v3，30% 起、无异常每 100 个 v3 请求 +1% 到全量，异常自动… | 阶段D、灰度、分流
   ? 搜索流量怎么从 v2 切到 v3，谁来切 / search_canary 是什么，比例怎么涨、异常怎么回滚
@@ -64,7 +62,7 @@ load: always
 - decisions/decision-2026-09-13-lint长度双阈值.md | high | 2026-09-13 | 超长改为 >12,000 触发、触发后必须压到 <6,000，9,000 起只提示；避免 8,000 单线反复报警 | lint、超长、双阈值
   ? lint 报超长该压到多少字，上限为什么不是 8000 / tasks.md 反复超长怎么办
 - decisions/decision-2026-09-16-搜索p90告警关闭匿名搜索与总览数据源.md | high | 2026-09-16 | 2026-09-16 用户需求裁定：搜索总览走 SLS(SQL 优先、拉日志降级)；p90 超阈值由网关 leader 巡检→邮件+共享 redis 键关闭匿… | search_guard、匿名搜索、p90
-  ? 匿名搜索为什么会被关闭, 谁关的, 怎么手动开放 / 搜索总览/Top 榜的数据从哪来, SLS SQL 不可用怎么办 / 分享链接总览的新增/检测/更新/失效各是什么口径 / search_guard 的 redis 键约定是什么
+  ? 匿名搜索为什么会被关闭, 谁关的, 怎么手动开放 / 搜索总览/Top 榜的数据从哪来, SLS SQL 不可用怎么办 / 分享链接总览的新增/检测/更新/失效各是什么口径
 - decisions/decision-2026-09-16-阿里云盘空目录分享判定为有效.md | high | 2026-09-16 | 阿里云盘 file_count==0 时新旧实现结论不同，裁定判 Valid（无业务码不主动认定失效） | panvalid、阿里云盘、file_count
 - decisions/decision-2026-09-04-合并sweep-guard分支冲突取舍.md | medi | 2026-09-04 | 合并遗留分支时，master 已修正的旧逻辑不应因"冲突两边都保留"而被恢复，需先判断冲突是否为真实的两个功能重叠 | sweep-guard、全量扫描守卫、merge 冲突
 
@@ -87,11 +85,8 @@ load: always
 - procedures/checklist-仓库脚本清单.md | medi | 2026-09-16 | MEMORY 仓库 scripts/ 下可复用脚本一览（git-hooks 提交信息违禁词钩子、claude-rc systemd 托管 Remote Con… | scripts、邮件汇报、notify.py
 - procedures/troubleshooting-代理池总览无数据.md | medi | 2026-09-16 | 后台代理池页全 0 时三步定位：网关 dataSource → 上报侧是否部署 → tools 探针 | proxy-admin-check、代理池总览、proxy_admin
 - procedures/workflow-密钥治理约定.md | medi | 2026-09-16 | 2026-09-16 secrets 角色（提案9）在四仓库落地的密钥治理约定：测试凭据用 *.hide.json、配置敏感字段用 ${VAR} 环境变量覆盖… | 密钥治理、gitleaks、hide.json
-  ? 测试文件需要真实账号凭据时该怎么写不进 git / 配置文件里的敏感字段怎么支持环境变量覆盖又不用改 yaml / gitleaks 密钥扫描怎么在四仓库用
 - procedures/workflow-带登录态的浏览器自动化.md | medi | 2026-09-12 | 如何启动/复用一个带登录态的调试Chrome并用CDP脚本驱动它, 含"默认profile会被安全策略拦截"的前提坑 | agent-browser、cdp.py、CDP
-  ? 我要测浏览器可见的交互，带登录态的浏览器怎么起 / agent-browser.sh / cdp.py 怎么用
 - procedures/workflow-部署.md | medi | 2026-09-15 | SPIDER deploy.sh 的常规用法、服务到主机的映射方式、判断线上现役服务的唯一判据、新服务选主机方法、配置分发机制与安全提醒；历次上线（生命周期/… | auto模式、权限分类器、部署
-  ? 部署 / 上线怎么操作，日志在哪看 / 新服务该放哪台机器 / 队列 v2 上线收尾脚本是哪个
 - procedures/workflow-部署-历史补充.md | low | 2026-09-12 | 历次生产上线（2026-09-05~09-10 生命周期 P3/P4 网关多次重部、代理池监控上线等）的一次性踩坑与已固化到 deploy.sh 的加固记录；… | 生命周期上线、网关重部、dryRun
 
 ## lessons/ (30)
@@ -136,13 +131,9 @@ load: always
   ? 我要给爬虫写测试，联网测试怎么不污染线上
 - lessons/success-网盘失效判定原则.md | high | 2026-09-12 | 靠 message 文案匹配判定网盘失效必然随站点文案漂移而失灵，应改用业务码并把未知响应升级为 error | 失效判定、业务码、限流
 - lessons/failure-fc-chrome上线踩坑合集.md | medi | 2026-09-16 | fc-chrome 上线一天里踩到的镜像/策略/域名/NAS/超时等坑与各自修法的合集 | /json/list、pkill -f、docker exec
-  ? seedprep 为什么等不到扩展 target / FC 上 WebSocket 120 s 就断是为什么
 - lessons/failure-端到端复用旧托管进程导致注入旧脚本.md | medi | 2026-09-16 | 2026-09-16 验证腾讯文档脚本时 fc-chrome 路径无任何回传、直连 CDP 却全通——根因是 e2e 脚本"端口有响应就复用"复用了托管旧 d… | fc-chrome、端到端验证、缓存
-  ? 新构建的云端脚本经 fc-chrome 注入后为什么一条 [[DOC_SPIDER]] 都没有 / 端到端脚本"复用已在跑的服务"有什么坑
 - lessons/success-cdp3策略强装扩展与NAS持久化profile.md | medi | 2026-09-16 | 品牌版 Chrome 用企业策略 force_installed 装扩展 + 预热 profile 存 NAS 复用登录态 | 扩展安装、ExtensionSettings、override_update_url
-  ? 怎么让 headless Chrome 装 NAS 上的自定义扩展 / 策略强装的扩展改了版本为什么不更新
 - lessons/success-在线文档解析优先用页面自带接口.md | medi | 2026-09-16 | 解析 SPA 文档站优先 fetch 页面自带接口：performance 资源列表 + 全局变量 + bundle 搜路径常量找到分页接口，比啃 DOM/r… | 在线文档、内部接口、performance.getEntriesByType
-  ? 接入新的在线文档站点先看什么、怎么找分页接口
 
 ## knowledge/ (25)
 - knowledge/architecture-系统总览.md | crit | 2026-09-02 | 从爬取到入库到检索的完整链路、各服务端口与中间件分工 | 架构、数据链路、网关
@@ -162,7 +153,7 @@ load: always
 - knowledge/architecture-queue-admin.md | high | 2026-09-15 | 队列 v2 的监控管理系统：已并入网关进程的架构、端口、schema 解耦机制、抢主锁、巡检工具与已知数据缺口 | queue-admin、队列监控、QueueAdminRpc
   ? 队列告警怎么配，阈值多少，历史在哪看 / queue-admin 队列出问题怎么看，端口连不上怎么办
 - knowledge/architecture-search-admin.md | high | 2026-09-16 | 网关 search_admin 模块（SLS 搜索日志聚合、p90 巡检→邮件+关闭匿名搜索、redis 键约定、SQL/扫描双路径）与 lifecycle.… | search_admin、SearchAdminRpc、搜索总览
-  ? 后台搜索总览/Top 榜数据从哪来, source=sls-scan 是什么意思 / 匿名搜索被关闭了怎么回事, 在哪手动开放/调阈值 / 分享链接总览的检测数为什么早期是 0, 新增按来源怎么算 / 上线后怎么验证 search_admin 和 ShareOverview
+  ? 后台搜索总览/Top 榜数据从哪来, source=sls-scan 是什么意思 / 匿名搜索被关闭了怎么回事, 在哪手动开放/调阈值 / 分享链接总览的检测数为什么早期是 0, 新增按来源怎么算
 - knowledge/architecture-spider.md | high | 2026-09-15 | osec-spider-go 的入口子命令、目录分层、编译状态、bnd_resolver 关键类型、写新爬虫可复用要点（含配置节 yaml/Duration/… | SPIDER、osec-spider-go、爬虫
   ? 我要改爬虫/加站点，该看哪个子命令 / 新增配置节 yaml 怎么解析 Duration / 泛型队列 PushTask 怎么写，seq/永久失败是什么
 - knowledge/architecture-storage.md | high | 2026-09-12 | enfi-resource-storage 的三个子命令、写入流程、ES 索引名与幂等策略 | STORAGE、enfi-resource-storage、入库
@@ -172,7 +163,7 @@ load: always
 - knowledge/domain-网盘有效性检测.md | high | 2026-09-16 | 两套有效性检测已合并为 COMMON panvalid 一套实现（分支 feat/valid-unify，未合并 master）；本文件存历史背景，权威码表/… | panvalid、有效性检测、validShareLink
   ? 链接失效检测怎么做，validShareLink 返回 -1 是什么意思 / panvalid 是什么，和旧的两套实现什么关系
 - knowledge/domain-腾讯文档表格解析.md | high | 2026-09-16 | 2026-09-16 实测：公开表格匿名可访问；同源 GET dop-api/opendoc（需页面 Cookie，t/xsrf 非必需）返回 JSONP；数… | 腾讯文档、docs.qq.com、opendoc
-  ? 腾讯文档表格的单元格数据从哪个接口拿、要不要登录 / 腾讯文档 opendoc 返回的 protobuf 区块怎么解 / 为什么腾讯文档有的返回 block_datas 有的返回 JSON op 数组 / 腾讯文档分块拉取越界时会怎样
+  ? 腾讯文档表格的单元格数据从哪个接口拿、要不要登录 / 腾讯文档 opendoc 返回的 protobuf 区块怎么解 / 为什么腾讯文档有的返回 block_datas 有的返回 JSON op 数组
 - knowledge/domain-转存下载链路.md | high | 2026-09-15 | SPIDER 下载调度链路的代码结构、redis 键/MySQL 表、阿里/百度解析方式、三条下载路径，以及 2026-09-13 体检结论：链路空转，阿里 … | 转存下载、share_download、resolve_link
   ? 分享文件怎么被转存、解析成下载地址落到 OSS / 转存下载链路进程/队列/账号池在哪，怎么体检
 - knowledge/domain-迅雷分享爬取.md | high | 2026-09-15 | xlLoadShare 失败率修复(09-15 已上线)：顶层文件入批次、状态码按共用码表判定、空分享永久失败；失效上报仍 dry run；接口/探针/导出重… | xlLoadShare、迅雷、xunleipan
@@ -180,15 +171,10 @@ load: always
 - knowledge/domain-飞书文档解析.md | high | 2026-09-16 | 飞书 docx/多维表格解析依据：匿名可读、client_vars/clientvars 接口与分页、objType 映射、3000 行上限、登录墙与已删除判… | 飞书文档、feishu、多维表格
   ? 飞书文档的网盘链接用哪些接口解析、怎么分页 / 飞书 wiki 怎么区分 docx 与多维表格 / 飞书文档需登录/已删除时怎么处理
 - knowledge/architecture-spider-sitecrawler骨架.md | medi | 2026-09-16 | sitecrawler 骨架接口设计、kkpans/feikuai 迁移前后 redis 键对照、6 站迁移状态 | sitecrawler、爬虫骨架、kkpans
-  ? services/bbs 爬虫的通用骨架长什么样 / kkpans/feikuai 迁移后行为有没有变 / 6 站哪些迁移了骨架、哪些没有
 - knowledge/architecture-spider-队列约定.md | medi | 2026-09-16 | SPIDER 队列 v2 的固定队列名、去重键、消费者并发度与通用队列接口约定 | 队列、队列v2、resourcePreCheck
-  ? 我要写新的网关队列消费者，代码放哪 / 关键词站点怎么收关键词 / 爬虫怎么提交链接给网关
 - knowledge/concept-术语表.md | medi | 2026-09-12 | 代码里高频出现的缩写、字段含义与命名来历，避免误读 | 术语、bnd、valid
-  ? bnd / ali-share / quark / xunleipan 是什么，字段什么意思 / 任务队列 seq / 永久失败是什么含义
 - knowledge/domain-站点-kkpans.md | medi | 2026-09-12 | kkpans 的公开 JSON API、分页陷阱、数据规模与采集范围（只采 quark/xunlei/baidu 4295 条）；爬虫已于 2026-09-0… | kkpans、KK网盘、站点调研
-  ? kkpans / KK网盘 / 光鸭云盘是什么站，接口在哪 / bbs_kkpans 爬虫实现在哪
 - knowledge/domain-站点-misoso.md | medi | 2026-09-12 | misoso.cc 实际抓取域名是 melost.cn；sitemap 有"过期快照"与"越界文件假200"两个陷阱；爬虫已于 2026-09-03 实现为 … | misoso、melost.cn、影盘社
-  ? misoso / melost.cn 域名不一致是怎么回事 / misoso sitemap 有什么陷阱
 - knowledge/reference-github-oauth配置.md | medi | 2026-09-16 | 两个 GitHub OAuth App（prod/dev）的名称、client_id 存放位置、管理页与回调地址约定 | GitHub OAuth App、client_id、redirect_uri
 
 ## sessions/ (37 个, 仅列最近 3 个; 其余用 mem.py search 找)

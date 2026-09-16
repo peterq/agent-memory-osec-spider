@@ -168,8 +168,9 @@ def _questions(fm: dict) -> list[str]:
 
 
 def render_boot(docs: list[Doc], kw: int = 3, sessions: bool = False, recent_sessions: int = 3, with_questions: bool = True,
-                summary_max: int = 80, max_questions: int = 4) -> str:
-    """评测(2026-09-12): 紧凑版(关键词 3 个、summary 截断)比全量更准, 噪声更少。archive/ 只给计数不列条目。"""
+                summary_max: int = 80, max_questions: int = 3) -> str:
+    """评测(2026-09-12): 紧凑版(关键词 3 个、summary 截断)比全量更准, 噪声更少。archive/ 只给计数不列条目。
+    2026-09-16: 启动包逼近 20,000 上限, questions 只给 critical/high 文件展示且最多 3 条; medium/low 的 questions 仍参与 search 检索。"""
     by_dir: dict[str, list[Doc]] = defaultdict(list)
     for d in docs:
         parts = d.path.relative_to(MEM).parts
@@ -197,7 +198,8 @@ def render_boot(docs: list[Doc], kw: int = 3, sessions: bool = False, recent_ses
             if len(sm) > summary_max:
                 sm = sm[:summary_max - 1] + "…"
             line = f"- {d.mrel}{flag} | {str(d.fm.get('priority','?'))[:4]} | {_date(d.fm,'updated_at')} | {sm} | {kws}"
-            qs = _questions(d.fm) if with_questions else []
+            show_q = with_questions and str(d.fm.get("priority")) in ("critical", "high")
+            qs = _questions(d.fm) if show_q else []
             if qs:
                 line += "\n  ? " + " / ".join(qs[:max_questions])
             out.append(line)

@@ -6,7 +6,7 @@ Python 3.10+；核心功能零依赖，装上 `requirements.txt`（jieba + faste
 把新会话恢复上下文的 token 从 4 万量级压到 1 万以内。
 
 ```bash
-scripts/mem/mem.py boot                  # 启动包: 路径|优先级|更新|summary|前 3 个关键词 + questions 行 (sessions 只列最近 3 个)
+scripts/mem/mem.py boot                  # 启动包: 路径|优先级|更新|summary|前 3 个关键词 + questions 行(仅 critical/high 文件, 最多 3 条; sessions 只列最近 3 个)
 scripts/mem/mem.py index --write         # 把启动包写成 agent-memory/01-index.md (索引是生成物, 禁止手改)
 scripts/mem/mem.py search 网关重启前要检查什么 -q   # 混合检索, 支持自然语言问句; 默认排除常驻文件
 scripts/mem/mem.py search xx --dir lessons,decisions -k 5 --no-snippets --mode lexical   # 纯词法, 不加载模型更快
