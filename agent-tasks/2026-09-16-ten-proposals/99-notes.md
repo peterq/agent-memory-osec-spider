@@ -25,3 +25,4 @@
 - ✅ 20 valid-unify 返工完成并复核通过：COMMON `6911095` / SPIDER `dfd6343` / API 不变 `23eba5d`；quark 空 body 回归修复有单测锁定；阿里空目录裁定判 Valid 已入 README + `decisions/decision-2026-09-16-阿里云盘空目录分享判定为有效.md`。
 - ✅ 30 startup-selfcheck 验收通过（unshare -rn 离线；三份 selfcheck 同源一致；config-audit 脱敏断言通过）。顺手小修中：STORAGE go.mod tidy 标注、MustRegister 加 recover。合并注意：STORAGE go.mod 与 ci 分支同时改动。
 - 📦 45 NC-JS 前端：`ncjs-wt-health-observe` `66ec854`，验收中。
+- 📦 60 secrets：COMMON `ab7197e` / SPIDER `43f9836` / API `5da3d97` / STORAGE `cc7b85d`，验收中（重点：运行时代码改读环境变量后线上缺变量的失败模式）。未处理：下载链 AES 密钥（与 CDN 边缘脚本共用，需协调发布）、config*.yaml 明文（按约定不动）。轮换建议清单见其汇报（不落记忆）。
