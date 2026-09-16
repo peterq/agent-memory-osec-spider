@@ -94,6 +94,27 @@ root
 - 对账结论（`ref/qqextract.py` 跑夹具）：doc1 BB08J2 1024 行 / **968** 个唯一分享 id；doc1 fuv7gd 65 行 / **64**；doc2 7f9s70 22 行 / **21**。
   原始字节正则扫描多出来的全是 `…h` 结尾的伪 id（URL 后紧跟的 protobuf 长度字节 0x68），结构化提取无遗漏。
 
+### 4.4 【2026-09-16 08:40 追加】第二种数据格式：`dver 2.x`（`text[0]` 是 JSON op 列表，不是 protobuf）
+主控用网上找到的文档 `https://docs.qq.com/sheet/DS25FQkJjbkZpUnZh`（8 个 sheet，单 sheet 3414 行）实测发现**老文档返回的是另一种格式**，实现必须同时支持两种，按 `text[0]` 的类型分派：
+- `typeof text[0] === 'object' && !Array.isArray(text[0])`（含 `block_datas`）→ §4.3 protobuf 格式（`dver 3.0.0`）。
+- `Array.isArray(text[0])` → 本节 JSON 格式（`dver 2.11.0`）。夹具：`fixtures/doc3-DS25FQkJjbkZpUnZh-tab-g73g1s-rows0-60-dver2.js`（只请求了 0~60 行）。
+
+结构：`text[0]` 是 **op 组的数组**，每组是 op 数组，op 形如 `{t: <类型>, v: 5, c: [...]}`。只需要 **`t === 3`** 的 op：
+```
+c[0] = [sheetId, rowFrom, rowTo, colFrom, colTo]          本 op 覆盖的范围(闭区间)
+c[1] = { "<flatIndex>": cell, ... }                        flatIndex = (row-rowFrom)*(colTo-colFrom+1) + (col-colFrom)  → 行优先
+cell["2"] = [valueType, value]   valueType 1 → 字符串; 0 → 数字(int/float, 用 String() 输出, 提取码可能是数字)
+cell["6"] = "https://..."        超链接(可能出现在没有 "2" 的单元格上, 也可能是 "#tab=xxx" 内部锚点); 与文本不同/文本不含时追加 "(url)"
+cell["0"]/["3"]/["8"]/["12"]…   样式等, 忽略
+```
+- 一个 op 里 `c[1]` 只包含非空单元格；没有 `"2"` 也没有 `"6"` 的 cell 视为空。
+- 行范围由 **`startrow`/`endrow`** 控制（不是 block_*）：`startrow=0&endrow=5000` 一次返回 0~3413 全部（1.5 MB）；`startrow=2000&endrow=3999` 返回 2000~3413。总行数用 `collab_client_vars.maxRow`（两种格式都有这个字段，3.0.0 里等于 `text[0].max_row`）。
+- **分块循环必须两种格式统一**：每次请求同时带 `startrow/endrow` 与 `block_start_row/block_end_row` 同一区间 `[s, s+CHUNK-1]`；终止条件 `s >= maxRow`；再加"返回的数据范围低于 s 则 break"保护（protobuf 格式看 `end_row_index`，JSON 格式看 `c[0][2]`）。
+- 对账数（`ref/` 里的 Python 口径）：doc3 tab g73g1s 全量 3414 行 / **3553** 个唯一分享 id；小夹具（0~60 行）61 行 / **63** 个 id，第 1 行文本为 `夸克资源👉\t👉点我查看夸克更新文档👈(https://docs.qq.com/doc/DS2ZveFhIR3NZQXZi)`。
+- 空白页/已删除文档的另一种表现：`padType: "blankpage"`、`clientVars.retcode: 0`、`errmsg: "blankpage type:2 null"`（夹具 `fixtures/deleted-doc-DR0JQZVFvWm9qTm1z-blankpage.js`）→ 同样 permanent error。判定统一为：`padType !== 'sheet'` 或 缺 `initialAttributedText` → permanent；`retcode` 非 0/非空时把 code 带进 message。
+- 其余 4 个网上文档（DZUZyd3ZobE5jVFJq / DTmpEb25Obnh3cW9i / DV05PZWx6QUFBeHdt / DYU5Idmdid2JjVmxj）都是 3.0.0 格式，主控验证阶段会用。
+- `ref/qqfetch.py <docid> <tab> <startrow> <endrow> <out.js> [bs be]` 可拉任意区间做夹具（自动带 Cookie）。
+
 ## 5. 硬性约束（会返工或出生产事故）
 
 1. **绝不执行 `pnpm upload:cloud` / `pnpm upload`**（会覆盖线上 OSS 上正在服役的脚本）。构建只到 `pnpm build:cloud` 产出 `dist-cloud/kdoc-cloud.user.js` 为止。

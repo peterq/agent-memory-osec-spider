@@ -35,6 +35,9 @@ scripts/qqdoc-verify.ts          Node 侧验证脚本(见下), README.md 里补�
 6. zlib：`new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate'))).arrayBuffer()`；base64 用 `atob` + 手工转 Uint8Array（Node 22 也有 atob）。注意 Node 22 的 `DecompressionStream` 是全局对象，测试无需 polyfill。
 7. 单元格类型 0（空样式）、4（plain）、6（rich）之外的类型：含 fixed64 → 按 `String(Number)` 输出（提取码可能是纯数字单元格）；其余忽略但计数到一个 `unknownCellTypes` 统计并在最终 result 附 `stats:{sheets, rows, unknownCellTypes}`（多余字段 doc-crawler 会忽略，方便线上排查）。
 
+## 【追加】第二种格式
+`00-shared.md` §4.4 追加了 `dver 2.x` JSON 格式，必须支持：建议增加 `qqdoc/qqSheetJsonOps.ts`（纯逻辑：text[0] 数组 → rows），`qqOpendoc.ts` 里按 `Array.isArray(text[0])` 分派；分块循环统一带 `startrow/endrow` + `block_*`，终止用 `collab_client_vars.maxRow`。单测加 `qqSheetJsonOps.test.ts`：小夹具 61 行 / 63 个 id / 第 1 行文本断言；以及"没有 \"2\" 只有 \"6\" 的单元格输出 (url)"。`deleted-doc-...-blankpage.js` → permanent。
+
 ## 单测（vitest，`pnpm test -- --run`）
 - `protobufWire.test.ts`：手工构造字节验证 varint 多字节、fixed64、嵌套 bytes、截断输入抛错。
 - `qqSheetBlock.test.ts`（用夹具，断言用 §4.3 对账数）：
