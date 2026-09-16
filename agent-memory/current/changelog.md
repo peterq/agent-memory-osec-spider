@@ -3,7 +3,7 @@ title: 项目变更记录（总览归档）
 type: knowledge
 status: active
 created_at: 2026-09-12T11:30:00+08:00
-updated_at: 2026-09-16T18:40:00+08:00
+updated_at: 2026-09-16T10:10:00+08:00
 priority: low
 keywords: [变更记录, changelog, 历史, 总览归档, 生命周期改造, 队列v2, queue-admin, 站点接入, 配置v2, GitHub OAuth]
 summary: 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪"
@@ -19,6 +19,7 @@ related:
 > **原文叙述在各自的 session / decision 文件里**，本文件不复制正文。需要细节就按指针读那一个文件。
 
 ## 2026-09-16
+- 10:10 **文档发现任务首轮**：逆向 link3 匿名接口、四平台免登录取正文、六渠道脚本化（COMMON `site-discovery/tools/docfind/`），候选 2042→达标 29 篇，批量任务输出为待执行清单 → `sessions/2026/2026-09-16-文档发现任务.md`、`procedures/workflow-文档发现.md`、`knowledge/domain-在线文档免登录取数.md`、`lessons/failure-link3接口按IP限流直连百次即429.md`
 - 十项提案（第 3~12 项）9 条线并行开发 + 逐线验收 + 集成预演完成，待用户确认合并；两个新脚本 `scripts/dev/{new_worktree_all,integration_check}.sh` → `sessions/2026/2026-09-16-十项提案并行开发.md`、`lessons/patterns-并行多角色开发的验收与集成.md`、`procedures/workflow-并行多任务开发与合并预演.md`
 - 文档爬虫新增腾讯文档表格解析（云端脚本双格式 + 前端识别），本地端到端 6 文档全通，待用户确认合并 → `sessions/2026/2026-09-16-腾讯文档表格解析.md`、`knowledge/domain-腾讯文档表格解析.md`
 

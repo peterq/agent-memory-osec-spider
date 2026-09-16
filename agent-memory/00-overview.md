@@ -3,7 +3,7 @@ title: 项目总览
 type: overview
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-16T18:40:00+08:00
+updated_at: 2026-09-16T10:10:00+08:00
 priority: critical
 keywords: [网盘资源爬取, 版权取证, COMMON, SPIDER, STORAGE, API, NC-JS]
 summary: 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件
@@ -25,9 +25,9 @@ related:
 
 ## 2. 当前状态（最近 7 天；更早见 `current/changelog.md`）
 
-- 09-16 **腾讯文档(docs.qq.com)表格解析开发+验证完成，待用户确认合并**（userscripts `feat/qqdoc-cloud`、nc-js `feat/qqdoc`；上线 = 合并 → `pnpm upload:cloud` → 前端发版）→ `knowledge/domain-腾讯文档表格解析.md`
-- 09-16 **十项提案（删除熔断/检测统一/启动自检/健康告警/CI/密钥/部署回滚/爬虫骨架/搜索配置化）全部开发验收完成，集成分支 CI 全绿，待用户确认合并** → `agent-tasks/2026-09-16-ten-proposals/95-merge-plan.md`
-- 09-16 **分享链接总览 + 搜索总览 + p90 自动关匿名搜索已上线** → `knowledge/architecture-search-admin.md`
+- 09-16 **腾讯文档表格解析开发+验证完成，待用户确认合并**（合并 → `pnpm upload:cloud` → 前端发版）→ `knowledge/domain-腾讯文档表格解析.md`
+- 09-16 **十项提案全部开发验收完成，集成分支 CI 全绿，待用户确认合并** → `agent-tasks/2026-09-16-ten-proposals/95-merge-plan.md`
+- 09-16 **文档发现首轮完成**（六渠道+四平台免登录取正文脚本化，达标 29 篇，批量待执行）→ `procedures/workflow-文档发现.md`
 - 09-15 **P5 阶段 D 灰度爬坡中**（09-16 起每 500 个 v3 请求 +2%）；**xlLoadShare 修复上线，失效上报仍 dry run** → `current/tasks.md`
 - 09-12 **🔴 事故：lifecycle_checker 误删 115.5 万 quark/ali 资源**，修复已部署，重爬回库 ≈56% → `lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md`
 - 阻塞：无；风险见 `current/risks.md` R9。
@@ -76,6 +76,7 @@ related:
 - 监控/埋点初始化必须可降级，且要覆盖最彻底的失败路径 → `lessons/failure-旁路能力初始化拖垮主流程.md`
 - NC-JS `pnpm build` 会真实上传生产 OSS，验证前先关 `deploy` → `lessons/failure-ncjs构建脚本会自动上传OSS.md`
 - **FC 上 WebSocket 断开即冻结实例，收尾/写回必须在连接内做（拦截 `Browser.close`）** → `lessons/failure-FC实例在WebSocket断开后立即冻结.md`
+- **找在线文档：GitHub 代码搜索 ≫ link3 关键词搜索；link3 直连 100 次即 429，必须走代理池** → `lessons/failure-link3接口按IP限流直连百次即429.md`
 - 新站点调研先挖 JS bundle 接口、`total` 须用 sitemap 对账；**结论有保质期** → `procedures/workflow-新站点调研.md`
 - 端到端验证脚本不要"端口有响应就复用"，托管进程每次重启、脚本 URL 带哈希 → `lessons/failure-端到端复用旧托管进程导致注入旧脚本.md`
 - 在线文档站解析优先 fetch 页面自带接口（performance 资源列表 + bundle 搜路径常量）→ `lessons/success-在线文档解析优先用页面自带接口.md`

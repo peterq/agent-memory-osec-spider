@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-16T09:44:46+08:00
+updated_at: 2026-09-16T10:09:02+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -16,7 +16,7 @@ load: always
 定位到文件后 `mem.py outline <file>` 看章节，再 `mem.py body <file> --section <标题>` 只读需要的一段。
 维护方式：改目标文件 Front Matter（summary / keywords / questions），然后运行 `scripts/mem/mem.py index --write`。
 
-# agent-memory 启动包（脚本生成, 161 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
+# agent-memory 启动包（脚本生成, 162 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
 
 ## 根目录 (3)
 - 00-overview.md | crit | 2026-09-16 | 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件 | 网盘资源爬取、版权取证、COMMON
@@ -25,7 +25,7 @@ load: always
 - 02-user-preferences.md | high | 2026-09-15 | 用户对语言、脚本沉淀、记忆维护、thinking 长度、敏感信息禁写、任务进度与异常必须及时邮件汇报（scripts/mail/notify.py），以及删除… | 偏好、中文、邮件汇报
 
 ## current/ (6)
-- current/tasks.md | crit | 2026-09-16 | 仍在推进/阻塞/待决策的事项：腾讯文档表格解析已完成待用户确认合并、十项提案并行开发、P5 阶段 D 灰度爬坡、误删事故收尾；长尾待办在 tasks-back… | 任务、进度、待办
+- current/tasks.md | crit | 2026-09-16 | 仍在推进/阻塞/待决策的事项：文档发现首轮完成待批量执行、腾讯文档表格解析已完成待用户确认合并、十项提案并行开发、P5 阶段 D 灰度爬坡、误删事故收尾；长尾… | 任务、进度、待办
   ? 当前该做什么，有哪些待办 / 腾讯文档解析任务进展到哪了
 - current/open-questions.md | high | 2026-09-15 | 当前无待用户确认问题（阶段 D 已按裁定启用；进度在 tasks.md） | 待确认、xlLoadShare、迅雷
   ? 当前有哪些待用户确认的问题
@@ -78,7 +78,7 @@ load: always
   ? 用户让我并行开发多项需求、合并前确认，标准流程是什么 / 合并前怎么提前发现冲突并验证编译
 - procedures/workflow-并行开发多站点爬虫.md | high | 2026-09-15 | 一次接入多个新站点时的分工方式：worktree 隔离、共享资源集中准备、冲突面收敛、合并与验收 | 并行开发、worktree、子agent
   ? 我要一次接入多个站点，worktree 怎么分工 / 多站点并行开发怎么处理合并冲突
-- procedures/workflow-文档发现.md | high | 2026-09-16 | 收到 `task doc-discovery` / `启动文档发现任务` 时的入口、验收口径、候选渠道性价比与分工；正文流程与脚本在 COMMON site-… | 文档发现、doc-discovery、docfind
+- procedures/workflow-文档发现.md | high | 2026-09-16 | `task doc-discovery` 的入口、验收口径、渠道性价比与硬规则；流程与脚本在 COMMON site-discovery/tools/docf… | 文档发现、doc-discovery、docfind
   ? 怎么找包含网盘链接的在线文档 / task doc-discovery / 启动文档发现任务 该怎么做 / 文档发现的候选渠道有哪些、哪个性价比高
 - procedures/workflow-新站点调研.md | high | 2026-09-12 | 接到"探索某资源站并输出爬虫 PRD"时的标准步骤：先找结构化接口，再验证全量可枚举性，最后对账 | 站点调研、爬虫、PRD
   ? 我要调研一个新的资源站，怎么写爬虫 PRD / 怎么找一个站点的公开接口
@@ -99,7 +99,7 @@ load: always
 - lessons/failure-FC实例在WebSocket断开后立即冻结.md | high | 2026-09-16 | 客户端断开 WebSocket 后 FC 立即冻结实例，收尾/写回必须在连接内完成（拦截 Browser.close） | FC 冻结、WebSocket、Browser.close
 - lessons/failure-SLS字段检索按分词匹配误命中其他stage.md | high | 2026-09-16 | SLS 检索 `field:value` 是分词匹配，同一 logstore 里 `stage=GET:/api/v2/search` 的访问日志会被 `st… | SLS、分词、字段检索
   ? 用 SLS 按 stage/字段值统计时为什么数字翻倍或出现 null 行 / SLS 检索语句怎么做字段精确匹配
-- lessons/failure-link3接口按IP限流直连百次即429.md | high | 2026-09-16 | link3 的 no_auth/user 接口直连 6 并发约 100 次后全部 429（按 IP），且 429 不是 pancheck 那种退避能解决的；切… | link3.cc、429、限流
+- lessons/failure-link3接口按IP限流直连百次即429.md | high | 2026-09-16 | link3 no_auth/user 接口按 IP 限流，直连约 100 次即 429；批量必须走代理池，代理少时改用 search_user 关键词定向搜博主 | link3.cc、429、限流
   ? link3.cc 批量抓主页为什么 429，怎么绕 / 代理池只有几个 IP 时 link3 全量该怎么跑
 - lessons/failure-ncjs构建脚本会自动上传OSS.md | high | 2026-09-04 | admin/*子应用的标准 `pnpm build` 脚本默认会把 dist 上传到生产 OSS 并改写 apps.json, 验证构建前必须先用 { dep… | NC-JS、pnpm build、mfe插件
 - lessons/failure-notify脚本静默降级把原始Markdown发成邮件.md | high | 2026-09-16 | notify.py 被 miniforge python 执行时缺 markdown 模块静默降级，原文当 <pre> 发出；一律走 shebang 系统 p… | notify.py、邮件汇报、Markdown未渲染
@@ -166,7 +166,7 @@ load: always
   ? 我要改爬虫/加站点，该看哪个子命令 / 新增配置节 yaml 怎么解析 Duration / 泛型队列 PushTask 怎么写，seq/永久失败是什么
 - knowledge/architecture-storage.md | high | 2026-09-12 | enfi-resource-storage 的三个子命令、写入流程、ES 索引名与幂等策略 | STORAGE、enfi-resource-storage、入库
   ? 我要改入库逻辑，查资源为什么没写进去 / ES 索引幂等/version 判重是怎么回事
-- knowledge/domain-在线文档免登录取数.md | high | 2026-09-16 | 2026-09-16 实测的腾讯/飞书/石墨/金山四平台匿名取正文与修改时间的接口、数据格式（腾讯 sheet 的 base64+zlib 分块与 tab 枚… | 腾讯文档、dop-api/opendoc、金山文档
+- knowledge/domain-在线文档免登录取数.md | high | 2026-09-16 | 腾讯 opendoc(sheet 逐 tab、zlib 分块)/飞书 SSR/石墨 lizard-api/金山 WPS JSAPI 四平台匿名取正文与修改时间… | 腾讯文档、dop-api/opendoc、金山文档
   ? 腾讯文档表格/文档怎么不登录拿到全部内容和修改时间 / 金山文档、飞书、石墨能不能免登录抓正文，各用什么接口 / 腾讯 sheet 多个子表
 - knowledge/domain-站点-2609接入批次.md | high | 2026-09-15 | 本批 5 个站点的形态、子命令、规模、各自的坑与实现状态；详细规格见各自 PRD | dyyjmax、fuxipan、feikuai
   ? dyyjmax/fuxipan/feikuai/kuakes 是什么站，各自的坑是什么 / 2609 批次都接了哪些站
@@ -187,7 +187,7 @@ load: always
 - knowledge/domain-站点-misoso.md | medi | 2026-09-12 | misoso.cc 实际抓取域名是 melost.cn；sitemap 有"过期快照"与"越界文件假200"两个陷阱；爬虫已于 2026-09-03 实现为 … | misoso、melost.cn、影盘社
 - knowledge/reference-github-oauth配置.md | medi | 2026-09-16 | 两个 GitHub OAuth App（prod/dev）的名称、client_id 存放位置、管理页与回调地址约定 | GitHub OAuth App、client_id、redirect_uri
 
-## sessions/ (39 个, 仅列最近 3 个; 其余用 mem.py search 找)
+## sessions/ (40 个, 仅列最近 3 个; 其余用 mem.py search 找)
 - sessions/2026/2026-09-05-生命周期P4启动失败.md | high | 2026-09-16 | STORAGE 双机重部并核验首写继承生效, 用新工具补齐双写窗口 3551 条文档, P4 bootstrap 启动 10 分钟后因两个实现缺陷失败并停止(… | 生命周期、P4、bootstrap
 - sessions/2026/2026-09-05-生命周期P4演练.md | high | 2026-09-16 | 网关双机重部热修分支成功；缺陷 A/B 在生产验证通过；新发现 copy_child 轮询瓶颈，全量未启动 | P4、bootstrap、演练
 - sessions/2026/2026-09-03-并行开发6站爬虫.md | medi | 2026-09-16 | 用 4 并发子 Agent + worktree 接入 6 个站点，5 站验收通过并合并，haisou 因站点收紧未能验收 | 并行开发、worktree、6站爬虫

@@ -3,10 +3,10 @@ title: 当前任务与进度
 type: task
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-16T18:40:00+08:00
+updated_at: 2026-09-16T10:10:00+08:00
 priority: critical
 keywords: [任务, 进度, 待办, 腾讯文档, qqdoc, 十项提案, P5灰度, lifecycle_checker, xlLoadShare, 队列v2, 全站扫描]
-summary: 仍在推进/阻塞/待决策的事项：腾讯文档表格解析已完成待用户确认合并、十项提案并行开发、P5 阶段 D 灰度爬坡、误删事故收尾；长尾待办在 tasks-backlog，历史原文在 archive
+summary: 仍在推进/阻塞/待决策的事项：文档发现首轮完成待批量执行、腾讯文档表格解析已完成待用户确认合并、十项提案并行开发、P5 阶段 D 灰度爬坡、误删事故收尾；长尾待办在 tasks-backlog，历史原文在 archive
 questions:
   - 当前该做什么，有哪些待办
   - 腾讯文档解析任务进展到哪了
@@ -23,6 +23,7 @@ related:
 | 任务 | 状态 | 阻塞/下一步 | 详情 |
 |---|---|---|---|
 | **腾讯文档(docs.qq.com)表格解析** | 🟢 09-16 开发/验收/端到端验证完成 | **等用户确认合并**（userscripts `feat/qqdoc-cloud`@200c450、nc-js `feat/qqdoc`@cc0bed1）→ 合并 → `pnpm upload:cloud` → 前端发版 | `agent-tasks/2026-09-16-qqdoc-sheet/`，知识 `knowledge/domain-腾讯文档表格解析.md` |
+| **文档发现任务（在线文档网盘链接）** | 🟢 09-16 首轮完成：渠道链路+工具打通，达标 29 篇 | 待执行批量抓取（HTTP 122 / 浏览器 591 / 重试 88，命令在 COMMON `site-discovery/doc-discovery/260916/报告.md` §4）；达标文档待提交文档爬虫 | `procedures/workflow-文档发现.md`、`sessions/2026/2026-09-16-文档发现任务.md` |
 | **十项提案并行开发** | 🟡 09-16 启动，9 个 worktree | 合并 master 前必须用户确认 | `agent-tasks/2026-09-16-ten-proposals/`（`99-notes.md` 记重叠文件） |
 | **P5 阶段 D 灰度** | 🟡 API `search_canary` 爬坡中 | 09-16 06:3x 改每 500 个 v3 请求 +2%，≈9 h 到 100%，全量后再观察 3 天即 P5 完成 | rollout §16/§17；`decisions/decision-2026-09-12-P5切v3准入门槛与失效同步.md` |
 | **🔴 lifecycle_checker 误删事故** | 修复已上线，重爬终态回库 ≈56% | 剩余 quark 真失效不可恢复；bnd 积压告警阈值放宽待用户定 | rollout §15；`lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md` |
