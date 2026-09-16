@@ -7,8 +7,6 @@ updated_at: 2026-09-16T12:20:00+08:00
 priority: high
 keywords: [lifecycle_checker误删, 风险, 阻塞, 密钥, AK/SK, 生产, 测试, 依赖升级, 队列v2, 无回滚, 上线收尾]
 summary: 影响开发与运维安全的已知风险点；最高 R9 lifecycle_checker 误删 115.6 万资源（修复已上线、恢复待决策）
-questions:
-  - 密钥、安全相关的风险在哪看
 load: on-demand
 related:
   - agent-memory/current/tasks.md

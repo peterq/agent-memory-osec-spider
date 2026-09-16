@@ -8,9 +8,7 @@ priority: medium
 keywords: [部署, deploy.sh, releases/current, rollback, 健康检查, auto模式, 权限分类器, docker, ssh, OSS 配置, 主机选型, 负载, 重启前检查]
 summary: SPIDER deploy.sh 用法（09-16 起 releases/current + rollback + 健康检查）、服务→主机映射、现役判据、选主机、配置分发与安全提醒
 questions:
-  - 部署 / 上线怎么操作，日志在哪看
-  - 新服务该放哪台机器
-  - 队列 v2 上线收尾脚本是哪个
+  - 部署 / 上线 / 回滚怎么操作，新服务该放哪台机器
 load: on-demand
 related:
   - agent-memory/knowledge/architecture-spider.md

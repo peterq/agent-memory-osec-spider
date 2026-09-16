@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-16T12:17:45+08:00
+updated_at: 2026-09-16T12:18:13+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -30,7 +30,6 @@ load: always
 - current/open-questions.md | high | 2026-09-16 | 待确认：十项提案服务重部、存量测试改代理、duanjuso 速率、lzpanx robots、灰度误回落、账号池 | 待确认、十项提案重部、存量测试代理
   ? 当前有哪些待用户确认的问题
 - current/risks.md | high | 2026-09-16 | 影响开发与运维安全的已知风险点；最高 R9 lifecycle_checker 误删 115.6 万资源（修复已上线、恢复待决策） | lifecycle_checker误删、风险、阻塞
-  ? 密钥、安全相关的风险在哪看
 - current/proposals-需求与优化候选.md [draft] | medi | 2026-09-16 | 12 条候选需求；09-16 用户裁定第 3~12 项已开发，取证包/软删两项未做 | 需求候选、优化提案、取证包
 - current/changelog.md | low | 2026-09-16 | 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪 | 变更记录、changelog、历史
 - current/tasks-backlog.md | low | 2026-09-16 | 从 tasks.md 拆出的低优先级/等人工事项：文档爬虫 FC 人工步骤、P3 小修、站点复议、checker 业务码、STORAGE … | backlog、P3、文档爬虫
