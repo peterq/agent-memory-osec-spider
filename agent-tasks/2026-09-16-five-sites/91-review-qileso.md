@@ -1,9 +1,9 @@
 # 验收报告：qileso（www.qileso.com）
 
 - worktree: `/home/peterq/dev/projects/1s/spider-wt-site-qileso`
-- 分支: `feat/site-qileso` @ `5e0562c`
-- 验收时间: 2026-09-16
-- 结论: **返工**（核心问题：probe 脚本与联网测试均无代理池路径，直连目标站——且开发期与本次验收前均已实测触发 429，仍未收敛）
+- 分支: `feat/site-qileso`，初次验收 @ `5e0562c`，返工复核 @ `7bd9628`
+- 验收时间: 2026-09-16（初次）/ 2026-09-16 复核
+- 结论: **通过**（返工项已在 `7bd9628` 修复并复核确认，见文末「复核」一节）
 
 ---
 
@@ -134,3 +134,58 @@ $ go vet ./services/bbs/ ./config/...   # 无输出，通过
 3. 上述两处修好后，请在 PRD §12.5 补一次"改为走代理池后"的真实联网复测记录（样本数/耗时/是否再触发限流），替换当前"记录风险、不改代码"的结论。
 
 其余各项（build/vet、配置注册、EngineConfig 核对表、Commit 类型过滤、保活语义、PRD 完整性、到顶判定逻辑）均已验证通过，无需返工。
+
+---
+
+## 复核（2026-09-16，针对返工提交 `7bd9628`）
+
+返工提交 `7bd9628`（fix(bbs): qileso 联网测试与探测脚本改为强制走代理池, 不再直连），改动文件：`PRD/2609/qileso.com.md`、`scripts/qileso_probe.py`、`services/bbs/qileso.com_test.go`（`git diff --name-only 5e0562c..7bd9628` 确认，无越界，`config/config.go`/`commands_crawler.go`/`config/crawler/crawler.go` 均未再改动）。逐项复核如下：
+
+### (1) `scripts/qileso_probe.py`：复用 COMMON httputil/proxypool、无 `--no-proxy` 逃生口、拿不到代理 exit 3 ✅
+
+- 代码改为 `sys.path.insert(...) + import httputil / proxypool`（COMMON `site-discovery/tools/`），删除了原来的 `urllib.request` 直连实现和"未观测到429"的过时注释，换成明确记录返工背景的说明。
+- `require_pool(args)`：构造 `proxypool.ProxyPool(...)`，`pool.wait_ready(1, timeout=args.proxy_wait)` 拿不到代理时打印诊断信息并 `sys.exit(3)`；`add_proxy_args()` 只暴露 `--proxy`/`--proxy-api`/`--proxy-wait` 三个参数，**没有任何 `--no-proxy`/`--require-proxy=false` 之类的关闭开关**，逐行核对确认无绕过口子。
+- `cmd_probe`/`cmd_dump`/`cmd_verify` 三个子命令入口第一步都是 `SESSION = httputil.new_session(25, pool=require_pool(args), require_proxy=True)`，`fetch()` 统一改用 `httputil.fetch(SESSION, url, timeout)`；`httputil.ProxiedSession.request()` 在 `require_proxy=True` 且 `pool.get()` 返回空时抛 `ProxyUnavailable`，**没有静默退化为直连的代码路径**（已读 `httputil.py` 源码确认）。
+- 实测（本次复核直接跑）：
+  ```
+  $ python3 scripts/qileso_probe.py probe --proxy-wait 3
+  代理池就绪: 代理池可用, 当前 1 个代理
+  == id 上界探测... ==
+  ```
+  确认能正常拿到主控已启动的代理同步进程推送的代理（当前池子里有 1 个），走的是代理路径（随后因是真实探测扫描, 为避免消耗代理池额度/对站点发起不必要的请求, 主动用 `timeout` 中止, 未跑完整个 probe）。逻辑审查 + 实测均确认：拿不到代理时的 `exit(3)` 分支存在且是唯一出口，正常拿到代理时请求经 `ProxiedSession` 转发，无绕过。
+
+### (2) `qileso.com_test.go`：`NeedDirect:false` + `OnProxyWith` 订阅、等不到代理 `t.Skip`、无直连 ✅
+
+- `newQilesoTestCrawler()`：`proxy_client.ProxyClient{..., NeedDirect: false}`；新增 `proxy_provider.OnProxyWith(crawler.Get().Services.Proxy.Sub(), func(proxy proxy_pool.Proxy) { pl.AddProxy(proxy); once.Do(...) })`，`select { case <-ready: ; case <-time.After(30*time.Second): t.Skip(...) }`——30 秒内收不到任何代理直接 `t.Skip`，**没有 fallback 到直连的分支**。
+- 断言按要求放宽：`TestQilesoFetchSample`/`TestQilesoWatermarkProbeBeyondBoundary`/`TestQilesoFetchKnownContentAndDedup` 都把单次请求失败从 `t.Fatalf` 改成累计计数 + `t.Logf`，全部失败才 `t.Skip`，不再要求 100% 成功率，符合"代理池薄、容忍抖动"的硬规则。
+- 与生产入口 `newQilesoCrawler()` 走同一条 `NeedDirect:false` + 代理订阅路径，不再有"测试用直连图省事"的例外。
+
+### (3) git 状态与改动范围 ✅
+
+```
+$ git status --short          # 无输出，干净
+$ git diff --name-only 5e0562c..7bd9628
+PRD/2609/qileso.com.md
+scripts/qileso_probe.py
+services/bbs/qileso.com_test.go
+```
+仅改了 PRD + probe 脚本 + 测试文件，未触碰 `config/config.go`/`commands_crawler.go`/`config/crawler/crawler.go`/`services/bbs/qileso.com.go`（生产代码路径本就合规，不需要改），改动集合仍 ⊆ 允许清单。`go build ./...`、`go vet ./services/bbs/` 均无输出，通过。
+
+### (4) 经代理前台实跑最小样本 ✅
+
+```
+$ LOCAL_CONFIG_PATH=/home/peterq/dev/projects/1s/spider-wt-site-qileso/config.local.yaml \
+  QILESO_IT=1 timeout 600 go test -tags live ./services/bbs/ -run TestQilesoFetchKnownContentAndDedup -v -count=1
+
+time="..." level=warning msg="!!! 使用本地配置文件(仅限开发): .../config.local.yaml ..."
+2026/09/16 11:24:59 redis[proxyredis]: 127.0.0.1:6379 db=2
+--- PASS: TestQilesoFetchKnownContentAndDedup (17.59s)
+PASS
+ok  	github.com/1s/enfi-spider-go/services/bbs	17.601s
+```
+- 用例连接 `proxyredis`（db2，`config.local.yaml` 里 `services.proxy.redis=proxyredis`），走的正是 `proxy_provider.OnProxyWith` 订阅路径（与 (2) 的代码改动一致），非直连；耗时 17.59s（远高于直连该详情页的正常耗时，符合"经代理转发+可能的代理侧重试"的预期），一次性通过，未出现 429/报错。
+- 未额外重复跑其余三个联网用例（`TestQilesoFetchSample`/`TestQilesoWatermarkProbeBeyondBoundary`/离线的 `TestQilesoParsing`），按协调者要求"只跑最快的那个用例即可"执行，PRD `§12.5` 中开发者记录的另外三项复测结果（含 dump/verify 经代理池实跑）作为佐证材料，未逐一重新实跑。
+
+### 复核结论
+
+四项返工要求全部落实且验证通过：probe 脚本与联网测试均已切换为强制走代理池、无直连兜底/无逃生口，改动范围未越界，代理路径经真实前台用例验证可用。**qileso 站点验收通过。**

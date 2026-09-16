@@ -3,13 +3,10 @@ title: 工作流：用并行子 Agent + git worktree 同时开发多个站点爬
 type: procedure
 status: active
 created_at: 2026-09-03T15:45:00+08:00
-updated_at: 2026-09-15T15:50:00+08:00
+updated_at: 2026-09-16T13:35:00+08:00
 priority: high
-keywords: [并行开发, worktree, 子agent, 合并, 冲突, 代理池共享, Monitor卡死]
-summary: 一次接入多个新站点时的分工方式：worktree 隔离、共享资源集中准备、冲突面收敛、合并与验收
-questions:
-  - 我要一次接入多个站点，worktree 怎么分工
-  - 多站点并行开发怎么处理合并冲突
+keywords: [并行开发, worktree, 子agent, 合并, 冲突, 代理池共享, Monitor卡死, 测试走代理, 集成分支]
+summary: 多站点并行接入：worktree 隔离、共享资源集中准备、冲突面收敛、开发→验收→集成分支；两批（6+5 站）踩坑
 load: on-demand
 related:
   - agent-memory/procedures/workflow-新站点调研.md
@@ -112,3 +109,12 @@ kuakes 还改了 `deploy.sh` 和 `.vscode/launch.json`；后两批加了约束�
 
 删 worktree 和分支前，用 `git merge-base --is-ancestor` 确认提交确实已在 master 上。
 **不要 push**，留给用户决定。
+
+## 9. 第二批（2026-09-16，5 站）补充
+
+- **每站一个开发 agent + 一个验收 agent**，验收清单落盘 `agent-tasks/<任务>/90-review.md`，报告 `9x-review-<站>.md`；返工由同一个开发 agent 改，同一个验收 agent 复核（上下文都在）。本批 2/5 返工、5/5 最终通过。
+- **联网测试与 probe 必须走代理池**（`NeedDirect:false` + `OnProxyWith` 订阅、等不到代理 `t.Skip`；probe 复用 COMMON `httputil/proxypool`，退出码 3）。存量 6 站测试是 `NeedDirect:true` 的历史惯例，**别照抄**；qileso 开发期直连就触发了 429。
+- **注册位置**：子命令在 `commands_crawler.go`、配置挂载在 `config/crawler/crawler.go`（`Services.<Site>`），不是 `spider.go`；简报写错一处会让 5 个 agent 各自纠正一遍。
+- **基于未合并的集成分支开发时**，其 go.mod replace 若是未提交的本地改动，新分支 `go build` 会缺包；每个站点分支加一条内容相同的 `temp(site): go.mod` 提交（合并前撤销），见 `decisions/decision-2026-09-16-新站爬虫基于骨架集成分支开发.md`。
+- 「禁止 Monitor」写进简报后，仍有 3/5 个 agent 停在「等后台测试通知」——本地代理池薄时联网测试跑到 5~7 分钟，agent 就会想后台跑。主控用 `pgrep -af "run Test<Site>"` 查进程后 SendMessage 给出**前台 until 等待或重跑**的明确指令即可。
+- 合并预演简报 `96-merge.md`：集成分支 `integration/five-sites`（基于 `integration/ten-proposals`）逐站 `--no-ff` 合并、每站 `go build`，冲突面仍只有三处纯增量文件。

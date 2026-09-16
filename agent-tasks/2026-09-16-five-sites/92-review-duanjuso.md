@@ -1,9 +1,10 @@
 # 验收报告：duanjuso（www.duanjuso.cc，短剧搜）
 
 - worktree: `/home/peterq/dev/projects/1s/spider-wt-site-duanjuso`
-- 分支: `feat/site-duanjuso` @ `c547a5c`
+- 分支: `feat/site-duanjuso` @ `c547a5c`（**返工提交 `5ebd118` 已复核，见文末「复核」一节**）
 - 验收时间: 2026-09-16
-- 结论: **返工**（唯一返工项：联网测试 + probe 脚本未接入代理池，属 `99-notes.md` 裁定1 点名的全 5 站通用返工项，与 qileso 同类问题；开发 agent 据主控通知正在返工中，本报告不重复验证，其余各项均已核实通过）
+- 首轮结论: 返工（联网测试 + probe 脚本未接入代理池，属 `99-notes.md` 裁定1 点名的全 5 站通用返工项，与 qileso 同类问题）
+- **最终结论（复核 `5ebd118` 后）：通过** —— 详见文末「复核」一节
 
 ---
 
@@ -166,3 +167,117 @@ $ go vet -tags live ./services/bbs/    # 无输出，通过（含测试文件，
 3. 上述两处修好后，需要重新联网跑一遍 `DUANJUSO_IT=1 go test -tags live ./services/bbs/ -run TestDuanjuso -v` 与 `python3 scripts/duanjuso_probe.py probe`（经代理），把结果更新进 PRD §9（当前 §2/§3.2/§9.3/§9.4 多处"直连站点验证"的措辞与实测记录需要同步替换为代理池路径下的复测结果）。
 
 其余各项（改动范围/越界检查、build/vet、配置注册、`EngineConfig` 核对表、生产代码代理路径、4类型过滤、保活语义、增量不抓详情页、PRD 记录的两处报告不符发现的代码处理）均已验证通过，无需返工。
+
+---
+
+## 复核（返工提交 `5ebd118`，2026-09-16）
+
+开发 agent 已在同一 worktree 提交 `5ebd118`（`fix(bbs): duanjuso 联网测试与 probe 脚本改走代理池, 修正裁定1返工项`），本节只复核裁定1点名的返工项，其余项沿用首轮验收结论不再重复。
+
+### 复核1：`duanjuso.cc_test.go` 是否 `NeedDirect:false` + 订阅代理池、等不到代理 `t.Skip`、无直连兜底 ✅
+
+`git diff c547a5c..5ebd118 -- services/bbs/duanjuso.cc_test.go`（新增 48 行）核心改动：
+
+- `newDuanjusoTestCrawler()` 第 116-119 行：`NeedDirect: false`（原 `true`），注释明确"测试也必须走代理池、不得直连，与生产 `newDuanjusoCrawler` 的 `NeedDirect:false` 语义一致"；`pl.Init()` 后紧跟新增的 `duanjusoWireTestProxyOrSkip(t, pl)`。
+- 新增 `duanjusoWireTestProxyOrSkip`（第 52-77 行）：
+  1. 先查 `crawler.Get().Services.Proxy.Sub()`，`Redis==""||PubChannel==""` 时 `t.Skip`（并给出 `LOCAL_CONFIG_PATH` 配置指引）——已核实这一步是必要的：`proxy_provider.OnProxyWith` 在配置为空时会 `panic("services.proxy.redis / pubchannel 未配置, 无法订阅代理池")`（`services/proxy-provider/proxy-provider.go:44-46`），若不加此前置检查，无配置环境下会直接 panic 而不是优雅跳过。
+  2. 用与生产入口**同一条路径** `proxy_provider.OnProxyWith(sub, cb)` 订阅，`cb` 里 `pl.AddProxy(proxy)`。
+  3. 最多轮询等待 30s（`time.Now().Add(30*time.Second)`，300ms 间隔），拿到 ≥1 个代理即返回；30s 内一个都没收到则 `t.Skip("30s 内未从本地代理池收到任何代理...")`。
+  4. **全程没有任何"等不到就退回直连"的分支**——只有 skip 和正常返回两条路径。
+- 代码走查确认 `p.client.Do(...)`（`fetch()`）本身逻辑未改动，请求分发完全由 `ProxyClient` 内部按 `NeedDirect` 语义处理（首轮验收已委托 Explore 子 agent 核实：`NeedDirect:false` 时 "direct" 伪代理永远不会加入 `proxyLeaderMap`，池空是 1 分钟超时报错而非直连）。
+
+**实跑验证**（本次复核前台同步执行，未使用 Monitor/后台任务）：
+
+```
+$ python3 .../site-discovery/tools/proxypool.py status
+同步进程: 同步进程正常 (pid 583493)
+代理频道: redis://127.0.0.1:6379/2 频道 proxy_subject
+等待 20s: 收到消息 1 条, 去重后 1 个代理, 当前存活 1 个
+
+$ cd /home/peterq/dev/projects/1s/spider-wt-site-duanjuso
+$ LOCAL_CONFIG_PATH=$(pwd)/config.local.yaml DUANJUSO_IT=1 \
+    timeout 600 go test -tags live ./services/bbs/ -run TestDuanjuso -v -count=1
+...
+--- PASS: TestDuanjusoExtractLink (0.00s)          (5 子用例)
+--- PASS: TestDuanjusoDocIdFromUrl (0.00s)
+--- PASS: TestDuanjusoPwdFromLink (0.00s)
+--- PASS: TestDuanjusoSearchSample (13.65s)         keyword=txt total=10000; keyword=完结 total=1561
+--- PASS: TestDuanjusoDetailSample (77.21s)         第一轮 committed=10 found=10；第二轮 skipDup=10
+--- PASS: TestDuanjusoIncrementalSample (6.08s)     第一轮 committed=97 found=100 skipDup=3；第二轮 skipDup=100
+--- PASS: TestDuanjusoFullSweepSkipWait (10.24s)
+PASS   ok  107.188s
+```
+
+本地代理池当时只有 1 个存活代理（薄），测试仍全部 PASS（详情页/搜索接口经代理请求均成功，符合"代理池薄、允许部分失败、断言用下限/比例"的项目约束，本次samples恰好全部成功）。日志里出现 `redis[local2]: 127.0.0.1:6379 db=2` 及配置加载信息，确认走的是 `LOCAL_CONFIG_PATH` 指向的本地代理订阅链路，非直连。`go build ./...`、`go vet -tags live ./services/bbs/`、`go vet ./services/bbs/` 复核后均无输出（通过）。**判定：通过。**
+
+### 复核2：`scripts/duanjuso_probe.py` 是否复用 COMMON `httputil`/`proxypool`、拿不到代理退出码 3、无直连 ✅
+
+`git diff c547a5c..5ebd118 -- scripts/duanjuso_probe.py`（改 109 行）核心改动：
+
+- 新增 `sys.path.insert(0, ".../site-discovery/tools")` + `import httputil, proxypool`，删除原来的 `import urllib.request`，`UA` 常量也随之删除（UA 由 `httputil.new_session` 统一设置）。
+- 新增 `build_session(a)`：
+  ```python
+  if getattr(a, "no_proxy", False):
+      print("!! 本脚本一律走代理池, 忽略 --no-proxy(不提供直连兜底)", file=sys.stderr)
+  a.no_proxy = False
+  pool, _require = proxypool.pool_from_args(a)
+  wait = max(0, getattr(a, "proxy_wait", 20))
+  if pool is None or pool.wait_ready(1, timeout=wait) == 0:
+      print("!! 代理池为空(等待 %ss 无果), 拒绝直连退化, 退出" % wait, file=sys.stderr)
+      sys.exit(3)
+  ...
+  return httputil.new_session(25, pool=pool, require_proxy=True)
+  ```
+  已对照 COMMON 源码核实：`a.no_proxy` 被强制置 `False` 后再调用 `proxypool.pool_from_args`，绕开了该函数里"`no_proxy=True` 时返回 `(None, False)`"的直连许可分支；`httputil.new_session(..., require_proxy=True)` 对应 `ProxiedSession.request()`（`httputil.py:60-84`）在 `pool.get()` 拿不到代理时 `raise ProxyUnavailable(...)`，**没有 `return super().request(...)` 的直连兜底路径**（那条路径只在 `require_proxy=False` 时才会走到）。
+- `fetch()` 改为经 `httputil.fetch(SESSION, url, ...)`，`cmd_probe`/`cmd_dump`/`cmd_verify`/`cmd_search` 四个子命令入口均先 `SESSION = build_session(args)` 才发起任何请求。
+- `main()` 里新增 `_add_subparser` 给每个子命令挂 `proxypool.add_proxy_args`（`--proxy`/`--proxy-api`/`--require-proxy`/`--no-proxy`/`--proxy-wait`）。
+
+**实跑验证**：
+
+```
+$ python3 scripts/duanjuso_probe.py --help          # 正常，无网络请求
+$ python3 scripts/duanjuso_probe.py probe --help    # 正常，可见代理池参数组
+
+$ timeout 90 python3 scripts/duanjuso_probe.py search -q txt -n 3 --proxy-wait 20
+代理池就绪: 代理池可用, 当前 6 个代理
+code=200 msg=请求成功 total=10000 per_size=3
+  QUARK doc_id=... link=https://pan.quark.cn/s/815e2535f220
+  ...
+类型构成(按 link 判定): {'quark': 3}
+```
+确认脚本真实经代理池发起请求并拿到正确结果（"代理池就绪"一行来自 `build_session` 内部，非直连路径不会打印这行）。
+
+```
+$ timeout 15 python3 scripts/duanjuso_probe.py search -q txt -n 3 --no-proxy --proxy-wait 3
+!! 本脚本一律走代理池, 忽略 --no-proxy(不提供直连兜底)
+!! 代理池为空(等待 3s 无果), 拒绝直连退化, 退出
+$ echo $?
+3
+```
+显式传 `--no-proxy` 被脚本自身忽略并打印提示（3s 等待窗口太短，新建的 `ProxyPool` 实例还没收到 pub/sub 推送，属正常现象，不是 bug）；确认拿不到代理时**退出码为 3**，且过程中未发起任何直连请求。**判定：通过。**
+
+### 复核3：`git status` 干净且改动仍在允许集合内 ✅
+
+```
+$ git status --short          # 空输出，工作区干净
+$ git log --oneline -3
+5ebd118 fix(bbs): duanjuso 联网测试与 probe 脚本改走代理池, 修正裁定1返工项
+c547a5c feat(bbs): 新增 www.duanjuso.cc(短剧搜) 爬虫
+d8c4e83 temp(site): go.mod replace 指向 common-wt-ten-proposals, 合并 master 前撤销
+$ git diff --stat c547a5c..5ebd118
+ PRD/2609/duanjuso.cc.md          | 109 +++++++++++++++++++++++++-----------
+ scripts/duanjuso_probe.py        | 109 ++++++++++++++++++++++++++----------
+ services/bbs/duanjuso.cc_test.go |  48 ++++++++++++++--
+ 3 files changed, 199 insertions(+), 67 deletions(-)
+```
+返工提交只改了 `PRD/2609/duanjuso.cc.md`、`scripts/duanjuso_probe.py`、`services/bbs/duanjuso.cc_test.go` 三个文件，**均 ⊆ 首轮已确认的允许清单**，未新增文件、未碰 `go.mod`/yaml/`deploy.sh`/`.vscode`/`sitecrawler` 包。PRD 增补了「2026-09-16 返工说明」小节，如实记录了返工前后的对比与代理池薄时的两次实跑结果（含一次 `commitError=2` 的真实失败样本），未粉饰。**判定：通过。**
+
+### 复核4：`DUANJUSO_IT=1 timeout 600 go test -tags live ./services/bbs/ -run TestDuanjuso -v -count=1`（经代理，前台实跑）✅
+
+见复核1中贴出的完整实跑输出，前台同步执行（未用 Monitor/后台任务），总耗时 107.188s，5 个测试全部 `PASS`：`TestDuanjusoExtractLink`(纯函数,5子用例)/`TestDuanjusoDocIdFromUrl`/`TestDuanjusoPwdFromLink`/`TestDuanjusoSearchSample`/`TestDuanjusoDetailSample`/`TestDuanjusoIncrementalSample`/`TestDuanjusoFullSweepSkipWait`。本地代理池仅 1 个存活代理（薄），本次样本恰好全部成功（PRD §9.4 另记录了一次代理池更薄、与 qileso 联网测试同时争抢时出现 `commitError=2` 但仍 PASS 的对比结果，证明断言口径确实是"下限/比例"而非"100%成功"）。**判定：通过。**
+
+### 复核结论
+
+四项返工点全部核实通过：生产代码路径本就合规（首轮已确认），测试与 probe 脚本已按裁定1整改为强制走代理池、无直连兜底，git 改动范围未越界，且经代理池的联网测试前台实跑一遍全部通过。
+
+**最终结论：通过。** duanjuso 站点验收完成，无遗留返工项。

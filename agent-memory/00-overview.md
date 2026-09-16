@@ -3,7 +3,7 @@ title: 项目总览
 type: overview
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-16T11:30:00+08:00
+updated_at: 2026-09-16T13:40:00+08:00
 priority: critical
 keywords: [网盘资源爬取, 版权取证, COMMON, SPIDER, STORAGE, API, NC-JS]
 summary: 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件
@@ -25,8 +25,8 @@ related:
 
 ## 2. 当前状态（最近 7 天；更早见 `current/changelog.md`）
 
-- 09-16 **站点发现第二轮：5 站满足**（duanjuso 优先），立项待裁定 → `current/open-questions.md`
-- 09-16 **云端文档脚本已从个人仓库迁入 NC-JS `apps/doc-cloud-spider`，待确认合并** → `decisions/decision-2026-09-16-云端文档脚本迁入NC-JS.md`；**十项提案待确认合并** → `agent-tasks/2026-09-16-ten-proposals/`
+- 09-16 **五站爬虫 5/5 验收通过**，`integration/five-sites`@94030a0 待合并 → `knowledge/domain-站点-260916接入批次.md`
+- 09-16 **云端文档脚本迁入 NC-JS，待确认合并** → `decisions/decision-2026-09-16-云端文档脚本迁入NC-JS.md`；**十项提案待确认合并** → `agent-tasks/2026-09-16-ten-proposals/`
 - 09-16 **文档发现首轮完成**（达标 29 篇，批量待执行）→ `procedures/workflow-文档发现.md`
 - 09-15 **P5 阶段 D 灰度爬坡中**；xlLoadShare 修复上线，失效上报仍 dry run → `current/tasks.md`
 - 09-12 **🔴 事故：lifecycle_checker 误删 115.5 万 quark/ali 资源**，修复已部署，重爬回库 ≈56% → `lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md`

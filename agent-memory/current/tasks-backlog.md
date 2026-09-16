@@ -3,13 +3,12 @@ title: 任务后备清单（低优先级 / 等人工事项）
 type: task
 status: active
 created_at: 2026-09-12T22:36:00+08:00
-updated_at: 2026-09-16T10:40:00+08:00
+updated_at: 2026-09-16T13:55:00+08:00
 priority: low
 keywords: [backlog, P3, 文档爬虫, FC, 人工事项]
 questions:
-  - 文档爬虫 FC 自动化还差哪些人工步骤
-  - 有哪些 P3 低优先级待办
-summary: 从 tasks.md 拆出的低优先级/等人工/归档遗留事项：文档爬虫 FC 6 项人工步骤、归档任务遗留待办、P3 代码小修、2026-09-16 移入的 P1/P2 长尾（站点复议、checker 业务码、STORAGE 回归等）
+  - 有哪些低优先级/等人工的待办
+summary: 从 tasks.md 拆出的低优先级/等人工事项：文档爬虫 FC 人工步骤、P3 小修、站点复议、checker 业务码、STORAGE 回归等
 load: rarely
 related:
   - agent-memory/current/tasks.md

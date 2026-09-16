@@ -3,10 +3,10 @@ title: 未解决的问题
 type: question
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-16T11:30:00+08:00
+updated_at: 2026-09-16T13:40:00+08:00
 priority: high
-keywords: [待确认, doc-cloud-spider, 站点发现, lzpanx, robots, 立项, xlLoadShare, 事故恢复, 用户确认]
-summary: 待用户确认：云端脚本迁移合并；灰度误回落防复发；站点发现立项；账号池续期
+keywords: [待确认, 五站爬虫, 合并顺序, 部署主机, doc-cloud-spider, lzpanx, robots, 事故恢复, 用户确认]
+summary: 待确认：五站合并/部署、云端脚本迁移合并、灰度误回落防复发、lzpanx robots、账号池续期
 questions:
   - 当前有哪些待用户确认的问题
 load: on-demand
@@ -43,7 +43,10 @@ related:
 
 正本 COMMON worktree `site-discovery-260916` 的 `site-discovery/history.md` 与 `260916/*.md`；摘要 `sessions/2026/2026-09-16-站点发现第二轮.md`。
 
-- [待确认] 5 个满足站（duanjuso.cc ≈150 万条 / pan.xiaozi.cc / qileso.com / jsnoteclub.com / ddys.io）选哪些立项走 `workflow-新站点调研` 出 PRD？建议先 duanjuso.cc（公开搜索接口 + 直连 46 条/分钟）。
+- ✅ 5 站已按用户指令全部开发并验收通过（`knowledge/domain-站点-260916接入批次.md`）。新增待确认：
+  - [待确认] SPIDER 合并顺序：先合十项提案 `integration/ten-proposals` → 各站点分支撤销 `temp(site) go.mod` 提交 → 合 `integration/five-sites`（结果见 `agent-tasks/2026-09-16-five-sites/97-merge-result.md`）；是否 push。
+  - [待确认] 5 个新爬虫的部署主机与 `deploy.sh` 接入（与 2609 批次 6 站一样尚未接入）。
+  - [待确认] 存量 6 站的联网测试仍是 `NeedDirect:true` 直连，是否也改成走代理池（本批已全部改）。
 - [待确认] `www.lzpanx.com`（67.9 万条、其余 5 条达标）robots 声明 `Crawl-delay: 20`：是否遵守？遵守则单 IP 3 条/分钟需靠代理池多 IP 并行；不遵守则直接满足第 6 条。
 - [待确认] worktree 分支 `worktree-site-discovery-260916`（报告 + 工具改动）是否合并 master。
 

@@ -6,9 +6,6 @@ created_at: 2026-09-16T10:40:00+08:00
 updated_at: 2026-09-16T10:40:00+08:00
 priority: high
 keywords: [代理池, RemoteDisconnected, code=0, 站点发现, ratetest, 直连复核, 误判, 吞吐实测]
-questions:
-  - 调研站点时经代理大量连接失败，怎么分辨是代理问题还是站点封锁
-  - 单 IP 吞吐怎么测才不被代理池噪声干扰
 summary: 代理池薄时 code=0 像站点拒绝；直连复核 + ratetest 双出口对比，只有 403/429 才算限流
 load: on-demand
 related:
