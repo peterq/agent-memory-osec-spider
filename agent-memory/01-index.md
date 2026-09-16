@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-16T21:34:21+08:00
+updated_at: 2026-09-17T01:37:49+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -25,7 +25,7 @@ load: always
 - 02-user-preferences.md | high | 2026-09-15 | 用户对语言、脚本沉淀、记忆维护、thinking 长度、敏感信息禁写、任务进度与异常必须及时邮件汇报（scripts/mail/notif… | 偏好、中文、邮件汇报
 
 ## current/ (6)
-- current/tasks.md | crit | 2026-09-16 | 仍在推进/阻塞/待决策：五站爬虫待确认合并、站点发现收尾、文档发现待批量执行、腾讯文档与十项提案待确认合并、P5 灰度爬坡、误删事故收尾；… | 任务、进度、待办
+- current/tasks.md | crit | 2026-09-17 | 仍在推进/阻塞/待决策：五站爬虫待确认合并、站点发现收尾、文档发现待批量执行、腾讯文档与十项提案待确认合并、P5 灰度爬坡、误删事故收尾；… | 任务、进度、待办
   ? 当前该做什么，有哪些待办
 - current/open-questions.md | high | 2026-09-16 | 待用户确认：站点发现第二轮立项；账号池续期（深翻页护栏方案已裁定，见 tasks） | 待确认、十项提案重部、存量测试代理
   ? 当前有哪些待用户确认的问题
