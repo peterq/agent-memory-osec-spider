@@ -3,13 +3,13 @@ title: 失败经验：lifecycle_checker 把资源 md5 当分享 id，116 万有�
 type: lesson
 status: active
 created_at: 2026-09-12T22:40:00+08:00
-updated_at: 2026-09-15T15:50:00+08:00
+updated_at: 2026-09-16T14:35:00+08:00
 priority: critical
 keywords: [lifecycle_checker, 误删, dry run, ShareId, 违规tooltip, bnd判定, invalid_link, 失效率告警, 事故, 恢复]
 questions:
   - lifecycle_checker 为什么把夸克资源全判失效
   - 116 万条资源误删是怎么回事，怎么恢复
-summary: checker 用 task.Id(md5) 而非 ShareId 探测，115.5 万条 quark/ali 误删；bnd 再因「违规」tooltip 误判 930 条；修复 b888846/06ef50d 已上线；Mongo 无数据，恢复只能重爬
+summary: checker 用 task.Id(md5) 而非 ShareId 探测致 115.5 万条 quark/ali 误删，bnd 又因「违规」tooltip 误判 930 条；修复已上线，恢复只能重爬
 load: on-demand
 related:
   - agent-memory/procedures/checklist-不可逆操作上线.md  # 事故后定下的上线硬规则

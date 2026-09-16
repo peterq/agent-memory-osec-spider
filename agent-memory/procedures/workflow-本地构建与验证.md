@@ -3,10 +3,10 @@ title: 本地构建与验证流程
 type: procedure
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-16T09:10:00+08:00
+updated_at: 2026-09-16T14:30:00+08:00
 priority: high
-keywords: [CI, go build, go vet, live标签, make proto, replace, 编译失败, 验证, 存量告警, 验收口径]
-summary: 四仓库编译命令、CI(vet/test 白名单 + live 标签隔离连生产测试)、make proto 生成流程与验收口径
+keywords: [CI, go build, launch.json, go vet, live标签, make proto, replace, 编译失败, 验证, 存量告警, 验收口径]
+summary: 四仓库编译命令、VSCode 本地启动(launch.json)、CI(vet/test 白名单 + live 标签隔离连生产测试)、make proto 生成流程与验收口径
 questions:
   - 编译不过，依赖报错怎么排查
   - CI 怎么跑，哪些测试会连生产
@@ -38,6 +38,12 @@ go build -C /home/peterq/dev/projects/1s/enfi-resource-storage ./...
 ```
 
 SPIDER 全量编译约 1～2 分钟，建议放后台或给足 timeout。
+
+### VSCode 本地启动（launch.json，已入库）[事实 2026-09-16]
+
+- SPIDER：`osec-spider-go/.vscode/launch.json`，每个子命令一条 configuration，env 用 `LOCAL_CONFIG_PATH` 指向 `config.local.yaml`。
+- API：`osec-resource-api/.vscode/launch.json`（2026-09-16 新增），`api-starter` 一条启动服务、`tools search-regression` 一条跑搜索回归；不设环境变量，靠 `initConfig` 的查找顺序 `CONFIG_FILE → ./config_dev.yaml(已 gitignore) → ./config.yaml`。
+- 多根工作区 `1s/resource-backend.code-workspace` 会汇总各文件夹的 launch.json，Run 面板按「配置名 (文件夹名)」区分。
 
 ## 验收口径：编译与存量告警
 

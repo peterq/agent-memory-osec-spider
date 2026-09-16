@@ -3,12 +3,11 @@ title: 失败经验：v3 与 v2 首页重合度达不到 95%——match_phrase_p
 type: lesson
 status: active
 created_at: 2026-09-12T15:30:00+08:00
-updated_at: 2026-09-12T15:30:00+08:00
+updated_at: 2026-09-16T14:35:00+08:00
 priority: high
 keywords: [P5, 重合度, match_phrase_prefix, 分片彩票, idf, dfs_query_then_fetch, url_check, clearExpire, 死链同步, v3 搜索]
 questions:
-  - P5 对拍为什么没通过，v3 首页和 v2 为什么不一样
-  - dfs 能不能让新旧索引排序一致
+  - P5 对拍为什么没通过，dfs 能不能让 v3/v2 排序一致
   - 旧索引 url_check 删掉的文档新方案会同步失效吗
 summary: P5 对拍首页重合度 84%<95% 的两个根因——4% 坑位是 legacy 已删 lc 未删的死链（无反向失效同步）；其余是 match_phrase_prefix 展开集合随分片词典变化、生僻展开词 idf 加进短语权重，dfs 救不了
 load: on-demand

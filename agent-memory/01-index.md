@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-16T12:18:13+08:00
+updated_at: 2026-09-16T13:57:09+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -60,10 +60,10 @@ load: always
   ? cdp3 的扩展和会话数据放在哪、目录怎么约定 / 调用方用 profile= 时要注意什么
 - decisions/decision-2026-09-13-lint长度双阈值.md | high | 2026-09-13 | 超长改为 >12,000 触发、触发后必须压到 <6,000，9,000 起只提示；避免 8,000 单线反复报警 | lint、超长、双阈值
   ? lint 报超长该压到多少字，上限为什么不是 8000 / tasks.md 反复超长怎么办
-- decisions/decision-2026-09-16-云端文档脚本迁入NC-JS.md | high | 2026-09-16 | 云端文档脚本从个人仓库 userscripts 迁入 NC-JS apps/doc-cloud-spider(独立 vite 包), 产物… | doc-cloud-spider、userscripts、NC-JS
+- decisions/decision-2026-09-16-云端文档脚本迁入NC-JS.md | high | 2026-09-16 | 云端文档脚本从个人仓库迁入 NC-JS apps/doc-cloud-spider(独立 vite 包), 产物与 OSS 对象名不变; … | doc-cloud-spider、userscripts、NC-JS
   ? 云端文档爬虫脚本 doc-cloud.user.js 源码在哪个仓库, 为什么迁到 nc-js
 - decisions/decision-2026-09-16-搜索p90告警关闭匿名搜索与总览数据源.md | high | 2026-09-16 | 2026-09-16 用户需求裁定：搜索总览走 SLS(SQL 优先、拉日志降级)；p90 超阈值由网关 leader 巡检→邮件+共享 … | search_guard、匿名搜索、p90
-  ? 匿名搜索为什么会被关闭, 谁关的, 怎么手动开放 / 搜索总览/Top 榜的数据从哪来, SLS SQL 不可用怎么办 / 分享链接总览的新增/检测/更新/失效各是什么口径
+  ? 为什么 p90 告警要自动关匿名搜索, 为什么总览用 SLS 扫描而非 SQL / search_guard 的 redis 键约定是什么
 - decisions/decision-2026-09-16-新站爬虫基于骨架集成分支开发.md | high | 2026-09-16 | 5 站基于骨架集成分支开发，各带 temp go.mod 提交；须在十项提案合并后撤销再合 | 新站爬虫、sitecrawler、integration/ten-proposals
 - decisions/decision-2026-09-16-阿里云盘空目录分享判定为有效.md | high | 2026-09-16 | 阿里云盘 file_count==0 时新旧实现结论不同，裁定判 Valid（无业务码不主动认定失效） | panvalid、阿里云盘、file_count
 - decisions/decision-2026-09-04-合并sweep-guard分支冲突取舍.md | medi | 2026-09-04 | 合并遗留分支时，master 已修正的旧逻辑不应因"冲突两边都保留"而被恢复，需先判断冲突是否为真实的两个功能重叠 | sweep-guard、全量扫描守卫、merge 冲突
@@ -83,7 +83,7 @@ load: always
   ? 怎么找包含网盘链接的在线文档 / task doc-discovery / 启动文档发现任务 该怎么做 / 文档发现的候选渠道有哪些、哪个性价比高
 - procedures/workflow-新站点调研.md | high | 2026-09-12 | 接到"探索某资源站并输出爬虫 PRD"时的标准步骤：先找结构化接口，再验证全量可枚举性，最后对账 | 站点调研、爬虫、PRD
   ? 我要调研一个新的资源站，怎么写爬虫 PRD / 怎么找一个站点的公开接口
-- procedures/workflow-本地构建与验证.md | high | 2026-09-16 | 四仓库编译命令、CI(vet/test 白名单 + live 标签隔离连生产测试)、make proto 生成流程与验收口径 | CI、go build、go vet
+- procedures/workflow-本地构建与验证.md | high | 2026-09-16 | 四仓库编译命令、VSCode 本地启动(launch.json)、CI(vet/test 白名单 + live 标签隔离连生产测试)、ma… | CI、go build、launch.json
   ? 编译不过，依赖报错怎么排查 / CI 怎么跑，哪些测试会连生产
 - procedures/workflow-站点发现.md | high | 2026-09-16 | `task site-discovery` 的入口、候选渠道、worktree 执行方式与两轮踩坑；正文流程在 site-discover… | 站点发现、site-discovery、候选站点
   ? 怎么启动网站发现任务，在 worktree 里怎么跑
@@ -94,7 +94,7 @@ load: always
 - procedures/workflow-部署.md | medi | 2026-09-16 | SPIDER deploy.sh 用法（09-16 起 releases/current + rollback + 健康检查）、服务→主机… | 部署、deploy.sh、releases/current
 
 ## lessons/ (33)
-- lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md | crit | 2026-09-15 | checker 用 task.Id(md5) 而非 ShareId 探测，115.5 万条 quark/ali 误删；bnd 再因「违规」… | lifecycle_checker、误删、dry run
+- lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md | crit | 2026-09-16 | checker 用 task.Id(md5) 而非 ShareId 探测致 115.5 万条 quark/ali 误删，bnd 又因「违规… | lifecycle_checker、误删、dry run
   ? lifecycle_checker 为什么把夸克资源全判失效 / 116 万条资源误删是怎么回事，怎么恢复
 - lessons/failure-FC实例在WebSocket断开后立即冻结.md | high | 2026-09-16 | 客户端断开 WebSocket 后 FC 立即冻结实例，收尾/写回必须在连接内完成（拦截 Browser.close） | FC 冻结、WebSocket、Browser.close
 - lessons/failure-SLS字段检索按分词匹配误命中其他stage.md | high | 2026-09-16 | SLS 检索 `field:value` 是分词匹配，同一 logstore 里 `stage=GET:/api/v2/search` 的… | SLS、分词、字段检索
@@ -108,8 +108,8 @@ load: always
   ? 筛选参数传了 0 却查不出数据 / proto3 不传字段被当成过滤条件是什么坑
 - lessons/failure-qiankun子应用挂到包裹层导致样式被清空.md | high | 2026-09-12 | 子应用 Vue app.mount 直接挂 qiankun 包裹层会把 <qiankun-head> 内联的全部静态 CSS 删掉(只在线… | NC-JS、qiankun、微前端
 - lessons/failure-resdb的ES端点指向已下线集群.md | high | 2026-09-16 | STORAGE worker 所在 osec-resdb 的 ES 地址指向已下线集群，旧代码静默失败；排查与修法见正文 | osec-resdb、es_endpoint、ES 集群更换
-- lessons/failure-v3首页重合度受前缀展开分片彩票影响.md | high | 2026-09-12 | P5 对拍首页重合度 84%<95% 的两个根因——4% 坑位是 legacy 已删 lc 未删的死链（无反向失效同步）；其余是 matc… | P5、重合度、match_phrase_prefix
-  ? P5 对拍为什么没通过，v3 首页和 v2 为什么不一样 / dfs 能不能让新旧索引排序一致 / 旧索引 url_check 删掉的文档新方案会同步失效吗
+- lessons/failure-v3首页重合度受前缀展开分片彩票影响.md | high | 2026-09-16 | P5 对拍首页重合度 84%<95% 的两个根因——4% 坑位是 legacy 已删 lc 未删的死链（无反向失效同步）；其余是 matc… | P5、重合度、match_phrase_prefix
+  ? P5 对拍为什么没通过，dfs 能不能让 v3/v2 排序一致 / 旧索引 url_check 删掉的文档新方案会同步失效吗
 - lessons/failure-前端环境默认值写死本地.md | high | 2026-09-16 | 子应用把 gwEndpoint 默认值写死成本地地址导致线上首访连错；默认值必须由 location.hostname 推导 | gwEndpoint、gwAddrs、defaultGwAddr
 - lessons/failure-品牌版Chrome禁用load-extension与userScripts二次授权.md | high | 2026-09-16 | 品牌版 Chrome 不吃 --load-extension、userScripts 需二次授权；改企业策略强装 + 预热 profile | Chrome、load-extension、ExtensionSettings
   ? headless Chrome 加了 --load-extension 为什么看不到扩展 / 油猴脚本装上了但页面不执行是怎么回事
@@ -117,7 +117,7 @@ load: always
 - lessons/failure-握手回包附加字段被传输层丢弃.md | high | 2026-09-16 | 网关握手 403 回包的附加字段被 RTC-gRPC 传输层丢弃；附加信息要走独立通道 | RtcTransport、cancelAllPendingCalls、UnaryCallResponse
 - lessons/failure-旁路能力初始化拖垮主流程.md | high | 2026-09-09 | 用会 log.Fatal/panic 的基础设施函数去初始化"可有可无"的监控, 会让每个子命令随配置缺失或 redis 抖动一起死; 以… | db.Redis、log.Fatal、panic
 - lessons/failure-本地代理池薄导致连接失败误判为站点拒绝.md | high | 2026-09-16 | 代理池薄时 code=0 像站点拒绝；直连复核 + ratetest 双出口对比，只有 403/429 才算限流 | 代理池、RemoteDisconnected、code=0
-- lessons/failure-注入脚本用consolelog回传被页面自身替换吞掉.md | high | 2026-09-16 | 页面会整体替换 window.console.log；注入脚本必须在最开头抓原生引用回传，否则只见一条 start | console.log、CDP、addScriptToEvaluateOnNewDocument
+- lessons/failure-注入脚本用consolelog回传被页面自身替换吞掉.md | high | 2026-09-16 | 页面会整体替换 console.log；注入脚本须在最开头抓原生引用回传，否则只见一条 start | console.log、CDP、addScriptToEvaluateOnNewDocument
   ? CDP 注入脚本为什么只打出第一条日志就沉默 / 用 console.log 回传协议什么情况会全部收不到
 - lessons/failure-网关重启暴露ES集群已更换.md | high | 2026-09-12 | 线上网关自 1 月未重启，期间 ES 集群已更换；队列 v2 上线一重启就 panic。教训：长期不重启的服务会掩盖外部依赖变更，重启前先… | 网关、gateway、ES
   ? 网关起不来，报 no such host 怎么查 / 重启网关前要检查什么
@@ -176,7 +176,7 @@ load: always
 - knowledge/domain-网盘有效性检测.md | high | 2026-09-16 | 两套有效性检测已合并为 COMMON panvalid 一套实现（分支 feat/valid-unify，未合并 master）；本文件存… | panvalid、有效性检测、validShareLink
   ? 链接失效检测怎么做，validShareLink 返回 -1 是什么意思 / panvalid 是什么，和旧的两套实现什么关系
 - knowledge/domain-腾讯文档表格解析.md | high | 2026-09-16 | 2026-09-16 实测：公开表格匿名可访问；同源 GET dop-api/opendoc（需页面 Cookie，t/xsrf 非必需）… | 腾讯文档、docs.qq.com、opendoc
-  ? 腾讯文档表格的单元格数据从哪个接口拿、要不要登录 / 腾讯文档 opendoc 返回的 protobuf 区块怎么解 / 为什么腾讯文档有的返回 block_datas 有的返回 JSON op 数组
+  ? 腾讯文档表格单元格数据从哪个接口拿、要不要登录 / opendoc 返回的 protobuf 区块怎么解, block_datas 与 JSON op 数组有什么区别 / 腾讯文档分块拉取越界时会怎样
 - knowledge/domain-转存下载链路.md | high | 2026-09-15 | SPIDER 下载调度链路的代码结构、redis 键/MySQL 表、阿里/百度解析方式、三条下载路径，以及 2026-09-13 体检结… | 转存下载、share_download、resolve_link
   ? 分享文件怎么被转存、解析成下载地址落到 OSS / 转存下载链路进程/队列/账号池在哪，怎么体检
 - knowledge/domain-迅雷分享爬取.md | high | 2026-09-15 | xlLoadShare 失败率修复(09-15 已上线)：顶层文件入批次、状态码按共用码表判定、空分享永久失败；失效上报仍 dry run… | xlLoadShare、迅雷、xunleipan

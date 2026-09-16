@@ -3,12 +3,12 @@ title: 云端文档爬虫脚本从个人仓库 userscripts 迁入 NC-JS apps/doc
 type: decision
 status: active
 created_at: 2026-09-16T11:20:00+08:00
-updated_at: 2026-09-16T11:45:00+08:00
+updated_at: 2026-09-16T14:35:00+08:00
 priority: high
 keywords: [doc-cloud-spider, userscripts, NC-JS, 云端脚本, fc-chrome, doc-crawler, 迁移, 个人仓库]
 questions:
   - 云端文档爬虫脚本 doc-cloud.user.js 源码在哪个仓库, 为什么迁到 nc-js
-summary: 云端文档脚本从个人仓库 userscripts 迁入 NC-JS apps/doc-cloud-spider(独立 vite 包), 产物与 OSS 对象名不变; PC 端油猴插件暂留
+summary: 云端文档脚本从个人仓库迁入 NC-JS apps/doc-cloud-spider(独立 vite 包), 产物与 OSS 对象名不变; PC 端油猴插件暂留
 load: on-demand
 related:
   - agent-memory/knowledge/domain-飞书文档解析.md

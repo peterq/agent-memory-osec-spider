@@ -3,10 +3,10 @@ title: 失败经验：CDP 主世界注入脚本用 console.log 回传，被页�
 type: lesson
 status: active
 created_at: 2026-09-13T15:50:00+08:00
-updated_at: 2026-09-16T11:30:00+08:00
+updated_at: 2026-09-16T14:35:00+08:00
 priority: high
 keywords: [console.log, CDP, addScriptToEvaluateOnNewDocument, 主世界注入, fc-chrome, kdocCloud, DOC_SPIDER, 油猴, Tampermonkey, monkey-patch]
-summary: 页面会整体替换 window.console.log；注入脚本必须在最开头抓原生引用回传，否则只见一条 start
+summary: 页面会整体替换 console.log；注入脚本须在最开头抓原生引用回传，否则只见一条 start
 questions:
   - CDP 注入脚本为什么只打出第一条日志就沉默
   - 用 console.log 回传协议什么情况会全部收不到

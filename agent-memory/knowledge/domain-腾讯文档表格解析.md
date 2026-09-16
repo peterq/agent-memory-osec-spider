@@ -3,13 +3,12 @@ title: 领域知识：腾讯文档(docs.qq.com)表格的取数接口与两种数
 type: knowledge
 status: active
 created_at: 2026-09-16T08:55:00+08:00
-updated_at: 2026-09-16T11:20:00+08:00
+updated_at: 2026-09-16T14:35:00+08:00
 priority: high
 keywords: [腾讯文档, docs.qq.com, opendoc, dop-api, protobuf, dver, 文档爬虫, qqSheet, kdocCloud]
 questions:
-  - 腾讯文档表格的单元格数据从哪个接口拿、要不要登录
-  - 腾讯文档 opendoc 返回的 protobuf 区块怎么解
-  - 为什么腾讯文档有的返回 block_datas 有的返回 JSON op 数组
+  - 腾讯文档表格单元格数据从哪个接口拿、要不要登录
+  - opendoc 返回的 protobuf 区块怎么解, block_datas 与 JSON op 数组有什么区别
   - 腾讯文档分块拉取越界时会怎样
 summary: 2026-09-16 实测：公开表格匿名可访问；同源 GET dop-api/opendoc（需页面 Cookie，t/xsrf 非必需）返回 JSONP；数据有两种格式——dver 3.0.0 的 base64+zlib+protobuf 区块（字段路径已摸清）与 dver 2.x 的 JSON op 数组（t=3 op 行优先平铺）；分块循环要用 maxRow 终止，越界会退回第一块
 valid_until: 2026-12-31
