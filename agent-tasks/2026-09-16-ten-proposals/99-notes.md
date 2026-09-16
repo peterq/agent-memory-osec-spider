@@ -31,3 +31,4 @@
 - 📦 80 crawler-skeleton 验收中。
 - 🧪 合并预演（`scripts/dev/integration_check.sh`，集成分支 `integration/ten-proposals`，worktree `*-wt-ten-proposals`）：COMMON/SPIDER 零冲突；API 冲突 `services/valid/valid.go`（10 vs 20）、`config/config.go`（10/30/85）、`README.md`（50/60/85）；STORAGE `README.md`（50/60）。均已在集成分支手工解决（并存），`go build`/相关包测试通过。返工分支有新提交后需重新 merge 进集成分支。
 - 🧪 集成分支断网 CI（`unshare -rn` + 各仓库 `scripts/ci.sh`）：四仓库全部通过。修了两处 CI 脚本问题（提交在 feat/ci 分支）：API `services/parallel-control` 测试依赖本地 redis 加入 test-denylist（`20b4055`）；STORAGE ci.sh 有 `testdata/storage_test.yaml` 时自动设置 `enfi_resource_storage_conf`（`670f28a`）。
+- 🔁 80 crawler-skeleton 验收：骨架/键名/启动跳过全量均通过；**不通过 4 站**——dyyjmax/fuxipan/kuakes/misoso 的 EngineConfig 漏传 `MinRequestInterval`，全局限速被静默关闭。已打回修复 + 补防回归测试。
