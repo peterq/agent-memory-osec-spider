@@ -3,7 +3,7 @@ title: 项目总览
 type: overview
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-16T08:15:00+08:00
+updated_at: 2026-09-16T08:30:00+08:00
 priority: critical
 keywords: [网盘资源爬取, 版权取证, COMMON, SPIDER, STORAGE, API, NC-JS]
 summary: 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件
@@ -25,11 +25,11 @@ related:
 
 ## 2. 当前状态（最近 7 天；更早见 `current/changelog.md`）
 
-- 09-16 **分享链接总览 + 搜索总览（SLS）+ p90 告警自动关闭匿名搜索已上线**（网关/API/前端）；缺省 p90>3000ms 连续 2 次→邮件+关匿名 30 分钟，后台「搜索监控→匿名搜索防护」可开放/调参；上线首日修了 SLS stage 分词误匹配 → `knowledge/architecture-search-admin.md`
+- 09-16 **分享链接总览 + 搜索总览（SLS）+ p90 告警自动关闭匿名搜索已上线**（网关/API/前端）；p90>3000ms 连续 2 次→邮件+关匿名 30 分钟，后台「搜索监控→匿名搜索防护」可调 → `knowledge/architecture-search-admin.md`
 - 09-15 **xlLoadShare 修复上线**（`3270e10`）；**失效上报仍 dry run，待复核后开启** → `knowledge/domain-迅雷分享爬取.md` §5
 - 09-15 **P5 阶段 D 灰度已启用**（API 侧 `search_canary` 30% 起、异常自动回落）→ `decisions/decision-2026-09-12-P5切v3准入门槛与失效同步.md`
-- 09-13 **新版 FC Chrome 上线**（`nc-app-prod-cdp3`，`profile=` 调用方须发 `Browser.close`）→ `decisions/decision-2026-09-13-cdp3持久化会话与扩展机制.md`
-- 09-12 **🔴 事故：lifecycle_checker 误删 115.5 万 quark/ali 资源**，修复已部署，`tools/lc-recrawl` 重爬回库 ≈55% → `lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md`
+- 09-13 **FC Chrome 上线**（`nc-app-prod-cdp3`，`profile=` 须发 `Browser.close`）→ `decisions/decision-2026-09-13-cdp3持久化会话与扩展机制.md`
+- 09-12 **🔴 事故：lifecycle_checker 误删 115.5 万 quark/ali 资源**，修复已部署，`tools/lc-recrawl` 重爬 ≈55% → `lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md`
 - 阻塞：无；风险见 `current/risks.md` R9。
 
 ## 3. 核心事实
@@ -75,13 +75,14 @@ related:
 - 跨包重构切三阶段，hub 代码主控逐行审 → `lessons/patterns-并行重构的分阶段切分.md`
 - 失效判定看业务码不看文案，判不准就报错；样本 15 条起 → `lessons/success-网盘失效判定原则.md`
 - 监控/埋点初始化必须可降级，且要覆盖最彻底的失败路径 → `lessons/failure-旁路能力初始化拖垮主流程.md`
-- 前端验收跑一次清空 localStorage 的首访 + 桩网关/CDP 联调 → `lessons/success-桩网关加cdp浏览器做登录链路联调.md`
-- 收到「拆分/隔离」需求先复述拆的对象，护栏应做在编译期 → `lessons/failure-把拆配置理解成拆文件.md`
+- 前端验收跑清空 localStorage 的首访 + 桩网关/CDP 联调 → `lessons/success-桩网关加cdp浏览器做登录链路联调.md`
+- 「拆分/隔离」需求先复述拆的对象，护栏做在编译期 → `lessons/failure-把拆配置理解成拆文件.md`
 - NC-JS `pnpm build` 会真实上传生产 OSS，验证前先关 `deploy` → `lessons/failure-ncjs构建脚本会自动上传OSS.md`
 - **FC 上 WebSocket 断开即冻结实例，收尾/写回必须在连接内做（拦截 `Browser.close`）** → `lessons/failure-FC实例在WebSocket断开后立即冻结.md`
 - 新站点调研先挖 JS bundle 接口、`total` 须用 sitemap 对账；**结论有保质期** → `procedures/workflow-新站点调研.md`
 - **SLS `field:value` 是分词匹配，统计口径要用 SQL `where` 等值过滤** → `lessons/failure-SLS字段检索按分词匹配误命中其他stage.md`
-- 生产 API 探针按 res-api 三级漏桶算节奏；排序差异用 `explain` 看 idf → `lessons/failure-v3首页重合度受前缀展开分片彩票影响.md`
+- 生产 API 探针按 res-api 三级漏桶算节奏 → `lessons/failure-v3首页重合度受前缀展开分片彩票影响.md`
+- 邮件脚本直接 `scripts/mail/notify.py` 调用，不用 `python3 x.py`；发送类脚本禁止静默降级 → `lessons/failure-notify脚本静默降级把原始Markdown发成邮件.md`
 
 ## 7. 待解决问题
 
@@ -89,10 +90,10 @@ related:
 
 ## 8. 怎么找记忆文件
 
-不要通读 `01-index.md`（它是 `mem.py` 生成的索引产物，不是正本，检索用脚本更全）。用 `scripts/mem/mem.py`（文档同目录 README）：
+不要通读 `01-index.md`（脚本生成物，检索用脚本更全）。用 `scripts/mem/mem.py`（README 同目录）：
 
-1. `boot` —— 列出本次会话该常驻的启动包（若 hook 已注入则跳过）。
+1. `boot` —— 启动包（hook 已注入则跳过）。
 2. `search <关键词>` —— 全库检索定位候选文件。
 3. `outline <文件>` —— 只看章节标题，判断该读哪一段。
 4. `body <文件> --section <标题>` —— 只读那一段，不要整篇读。
-5. 历史变更（哪天做了什么）在 `current/changelog.md`，不在本文件。
+5. 历史变更看 `current/changelog.md`。

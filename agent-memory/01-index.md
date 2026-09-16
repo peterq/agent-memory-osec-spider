@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-16T08:04:19+08:00
+updated_at: 2026-09-16T08:25:37+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -16,7 +16,7 @@ load: always
 定位到文件后 `mem.py outline <file>` 看章节，再 `mem.py body <file> --section <标题>` 只读需要的一段。
 维护方式：改目标文件 Front Matter（summary / keywords / questions），然后运行 `scripts/mem/mem.py index --write`。
 
-# agent-memory 启动包（脚本生成, 142 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
+# agent-memory 启动包（脚本生成, 143 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
 
 ## 根目录 (3)
 - 00-overview.md | crit | 2026-09-16 | 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件 | 网盘资源爬取、版权取证、COMMON
@@ -75,7 +75,7 @@ load: always
   ? 要上线一个会删数据/判失效/清理的功能，上线前必须做什么 / dry run 的结果怎么复核，能不能用新功能自己的日志当依据 / 什么时候才允许正式开启删除类功能
 - procedures/workflow-fc-chrome上线.md | high | 2026-09-13 | 2026-09-13 实测可行的 fc-chrome 上线链路：本机构建→docker save/rsync 到 osec-jenkins→load/push… | fc-chrome、serverless-devs、ACR
   ? 本机推不了 ACR 时怎么把 fc-chrome 镜像弄上去 / 怎么给共用 FC 域名加路由不碰证书 / fc-chrome 只改 Go 代码怎么快速上线/本地联调
-- procedures/workflow-任务进度邮件汇报.md | high | 2026-09-15 | 用户常不在电脑旁：长任务的开始/里程碑/完成、任何异常或阻塞都要主动用 scripts/mail/notify.py 发 Markdown 渲染的 HTML … | 邮件汇报、notify.py、进度
+- procedures/workflow-任务进度邮件汇报.md | high | 2026-09-16 | 用户常不在电脑旁：长任务的开始/里程碑/完成、任何异常或阻塞都要主动用 scripts/mail/notify.py 发 Markdown 渲染的 HTML … | 邮件汇报、notify.py、进度
   ? 任务进行中什么时候该给用户发邮件 / 进度/异常邮件怎么写、用什么脚本发 / 用户不在电脑旁怎么通知他
 - procedures/workflow-子agent任务简报.md | high | 2026-09-12 | 派子 Agent 时任务描述落盘成文件、prompt 只给路径，并列出子 Agent 的常见失败模式与提示词对策 | 子agent、任务描述、agent-tasks
   ? 我要派子 Agent，任务描述太长怎么办 / 多个 agent 上下文重复怎么解决
@@ -97,7 +97,7 @@ load: always
   ? 部署 / 上线怎么操作，日志在哪看 / 新服务该放哪台机器 / 队列 v2 上线收尾脚本是哪个
 - procedures/workflow-部署-历史补充.md | low | 2026-09-12 | 历次生产上线（2026-09-05~09-10 生命周期 P3/P4 网关多次重部、代理池监控上线等）的一次性踩坑与已固化到 deploy.sh 的加固记录；… | 生命周期上线、网关重部、dryRun
 
-## lessons/ (26)
+## lessons/ (27)
 - lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md | crit | 2026-09-15 | checker 用 task.Id(md5) 而非 ShareId 探测，115.5 万条 quark/ali 误删；bnd 再因「违规」tooltip 误判… | lifecycle_checker、误删、dry run
   ? lifecycle_checker 为什么把夸克资源全判失效 / 116 万条资源误删是怎么回事，怎么恢复
 - lessons/failure-FC实例在WebSocket断开后立即冻结.md | high | 2026-09-13 | 2026-09-13 线上实测：客户端断开 WebSocket 后 FC 视为调用结束并立刻冻结实例，handler 中 kill Chrome→写回 NAS… | FC 冻结、WebSocket、Browser.close
@@ -105,6 +105,8 @@ load: always
 - lessons/failure-SLS字段检索按分词匹配误命中其他stage.md | high | 2026-09-16 | SLS 检索 `field:value` 是分词匹配，同一 logstore 里 `stage=GET:/api/v2/search` 的访问日志会被 `st… | SLS、分词、字段检索
   ? 用 SLS 按 stage/字段值统计时为什么数字翻倍或出现 null 行 / SLS 检索语句怎么做字段精确匹配
 - lessons/failure-ncjs构建脚本会自动上传OSS.md | high | 2026-09-04 | admin/*子应用的标准 `pnpm build` 脚本默认会把 dist 上传到生产 OSS 并改写 apps.json, 验证构建前必须先用 { dep… | NC-JS、pnpm build、mfe插件
+- lessons/failure-notify脚本静默降级把原始Markdown发成邮件.md | high | 2026-09-16 | 2026-09-16 十项提案进度邮件把 Markdown 原文当 <pre> 发出：`env python3` 命中 miniforge 的 python（… | notify.py、邮件汇报、Markdown未渲染
+  ? 邮件里为什么收到的是原始 Markdown 而不是渲染后的卡片 / 脚本用 env python3 有什么坑 / 依赖缺失时脚本该怎么降级才不会坑用户
 - lessons/failure-proto3零值与负一哨兵冲突.md | high | 2026-09-12 | proto3 标量字段不传时零值是 0，若 0 恰好是合法业务值、而"不过滤"哨兵定成 -1，前端漏传就会静默查错数据且不报错 | proto3、零值、哨兵
   ? 筛选参数传了 0 却查不出数据 / proto3 不传字段被当成过滤条件是什么坑
 - lessons/failure-qiankun子应用挂到包裹层导致样式被清空.md | high | 2026-09-12 | 子应用 Vue app.mount 直接挂 qiankun 包裹层会把 <qiankun-head> 内联的全部静态 CSS 删掉(只在线上/被 qianku… | NC-JS、qiankun、微前端

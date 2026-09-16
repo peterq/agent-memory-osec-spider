@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """
 Markdown → 简约 HTML 邮件 → cf-worker notify_admin 接口
 
@@ -16,12 +16,15 @@ Markdown → 简约 HTML 邮件 → cf-worker notify_admin 接口
 其它: --source 来源标识(缺省 agent-task), --url 接口地址, --no-prefix 主题不加级别前缀,
       --kv "键=值" 可重复, 渲染成顶部的元信息行(如 --kv 阶段=D --kv 进度=31%)。
 退出码: 0 发送成功(接口 2xx) / 2 参数错误 / 3 发送失败。
-依赖: python3-markdown(已装 3.5.2); 若缺失自动退化为 <pre> 包裹。
+依赖: python3-markdown(apt 包, 仅系统 /usr/bin/python3 有); 当前解释器缺失时自动改用
+      /usr/bin/python3 重新执行; 仍缺失则用内置精简渲染器(标题/列表/表格/粗体/代码), 并在 stderr 警告。
+      2026-09-16 事故: 曾因 `env python3` 命中 miniforge 的 python 而把原始 Markdown 当 <pre> 发出。
 """
 import argparse
 import datetime as dt
 import html
 import json
+import os
 import re
 import socket
 import sys
@@ -63,12 +66,139 @@ CODE_INLINE = "font-family:SFMono-Regular,Menlo,Consolas,monospace;font-size:12.
 CODE_IN_PRE = "font-family:SFMono-Regular,Menlo,Consolas,monospace;background:transparent;color:inherit;padding:0;"
 
 
+# 装有 markdown 模块的候选解释器(按优先级); 当前解释器缺模块时用它们重新执行
+MD_PYTHONS = ["/usr/bin/python3", "/usr/bin/python3.12", "/usr/bin/python3.11", "/usr/bin/python3.10"]
+
+
+def ensure_markdown_module() -> bool:
+    """确保能 import markdown: 本解释器没有就换有的解释器重跑(execv 不返回); 都没有返回 False。"""
+    try:
+        import markdown  # noqa: F401
+        return True
+    except ImportError:
+        pass
+    if os.environ.get("NOTIFY_NO_REEXEC") == "1":
+        return False
+    me = os.path.realpath(sys.executable)
+    for py in MD_PYTHONS:
+        if not os.path.exists(py) or os.path.realpath(py) == me:
+            continue
+        # 探测该解释器是否有 markdown 模块
+        if os.system("%s -c 'import markdown' 2>/dev/null" % py) == 0:
+            os.environ["NOTIFY_NO_REEXEC"] = "1"  # 防止循环重执行
+            os.execv(py, [py, os.path.abspath(__file__)] + sys.argv[1:])
+    return False
+
+
+def _inline_md(text: str) -> str:
+    """精简行内 Markdown: 转义 + 行内代码 / 粗体 / 斜体 / 链接。"""
+    parts = re.split(r"(`[^`]+`)", text)
+    out = []
+    for i, part in enumerate(parts):
+        if i % 2 == 1:
+            out.append("<code>%s</code>" % html.escape(part[1:-1]))
+            continue
+        t = html.escape(part)
+        t = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", t)
+        t = re.sub(r"(?<![\w*])\*(?!\s)(.+?)(?<!\s)\*(?![\w*])", r"<em>\1</em>", t)
+        t = re.sub(r"\[([^\]]+)\]\((https?://[^)\s]+)\)", r'<a href="\2">\1</a>', t)
+        out.append(t)
+    return "".join(out)
+
+
+def md_to_html_builtin(md: str) -> str:
+    """无 markdown 库时的兜底渲染器: 标题 / 无序有序列表 / 围栏代码块 / 表格 / 引用 / 分割线 / 段落。
+    不追求完整规范, 只保证汇报正文常用语法都能渲染成可读 HTML, 而不是整段原文。"""
+    lines = md.replace("\r\n", "\n").split("\n")
+    out, i, n = [], 0, len(lines)
+    para = []
+
+    def flush_para():
+        if para:
+            out.append("<p>%s</p>" % "<br>".join(_inline_md(x) for x in para))
+            para.clear()
+
+    while i < n:
+        ln = lines[i]
+        st = ln.strip()
+        if st.startswith("```"):
+            flush_para()
+            i += 1
+            buf = []
+            while i < n and not lines[i].strip().startswith("```"):
+                buf.append(lines[i])
+                i += 1
+            out.append("<pre><code>%s</code></pre>" % html.escape("\n".join(buf)))
+            i += 1
+            continue
+        m = re.match(r"^(#{1,6})\s+(.*?)\s*#*$", st)
+        if m:
+            flush_para()
+            out.append("<h%d>%s</h%d>" % (len(m.group(1)), _inline_md(m.group(2)), len(m.group(1))))
+            i += 1
+            continue
+        if re.match(r"^(-{3,}|\*{3,}|_{3,})$", st):
+            flush_para()
+            out.append("<hr>")
+            i += 1
+            continue
+        if st.startswith("|") and i + 1 < n and re.match(r"^\|?\s*:?-{2,}", lines[i + 1].strip()):
+            flush_para()
+            cells = lambda row: [c.strip() for c in row.strip().strip("|").split("|")]
+            head = cells(st)
+            i += 2
+            rows = []
+            while i < n and lines[i].strip().startswith("|"):
+                rows.append(cells(lines[i]))
+                i += 1
+            out.append("<table><thead><tr>%s</tr></thead><tbody>%s</tbody></table>" % (
+                "".join("<th>%s</th>" % _inline_md(c) for c in head),
+                "".join("<tr>%s</tr>" % "".join("<td>%s</td>" % _inline_md(c) for c in r) for r in rows)))
+            continue
+        m = re.match(r"^(\s*)([-*+]|\d+[.)])\s+(.*)$", ln)
+        if m:
+            flush_para()
+            tag = "ol" if m.group(2)[0].isdigit() else "ul"
+            items = []
+            while i < n:
+                m2 = re.match(r"^(\s*)([-*+]|\d+[.)])\s+(.*)$", lines[i])
+                if not m2:
+                    # 缩进续行并入上一项
+                    if items and lines[i].startswith("  ") and lines[i].strip():
+                        items[-1] += "<br>" + _inline_md(lines[i].strip())
+                        i += 1
+                        continue
+                    break
+                items.append(_inline_md(m2.group(3)))
+                i += 1
+            out.append("<%s>%s</%s>" % (tag, "".join("<li>%s</li>" % x for x in items), tag))
+            continue
+        if st.startswith(">"):
+            flush_para()
+            buf = []
+            while i < n and lines[i].strip().startswith(">"):
+                buf.append(lines[i].strip()[1:].strip())
+                i += 1
+            out.append("<blockquote><p>%s</p></blockquote>" % "<br>".join(_inline_md(x) for x in buf))
+            continue
+        if not st:
+            flush_para()
+            i += 1
+            continue
+        para.append(st)
+        i += 1
+    flush_para()
+    return "\n".join(out)
+
+
 def md_to_html(md: str) -> str:
-    """Markdown 渲染为 HTML 片段; markdown 库缺失时退化为 <pre>。"""
+    """Markdown 渲染为 HTML 片段; 优先 markdown 库, 缺失时用内置渲染器并警告(绝不再发原始 Markdown)。"""
     try:
         import markdown  # type: ignore
     except ImportError:
-        return "<pre>%s</pre>" % html.escape(md)
+        print("警告: 当前解释器 %s 无 markdown 模块, 使用内置精简渲染器; 建议 apt install python3-markdown 或用 /usr/bin/python3 运行"
+              % sys.executable, file=sys.stderr)
+        return md_to_html_builtin(md)
     return markdown.markdown(
         md,
         extensions=["tables", "fenced_code", "sane_lists", "nl2br"],
@@ -147,6 +277,7 @@ def send(url: str, subject: str, html_content: str, source: str) -> tuple:
 
 
 def main() -> int:
+    ensure_markdown_module()  # 缺 markdown 模块时换解释器重跑, 避免正文退化成原文
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("-s", "--subject", required=True, help="邮件主题(不含级别前缀)")
     src = ap.add_mutually_exclusive_group()

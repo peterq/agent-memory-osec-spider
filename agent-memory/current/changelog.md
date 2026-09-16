@@ -3,7 +3,7 @@ title: 项目变更记录（总览归档）
 type: knowledge
 status: active
 created_at: 2026-09-12T11:30:00+08:00
-updated_at: 2026-09-16T08:15:00+08:00
+updated_at: 2026-09-16T08:30:00+08:00
 priority: low
 keywords: [变更记录, changelog, 历史, 总览归档, 生命周期改造, 队列v2, queue-admin, 站点接入, 配置v2, GitHub OAuth]
 summary: 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪"
@@ -20,6 +20,7 @@ related:
 
 ## 2026-09-16
 
+- 08:30 修 `scripts/mail/notify.py` 邮件正文未渲染（`env python3` 命中 miniforge 无 markdown 模块，静默退化 `<pre>`）：shebang 固定系统 python + 自动换解释器 + 内置兜底渲染器 → `lessons/failure-notify脚本静默降级把原始Markdown发成邮件.md`
 - 08:05 **分享链接总览 + 搜索总览（SLS）+ p90 告警自动关闭匿名搜索** 上线（COMMON `f2f0881`、SPIDER `2e34623`/`65a1bf8`/`6cb69db`、API `2458a52`、NC-JS `dbbbbcc`）；上线首日修 SLS stage 分词误匹配 → `knowledge/architecture-search-admin.md`、`decisions/decision-2026-09-16-搜索p90告警关闭匿名搜索与总览数据源.md`、`lessons/failure-SLS字段检索按分词匹配误命中其他stage.md`、`sessions/2026/2026-09-16-分享链接与搜索总览纳入后台.md`
 
 ## 2026-09-15

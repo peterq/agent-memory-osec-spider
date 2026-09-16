@@ -36,7 +36,9 @@ scripts/mail/notify.py -s "主题" -f body.md --dry-run                # 不发,
 
 ## 实现说明
 
-- 渲染用 `python3-markdown`（3.5.2，扩展 tables/fenced_code/sane_lists/nl2br）；未安装时退化为 `<pre>`。
+- 渲染用 `python3-markdown`（apt 包 3.5.2，扩展 tables/fenced_code/sane_lists/nl2br），**只有系统 `/usr/bin/python3` 装了它**，miniforge/venv 的 python 没有。
+- 解释器兼容（2026-09-16 事故后加）：shebang 固定 `/usr/bin/python3`；若仍被无 markdown 模块的解释器执行（如 `python3 scripts/mail/notify.py` 且 PATH 首位是 miniforge），脚本自动用 `/usr/bin/python3` 重新执行；都不可用时改用内置精简渲染器（标题/列表/表格/粗体/行内代码/代码块/引用）并在 stderr 打警告。**任何情况下都不会再把原始 Markdown 当 `<pre>` 发出去**。
+- 调用建议：直接 `scripts/mail/notify.py ...`（走 shebang），不要写 `python3 scripts/mail/notify.py`；发送前可 `--preview x.html` 看一眼。
 - 邮件客户端普遍忽略 `<style>`，故用正则给常见标签补 `style=`（`TAG_STYLE` 表），要改样式改这张表。
 - 接口前有 Cloudflare，python-urllib 默认 UA 会被拒（403 `error code: 1010`），脚本已固定自定义 UA；换 HTTP 客户端时同样要带 UA。
 - 预览可用 `google-chrome --headless=new --screenshot=/tmp/x.png file:///tmp/x.html` 截图检查。
