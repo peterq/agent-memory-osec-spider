@@ -168,7 +168,7 @@ def _questions(fm: dict) -> list[str]:
 
 
 def render_boot(docs: list[Doc], kw: int = 3, sessions: bool = False, recent_sessions: int = 3, with_questions: bool = True,
-                summary_max: int = 80, max_questions: int = 3) -> str:
+                summary_max: int = 70, max_questions: int = 3) -> str:
     """评测(2026-09-12): 紧凑版(关键词 3 个、summary 截断)比全量更准, 噪声更少。archive/ 只给计数不列条目。
     2026-09-16: 启动包逼近 20,000 上限, questions 只给 critical/high 文件展示且最多 3 条; medium/low 的 questions 仍参与 search 检索。"""
     by_dir: dict[str, list[Doc]] = defaultdict(list)
