@@ -33,3 +33,5 @@
 - 🧪 集成分支断网 CI（`unshare -rn` + 各仓库 `scripts/ci.sh`）：四仓库全部通过。修了两处 CI 脚本问题（提交在 feat/ci 分支）：API `services/parallel-control` 测试依赖本地 redis 加入 test-denylist（`20b4055`）；STORAGE ci.sh 有 `testdata/storage_test.yaml` 时自动设置 `enfi_resource_storage_conf`（`670f28a`）。
 - 🔁 80 crawler-skeleton 验收：骨架/键名/启动跳过全量均通过；**不通过 4 站**——dyyjmax/fuxipan/kuakes/misoso 的 EngineConfig 漏传 `MinRequestInterval`，全局限速被静默关闭。已打回修复 + 补防回归测试。
 - ✅ 80 crawler-skeleton 返工完成：`3805fb0`（4 站补 MinRequestInterval；EngineConfig 抽纯函数 + 6 站防回归测试 `TestEngineConfigMinRequestIntervalNotDropped`）。主控复核测试通过，已合入集成分支。
+- ✅ 60 secrets 返工完成：COMMON `4585cc0` / SPIDER `bb9643c` / API `13ee22f` / STORAGE `10d5615`（5 处漏网已清、反查计数 0、pre-commit grep 兜底、FC 前置项写入 README）。
+- 🏁 2026-09-16 全部 9 条开发线 + 前端完成并验收；四仓库集成分支断网 CI 全绿；合并清单见 `95-merge-plan.md`。**等待用户确认合并。**
