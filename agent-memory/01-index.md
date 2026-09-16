@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-16T11:01:16+08:00
+updated_at: 2026-09-16T11:05:28+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -16,18 +16,18 @@ load: always
 定位到文件后 `mem.py outline <file>` 看章节，再 `mem.py body <file> --section <标题>` 只读需要的一段。
 维护方式：改目标文件 Front Matter（summary / keywords / questions），然后运行 `scripts/mem/mem.py index --write`。
 
-# agent-memory 启动包（脚本生成, 165 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
+# agent-memory 启动包（脚本生成, 167 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
 
 ## 根目录 (3)
 - 00-overview.md | crit | 2026-09-16 | 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件 | 网盘资源爬取、版权取证、COMMON
-- 03-project-context.md | crit | 2026-09-15 | 五个仓库（4 个 Go + 1 个前端）的磁盘路径、module 名、职责、相互依赖与 go.mod replace 现状 | 仓库、module、replace
+- 03-project-context.md | crit | 2026-09-16 | 五个仓库（4 个 Go + 1 个前端）的磁盘路径、module 名、职责、相互依赖与 go.mod replace 现状 | 仓库、module、replace
   ? 各仓库的职责分别是什么 / go.mod replace 现状是怎样的
 - 02-user-preferences.md | high | 2026-09-15 | 用户对语言、脚本沉淀、记忆维护、thinking 长度、敏感信息禁写、任务进度与异常必须及时邮件汇报（scripts/mail/notif… | 偏好、中文、邮件汇报
 
 ## current/ (6)
 - current/tasks.md | crit | 2026-09-16 | 仍在推进/阻塞/待决策：站点发现 5 站待立项、文档发现待批量执行、腾讯文档与十项提案待确认合并、P5 灰度爬坡、误删事故收尾；长尾在 t… | 任务、进度、待办
   ? 当前该做什么，有哪些待办
-- current/open-questions.md | high | 2026-09-16 | 待用户确认：灰度误回落（深翻页 500）防复发方案；站点发现第二轮立项；账号池续期 | 待确认、站点发现、lzpanx
+- current/open-questions.md | high | 2026-09-16 | 待用户确认：云端脚本迁移合并；灰度误回落防复发；站点发现立项；账号池续期 | 待确认、doc-cloud-spider、站点发现
   ? 当前有哪些待用户确认的问题
 - current/risks.md | high | 2026-09-16 | 影响开发与运维安全的已知风险点；最高 R9 lifecycle_checker 误删 115.6 万资源（修复已上线、恢复待决策） | lifecycle_checker误删、风险、阻塞
   ? 密钥、安全相关的风险在哪看
@@ -35,7 +35,7 @@ load: always
 - current/changelog.md | low | 2026-09-16 | 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪 | 变更记录、changelog、历史
 - current/tasks-backlog.md | low | 2026-09-16 | 从 tasks.md 拆出的低优先级/等人工/归档遗留事项：文档爬虫 FC 6 项人工步骤、归档任务遗留待办、P3 代码小修、2026-0… | backlog、P3、文档爬虫
 
-## decisions/ (20)
+## decisions/ (21)
 - decisions/decision-2026-09-02-停止磁力资源采集.md | crit | 2026-09-02 | 项目现只采集 4 种网盘类型资源，不再采集或入库磁力/BT 资源；存量索引与接口保留 | 磁力、torrent、magnet
 - decisions/decision-2026-09-03-全站扫描不在启动时触发.md | crit | 2026-09-03 | 全量扫描完成后把时间写进 redis；启动时检查该时间，有则跳过全量，只跑增量 | 全站扫描、全量、启动
 - decisions/decision-2026-09-04-资源索引生命周期改造方案.md | crit | 2026-09-12 | 用短周期(cur/prev)+长周期三索引与 MySQL 分表元数据替代单大索引的失效清理方式；两套方案共存、v3 接口切换、双写保回滚 | 生命周期、lifecycle、三索引
@@ -61,6 +61,8 @@ load: always
   ? cdp3 的扩展和会话数据放在哪、目录怎么约定 / 调用方用 profile= 时要注意什么
 - decisions/decision-2026-09-13-lint长度双阈值.md | high | 2026-09-13 | 超长改为 >12,000 触发、触发后必须压到 <6,000，9,000 起只提示；避免 8,000 单线反复报警 | lint、超长、双阈值
   ? lint 报超长该压到多少字，上限为什么不是 8000 / tasks.md 反复超长怎么办
+- decisions/decision-2026-09-16-云端文档脚本迁入NC-JS.md | high | 2026-09-16 | 云端文档脚本从个人仓库 userscripts 迁入 NC-JS apps/doc-cloud-spider(独立 vite 包), 产物… | doc-cloud-spider、userscripts、NC-JS
+  ? 云端文档爬虫脚本 doc-cloud.user.js 源码在哪个仓库, 为什么迁到 nc-js
 - decisions/decision-2026-09-16-搜索p90告警关闭匿名搜索与总览数据源.md | high | 2026-09-16 | 2026-09-16 用户需求裁定：搜索总览走 SLS(SQL 优先、拉日志降级)；p90 超阈值由网关 leader 巡检→邮件+共享 … | search_guard、匿名搜索、p90
   ? 匿名搜索为什么会被关闭, 谁关的, 怎么手动开放 / 搜索总览/Top 榜的数据从哪来, SLS SQL 不可用怎么办 / 分享链接总览的新增/检测/更新/失效各是什么口径
 - decisions/decision-2026-09-16-新站爬虫基于骨架集成分支开发.md | high | 2026-09-16 | 5 个新站爬虫各开 worktree `spider-wt-site-<短名>`，基于 integration/ten-proposals… | 新站爬虫、sitecrawler、integration/ten-proposals
@@ -112,14 +114,14 @@ load: always
 - lessons/failure-v3首页重合度受前缀展开分片彩票影响.md | high | 2026-09-12 | P5 对拍首页重合度 84%<95% 的两个根因——4% 坑位是 legacy 已删 lc 未删的死链（无反向失效同步）；其余是 matc… | P5、重合度、match_phrase_prefix
   ? P5 对拍为什么没通过，v3 首页和 v2 为什么不一样 / dfs 能不能让新旧索引排序一致 / 旧索引 url_check 删掉的文档新方案会同步失效吗
 - lessons/failure-前端环境默认值写死本地.md | high | 2026-09-16 | 子应用把 gwEndpoint 默认值写死成本地地址导致线上首访连错；默认值必须由 location.hostname 推导 | gwEndpoint、gwAddrs、defaultGwAddr
-- lessons/failure-品牌版Chrome禁用load-extension与userScripts二次授权.md | high | 2026-09-16 | 品牌版 Chrome 不吃 --load-extension 且 userScripts 需二次授权；改企业策略强装 + 预热 profi… | Chrome、load-extension、ExtensionSettings
+- lessons/failure-品牌版Chrome禁用load-extension与userScripts二次授权.md | high | 2026-09-16 | 品牌版 Chrome 不吃 --load-extension、userScripts 需二次授权；改企业策略强装 + 预热 profile | Chrome、load-extension、ExtensionSettings
   ? headless Chrome 加了 --load-extension 为什么看不到扩展 / 油猴脚本装上了但页面不执行是怎么回事
 - lessons/failure-把拆配置理解成拆文件.md | high | 2026-09-09 | 用户说"拆分"时先确认拆的是什么(代码结构/文件/进程); 用运行时断言或"文件里不写某项"来保证隔离, 通常说明方案层级选错了 | 需求理解、拆分对象、复述确认
 - lessons/failure-握手回包附加字段被传输层丢弃.md | high | 2026-09-16 | 网关握手 403 回包的附加字段被 RTC-gRPC 传输层丢弃；附加信息要走独立通道 | RtcTransport、cancelAllPendingCalls、UnaryCallResponse
 - lessons/failure-旁路能力初始化拖垮主流程.md | high | 2026-09-09 | 用会 log.Fatal/panic 的基础设施函数去初始化"可有可无"的监控, 会让每个子命令随配置缺失或 redis 抖动一起死; 以… | db.Redis、log.Fatal、panic
 - lessons/failure-本地代理池薄导致连接失败误判为站点拒绝.md | high | 2026-09-16 | 代理池薄时 code=0 像站点拒绝；直连复核 + ratetest 双出口对比，只有 403/429 才算限流 | 代理池、RemoteDisconnected、code=0
   ? 调研站点时经代理大量连接失败，怎么分辨是代理问题还是站点封锁 / 单 IP 吞吐怎么测才不被代理池噪声干扰
-- lessons/failure-注入脚本用consolelog回传被页面自身替换吞掉.md | high | 2026-09-16 | 页面自身代码会整体替换 window.console.log；注入脚本必须在最开头抓原生引用回传，否则只见一条 start 后沉默 | console.log、CDP、addScriptToEvaluateOnNewDocument
+- lessons/failure-注入脚本用consolelog回传被页面自身替换吞掉.md | high | 2026-09-16 | 页面会整体替换 window.console.log；注入脚本必须在最开头抓原生引用回传，否则只见一条 start | console.log、CDP、addScriptToEvaluateOnNewDocument
   ? CDP 注入脚本为什么只打出第一条日志就沉默 / 用 console.log 回传协议什么情况会全部收不到
 - lessons/failure-网关重启暴露ES集群已更换.md | high | 2026-09-12 | 线上网关自 1 月未重启，期间 ES 集群已更换；队列 v2 上线一重启就 panic。教训：长期不重启的服务会掩盖外部依赖变更，重启前先… | 网关、gateway、ES
   ? 网关起不来，报 no such host 怎么查 / 重启网关前要检查什么
@@ -144,7 +146,7 @@ load: always
 - lessons/failure-fc-chrome上线踩坑合集.md | medi | 2026-09-16 | fc-chrome 上线一天里踩到的镜像/策略/域名/NAS/超时等坑与各自修法的合集 | /json/list、pkill -f、docker exec
 - lessons/failure-端到端复用旧托管进程导致注入旧脚本.md | medi | 2026-09-16 | 2026-09-16 验证腾讯文档脚本时 fc-chrome 路径无任何回传、直连 CDP 却全通——根因是 e2e 脚本"端口有响应就复… | fc-chrome、端到端验证、缓存
 - lessons/success-cdp3策略强装扩展与NAS持久化profile.md | medi | 2026-09-16 | 品牌版 Chrome 用企业策略 force_installed 装扩展 + 预热 profile 存 NAS 复用登录态 | 扩展安装、ExtensionSettings、override_update_url
-- lessons/success-在线文档解析优先用页面自带接口.md | medi | 2026-09-16 | 解析 SPA 文档站优先 fetch 页面自带接口：performance 资源列表 + 全局变量 + bundle 搜路径常量找到分页接… | 在线文档、内部接口、performance.getEntriesByType
+- lessons/success-在线文档解析优先用页面自带接口.md | medi | 2026-09-16 | 解析 SPA 文档站优先 fetch 页面自带接口：performance 资源列表 + 全局变量 + bundle 搜路径常量，比啃 D… | 在线文档、内部接口、performance.getEntriesByType
 
 ## knowledge/ (26)
 - knowledge/architecture-系统总览.md | crit | 2026-09-02 | 从爬取到入库到检索的完整链路、各服务端口与中间件分工 | 架构、数据链路、网关
@@ -155,12 +157,12 @@ load: always
   ? 我要改查询接口/限流/搜索 / 后台怎么看 res_lc_* 分表数据
 - knowledge/architecture-es索引现状.md | high | 2026-09-12 | 阿里云 ES 6.7 单索引的分片/容量/父子文档结构/入库增速与读写清理链路代码位置，是生命周期改造方案的事实基线 | ES、Elasticsearch、6.7
   ? 生产 ES 有多大，怎么查生产 ES / 无 join 索引和 join 父子索引的区别
-- knowledge/architecture-fc-chrome文档爬虫上云.md | high | 2026-09-16 | nc-app-prod-cdp3（COMMON fc-chrome，Chrome 153 + Tampermonkey）的地址、/cdp3… | fc-chrome、nc-app-prod-cdp3、Tampermonkey
+- knowledge/architecture-fc-chrome文档爬虫上云.md | high | 2026-09-16 | nc-app-prod-cdp3（COMMON fc-chrome）的地址、/cdp3/* 路由、OSS 对象、镜像 tag、NAS 目录… | fc-chrome、nc-app-prod-cdp3、Tampermonkey
   ? 新版 FC Chrome 部署在哪、地址、健康检查 / cdp3 的 NAS 目录/extensions=/profile= 怎么用
 - knowledge/architecture-nc-js-qiankun与后台页面.md | high | 2026-09-16 | qiankun 主应用注册/子应用生命周期、本地开发流程；spiderAdmin 新增后台页面写法与落点（队列监控、资源生命周期各页、架构… | qiankun、微前端、spiderAdmin
   ? 后台前端加一个页面该怎么加 / qiankun 子应用 / apps.json 是什么 / 后台哪里看 res_lc_* 分表数据
 - knowledge/architecture-nc-js-网关对接.md | high | 2026-09-16 | NC-JS 后台前端与 SPIDER gateway 之间没有 REST，只有 WebRTC DataChannel 上自实现的 gRPC… | WebRTC、gRPC、protobuf-ts
-- knowledge/architecture-nc-js.md | high | 2026-09-12 | NC-JS 前端 mono repo 的仓库定位、工程栈、分包布局（admin/*、packages/*）与构建/OSS/Cloudfla… | NC-JS、前端、pnpm
+- knowledge/architecture-nc-js.md | high | 2026-09-16 | NC-JS 前端 mono repo 的仓库定位、工程栈、分包布局（admin/*、packages/*）与构建/OSS/Cloudfla… | NC-JS、前端、pnpm
 - knowledge/architecture-queue-admin.md | high | 2026-09-15 | 队列 v2 的监控管理系统：已并入网关进程的架构、端口、schema 解耦机制、抢主锁、巡检工具与已知数据缺口 | queue-admin、队列监控、QueueAdminRpc
   ? 队列告警怎么配，阈值多少，历史在哪看 / queue-admin 队列出问题怎么看，端口连不上怎么办
 - knowledge/architecture-search-admin.md | high | 2026-09-16 | 网关 search_admin 模块（SLS 搜索日志聚合、p90 巡检→邮件+关闭匿名搜索、redis 键约定、SQL/扫描双路径）与 … | search_admin、SearchAdminRpc、搜索总览
@@ -190,7 +192,7 @@ load: always
 - knowledge/domain-站点-misoso.md | medi | 2026-09-12 | misoso.cc 实际抓取域名是 melost.cn；sitemap 有"过期快照"与"越界文件假200"两个陷阱；爬虫已于 2026-… | misoso、melost.cn、影盘社
 - knowledge/reference-github-oauth配置.md | medi | 2026-09-16 | 两个 GitHub OAuth App（prod/dev）的名称、client_id 存放位置、管理页与回调地址约定 | GitHub OAuth App、client_id、redirect_uri
 
-## sessions/ (41 个, 仅列最近 3 个; 其余用 mem.py search 找)
+## sessions/ (42 个, 仅列最近 3 个; 其余用 mem.py search 找)
 - sessions/2026/2026-09-05-生命周期P4启动失败.md | high | 2026-09-16 | STORAGE 双机重部并核验首写继承生效, 用新工具补齐双写窗口 3551 条文档, P4 bootstrap 启动 10 分钟后因两个… | 生命周期、P4、bootstrap
 - sessions/2026/2026-09-05-生命周期P4演练.md | high | 2026-09-16 | 网关双机重部热修分支成功；缺陷 A/B 在生产验证通过；新发现 copy_child 轮询瓶颈，全量未启动 | P4、bootstrap、演练
 - sessions/2026/2026-09-03-并行开发6站爬虫.md | medi | 2026-09-16 | 用 4 并发子 Agent + worktree 接入 6 个站点，5 站验收通过并合并，haisou 因站点收紧未能验收 | 并行开发、worktree、6站爬虫

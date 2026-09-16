@@ -3,7 +3,7 @@ title: 项目总览
 type: overview
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-16T11:00:00+08:00
+updated_at: 2026-09-16T11:30:00+08:00
 priority: critical
 keywords: [网盘资源爬取, 版权取证, COMMON, SPIDER, STORAGE, API, NC-JS]
 summary: 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件
@@ -25,10 +25,10 @@ related:
 
 ## 2. 当前状态（最近 7 天；更早见 `current/changelog.md`）
 
-- 09-16 **站点发现第二轮：5 站满足**（duanjuso ≈150 万条优先/xiaozi/qileso/jsnoteclub/ddys），立项待裁定 → `current/open-questions.md`
-- 09-16 **腾讯文档解析已合入主分支并 push**（OSS 上传/前端发版待人工）→ `knowledge/domain-腾讯文档表格解析.md`；**十项提案待确认合并** → `agent-tasks/2026-09-16-ten-proposals/`
-- 09-16 **文档发现首轮完成**（六渠道+四平台免登录取正文脚本化，达标 29 篇，批量待执行）→ `procedures/workflow-文档发现.md`
-- 09-15 **P5 阶段 D 灰度爬坡中**；**xlLoadShare 修复上线，失效上报仍 dry run** → `current/tasks.md`
+- 09-16 **站点发现第二轮：5 站满足**（duanjuso 优先），立项待裁定 → `current/open-questions.md`
+- 09-16 **云端文档脚本已从个人仓库迁入 NC-JS `apps/doc-cloud-spider`，待确认合并** → `decisions/decision-2026-09-16-云端文档脚本迁入NC-JS.md`；**十项提案待确认合并** → `agent-tasks/2026-09-16-ten-proposals/`
+- 09-16 **文档发现首轮完成**（达标 29 篇，批量待执行）→ `procedures/workflow-文档发现.md`
+- 09-15 **P5 阶段 D 灰度爬坡中**；xlLoadShare 修复上线，失效上报仍 dry run → `current/tasks.md`
 - 09-12 **🔴 事故：lifecycle_checker 误删 115.5 万 quark/ali 资源**，修复已部署，重爬回库 ≈56% → `lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md`
 - 阻塞：无；风险见 `current/risks.md` R9。
 
@@ -42,7 +42,8 @@ related:
 - **爬虫一律走 IP 代理池**，禁止本机直连；本地链路与两个坑见 `lessons/success-本地代理池打通.md`。反爬站门槛：单 IP ≥10 条/分钟。
 - 保活 `keepalive` 只在 `CommitResLink` 返回 nil 时续期。→ `lessons/success-爬虫保活语义.md`
 - 全站扫描**禁止启动即全量**（redis 记完成时间跳过）；5 个存量爬虫待改造，`feikuai` 合规。→ `decisions/decision-2026-09-03-全站扫描不在启动时触发.md`
-- 部署用 SPIDER 的 `deploy.sh`（ssh+docker，主机 osec-res1/res2/resdb/restest/resngix/jenkins）；**现役服务只能用 `./deploy.sh ps` 判断**。→ `procedures/workflow-部署.md`
+- 云端文档脚本源码在 NC-JS `apps/doc-cloud-spider`（不再依赖个人仓库）；上传 OSS 前先本机端到端。
+- 部署用 SPIDER 的 `deploy.sh`（ssh+docker）；**现役服务只能用 `./deploy.sh ps` 判断**。→ `procedures/workflow-部署.md`
 - NC-JS 是后台前端（qiankun + spiderAdmin 等 3 子应用），**不调 API 仓库 HTTP**，走 WebRTC 上的 gRPC 直连网关 `:7542`；鉴权已改 GitHub OAuth，RtcToken 降为兜底。→ `knowledge/architecture-nc-js.md`
 
 ## 4. 用户与协作偏好

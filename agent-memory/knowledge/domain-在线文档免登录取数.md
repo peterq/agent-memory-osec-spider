@@ -3,7 +3,7 @@ title: 领域知识：四类在线文档的免登录取正文方式
 type: knowledge
 status: active
 created_at: 2026-09-16T09:30:00+08:00
-updated_at: 2026-09-16T09:30:00+08:00
+updated_at: 2026-09-16T11:20:00+08:00
 priority: high
 keywords: [腾讯文档, dop-api/opendoc, 金山文档, kdocs, 飞书, feishu, 石墨, shimo, lizard-api, 免登录, SSR, WPS JSAPI, workbook, related_sheet, tab]
 questions:
@@ -48,5 +48,5 @@ related:
 
 - curl 直接 302 到 `account.kdocs.cn/passport/singlesign?cb=...&f=c`，无匿名 HTTP 路径。
 - 本机 Chrome 打开 `/l/<id>`：页面经 singlesign 中转再回到 `/l/`，**要等地址稳定再注入 JS**，否则 `Inspected target navigated or closed`。
-- 就绪后 `window.__WPSENV__`（`office_type`: s/k=表格、w=文字；`file_info.file.modify_time` 秒级修改时间、`fname`），`window.APP.getWorksheets().getSheetsId()` 枚举子表，`sheet.getUsedRANGE / sheetData.prepareBlock / getRowValidBound / getCellString / getHyperlink` 逐行读（移植自 userscripts `src/cloud/kdocCloud.ts` 的 `copySheet`，含"连续 1000 行空则停"与每 500 行让出事件循环）。
+- 就绪后 `window.__WPSENV__`（`office_type`: s/k=表格、w=文字；`file_info.file.modify_time` 秒级修改时间、`fname`），`window.APP.getWorksheets().getSheetsId()` 枚举子表，`sheet.getUsedRANGE / sheetData.prepareBlock / getRowValidBound / getCellString / getHyperlink` 逐行读（移植自云端脚本 NC-JS `apps/doc-cloud-spider/src/sites/kdoc.ts`（原 userscripts `kdocCloud.ts`）的 `copySheet`，含"连续 1000 行空则停"与每 500 行让出事件循环）。
 - 匿名可读的表格会渲染但顶栏显示"立即登录"，不影响 JSAPI 读数；真正需登录的正文只有"邀请你协作查看文档 / 立即登录"几行文字。

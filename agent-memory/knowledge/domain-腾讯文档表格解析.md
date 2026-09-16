@@ -3,7 +3,7 @@ title: 领域知识：腾讯文档(docs.qq.com)表格的取数接口与两种数
 type: knowledge
 status: active
 created_at: 2026-09-16T08:55:00+08:00
-updated_at: 2026-09-16T10:50:00+08:00
+updated_at: 2026-09-16T11:20:00+08:00
 priority: high
 keywords: [腾讯文档, docs.qq.com, opendoc, dop-api, protobuf, dver, 文档爬虫, qqSheet, kdocCloud]
 questions:
@@ -19,7 +19,7 @@ related:
   - agent-memory/knowledge/architecture-fc-chrome文档爬虫上云.md
 ---
 
-# 腾讯文档表格解析（供云端脚本 `userscripts/src/cloud/kdocCloud.ts` 腾讯分支使用）
+# 腾讯文档表格解析（供云端脚本 NC-JS `apps/doc-cloud-spider/src/sites/qqdoc.ts` 使用；2026-09-16 前在个人仓库 userscripts）
 
 > 详细字段表、夹具与已验证的 Python 原型在 `agent-tasks/2026-09-16-qqdoc-sheet/`（`00-shared.md` §4、`ref/`、`fixtures/`），本文只记结论。接口为第三方未公开接口，结论有保质期。
 
@@ -45,7 +45,7 @@ related:
 
 ## 5. 实测规模与耗时 [事实 2026-09-16, 本机 fc-chrome + Chrome 149]
 - `DTFd3V3pzWmJFRWpY` 13 sheet / 9,131 链接、`DS25FQkJjbkZpUnZh`（格式 B）8 sheet / 8,345 链接，都在 150 s watchdog 内完成并分 17~19 批 result 回传；已删除文档 `DR0JQZVFvWm9qTm1z` 正确回传 `permanent:true`。
-- 验证工具：不起 Chrome 用 userscripts `node scripts/dev-vite-node.mjs scripts/qqdoc-verify.ts <url>`；本机端到端用记忆仓库 `scripts/docspider/e2e-local-fcchrome.sh`；"注入后无回传"先用 `scripts/docspider/cdp-inject-debug.py` 区分脚本问题与 fc-chrome 链路问题。
+- 验证工具：不起 Chrome 用 NC-JS `apps/doc-cloud-spider` 的 `pnpm verify:qqdoc <url>`；本机端到端用记忆仓库 `scripts/docspider/e2e-local-fcchrome.sh`；"注入后无回传"先用 `scripts/docspider/cdp-inject-debug.py` 区分脚本问题与 fc-chrome 链路问题。
 
 ## 6. 与现有链路的关系 [事实 2026-09-16 合入 master]
 云端脚本对所有文档 URL 都是同一份（`doc-cloud.user.js`，OSS 同时写旧名 `kdoc.user.js`），入口 `src/cloud/docCloud.ts` 按 hostname 分发到站点模块：`kdoc.ts` / `feishu.ts` / **`qqdoc.ts`**（`qqdocSite: SiteDef`，`watchdogMs` 150 s，纯解析逻辑在 `src/cloud/qqdoc/`：`protobufWire` / `qqSheetBlock` / `qqSheetJsonOps` / `qqOpendoc` / `linkAccumulator` / `qqdocMain.collectQqdoc`）。网关 `SubmitDoc` 不校验 URL、doc-crawler 只透传 `docType`（取 `qqSheet`），前端只改 `spiderAdmin/src/scheduler/spiderUtil.ts`（识别 `docs.qq.com/sheet/*`，URL 去掉 `?tab=`）。Node 侧批量验证：`node scripts/dev-vite-node.mjs scripts/qqdoc-verify.ts <url>`。

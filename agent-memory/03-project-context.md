@@ -3,7 +3,7 @@ title: 项目背景与仓库职责
 type: context
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-15T09:00:00+08:00
+updated_at: 2026-09-16T11:20:00+08:00
 priority: critical
 keywords: [仓库, module, replace, 目录结构, 依赖, 职责, NC-JS, 前端]
 summary: 五个仓库（4 个 Go + 1 个前端）的磁盘路径、module 名、职责、相互依赖与 go.mod replace 现状
@@ -71,6 +71,7 @@ related:
   网盘账号与转存下载、爬虫调度配置
 - 与后端的连接：**不走 REST**，用 WebRTC DataChannel 上自实现的 gRPC 直连 SPIDER gateway；
   proto TS 代码由 COMMON 的 `rpc/` 生成到 `packages/catalyst/contract/rpc/scheduler/proto/`
+- `apps/doc-cloud-spider`：fc-chrome 注入的云端文档爬虫脚本（金山/飞书/腾讯文档），独立 vite 构建目标，2026-09-16 从个人仓库 userscripts 迁入（分支待合并）
 - 详见 `knowledge/architecture-nc-js.md`
 
 ## 依赖关系

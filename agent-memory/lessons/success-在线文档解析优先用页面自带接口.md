@@ -3,12 +3,12 @@ title: 成功经验：解析在线文档优先调页面自带的内部接口，�
 type: lesson
 status: active
 created_at: 2026-09-16T09:00:00+08:00
-updated_at: 2026-09-16T09:00:00+08:00
+updated_at: 2026-09-16T11:30:00+08:00
 priority: medium
 keywords: [在线文档, 内部接口, performance.getEntriesByType, 飞书, 云端脚本, 调研方法]
 questions:
   - 接入新的在线文档站点先看什么、怎么找分页接口
-summary: 解析 SPA 文档站优先 fetch 页面自带接口：performance 资源列表 + 全局变量 + bundle 搜路径常量找到分页接口，比啃 DOM/redux 稳且快
+summary: 解析 SPA 文档站优先 fetch 页面自带接口：performance 资源列表 + 全局变量 + bundle 搜路径常量，比啃 DOM 稳
 load: on-demand
 related:
   - agent-memory/knowledge/domain-飞书文档解析.md

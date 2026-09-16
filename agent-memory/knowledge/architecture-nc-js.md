@@ -3,7 +3,7 @@ title: NC-JS 前端仓库架构（总览：分包布局/工程栈/构建部署�
 type: knowledge
 status: active
 created_at: 2026-09-04T12:56:00+08:00
-updated_at: 2026-09-12T11:25:00+08:00
+updated_at: 2026-09-16T11:20:00+08:00
 priority: high
 keywords:
   - NC-JS
@@ -85,6 +85,7 @@ related:
 | `packages/catalyst`（`@nc/catalyst`） | **核心共享库**：RPC 契约与传输、qiankun 接入、弹窗管理器、vue hooks、格式化工具。子应用几乎所有公共能力都来自这里 |
 | `packages/build`（`@nc/build`） | 自研 vite 插件 `mfe()`：dev 时写 `apps.json`、build 时改产物 URL 并上传 OSS |
 | `packages/fc-framework`、`fc-util`、`typescript-config`、`eslint-config` | 阿里云函数计算脚手架与共享配置，**与本项目无关** |
+| `apps/doc-cloud-spider`（`@nc/doc-cloud-spider`） | **云端文档爬虫油猴脚本**（金山/飞书/腾讯文档），fc-chrome 注入、doc-crawler 消费；独立 vite+monkey 构建，`pnpm build/test/verify:*/upload`，2026-09-16 从个人仓库迁入 → `decisions/decision-2026-09-16-云端文档脚本迁入NC-JS.md` |
 
 catalyst 关键目录：
 

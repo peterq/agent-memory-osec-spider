@@ -3,7 +3,7 @@ title: 飞书文档解析（docx / 多维表格）
 type: knowledge
 status: active
 created_at: 2026-09-16T09:00:00+08:00
-updated_at: 2026-09-16T09:00:00+08:00
+updated_at: 2026-09-16T11:20:00+08:00
 priority: high
 keywords: [飞书文档, feishu, 多维表格, bitable, docx, client_vars, clientvars, doc-cloud, 云端脚本]
 questions:
@@ -22,10 +22,10 @@ related:
 # 飞书文档解析（2026-09-16 接入）
 
 ## 代码位置 [事实]
-- 云端脚本 userscripts 仓库 `src/cloud/`：`docCloud.ts`（入口按域名分发）→ `runtime.ts`（nonce/回传/watchdog）→ `kdoc.ts` / `feishu.ts`（站点实现）；`feishuParse.ts` 纯函数带夹具单测。产物 `dist-cloud/doc-cloud.user.js`（旧名 `kdoc-cloud.user.js`），OSS `fc-chrome/userscripts/doc-cloud.user.js`，`upload:cloud` 同时写旧对象名 `kdoc.user.js`。
+- 云端脚本 NC-JS `apps/doc-cloud-spider/src/`（2026-09-16 从个人仓库 userscripts `src/cloud/` 迁入）：`main.ts`（入口按域名分发）→ `runtime.ts`（nonce/回传/watchdog）→ `sites/kdoc.ts` / `sites/feishu.ts`（站点实现）；`sites/feishuParse.ts` 纯函数带夹具单测（`sites/__fixtures__/`）。产物 `dist/doc-cloud.user.js`，OSS `fc-chrome/userscripts/doc-cloud.user.js`，`pnpm upload` 同时写旧对象名 `kdoc.user.js`。
 - SPIDER `services/doc_crawler` 默认 `userscript_url` 已指向 doc-cloud；docType 回传 `feishuDocx` / `feishuBitable`（金山仍 `kdocSheet`）。
 - NC-JS spiderAdmin `src/scheduler/spiderUtil.ts`：`DocType` 增加 `feishu`，正则只截到 token（丢 `?table=`）。
-- 验证工具：userscripts `scripts/verify_cloud.py <url>…`（本机调试 Chrome 9222 模拟 inject=1）。
+- 验证工具：该包 `pnpm verify:cloud <url>…`（`scripts/verify_cloud.py`，本机调试 Chrome 9222 模拟 inject=1）。
 
 ## 页面与接口 [事实，2026-09-16 抓包]
 - 公开分享文档**匿名可读**；页面自身接口带 cookie 直接 `fetch` 即可（同源）。非浏览器 UA 会被 302 到 `accounts.feishu.cn/accounts/page/login?…with_guest=1`，真实 Chrome 直接落地。

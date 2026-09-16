@@ -3,10 +3,10 @@ title: 失败经验：CDP 主世界注入脚本用 console.log 回传，被页�
 type: lesson
 status: active
 created_at: 2026-09-13T15:50:00+08:00
-updated_at: 2026-09-16T09:30:00+08:00
+updated_at: 2026-09-16T11:30:00+08:00
 priority: high
 keywords: [console.log, CDP, addScriptToEvaluateOnNewDocument, 主世界注入, fc-chrome, kdocCloud, DOC_SPIDER, 油猴, Tampermonkey, monkey-patch]
-summary: 页面自身代码会整体替换 window.console.log；注入脚本必须在最开头抓原生引用回传，否则只见一条 start 后沉默
+summary: 页面会整体替换 window.console.log；注入脚本必须在最开头抓原生引用回传，否则只见一条 start
 questions:
   - CDP 注入脚本为什么只打出第一条日志就沉默
   - 用 console.log 回传协议什么情况会全部收不到
@@ -21,7 +21,7 @@ related:
 `fc-chrome`（COMMON 仓库，阿里云 FC 自定义 Chrome 运行环境）支持用 CDP
 `Page.addScriptToEvaluateOnNewDocument` 在 `document-start` 阶段把一段脚本注入到主世界
 （`inject=1`，是"油猴自动装脚本"三条路径里唯一验证稳定的兜底通道）。脚本
-（`userscripts` 仓库 `src/cloud/kdocCloud.ts`）解析完金山文档表格后，通过约定的
+（现 NC-JS `apps/doc-cloud-spider/src/main.ts`，当时在个人仓库 userscripts `src/cloud/kdocCloud.ts`）解析完金山文档表格后，通过约定的
 `console.log('[[DOC_SPIDER]]' + JSON.stringify(payload))` 单行协议回传给上层
 （doc-crawler / 人工调试工具 `localverify`），上层用 CDP `Runtime.consoleAPICalled`
 事件订阅这条通道。
