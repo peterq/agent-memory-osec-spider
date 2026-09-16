@@ -3,16 +3,13 @@ title: SPIDER 爬虫通用骨架 sitecrawler(提案11 crawler-skeleton)
 type: knowledge
 status: active
 created_at: 2026-09-16T08:32:00+08:00
-updated_at: 2026-09-16T09:35:00+08:00
+updated_at: 2026-09-16T18:50:00+08:00
 priority: medium
 keywords: [sitecrawler, 爬虫骨架, WrapAwareSite, SiteCommonConfig]
 questions:
   - services/bbs 爬虫的通用骨架长什么样
   - 6 站迁移到 sitecrawler 后行为有没有变、redis 键有没有变
-  - misoso 的"整轮 wrap"全量语义是怎么塞进骨架的
-  - SiteCommonConfig 为什么不放在 sitecrawler 包里
-  - EngineConfig 漏传字段(MinRequestInterval 事故)怎么发现和防回归的
-summary: sitecrawler 骨架接口设计(含 WrapAwareSite)、6 站迁移前后 redis 键逐一对照、SiteCommonConfig 内嵌避坑、EngineConfig 漏字段事故与防回归测试
+summary: sitecrawler 骨架接口、6 站 redis 键对照、SiteCommonConfig 内嵌避坑、EngineConfig 必填字段核对表
 load: on-demand
 related:
   - agent-memory/decisions/decision-2026-09-03-全站扫描不在启动时触发.md

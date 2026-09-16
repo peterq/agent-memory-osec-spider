@@ -3,15 +3,13 @@ title: 密钥治理约定（测试凭据/配置敏感字段/gitleaks）
 type: procedure
 status: active
 created_at: 2026-09-16T10:40:00+08:00
-updated_at: 2026-09-16T11:20:00+08:00
+updated_at: 2026-09-16T18:50:00+08:00
 priority: medium
 keywords: [密钥治理, gitleaks, hide.json, 环境变量覆盖, secrets, AK/SK]
-summary: 2026-09-16 secrets 角色（提案9）在四仓库落地的密钥治理约定：测试凭据用 *.hide.json、配置敏感字段用 ${VAR} 环境变量覆盖、gitleaks 扫描三件套；含 gitleaks 自定义规则跟 [extend] 一起用会静默失效的坑
+summary: 四仓库密钥约定：测试凭据 *.hide.json、配置 ${VAR} 环境变量覆盖、gitleaks 三件套；自定义规则与 [extend] 同用会静默失效
 questions:
   - 测试文件需要真实账号凭据时该怎么写不进 git
   - 配置文件里的敏感字段怎么支持环境变量覆盖又不用改 yaml
-  - gitleaks 密钥扫描怎么在四仓库用
-  - gitleaks 自定义规则不生效怎么排查
 load: on-demand
 related:
   - agent-memory/current/risks.md

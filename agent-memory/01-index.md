@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-16T09:43:45+08:00
+updated_at: 2026-09-16T09:44:26+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -88,7 +88,7 @@ load: always
   ? 我要找新的资源站，怎么启动网站发现任务 / task site-discovery 是干什么的
 - procedures/checklist-仓库脚本清单.md | medi | 2026-09-16 | MEMORY 仓库 scripts/ 下可复用脚本一览（git-hooks 提交信息违禁词钩子、claude-rc systemd 托管 Remote Con… | scripts、邮件汇报、notify.py
 - procedures/troubleshooting-代理池总览无数据.md | medi | 2026-09-16 | 后台代理池页全 0 时三步定位：网关 dataSource → 上报侧是否部署 → tools 探针 | proxy-admin-check、代理池总览、proxy_admin
-- procedures/workflow-密钥治理约定.md | medi | 2026-09-16 | 2026-09-16 secrets 角色（提案9）在四仓库落地的密钥治理约定：测试凭据用 *.hide.json、配置敏感字段用 ${VAR} 环境变量覆盖… | 密钥治理、gitleaks、hide.json
+- procedures/workflow-密钥治理约定.md | medi | 2026-09-16 | 四仓库密钥约定：测试凭据 *.hide.json、配置 ${VAR} 环境变量覆盖、gitleaks 三件套；自定义规则与 [extend] 同用会静默失效 | 密钥治理、gitleaks、hide.json
 - procedures/workflow-带登录态的浏览器自动化.md | medi | 2026-09-12 | 如何启动/复用一个带登录态的调试Chrome并用CDP脚本驱动它, 含"默认profile会被安全策略拦截"的前提坑 | agent-browser、cdp.py、CDP
 - procedures/workflow-部署.md | medi | 2026-09-15 | SPIDER deploy.sh 的常规用法、服务到主机的映射方式、判断线上现役服务的唯一判据、新服务选主机方法、配置分发机制与安全提醒；历次上线（生命周期/… | auto模式、权限分类器、部署
 - procedures/workflow-部署-历史补充.md | low | 2026-09-12 | 历次生产上线（2026-09-05~09-10 生命周期 P3/P4 网关多次重部、代理池监控上线等）的一次性踩坑与已固化到 deploy.sh 的加固记录；… | 生命周期上线、网关重部、dryRun
@@ -121,7 +121,7 @@ load: always
 - lessons/failure-网关重启暴露ES集群已更换.md | high | 2026-09-12 | 线上网关自 1 月未重启，期间 ES 集群已更换；队列 v2 上线一重启就 panic。教训：长期不重启的服务会掩盖外部依赖变更，重启前先在目标主机验证配置里… | 网关、gateway、ES
   ? 网关起不来，报 no such host 怎么查 / 重启网关前要检查什么
 - lessons/failure-配置v2二进制无本地回落导致老容器重启即挂.md | high | 2026-09-16 | v2 二进制只认 OSS_CONFIG_URL/LOCAL_CONFIG_PATH 不读宿主机旧配置，老容器重启即挂；需本地回落 | 配置 v2、OSS_CONFIG_URL、config.yaml
-- lessons/failure-验收部署脚本时误连生产主机.md | high | 2026-09-16 | releases/health 子命令其实和 deploy/rollback 一样全部支持 --dry-run，验收时纯粹是漏加了参数、又用真实主机名，才误连… | deploy.sh、--dry-run、ssh 生产主机
+- lessons/failure-验收部署脚本时误连生产主机.md | high | 2026-09-16 | 验收 deploy.sh 时漏加 --dry-run 又用真实主机名，只读命令也真连上了生产；一律用假主机名或 --dry-run，没有只读例外 | deploy.sh、--dry-run、ssh 生产主机
   ? 验收/测试新写的部署脚本子命令要注意什么
 - lessons/patterns-并行多角色开发的验收与集成.md | high | 2026-09-16 | 9 条线 5 仓库并行改造的复盘：断网跑测试、假主机名、逐线验收、合并预演；验收抓到的典型漏项（漏传字段、按字段名盘点漏值、缺 dry-run、只迁一半） | 并行开发、子agent、验收
   ? 多个子 Agent 并行改多个仓库时怎么提前发现冲突、怎么保证测试不连生产 / 验收 Agent 最常抓到开发 Agent 哪些漏项
@@ -180,7 +180,7 @@ load: always
   ? xlLoadShare 失败率高是什么原因 / 怎么直接查一个迅雷分享的结构 / 迅雷失效上报 dry run 开关在哪
 - knowledge/domain-飞书文档解析.md | high | 2026-09-16 | 飞书 docx/多维表格解析依据：匿名可读、client_vars/clientvars 接口与分页、objType 映射、3000 行上限、登录墙与已删除判… | 飞书文档、feishu、多维表格
   ? 飞书文档的网盘链接用哪些接口解析、怎么分页 / 飞书 wiki 怎么区分 docx 与多维表格 / 飞书文档需登录/已删除时怎么处理
-- knowledge/architecture-spider-sitecrawler骨架.md | medi | 2026-09-16 | sitecrawler 骨架接口设计(含 WrapAwareSite)、6 站迁移前后 redis 键逐一对照、SiteCommonConfig 内嵌避坑、E… | sitecrawler、爬虫骨架、WrapAwareSite
+- knowledge/architecture-spider-sitecrawler骨架.md | medi | 2026-09-16 | sitecrawler 骨架接口、6 站 redis 键对照、SiteCommonConfig 内嵌避坑、EngineConfig 必填字段核对表 | sitecrawler、爬虫骨架、WrapAwareSite
 - knowledge/architecture-spider-队列约定.md | medi | 2026-09-16 | SPIDER 队列 v2 的固定队列名、去重键、消费者并发度与通用队列接口约定 | 队列、队列v2、resourcePreCheck
 - knowledge/concept-术语表.md | medi | 2026-09-12 | 代码里高频出现的缩写、字段含义与命名来历，避免误读 | 术语、bnd、valid
 - knowledge/domain-站点-kkpans.md | medi | 2026-09-12 | kkpans 的公开 JSON API、分页陷阱、数据规模与采集范围（只采 quark/xunlei/baidu 4295 条）；爬虫已于 2026-09-0… | kkpans、KK网盘、站点调研

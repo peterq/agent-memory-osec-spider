@@ -3,10 +3,10 @@ title: 失败经验：验收 deploy.sh 时忘加 --dry-run，用真实主机名�
 type: lesson
 status: active
 created_at: 2026-09-16T08:30:00+08:00
-updated_at: 2026-09-16T08:50:00+08:00
+updated_at: 2026-09-16T18:50:00+08:00
 priority: high
 keywords: [deploy.sh, --dry-run, ssh 生产主机, releases, health, 验收, osec-res1]
-summary: releases/health 子命令其实和 deploy/rollback 一样全部支持 --dry-run，验收时纯粹是漏加了参数、又用真实主机名，才误连生产主机；教训是验收一律用假主机名或加 --dry-run，没有只读例外
+summary: 验收 deploy.sh 时漏加 --dry-run 又用真实主机名，只读命令也真连上了生产；一律用假主机名或 --dry-run，没有只读例外
 questions:
   - 验收/测试新写的部署脚本子命令要注意什么
 load: on-demand
