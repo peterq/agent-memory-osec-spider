@@ -15,3 +15,6 @@
 - 📦 50 ci：COMMON `4b522ba` / SPIDER `bdedb7e` / API `94a6356` / STORAGE `a8a376f`，验收中。需用户在 GitHub 配 4 个 secret（COMMON_REPO_TOKEN / PAN_REPO_TOKEN / PAN_CLIENT_CORE_REPO_TOKEN / SPIDER_REPO_TOKEN）。COMMON 重生成了 `common_message.pb.go`、`rpc/storage/rpc.pb.go`（PPIO 描述符修正）——与 valid-unify/health-observe 的 COMMON 分支合并时留意生成物冲突。
 - 🔁 80 crawler-skeleton：`e9b4fe6` 只迁 kkpans/feikuai，已打回继续迁其余 4 站。
 - ⚠️ 经验：简报里让 ci 角色「跑 `go test ./...` 看连接失败找漏网测试」等于让测试真的连生产；正确做法是 `unshare -rn` 无网络环境下跑。已在验收要求中改正，收尾时提炼进 lessons。
+- 🔁 70 deploy-rollback 验收：功能通过；返工中（三库文档给 releases/health 标 [--dry-run]、未切 current 时回滚为空操作、API set -e 说明）。
+- 🔁 30 startup-selfcheck 返工完成：SPIDER `4ee99b1` / API `9d0f7da` / STORAGE `f803cdb`（metrics_addr 可配、README 降级语义），验收中。
+- 🔁 20 valid-unify 验收：主判定通过；返工中（quark 空 body 封禁判定回归；阿里 file_count==0 裁定判 Valid 并写入 README）。验收方发现 master 存量 `alipan_checker_test.go`/`xunlei_checker_test.go` 裸联网（ci 分支已加 live 标签）。
