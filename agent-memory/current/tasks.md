@@ -3,7 +3,7 @@ title: 当前任务与进度
 type: task
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-16T08:15:00+08:00
+updated_at: 2026-09-16T11:30:00+08:00
 priority: critical
 keywords: [任务, 进度, 待办, P5, 队列v2, queue-admin, 全站扫描, fullsweep, 文档爬虫, doc-crawler, FC Chrome, 凭据轮换, 站点发现, kkpans, misoso, 有效性检测]
 summary: 仍在推进/阻塞/待决策的事项（P0 误删事故重爬中；P5 顺序 阶段C→A'→阶段D）；已上线任务在 archive
@@ -101,6 +101,8 @@ related:
 - [ ] **P2** COMMON `Makefile` 的 protoc 目标已过期（路径与实际 proto 文件名不符，新增的 5 个 proto 未纳入）。
 
 ## 进行中
+
+- [ ] **P1 十项提案并行开发（2026-09-16 启动）**：用户裁定第 3~12 项全部开发（取证包/软删两项暂不做）。9 个开发子 Agent 并行，各自 worktree（`/home/peterq/dev/projects/1s/{common,spider,api,storage}-wt-<短名>`，分支 `feat/<短名>`：delete-breaker / valid-unify / startup-selfcheck / health-observe / ci / secrets / deploy-rollback / crawler-skeleton / search-config），NC-JS 前端待契约后派。**合并 master 前必须用户确认**。简报与合并顺序 `agent-tasks/2026-09-16-ten-proposals/`（`99-notes.md` 记重叠文件）。
 
 - [ ] **🔴 P0 lifecycle_checker 误删事故（09-12 22:17 发现）**——正本 SPIDER rollout §15；经验 `lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md`。
   - ✅ ①② 09-12 23:05~23:11 用户授权执行：止血 → 部署 `b888846` → 发现 bnd「违规」tooltip 误判 930 条再停 → 修复 `06ef50d` 重新部署（rollout §15.5）。`e16bd98`（errno 145 判失效）23:34 已部署；观察数据见 rollout §15.5。
