@@ -18,3 +18,4 @@
 - 🔁 70 deploy-rollback 验收：功能通过；返工中（三库文档给 releases/health 标 [--dry-run]、未切 current 时回滚为空操作、API set -e 说明）。
 - 🔁 30 startup-selfcheck 返工完成：SPIDER `4ee99b1` / API `9d0f7da` / STORAGE `f803cdb`（metrics_addr 可配、README 降级语义），验收中。
 - 🔁 20 valid-unify 验收：主判定通过；返工中（quark 空 body 封禁判定回归；阿里 file_count==0 裁定判 Valid 并写入 README）。验收方发现 master 存量 `alipan_checker_test.go`/`xunlei_checker_test.go` 裸联网（ci 分支已加 live 标签）。
+- ✅ 50 ci 验收通过（unshare -rn 断网下四仓库 ci.sh 全过；27 个 live 标签文件只改首行；make proto 生成物一致、PPIO 描述符清零）。合并注意：secrets 分支改两份下载测试内容时须保留 ci 加的首行标签。
