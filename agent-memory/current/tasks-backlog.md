@@ -3,7 +3,7 @@ title: 任务后备清单（低优先级 / 等人工事项）
 type: task
 status: active
 created_at: 2026-09-12T22:36:00+08:00
-updated_at: 2026-09-16T08:50:00+08:00
+updated_at: 2026-09-16T09:10:00+08:00
 priority: low
 keywords: [backlog, P3, 文档爬虫, FC, 人工事项]
 questions:
@@ -63,7 +63,7 @@ related:
 - [ ] **P2** 网关 `initEs()` 连不上 ES 直接 panic → 改重试+告警（待用户决定）。
 - [ ] **P2** res_scheduler 补 ListTask/队列长度观测 RPC；`devops_check_and_push_clear_queue`（4 台）仍直连 redis `Queue2`，可迁网关。
 - [ ] **P2** misoso：一轮全量真实耗时（影响 `SeenTTL`）、626 万去重键 redis 容量。dyyjmax 全量对账未实跑（≈1 h）、feikuai `ali-share` 分支无样本、kuakes ajax `code≠0` 语义、fuxipan `Crawl-delay:10` 归属歧义。
-- [ ] **P2** 夸克业务码 `41031` 补进 `osec-resource-api/services/valid/quark-api.go` 与 `osec-spider-go/services/gateway/valid/quark_checker.go` 的 `quarkInvalidCodes`（现靠文案兜底）。
-- [ ] **P2** 百度/迅雷 checker 仍是纯文案匹配，按 `lessons/success-网盘失效判定原则.md` 改造。
+- [x] **P2** 夸克业务码 `41031` 补进 `quarkInvalidCodes`——2026-09-16 valid-unify 角色随「有效性检测合并为一套实现」一并完成，码表现集中在 COMMON `enfi-resource-common/panvalid/codes.go`，SPIDER/API 两处旧 checker 已废弃改为薄适配层调用 panvalid（分支 `feat/valid-unify`，未合并 master，待用户确认）。
+- [x] **P2** 百度/迅雷 checker 文案匹配——百度 09-12 已改造(见上); 迅雷本来就已用业务码(未做过文案匹配), 2026-09-16 一并搬进 COMMON panvalid, 状态码表默认内置、SPIDER 侧注入 `services/xunlei-pan/share_status.go` 正本表保持同源。详见 `agent-tasks/2026-09-16-ten-proposals/20-valid-unify.md` 与 panvalid README。
 - [ ] **P2** COMMON `Makefile` protoc 目标过期（新增 5 个 proto 未纳入）。
 - [ ] **P2 代理池口径**：`keyword_upyunso/funletu/pansearch_me` 近 24 h ok=0，列为下线候选，看一次代理池再定。
