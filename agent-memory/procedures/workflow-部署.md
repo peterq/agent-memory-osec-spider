@@ -3,7 +3,7 @@ title: 生产部署流程
 type: procedure
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-16T12:25:00+08:00
+updated_at: 2026-09-16T14:50:00+08:00
 priority: medium
 keywords: [部署, deploy.sh, releases/current, rollback, 健康检查, auto模式, 权限分类器, docker, ssh, OSS 配置, 主机选型, 负载, 重启前检查]
 summary: SPIDER deploy.sh 用法（09-16 起 releases/current + rollback + 健康检查）、服务→主机映射、现役判据、选主机、配置分发与安全提醒
@@ -152,6 +152,9 @@ ssh osec-res1 'url=$(grep es_endpoint /home/pplabs/enfi-resource-storage/config.
 - `./deploy.sh`（无参）= 本地静态编译 → res1/res2 依次 `mv api-starter.old` + scp + `docker rm -f`/`run`；`./deploy.sh restart <1|2>` 只 `docker restart`；不上传任何配置。
 - 配置是**宿主机文件** `/home/pplabs/enfi-resource-api/config.yaml`，两台各自维护（内容略有差异，如 `spidergateway` 指向）。改配置 = 备份 + 追加/编辑 + restart；先 scp 回本地 `yaml.safe_load` 校验再重启。
 - 09-15 教训：把 `search_canary` 加到 OSS `config/resource/search/config.prod.yaml` 并重部两次都不生效——那是另一个服务的 11 行配置，已恢复原文。`uploadConfigToOss` 成功后会把本地文件覆盖成 `oss.last`，**恢复时不能拿 oss.last 当原文**，要从上传前的下载副本或去掉追加块重建。
+
+## 多会话并发部署（2026-09-16 事故）
+res1 `res-api` 14:29:12 被 `docker rm -f` 后没有重建，停服 5.5 min：同一工作树里另一 Claude 会话跑了 API `./deploy.sh`（本地 `api-starter` 14:29 新编译）。API/SPIDER 的 deploy.sh 都没有锁。**规则**：部署前 `ps -ef | grep deploy.sh` 确认没有并发部署；一台主机上的同一服务只由一个会话部署；发现容器"不存在"先 `sudo docker events --since <时间> --until $(date -u +%FT%TZ)` 看谁 destroy 的，再重建（API 重建命令见 §API 部署要点）。
 
 ## 安全提醒
 
