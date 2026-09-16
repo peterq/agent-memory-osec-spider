@@ -3,10 +3,10 @@ title: 未解决的问题
 type: question
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-15T08:20:00+08:00
+updated_at: 2026-09-16T10:40:00+08:00
 priority: high
-keywords: [待确认, xlLoadShare, 迅雷, 事故恢复, lifecycle_checker, P5, 灰度, 用户确认]
-summary: 当前无待用户确认问题（阶段 D 已按裁定启用；进度在 tasks.md）
+keywords: [待确认, 站点发现, lzpanx, robots, 立项, xlLoadShare, 事故恢复, 用户确认]
+summary: 待裁定：站点发现 5 站立项、lzpanx robots；转存账号池续期
 questions:
   - 当前有哪些待用户确认的问题
 load: on-demand
@@ -20,6 +20,15 @@ related:
 
 # 未解决的问题
 
+## 站点发现第二轮：立项与 robots 裁定（2026-09-16）
+
+正本 COMMON worktree `site-discovery-260916` 的 `site-discovery/history.md` 与 `260916/*.md`；摘要 `sessions/2026/2026-09-16-站点发现第二轮.md`。
+
+- [待确认] 5 个满足站（duanjuso.cc ≈150 万条 / pan.xiaozi.cc / qileso.com / jsnoteclub.com / ddys.io）选哪些立项走 `workflow-新站点调研` 出 PRD？建议先 duanjuso.cc（公开搜索接口 + 直连 46 条/分钟）。
+- [待确认] `www.lzpanx.com`（67.9 万条、其余 5 条达标）robots 声明 `Crawl-delay: 20`：是否遵守？遵守则单 IP 3 条/分钟需靠代理池多 IP 并行；不遵守则直接满足第 6 条。
+- [待确认] worktree 分支 `worktree-site-discovery-260916`（报告 + 工具改动）是否合并 master。
+
+用户答复：
 
 ## 转存下载链路账号池是否续期（2026-09-13 体检发现）
 

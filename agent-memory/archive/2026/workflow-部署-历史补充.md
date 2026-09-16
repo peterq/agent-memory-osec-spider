@@ -1,9 +1,9 @@
 ---
 title: 生产部署历史补充（历次上线踩坑记录）
 type: procedure
-status: active
+status: archived
 created_at: 2026-09-12T11:25:00+08:00
-updated_at: 2026-09-12T11:25:00+08:00
+updated_at: 2026-09-16T10:50:00+08:00
 priority: low
 keywords: [生命周期上线, 网关重部, dryRun, 代理池监控, scp -C, docker rm -f, worktree 部署, v2 搜索延迟, notify-admin, config.yaml 宿主机]
 summary: 历次生产上线（2026-09-05~09-10 生命周期 P3/P4 网关多次重部、代理池监控上线等）的一次性踩坑与已固化到 deploy.sh 的加固记录；常规部署流程见 workflow-部署.md，本文件仅供追溯具体事故细节，日常不需要读

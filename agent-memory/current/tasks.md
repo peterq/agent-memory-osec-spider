@@ -3,13 +3,12 @@ title: 当前任务与进度
 type: task
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-16T09:45:00+08:00
+updated_at: 2026-09-16T10:45:00+08:00
 priority: critical
-keywords: [任务, 进度, 待办, 腾讯文档, qqdoc, 十项提案, P5灰度, lifecycle_checker, xlLoadShare, 队列v2, 全站扫描]
-summary: 仍在推进/阻塞/待决策的事项：文档发现首轮完成待批量执行、腾讯文档表格解析已完成待用户确认合并、十项提案并行开发、P5 阶段 D 灰度爬坡、误删事故收尾；长尾待办在 tasks-backlog，历史原文在 archive
+keywords: [任务, 进度, 待办, 站点发现, 腾讯文档, qqdoc, 十项提案, P5灰度, lifecycle_checker, xlLoadShare, 队列v2, 全站扫描]
+summary: 仍在推进/阻塞/待决策：站点发现 5 站待立项、文档发现待批量执行、腾讯文档与十项提案待确认合并、P5 灰度爬坡、误删事故收尾；长尾在 tasks-backlog
 questions:
   - 当前该做什么，有哪些待办
-  - 腾讯文档解析任务进展到哪了
 load: on-demand
 related:
   - agent-memory/current/risks.md
@@ -22,6 +21,7 @@ related:
 
 | 任务 | 状态 | 阻塞/下一步 | 详情 |
 |---|---|---|---|
+| **站点发现第二轮** | 🟢 09-16 完成：98 候选→18 深挖→**5 站满足** | 用户裁定：5 站是否立项出 PRD（duanjuso 优先，≈150 万条）；lzpanx robots `Crawl-delay:20` 是否遵守；COMMON worktree `site-discovery-260916` 待确认合并 | `sessions/2026/2026-09-16-站点发现第二轮.md`，正本 COMMON `site-discovery/history.md` + `260916/` |
 | **腾讯文档(docs.qq.com)表格解析** | 🟢 09-16 开发/验收/端到端验证完成 | **等用户确认合并**（userscripts `feat/qqdoc-cloud`@200c450、nc-js `feat/qqdoc`@cc0bed1）→ 合并 → `pnpm upload:cloud` → 前端发版 | `agent-tasks/2026-09-16-qqdoc-sheet/`，知识 `knowledge/domain-腾讯文档表格解析.md` |
 | **文档发现任务（在线文档网盘链接）** | 🟢 09-16 首轮完成：渠道链路+工具打通，达标 29 篇 | 待执行批量抓取（HTTP 122 / 浏览器 591 / 重试 88，命令在 COMMON `site-discovery/doc-discovery/260916/报告.md` §4）；达标文档待提交文档爬虫 | `procedures/workflow-文档发现.md`、`sessions/2026/2026-09-16-文档发现任务.md` |
 | **十项提案并行开发** | 🟡 09-16 启动，9 个 worktree | 合并 master 前必须用户确认 | `agent-tasks/2026-09-16-ten-proposals/`（`99-notes.md` 记重叠文件） |
@@ -35,6 +35,7 @@ related:
 
 ## 进行中
 
+- [ ] **站点发现第二轮（09-16 完成，待用户裁定与合并）**：COMMON worktree `.claude/worktrees/site-discovery-260916`（分支 `worktree-site-discovery-260916`，已提交未合并）含 18 份报告、history 更新、工具改动（`ratetest.py`/`fetchraw.py` 新增，`sitescan.py` lastmod 统计，`panlink.py` 解 atob）。满足：duanjuso.cc、pan.xiaozi.cc、qileso.com、jsnoteclub.com、ddys.io；待裁定 lzpanx.com。下一步：用户选站 → `workflow-新站点调研` 出 PRD；1~2 周后复核 xiaojiwo.top。
 - [x] **飞书文档解析接入（2026-09-16 已合并）**：[用户裁定 09-16 合并] userscripts master `bf4c36d`、NC-JS main `39c145a`、SPIDER master `bc4b25f` 均已 fast-forward 合入（未 push），worktree 已删。**待人工**：userscripts `pnpm build:cloud && pnpm upload:cloud`（OSS doc-cloud.user.js + 旧名 kdoc.user.js）、spiderAdmin 发布、三仓库 push；PC 端油猴调度器仍不过滤飞书任务。→ `knowledge/domain-飞书文档解析.md`
 
 - [ ] **P1 腾讯文档表格解析（09-16，待用户确认合并）**：方案 = 同一份云端脚本（userscripts `src/cloud/kdocCloud.ts`）按 host 分派，页面内同源 fetch `dop-api/opendoc` 解两种格式（3.0.0 protobuf 区块 / 2.x JSON op），前端 `spiderUtil.ts` 识别 `docs.qq.com/sheet/*`；网关/doc-crawler/契约不改。工作树 `userscripts-wt-qqdoc`(`feat/qqdoc-cloud`)、`ncjs-wt-qqdoc`(`feat/qqdoc`)。上线动作：合并 → `pnpm build:cloud && pnpm upload:cloud`（覆盖线上 `fc-chrome/userscripts/kdoc.user.js`）→ 前端发版。本地 fc-chrome 端到端方法见 `procedures/workflow-fc-chrome上线.md`。

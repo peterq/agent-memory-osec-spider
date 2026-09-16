@@ -19,6 +19,7 @@ related:
 > **原文叙述在各自的 session / decision 文件里**，本文件不复制正文。需要细节就按指针读那一个文件。
 
 ## 2026-09-16
+- 10:45 **站点发现第二轮**（COMMON worktree `site-discovery-260916`）：98 候选→18 深挖→5 站满足（duanjuso/xiaozi/qileso/jsnoteclub/ddys）+ lzpanx 待裁定；新增 `ratetest.py`/`fetchraw.py`，`sitescan` lastmod 统计、`panlink` 解 atob → `sessions/2026/2026-09-16-站点发现第二轮.md`、`lessons/failure-本地代理池薄导致连接失败误判为站点拒绝.md`
 - 10:10 **文档发现任务首轮**：逆向 link3 匿名接口、四平台免登录取正文、六渠道脚本化（COMMON `site-discovery/tools/docfind/`），候选 2042→达标 29 篇，批量任务输出为待执行清单 → `sessions/2026/2026-09-16-文档发现任务.md`、`procedures/workflow-文档发现.md`、`knowledge/domain-在线文档免登录取数.md`、`lessons/failure-link3接口按IP限流直连百次即429.md`
 - 十项提案（第 3~12 项）9 条线并行开发 + 逐线验收 + 集成预演完成，待用户确认合并；两个新脚本 `scripts/dev/{new_worktree_all,integration_check}.sh` → `sessions/2026/2026-09-16-十项提案并行开发.md`、`lessons/patterns-并行多角色开发的验收与集成.md`、`procedures/workflow-并行多任务开发与合并预演.md`
 - 文档爬虫新增腾讯文档表格解析（云端脚本双格式 + 前端识别），本地端到端 6 文档全通，待用户确认合并 → `sessions/2026/2026-09-16-腾讯文档表格解析.md`、`knowledge/domain-腾讯文档表格解析.md`
