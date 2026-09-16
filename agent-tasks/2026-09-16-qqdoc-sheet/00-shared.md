@@ -82,15 +82,29 @@ root
        type 18 = 单元格数据, payload 在 f19:
          ├ f3 {f1: sheetId, ...}
          ├ f4 样式(忽略)
-         ├ f5 共享字符串表(顺序即索引, 两张表分开计数):
+         ├ f5 共享字符串/数字表(顺序即索引, 三张表分开计数, 各自独立从 0 计数):
          │    repeated f1 {f1: 纯文本}                         → plain[]
          │    repeated f2 {repeated f3 run{ f3{f1: 文本}, f7{f11{f1: 超链接 url}} }} → rich[]
+         │    repeated f3 {f1: fixed64 double}                 → numbers[]（2026-09-16 追加, 见下）
          └ repeated f6 单元格 {f1: row(0 省略), f2: col(0 省略), f3 值{f1: 类型, f2{f1: 索引(0 省略)}, f4 样式}}
                类型 4 → plain[索引];  类型 6 → rich[索引](各 run 文本拼接, 超链接 url 若不含于文本则追加 "(url)")
+               类型 2 → numbers[索引], 输出 String(n)（整数不带 .0; 2026-09-16 追加, 提取码/年份/
+                 序号等纯数字单元格走这里, 之前误判成"其他类型"计入 unknownCellTypes, 见下方实测说明）
                类型 0 → 空(只有样式);  其他类型: 若含 fixed64 双精度按数字输出, 否则忽略
 ```
 - varint/长度前缀均为标准 protobuf；wire type 0/1/2/5 都会出现，遍历器必须处理 fixed64/fixed32。
 - 判断某个 length-delimited 字段是"子消息"还是"字符串"：先尝试按 protobuf 解析且字段号全在 1~100 内视为子消息，否则按 UTF-8 字符串——**只用于兜底扫描**；主路径按上表固定路径取值，不靠猜。
+- 【2026-09-16 追加】数字单元格实测: `https://docs.qq.com/sheet/DYU5Idmdid2JjVmxj`(12 sheet) 曾把
+  全部数字单元格算进 unknownCellTypes(20356), 根因是漏了类型 2(数字)分支——单元格值消息是
+  `f3{f1=2, f2{f1=索引}}`, 索引指向的不是直接内嵌的 fixed64, 而是 f5 里第三种条目
+  `repeated f3 {f1: fixed64 double}`(与 plain/rich 用法一致, 都是"索引进共享表")。夹具
+  `fixtures/doc4-DYU5Idmdid2JjVmxj-tab-BB08J2-rows0-1481-numeric-cells.js`(1482 行, f5 子字段
+  分布 f1(plain)=2920 / f2(rich)=3 / f3(numbers)=2718, 类型 2 单元格 2846 个)对账通过, 但发现
+  其中 129 个类型 2 单元格引用的索引超出 numbers[] 实际收集到的条目数(已核实: 该区块只有一个
+  type=18 区段, 没有别的区段携带补充数字表, 也不是解析遗漏)——判断是文档编辑历史里的悬空引用
+  (id 已分配但对应数值后来被覆盖/清空)。处理方式: 索引越界时按空单元格处理、不计入
+  unknownCellTypes(该计数器只用来发现"没见过的单元格类型", 不是"类型认识但取不到值")；
+  真正的数字条目本身缺 f1(fixed64) 才计入。
 - 对账结论（`ref/qqextract.py` 跑夹具）：doc1 BB08J2 1024 行 / **968** 个唯一分享 id；doc1 fuv7gd 65 行 / **64**；doc2 7f9s70 22 行 / **21**。
   原始字节正则扫描多出来的全是 `…h` 结尾的伪 id（URL 后紧跟的 protobuf 长度字节 0x68），结构化提取无遗漏。
 
