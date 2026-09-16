@@ -3,7 +3,7 @@ title: 项目变更记录（总览归档）
 type: knowledge
 status: active
 created_at: 2026-09-12T11:30:00+08:00
-updated_at: 2026-09-16T10:50:00+08:00
+updated_at: 2026-09-16T10:55:00+08:00
 priority: low
 keywords: [变更记录, changelog, 历史, 总览归档, 生命周期改造, 队列v2, queue-admin, 站点接入, 配置v2, GitHub OAuth]
 summary: 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪"
@@ -22,7 +22,7 @@ related:
 - 10:45 **站点发现第二轮**（COMMON worktree `site-discovery-260916`）：98 候选→18 深挖→5 站满足（duanjuso/xiaozi/qileso/jsnoteclub/ddys）+ lzpanx 待裁定；新增 `ratetest.py`/`fetchraw.py`，`sitescan` lastmod 统计、`panlink` 解 atob → `sessions/2026/2026-09-16-站点发现第二轮.md`、`lessons/failure-本地代理池薄导致连接失败误判为站点拒绝.md`
 - 10:10 **文档发现任务首轮**：逆向 link3 匿名接口、四平台免登录取正文、六渠道脚本化（COMMON `site-discovery/tools/docfind/`），候选 2042→达标 29 篇，批量任务输出为待执行清单 → `sessions/2026/2026-09-16-文档发现任务.md`、`procedures/workflow-文档发现.md`、`knowledge/domain-在线文档免登录取数.md`、`lessons/failure-link3接口按IP限流直连百次即429.md`
 - 十项提案（第 3~12 项）9 条线并行开发 + 逐线验收 + 集成预演完成，待用户确认合并；两个新脚本 `scripts/dev/{new_worktree_all,integration_check}.sh` → `sessions/2026/2026-09-16-十项提案并行开发.md`、`lessons/patterns-并行多角色开发的验收与集成.md`、`procedures/workflow-并行多任务开发与合并预演.md`
-- 文档爬虫新增腾讯文档表格解析（云端脚本双格式 + 前端识别），本地端到端 6 文档全通；10:45 用户确认后重新集成到飞书重构后的 runtime/站点结构并合入 master/main（本地），push/OSS 上传/前端发版待人工 → `sessions/2026/2026-09-16-腾讯文档表格解析.md`、`knowledge/domain-腾讯文档表格解析.md`
+- 文档爬虫新增腾讯文档表格解析（云端脚本双格式 + 前端识别），本地端到端 6 文档全通；10:45 用户确认后重新集成到飞书重构后的 runtime/站点结构并合入 master/main 并 push，OSS 上传/前端发版待人工 → `sessions/2026/2026-09-16-腾讯文档表格解析.md`、`knowledge/domain-腾讯文档表格解析.md`
 
 - 2026-09-16 飞书文档解析接入开发完成并经用户确认合入三仓库主分支（docx + 多维表格，云端脚本拆 runtime/站点，14 条真实文档验证；OSS 上传与前端发布待人工） → `sessions/2026/2026-09-16-飞书文档解析接入.md`、`knowledge/domain-飞书文档解析.md`
 - 08:30 修 `scripts/mail/notify.py` 邮件正文未渲染（`env python3` 命中 miniforge 无 markdown 模块，静默退化 `<pre>`）：shebang 固定系统 python + 自动换解释器 + 内置兜底渲染器 → `lessons/failure-notify脚本静默降级把原始Markdown发成邮件.md`
