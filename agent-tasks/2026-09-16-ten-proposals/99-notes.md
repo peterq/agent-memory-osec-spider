@@ -20,3 +20,4 @@
 - 🔁 20 valid-unify 验收：主判定通过；返工中（quark 空 body 封禁判定回归；阿里 file_count==0 裁定判 Valid 并写入 README）。验收方发现 master 存量 `alipan_checker_test.go`/`xunlei_checker_test.go` 裸联网（ci 分支已加 live 标签）。
 - ✅ 50 ci 验收通过（unshare -rn 断网下四仓库 ci.sh 全过；27 个 live 标签文件只改首行；make proto 生成物一致、PPIO 描述符清零）。合并注意：secrets 分支改两份下载测试内容时须保留 ci 加的首行标签。
 - ✅ 70 deploy-rollback 返工完成：SPIDER `05191ec` / API `2fd598e` / STORAGE `ea772c8`；主控复核三库 deploy_lib.sh md5 一致、deploy_test.sh 通过、文档已统一「所有子命令支持 --dry-run」。合并后仍需用户在 osec-restest 演练。
+- 🔁 10 delete-breaker：COMMON `2eff050`+`cc95ab0` / SPIDER `b5304b2` / API `9a337b6`，补 dry_run 观察模式中，之后验收。阈值缺省 600s/2000 条/50%/最少 200 样本，需上线后校准。
