@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-16T08:29:06+08:00
+updated_at: 2026-09-16T08:29:48+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -62,7 +62,7 @@ load: always
   ? report/likes/dislikes/views 这些接口还要不要做 v3 / 为什么 v3 detail 不能调 addViews / 哪些接口不允许频繁 update ES 文档
 - decisions/decision-2026-09-12-阶段D改由API侧自动灰度分流.md | high | 2026-09-15 | 用户 09-12 裁定：API 在 /api/v2/search 服务端按比例走 v3，30% 起、无异常每 100 个 v3 请求 +1% 到全量，异常自动… | 阶段D、灰度、分流
   ? 搜索流量怎么从 v2 切到 v3，谁来切 / search_canary 是什么，比例怎么涨、异常怎么回滚
-- decisions/decision-2026-09-13-cdp3持久化会话与扩展机制.md | high | 2026-09-13 | 2026-09-13 用户要求 cdp3 挂 NAS（锁心跳 2 s/6 s 过期/被占不等待直接 409）：CDP3DATA=/mnt/nas/apps/c… | cdp3、CDP3DATA、CDP3TEMP
+- decisions/decision-2026-09-13-cdp3持久化会话与扩展机制.md | high | 2026-09-16 | cdp3 的 profile=<ns>/<name> 持久化会话（NAS 锁/tar 写回/须 Browser.close）与 extensions= 按 U… | cdp3、CDP3DATA、CDP3TEMP
   ? cdp3 的扩展和会话数据放在哪、目录怎么约定 / 调用方用 profile= 时要注意什么
 - decisions/decision-2026-09-13-lint长度双阈值.md | high | 2026-09-13 | 超长改为 >12,000 触发、触发后必须压到 <6,000，9,000 起只提示；避免 8,000 单线反复报警 | lint、超长、双阈值
   ? lint 报超长该压到多少字，上限为什么不是 8000 / tasks.md 反复超长怎么办
@@ -114,7 +114,7 @@ load: always
 - lessons/failure-v3首页重合度受前缀展开分片彩票影响.md | high | 2026-09-12 | P5 对拍首页重合度 84%<95% 的两个根因——4% 坑位是 legacy 已删 lc 未删的死链（无反向失效同步）；其余是 match_phrase_p… | P5、重合度、match_phrase_prefix
   ? P5 对拍为什么没通过，v3 首页和 v2 为什么不一样 / dfs 能不能让新旧索引排序一致 / 旧索引 url_check 删掉的文档新方案会同步失效吗
 - lessons/failure-前端环境默认值写死本地.md | high | 2026-09-08 | 子应用把 useLocalStorage('gwEndpoint') 默认值写死成 gwAddrs[1](本地 127.0.0.1)，导致生产首次访问卡死；改… | gwEndpoint、gwAddrs、defaultGwAddr
-- lessons/failure-品牌版Chrome禁用load-extension与userScripts二次授权.md | high | 2026-09-15 | 2026-09-13 fc-chrome 上线实测：品牌版 Chrome 137+ 忽略 --load-extension，改企业策略 force_insta… | Chrome、load-extension、ExtensionSettings
+- lessons/failure-品牌版Chrome禁用load-extension与userScripts二次授权.md | high | 2026-09-16 | 品牌版 Chrome 不吃 --load-extension、Chrome 138+ userScripts 需二次授权、@match 漏 SSO 首跳域名—… | Chrome、load-extension、ExtensionSettings
   ? headless Chrome 加了 --load-extension 为什么看不到扩展 / 油猴脚本装上了但页面不执行是怎么回事
 - lessons/failure-把拆配置理解成拆文件.md | high | 2026-09-09 | 用户说"拆分"时先确认拆的是什么(代码结构/文件/进程); 用运行时断言或"文件里不写某项"来保证隔离, 通常说明方案层级选错了 | 需求理解、拆分对象、复述确认
 - lessons/failure-握手回包附加字段被传输层丢弃.md | high | 2026-09-12 | 网关握手 403 回包的 needLogin/githubClientId 等附加字段被 RTC-gRPC 错误通道丢弃，结构化信息要走专门回调 | RtcTransport、cancelAllPendingCalls、UnaryCallResponse
@@ -140,9 +140,9 @@ load: always
 - lessons/success-爬虫联网集成测试.md | high | 2026-09-12 | 用「假 committer + 独立 redis 键前缀 + 环境变量开关」让爬虫的联网测试可重复运行且不污染线上 | 集成测试、爬虫、联网测试
   ? 我要给爬虫写测试，联网测试怎么不污染线上
 - lessons/success-网盘失效判定原则.md | high | 2026-09-12 | 靠 message 文案匹配判定网盘失效必然随站点文案漂移而失灵，应改用业务码并把未知响应升级为 error | 失效判定、业务码、限流
-- lessons/failure-fc-chrome上线踩坑合集.md | medi | 2026-09-15 | 2026-09-13 fc-chrome 上线踩到的 5 个具体坑与对策：Chrome /json/list 是 JSON 数组不是 {targetInfos… | /json/list、pkill -f、docker exec
+- lessons/failure-fc-chrome上线踩坑合集.md | medi | 2026-09-16 | fc-chrome 上线一天里踩到的镜像/策略/域名/NAS/超时等坑与各自修法的合集 | /json/list、pkill -f、docker exec
   ? seedprep 为什么等不到扩展 target / FC 上 WebSocket 120 s 就断是为什么
-- lessons/success-cdp3策略强装扩展与NAS持久化profile.md | medi | 2026-09-15 | 2026-09-13 fc-chrome 实测可行的扩展启用链路（解包目录→chrome --pack-extension→本机 /cdp3-ext upda… | 扩展安装、ExtensionSettings、override_update_url
+- lessons/success-cdp3策略强装扩展与NAS持久化profile.md | medi | 2026-09-16 | 品牌版 Chrome 用企业策略 force_installed 装扩展 + 带外预热 profile 种子 + NAS tar 持久化会话的可行做法与关键参数 | 扩展安装、ExtensionSettings、override_update_url
   ? 怎么让 headless Chrome 装 NAS 上的自定义扩展 / 策略强装的扩展改了版本为什么不更新
 
 ## knowledge/ (23)
@@ -155,7 +155,7 @@ load: always
   ? 我要改查询接口/限流/搜索 / 后台怎么看 res_lc_* 分表数据
 - knowledge/architecture-es索引现状.md | high | 2026-09-12 | 阿里云 ES 6.7 单索引的分片/容量/父子文档结构/入库增速与读写清理链路代码位置，是生命周期改造方案的事实基线 | ES、Elasticsearch、6.7
   ? 生产 ES 有多大，怎么查生产 ES / 无 join 索引和 join 父子索引的区别
-- knowledge/architecture-fc-chrome文档爬虫上云.md | high | 2026-09-15 | 2026-09-13 上线的 nc-app-prod-cdp3（14:30 起挂 NAS：CDP3DATA/CDP3TEMP、extensions=、prof… | fc-chrome、nc-app-prod-cdp3、Tampermonkey
+- knowledge/architecture-fc-chrome文档爬虫上云.md | high | 2026-09-16 | 线上 nc-app-prod-cdp3（COMMON fc-chrome，Chrome 153+Tampermonkey）的地址、/cdp3/* 路由、OSS… | fc-chrome、nc-app-prod-cdp3、Tampermonkey
   ? 新版 FC Chrome 部署在哪、地址、健康检查 / cdp3 的 NAS 目录/extensions=/profile= 怎么用
 - knowledge/architecture-nc-js-qiankun与后台页面.md | high | 2026-09-16 | qiankun 主应用注册/子应用生命周期、本地开发流程；spiderAdmin 新增后台页面写法与落点（队列监控、资源生命周期各页、架构图页、res_lc … | qiankun、微前端、spiderAdmin
   ? 后台前端加一个页面该怎么加 / qiankun 子应用 / apps.json 是什么 / 后台哪里看 res_lc_* 分表数据

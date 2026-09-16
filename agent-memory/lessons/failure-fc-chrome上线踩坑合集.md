@@ -3,13 +3,13 @@ title: 失败经验合集：fc-chrome 上线当天的 5 个小坑（/json/list �
 type: lesson
 status: active
 created_at: 2026-09-13T11:00:00+08:00
-updated_at: 2026-09-15T15:50:00+08:00
+updated_at: 2026-09-16T09:00:00+08:00
 priority: medium
 keywords: [/json/list, pkill -f, docker exec, FC timeout, WebSocket, fc3-domain certConfig, 镜像来源, ACR]
 questions:
   - seedprep 为什么等不到扩展 target
   - FC 上 WebSocket 120 s 就断是为什么
-summary: 2026-09-13 fc-chrome 上线踩到的 5 个具体坑与对策：Chrome /json/list 是 JSON 数组不是 {targetInfos}；docker exec 里 pkill -f <字样> 会杀掉自己的 bash；叠层用的 ACR :base 与本地 :base 不是同一版本；FC 函数 timeout 会切断长 WebSocket；fc3-domain 组件 certConfig 要三件套但可整体不传
+summary: fc-chrome 上线一天里踩到的镜像/策略/域名/NAS/超时等坑与各自修法的合集
 load: on-demand
 related:
   - agent-memory/procedures/workflow-fc-chrome上线.md
