@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-16T09:44:26+08:00
+updated_at: 2026-09-16T09:44:46+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -31,7 +31,7 @@ load: always
   ? 当前有哪些待用户确认的问题
 - current/risks.md | high | 2026-09-16 | 影响开发与运维安全的已知风险点；最高 R9 lifecycle_checker 误删 115.6 万资源（修复已上线、恢复待决策） | lifecycle_checker误删、风险、阻塞
   ? 密钥、安全相关的风险在哪看
-- current/proposals-需求与优化候选.md [draft] | medi | 2026-09-16 | 12 条候选需求（取证包、软删可回滚、删除熔断、checker 统一、CI、密钥治理、部署回滚等）；09-16 用户裁定 3~12 已开发，1~2 未做 | 需求候选、优化提案、取证包
+- current/proposals-需求与优化候选.md [draft] | medi | 2026-09-16 | 12 条候选需求；09-16 用户裁定第 3~12 项已开发，取证包/软删两项未做 | 需求候选、优化提案、取证包
 - current/changelog.md | low | 2026-09-16 | 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪 | 变更记录、changelog、历史
 - current/tasks-backlog.md | low | 2026-09-16 | 从 tasks.md 拆出的低优先级/等人工/归档遗留事项：文档爬虫 FC 6 项人工步骤、归档任务遗留待办、P3 代码小修、2026-09-16 移入的 P… | backlog、P3、文档爬虫
 
