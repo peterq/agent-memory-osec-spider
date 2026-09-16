@@ -9,7 +9,7 @@ keywords: [cdp3, CDP3DATA, CDP3TEMP, NAS, extensions=, profile=, Browser.close, 
 questions:
   - cdp3 的扩展和会话数据放在哪、目录怎么约定
   - 调用方用 profile= 时要注意什么
-summary: cdp3 的 profile=<ns>/<name> 持久化会话（NAS 锁/tar 写回/须 Browser.close）与 extensions= 按 URL 装扩展的机制裁定
+summary: cdp3 的 profile=<ns>/<name> 持久化会话（NAS 锁）、extensions= 扩展机制与 Browser.close 收尾约定
 load: on-demand
 related:
   - agent-memory/lessons/failure-FC实例在WebSocket断开后立即冻结.md

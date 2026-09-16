@@ -3,7 +3,7 @@ title: 当前任务与进度
 type: task
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-16T08:50:00+08:00
+updated_at: 2026-09-16T09:10:00+08:00
 priority: critical
 keywords: [任务, 进度, 待办, 腾讯文档, qqdoc, 十项提案, P5灰度, lifecycle_checker, xlLoadShare, 队列v2, 全站扫描]
 summary: 仍在推进/阻塞/待决策的事项：腾讯文档表格解析开发中（worktree，合并前需确认）、十项提案并行开发、P5 阶段 D 灰度爬坡、误删事故收尾；长尾待办在 tasks-backlog，历史原文在 archive
@@ -29,10 +29,12 @@ related:
 | xlLoadShare 修复 | ✅ 09-15 三机上线 | 失效上报 dry run → 抽样复核 → 用户拍板开启 | `knowledge/domain-迅雷分享爬取.md` §5/§6 |
 | P6 分享链接/搜索总览 + p90 关匿名 | ✅ 09-16 上线 | 观察防护巡检一周；ES 父文档过滤线上对拍 | `knowledge/architecture-search-admin.md` |
 | 队列 v2 上线收尾 | 人工进行中 | A~E 待用户执行（`scripts/queue_v2_cutover_finish.sh`），**无回滚路径** | 快照 archive「待办」 |
-| 5 爬虫全站扫描启动行为改造 | 待办 P0 | 改为 `<site>:fullsweep:lastdone` 守卫 | `decisions/decision-2026-09-03-全站扫描不在启动时触发.md` |
+| 5 爬虫全站扫描启动行为改造 | ✅ 已完成(早于 09-16 十项提案，历史记录曾误标待办) | 6 站 redis 键对照见新文件 | `knowledge/architecture-spider-sitecrawler骨架.md` |
 | 其余长尾待办 | 见 backlog | 凭据轮换/站点复议/checker 业务码/STORAGE 回归等 | `current/tasks-backlog.md` |
 
 ## 进行中
+
+- [ ] **飞书文档解析接入（2026-09-16 开发完成，待用户确认合并）**：三个 worktree 已提交未 push——userscripts `feat/feishu-cloud`(`bf4c36d`, 云端脚本拆 runtime/kdoc/feishu, 产物改名 `doc-cloud.user.js`)、NC-JS `feat/feishu-doc`(`c10ce3e`, 提交框识别飞书链接)、SPIDER `feat/feishu-doc`(`bc4b25f`, doc_crawler 默认脚本地址)。真实文档验证 14 条全部符合预期。**合并 master 前须用户确认**；合并后人工 `pnpm build:cloud && pnpm upload:cloud`、发布 spiderAdmin。风险：PC 端油猴调度器不过滤飞书任务。→ `knowledge/domain-飞书文档解析.md`、`agent-tasks/2026-09-16-feishu-doc/99-notes.md`
 
 - [ ] **P1 腾讯文档表格解析（09-16）**：方案 = 同一份云端脚本（userscripts `src/cloud/kdocCloud.ts`）按 host 分派，页面内同源 fetch `dop-api/opendoc` 解两种格式（3.0.0 protobuf 区块 / 2.x JSON op），前端 `spiderUtil.ts` 识别 `docs.qq.com/sheet/*`；网关/doc-crawler/契约不改。工作树 `userscripts-wt-qqdoc`(`feat/qqdoc-cloud`)、`ncjs-wt-qqdoc`(`feat/qqdoc`)。上线动作：合并 → `pnpm build:cloud && pnpm upload:cloud`（覆盖线上 `fc-chrome/userscripts/kdoc.user.js`）→ 前端发版。本地 fc-chrome 端到端方法见 `procedures/workflow-fc-chrome上线.md`。
 - [ ] **P1 十项提案并行开发（09-16）**：用户裁定第 3~12 项全部开发；分支 `feat/<短名>`（delete-breaker / valid-unify / startup-selfcheck / health-observe / ci / secrets / deploy-rollback / crawler-skeleton / search-config），NC-JS 待契约后派。
@@ -43,7 +45,12 @@ related:
 ## 待办（P0/P1）
 
 - [ ] **P0 队列 v2 收尾（用户人工）**：A 删 jenkins `spider-xunlei_share`、B 杀两个 2023 裸进程、C `./deploy.sh ps` 复核、D osec-res2 跑 `devops_migrate_legacy_queues`（先 dry-run）、E 看网关 precheck 日志。
-- [ ] **P0 5 爬虫全站扫描改造**：`bbs_kkpans/dyyjmax/fuxipan/misoso/kuakes` 启动即全站扫描，改为全量成功后写 redis `<site>:fullsweep:lastdone`，未超 `FullSweepInterval` 只跑增量（参照 `bbs_feikuai`）。
+- [x] ~~P0 5 爬虫全站扫描改造~~：09-16 核实**这 5 站在本任务开始前已经全部改造完成**(代码里
+      `fullSweepStartupSkip`/`fullsweep:lastdone` 均已存在, 早于十项提案批次), 本文件之前的
+      "待办 P0" 是过时记录, 未反映实际代码状态。09-16 提案 11(crawler-skeleton)顺带把
+      kkpans/feikuai 迁移到新抽取的通用骨架 `services/spider-common/sitecrawler`(行为/redis
+      键不变), dyyjmax/fuxipan/kuakes/misoso 保留原实现(结构差异大, 已合规, 未迁移)。
+      详见 `knowledge/architecture-spider-sitecrawler骨架.md`。
 - [ ] **P1** 删除已合并的 6 个 `spider-wt-queue-v2-*` worktree/分支；十项提案与腾讯文档任务合并后同样清理。
 - [ ] **P1 待用户手动** `osec-resdb` 删两个废弃容器（需 sudo，命令见快照 archive「待办」）；**不要动** `..._ali_250918`。
 - [ ] **P1** 夸克/阿里有效性检测修复上线后观察 `/v2/validShareLink` 的 `-1` 比例；确认 `clear_expire` 无异常批量删除。

@@ -6,7 +6,7 @@ created_at: 2026-09-12T11:25:00+08:00
 updated_at: 2026-09-12T12:10:00+08:00
 priority: medium
 keywords: [队列, 队列v2, resourcePreCheck, gw_remote_queue, res_scheduler, keywordSubscribed, gateway_v2, QueueDefine, 去重, taskKey, consumer, devops_migrate_legacy_queues]
-summary: SPIDER 队列 v2（2026-09-04 起）的固定队列名、去重键、消费者并发度与通用队列（gateway_v2）命名空间约定；写新队列消费者或排查任务丢失/重复时查此文件，队列架构总览见 architecture-spider.md
+summary: SPIDER 队列 v2 的固定队列名、去重键、消费者并发度与通用队列接口约定
 questions:
   - 我要写新的网关队列消费者，代码放哪
   - 关键词站点怎么收关键词

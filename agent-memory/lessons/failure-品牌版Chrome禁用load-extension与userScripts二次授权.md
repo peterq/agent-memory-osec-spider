@@ -9,7 +9,7 @@ keywords: [Chrome, load-extension, ExtensionSettings, Tampermonkey, @match, 302 
 questions:
   - headless Chrome 加了 --load-extension 为什么看不到扩展
   - 油猴脚本装上了但页面不执行是怎么回事
-summary: 品牌版 Chrome 不吃 --load-extension、Chrome 138+ userScripts 需二次授权、@match 漏 SSO 首跳域名——三个让"脚本装上不执行"的坑
+summary: 品牌版 Chrome 不吃 --load-extension 且 userScripts 需二次授权；改企业策略强装 + 预热 profile，@match 要含 SSO 首跳域
 load: on-demand
 related:
   - agent-memory/knowledge/architecture-fc-chrome文档爬虫上云.md

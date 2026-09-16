@@ -14,10 +14,7 @@ keywords:
   - githubClientId
   - 自研RPC传输
   - 重试覆盖错误信息
-summary: 网关握手 403 回包的 needLogin/githubClientId 等附加字段被 RTC-gRPC 错误通道丢弃，结构化信息要走专门回调
-questions:
-  - 握手回包字段传不到前端是什么原因
-  - 登录失败原因被重试覆盖是怎么回事
+summary: 网关握手 403 回包的附加字段被 RTC-gRPC 传输层丢弃；附加信息要走独立通道
 load: on-demand
 related:
   - agent-memory/decisions/decision-2026-09-08-后台登录改为github-oauth.md

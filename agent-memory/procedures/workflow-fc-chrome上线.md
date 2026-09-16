@@ -10,7 +10,7 @@ questions:
   - 本机推不了 ACR 时怎么把 fc-chrome 镜像弄上去
   - 怎么给共用 FC 域名加路由不碰证书
   - fc-chrome 只改 Go 代码怎么快速上线/本地联调
-summary: 2026-09-13 实测可行的 fc-chrome 上线链路：本机构建→docker save/rsync 到 osec-jenkins→load/push→s deploy（带日期 tag）；域名路由用 fc3-domain 组件、不写 certConfig；seed 用 scripts/seedprep-oob.sh 带外预热；含分类器拦截项与回滚
+summary: fc-chrome 上线链路：本机构建 → docker save/rsync → ACR 推镜像 → s deploy → 共用域名路由 → 健康检查与真实文档终验
 load: on-demand
 related:
   - agent-memory/knowledge/architecture-fc-chrome文档爬虫上云.md

@@ -13,7 +13,7 @@ keywords:
   - 正在连接服务器
   - 本地环境
   - NC-JS
-summary: 子应用把 useLocalStorage('gwEndpoint') 默认值写死成 gwAddrs[1](本地 127.0.0.1)，导致生产首次访问卡死；改为按 location.hostname 自动选择
+summary: 子应用把 gwEndpoint 默认值写死成本地地址导致线上首访连错；默认值必须由 location.hostname 推导
 load: on-demand
 related:
   - agent-memory/knowledge/architecture-nc-js.md

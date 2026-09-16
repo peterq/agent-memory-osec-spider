@@ -13,7 +13,7 @@ keywords:
   - save-worker
   - 哑故障
   - 部署前置检查
-summary: STORAGE worker 所在的 osec-resdb 配置里的 ES 地址是已下线集群，旧代码只打 error 日志继续跑（哑故障），新代码 fail-fast 后进入重启循环
+summary: STORAGE worker 所在 osec-resdb 的 ES 地址指向已下线集群，旧代码静默失败；排查与修法见正文
 load: on-demand
 related:
   - agent-memory/lessons/failure-网关重启暴露ES集群已更换.md

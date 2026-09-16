@@ -9,7 +9,7 @@ keywords: [FC 冻结, WebSocket, Browser.close, 持久化 profile, 冻结实例,
 questions:
   - FC 上 WebSocket 断开后 handler 收尾代码为什么不执行
   - fc-chrome profile= 为什么要求客户端先发 Browser.close
-summary: 2026-09-13 线上实测：客户端断开 WebSocket 后 FC 视为调用结束并立刻冻结实例，handler 中 kill Chrome→写回 NAS 的代码停在原地（锁心跳 2 分钟不动）；解法是把收尾工作挪到连接存活期内——拦截客户端 CDP Browser.close 同步完成写回再回包，外加会话中周期快照兜底
+summary: 客户端断开 WebSocket 后 FC 立即冻结实例，收尾/写回必须在连接内完成（拦截 Browser.close）
 load: on-demand
 related:
   - agent-memory/decisions/decision-2026-09-13-cdp3持久化会话与扩展机制.md

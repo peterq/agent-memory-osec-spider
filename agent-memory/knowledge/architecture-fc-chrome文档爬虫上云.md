@@ -3,13 +3,13 @@ title: fc-chrome（阿里云 FC Chrome 运行环境）与云端金山文档爬�
 type: knowledge
 status: active
 created_at: 2026-09-13T11:00:00+08:00
-updated_at: 2026-09-16T09:00:00+08:00
+updated_at: 2026-09-16T09:15:00+08:00
 priority: high
 keywords: [fc-chrome, nc-app-prod-cdp3, Tampermonkey, kdoc.user.js, fc-resource-node-api.krzb.net, doc_crawler, 函数计算, NAS, CDP3DATA, extensions=, profile=]
 questions:
   - 新版 FC Chrome 部署在哪、地址、健康检查
   - cdp3 的 NAS 目录/extensions=/profile= 怎么用
-summary: 线上 nc-app-prod-cdp3（COMMON fc-chrome，Chrome 153+Tampermonkey）的地址、/cdp3/* 路由、OSS 对象、镜像 tag、NAS 目录与各仓库回填点；inject=1 与 TM 两条路径均已跑通
+summary: nc-app-prod-cdp3（COMMON fc-chrome，Chrome 153 + Tampermonkey）的地址、/cdp3/* 路由、OSS 对象、镜像 tag、NAS 目录与各仓库回填点；inject=1 与 TM 两条路径线上跑通
 load: on-demand
 related:
   - agent-memory/procedures/workflow-fc-chrome上线.md
@@ -26,7 +26,7 @@ related:
   - 该域名其余路由（勿动）：`/*`→资源节点 API 函数；`/chrome`→`nc-app-prod-cdp2`（旧 CDP，NC-JS `prod-v2`）；`/proxy` `/check`→`nc-app-prod-cdp-driver`；`/nc-app-image-render-api-test/*`→测试函数。路由配置正本 `agent-tasks/2026-09-13-fc-chrome-online/domain-krzb-s.yaml`（故意不含 certConfig）。
 - **镜像**（ACR `registry.cn-hangzhou.aliyuncs.com/1second/fc-chrome`）：`:base`（ubuntu24.04+chrome153+TM 解包，**无策略文件**，2026-09-13 06:45）→ `:base-seed`（叠 `image/Dockerfile.seed`：策略 JSON + 预热 profile）→ `:app-2026MMDDx`（叠 `bootstrap`）。线上 `app-20260913k`（09-13 16:35 起），见 `s.yaml`。
 - **OSS** `osec-deploy-pub/fc-chrome/`：`extensions/tampermonkey.{zip,crx}`、`extensions/tampermonkey-update.xml`（企业策略 update_url）、`userscripts/kdoc.user.js`（云端脚本，userscripts 仓库 `pnpm build:cloud && pnpm upload:cloud`）。
-- **云端脚本** userscripts `src/cloud/kdocCloud.ts`：`#taskNonce=` 触发、console `[[DOC_SPIDER]]` 协议（契约 `agent-tasks/2026-09-08-monitoring-and-doc-fc/05-doc-fc-contract.md` §3）。
+- **云端脚本** userscripts `src/cloud/docCloud.ts`（2026-09-16 起按域名分发到 `kdoc.ts`/`feishu.ts`，公共流程 `runtime.ts`；产物 `doc-cloud.user.js`，OSS 同时写旧名 `kdoc.user.js`，见 `knowledge/domain-飞书文档解析.md`）：`#taskNonce=` 触发、console `[[DOC_SPIDER]]` 协议（契约 `agent-tasks/2026-09-08-monitoring-and-doc-fc/05-doc-fc-contract.md` §3）。
 - **回填点**：NC-JS `admin/login3rd/src/task/task.ts` `eps['prod-v3']`（默认仍 prod-v2）、`apps/cdp-driver/s.yaml` `CDP_ENDPOINT` 注释占位（未切换）、SPIDER `services/doc_crawler/doc_crawler.go applyDefault`（`fc_endpoint`=VPC 系统域名，`fc_endpoint_public`=共用域名 /cdp3）。
 
 ## NAS 数据目录与新选项 [事实 2026-09-13 14:30 上线, 镜像 app-20260913k]

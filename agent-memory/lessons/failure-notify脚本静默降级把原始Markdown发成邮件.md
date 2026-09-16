@@ -17,7 +17,7 @@ questions:
   - 邮件里为什么收到的是原始 Markdown 而不是渲染后的卡片
   - 脚本用 env python3 有什么坑
   - 依赖缺失时脚本该怎么降级才不会坑用户
-summary: 2026-09-16 十项提案进度邮件把 Markdown 原文当 <pre> 发出：`env python3` 命中 miniforge 的 python（无 markdown 模块），脚本静默退化；已改为固定系统 python + 自动换解释器 + 内置兜底渲染器，且降级必须 stderr 警告
+summary: notify.py 被 miniforge python 执行时缺 markdown 模块静默降级，原文当 <pre> 发出；一律走 shebang 系统 python
 load: on-demand
 related:
   - agent-memory/procedures/workflow-任务进度邮件汇报.md

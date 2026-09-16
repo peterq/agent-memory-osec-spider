@@ -3,7 +3,7 @@ title: 当前风险与阻塞
 type: risk
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-16T08:35:00+08:00
+updated_at: 2026-09-16T10:40:00+08:00
 priority: high
 keywords: [lifecycle_checker误删, 风险, 阻塞, 密钥, AK/SK, 生产, 测试, 依赖升级, 队列v2, 无回滚, 上线收尾]
 summary: 影响开发与运维安全的已知风险点；最高 R9 lifecycle_checker 误删 115.6 万资源（修复已上线、恢复待决策）
@@ -28,10 +28,12 @@ related:
 - [事实] 子 Agent 在 legacy 索引跑 `has_child` 计数循环导致 data-i-2 重启、集群 red 27 分钟。已在 `agent-tasks/…/00-shared.md` 加入 ES 只读白名单硬约束；patterns #94。
 - [推断] 任何跨父子的 ES 查询在 10 亿级索引上都可能触发；后续所有子 Agent 简报都应带该白名单。
 
-## R7 仓库测试文件硬编码真实网盘凭据（2026-09-08 发现）
+## R7 仓库测试文件硬编码真实网盘凭据（2026-09-08 发现，2026-09-16 已在 `feat/secrets` 分支修复，未合并 master）
 
 - [事实] `services/gateway/download_scheduler/pan_download/alipan_download/alipan_dl_test.go`、`bnd_download/bnd_dl_test.go` 直接把真实 RefreshToken/BDUSS 写在源码里（历史提交已明文入库，git 历史可查）。
-- 处置建议：轮换这些账号凭据；测试改读 `.hide.json`（gitignore，参照 `bndAccounts.hide.json` 模式）。与 R2（配置文件含明文密钥）同类。
+- [2026-09-16 进展] secrets 角色（提案9）四仓库 `feat/secrets` 分支已修复**当前源码里**发现的全部硬编码真实凭据(共约 15 处，含 SPIDER 的 OSS AK/SK×3、bnd/alipan/quark 网盘账号凭据、生产 Redis 密码、Grafana 密码、蜻蜓代理过期 token、COMMON 的 ARMS Prometheus JWT)：测试统一改读本地 `*.hide.json`(配 `*.example.json` 占位模板)或环境变量，缺失时 `t.Skip`/报明确错误而非 panic；四仓库新增 `.gitleaks.toml` + `.github/workflows/secrets.yml`(只扫 PR diff) + `scripts/pre-commit-secrets.sh`。**只清了当前工作区，未改写 git 历史、未轮换任何凭据**——历史提交里这些值仍可查，轮换清单见提交里的汇报（未收敛进本记忆库，避免明文扩散；需要时找主控要那次汇报）。
+- [事实,待处理] SPIDER `services/gateway/download_scheduler/download_edge_script/download.es`(CDN 边缘脚本) 与 `download_scheduler_util/res_dl_scheduler.go` 共用一个硬编码 AES 密钥/IV 做下载链接加解密，两端必须保持一致，**未处理**（改一侧会破坏线上功能，需协调发布，不是"改代码就完事"）。
+- 处置建议：轮换上述真实账号/密码类凭据（`feat/secrets` 分支不做轮换）；`download.es`/`res_dl_scheduler.go` 的共享 AES key 如需下线需同时改 CDN 边缘脚本与 Go 侧并协调发布窗口。与 R2（配置文件含明文密钥）同类。
 
 ## 🔴 R6 repair 定时作业与 bootstrap 无互斥，会误标未复制行（2026-09-06 现场发生）
 
@@ -51,14 +53,25 @@ AWS S3 凭证、Elasticsearch 账号密码、MySQL/Redis 口令，且已进版�
 **影响**：任何粘贴、日志输出、记忆写入都可能扩散泄露。
 **处理**：只引用路径不引用值；如需展示配置结构，手工脱敏。
 **这是硬性禁令**（禁止写入记忆文件/任务简报/对外输出），同条列在 `02-user-preferences.md`「已确认的硬性要求」第 10 条。
+[2026-09-16 进展] `feat/secrets` 分支用 gitleaks 现状扫描确认 `config.yaml`(API)/`config_dev.yaml`(STORAGE)
+里仍有明文 AK/SK，按约定**本次不改**（改了要重新分发配置+重启）；新增了可选迁移路径——四仓库
+`config/` 加载代码支持把 yaml 字段整段写成 `"${VAR_NAME}"` 占位符，运行时从同名环境变量覆盖，
+用法见 SPIDER `PRD/config-v2/README.md` §5/§6、API/STORAGE 各自 `README.md`。
 
-## R3 存在直连生产环境的测试文件
+## R3 存在直连生产环境的测试文件（2026-09-16 已在 `feat/ci` 分支缓解，未合并 master）
 
-如 SPIDER `services/gateway/spider_dao/spider_dao_prod_test.go`。
-另外 `devops_utils.ConnectProdSpiderGw()` 有个"当天日期口令"保护
-（`UseProdSpiderGw` 必须等于 `time.Now().Format("0102")`，否则 panic）。
-**影响**：`go test ./...` 可能真的打到生产 DB/ES。
-**处理**：只跑明确指定的测试包，不要全量跑。
+`services/gateway/spider_dao/spider_dao_prod_test.go` 已不存在（合并进了
+`spider_dao_test.go`，`useProdDb` 硬编码 `false` + 当天日期口令兜底，默认安全）。
+`ConnectProdSpiderGw`/`UseProdSpiderGw`、`UseProdDb`（同样的"当天日期口令"套路）、
+`InitProdEs`、`PROD_DB` 环境变量、硬编码生产网关 IP/云凭据等，四仓库合计 20+ 个
+`_test.go` 文件仍会真连生产或外网，ci 角色已排查并统一在文件第一行加 `//go:build live`，
+`go test ./...` 默认不带该 tag、不会触发（清单见 `agent-memory/procedures/workflow-本地构建与验证.md`
+「CI」一节，逐文件列表见 `feat/ci` 各仓库提交）。
+**现状**：缓解措施在 `feat/ci` 分支，四仓库均未合并 master 前，主检出（master）上这些测试
+仍无标签保护，**仍需**「只跑明确指定的测试包，不要全量跑 `go test ./...`」。
+**影响**：合并前 `go test ./...` 可能真的打到生产 DB/ES/网关或联网打第三方接口。
+**处理**：合并 `feat/ci` 后此风险基本消除（新增测试若引入连生产逻辑，仍需人工记得加标签，
+CI 本身不会自动检测漏加标签）；合并前维持"只跑明确指定的测试包"。
 
 ## R4 一次性运维脚本积累
 

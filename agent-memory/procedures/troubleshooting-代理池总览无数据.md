@@ -6,12 +6,7 @@ created_at: 2026-09-10T09:30:00+08:00
 updated_at: 2026-09-12T22:36:00+08:00
 priority: medium
 keywords: [proxy-admin-check, 代理池总览, proxy_admin, proxy-monitor, proxyMon, dataSource, 无数据, 全是0, 上报侧未部署, 容器创建时间, Scene, ClassifyResult]
-summary: 后台代理池页全 0 时三步定位：网关 dataSource → 上报侧是否部署 → tools/proxy-admin-check 只读巡检
-questions:
-  - 代理池监控的 Scene 是什么，怎么加新消费端
-  - IP 不可用和被站点封禁怎么区分
-  - 代理池推送 IP 数在哪看
-  - 代理池总览/场景明细全 0 怎么排查
+summary: 后台代理池页全 0 时三步定位：网关 dataSource → 上报侧是否部署 → tools 探针
 load: on-demand
 related:
   - agent-memory/lessons/failure-旁路能力初始化拖垮主流程.md

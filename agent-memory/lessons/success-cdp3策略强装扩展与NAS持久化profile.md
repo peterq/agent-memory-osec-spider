@@ -9,7 +9,7 @@ keywords: [扩展安装, ExtensionSettings, override_update_url, pack-extension,
 questions:
   - 怎么让 headless Chrome 装 NAS 上的自定义扩展
   - 策略强装的扩展改了版本为什么不更新
-summary: 品牌版 Chrome 用企业策略 force_installed 装扩展 + 带外预热 profile 种子 + NAS tar 持久化会话的可行做法与关键参数
+summary: 品牌版 Chrome 用企业策略 force_installed 装扩展 + 预热 profile 存 NAS 复用登录态
 load: on-demand
 related:
   - agent-memory/lessons/failure-品牌版Chrome禁用load-extension与userScripts二次授权.md

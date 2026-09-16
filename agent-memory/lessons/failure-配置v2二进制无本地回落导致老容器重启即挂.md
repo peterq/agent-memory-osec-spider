@@ -6,7 +6,7 @@ created_at: 2026-09-08T15:10:00+08:00
 updated_at: 2026-09-09T11:05:00+08:00
 priority: high
 keywords: [配置 v2, OSS_CONFIG_URL, config.yaml, 回落, crash-loop, deploy.sh, set -e, 半完成态, url_check, dl_download]
-summary: v2 二进制只认 OSS_CONFIG_URL/LOCAL_CONFIG_PATH，不读宿主机 config.yaml；deploy.sh 替换宿主机 spider 后，同机所有未重部容器一旦重启即 panic 退出；另 set -e + ssh 抖动会留下"容器已删未重建"半完成态
+summary: v2 二进制只认 OSS_CONFIG_URL/LOCAL_CONFIG_PATH 不读宿主机旧配置，老容器重启即挂；需本地回落
 load: on-demand
 related:
   - agent-memory/lessons/patterns-长周期生产巡检.md

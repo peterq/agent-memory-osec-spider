@@ -3,7 +3,7 @@ title: 项目总览
 type: overview
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-16T08:30:00+08:00
+updated_at: 2026-09-16T09:15:00+08:00
 priority: critical
 keywords: [网盘资源爬取, 版权取证, COMMON, SPIDER, STORAGE, API, NC-JS]
 summary: 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件
@@ -25,6 +25,7 @@ related:
 
 ## 2. 当前状态（最近 7 天；更早见 `current/changelog.md`）
 
+- 09-16 **飞书文档解析（docx + 多维表格）开发完成，三仓库 worktree 待用户确认合并**；云端脚本改名 `doc-cloud.user.js` → `knowledge/domain-飞书文档解析.md`
 - 09-16 **分享链接总览 + 搜索总览（SLS）+ p90 告警自动关闭匿名搜索已上线**（网关/API/前端）；p90>3000ms 连续 2 次→邮件+关匿名 30 分钟，后台「搜索监控→匿名搜索防护」可调 → `knowledge/architecture-search-admin.md`
 - 09-15 **xlLoadShare 修复上线**（`3270e10`）；**失效上报仍 dry run，待复核后开启** → `knowledge/domain-迅雷分享爬取.md` §5
 - 09-15 **P5 阶段 D 灰度已启用**（API 侧 `search_canary` 30% 起、异常自动回落）→ `decisions/decision-2026-09-12-P5切v3准入门槛与失效同步.md`
@@ -44,7 +45,6 @@ related:
 - 全站扫描**禁止启动即全量**（redis 记完成时间跳过）；5 个存量爬虫待改造，`feikuai` 合规。→ `decisions/decision-2026-09-03-全站扫描不在启动时触发.md`
 - 部署用 SPIDER 的 `deploy.sh`（ssh+docker，主机 osec-res1/res2/resdb/restest/resngix/jenkins）；**现役服务只能用 `./deploy.sh ps` 判断**。→ `procedures/workflow-部署.md`
 - NC-JS 是后台前端（qiankun + spiderAdmin 等 3 子应用），**不调 API 仓库 HTTP**，走 WebRTC 上的 gRPC 直连网关 `:7542`；鉴权已改 GitHub OAuth，RtcToken 降为兜底。→ `knowledge/architecture-nc-js.md`
-- 前端「环境选择」默认值必须由 `location.hostname` 推导。→ `lessons/failure-前端环境默认值写死本地.md`
 
 ## 4. 用户与协作偏好
 
@@ -80,6 +80,7 @@ related:
 - NC-JS `pnpm build` 会真实上传生产 OSS，验证前先关 `deploy` → `lessons/failure-ncjs构建脚本会自动上传OSS.md`
 - **FC 上 WebSocket 断开即冻结实例，收尾/写回必须在连接内做（拦截 `Browser.close`）** → `lessons/failure-FC实例在WebSocket断开后立即冻结.md`
 - 新站点调研先挖 JS bundle 接口、`total` 须用 sitemap 对账；**结论有保质期** → `procedures/workflow-新站点调研.md`
+- 在线文档站解析优先 fetch 页面自带接口（performance 资源列表 + bundle 搜路径常量）→ `lessons/success-在线文档解析优先用页面自带接口.md`
 - **SLS `field:value` 是分词匹配，统计口径要用 SQL `where` 等值过滤** → `lessons/failure-SLS字段检索按分词匹配误命中其他stage.md`
 - 生产 API 探针按 res-api 三级漏桶算节奏 → `lessons/failure-v3首页重合度受前缀展开分片彩票影响.md`
 - 邮件脚本直接 `scripts/mail/notify.py` 调用，不用 `python3 x.py`；发送类脚本禁止静默降级 → `lessons/failure-notify脚本静默降级把原始Markdown发成邮件.md`

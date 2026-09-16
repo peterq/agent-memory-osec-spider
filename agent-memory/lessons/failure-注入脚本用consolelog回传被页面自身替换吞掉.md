@@ -6,7 +6,7 @@ created_at: 2026-09-13T15:50:00+08:00
 updated_at: 2026-09-15T15:50:00+08:00
 priority: high
 keywords: [console.log, CDP, addScriptToEvaluateOnNewDocument, 主世界注入, fc-chrome, kdocCloud, DOC_SPIDER, 油猴, Tampermonkey, monkey-patch]
-summary: fc-chrome + kdocCloud.ts 真实文档只回传一条 start 就彻底沉默——根因是金山文档自己的代码加载后整体替换了 window.console.log，之后所有 console.log 调用都进了替换后的函数，CDP 完全看不到；JS 其实一直在正常跑
+summary: 页面自身代码会整体替换 window.console.log；注入脚本必须在最开头抓原生引用回传，否则只见一条 start 后沉默
 questions:
   - CDP 注入脚本为什么只打出第一条日志就沉默
   - 用 console.log 回传协议什么情况会全部收不到

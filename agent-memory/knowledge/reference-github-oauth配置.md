@@ -12,10 +12,7 @@ keywords:
   - 1second 组织
   - 回调地址
   - Access restricted
-summary: 两个GitHub OAuth App(prod/dev)的名称、client_id、管理页、已注册回调列表与组织第三方应用策略, 不含任何secret
-questions:
-  - GitHub OAuth App 的 client_id 在哪查
-  - 1second 组织的回调地址怎么配置
+summary: 两个 GitHub OAuth App（prod/dev）的名称、client_id 存放位置、管理页与回调地址约定
 load: on-demand
 related:
   - agent-memory/decisions/decision-2026-09-08-后台登录改为github-oauth.md

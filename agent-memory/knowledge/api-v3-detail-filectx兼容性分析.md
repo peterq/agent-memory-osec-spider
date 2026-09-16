@@ -6,10 +6,7 @@ created_at: 2026-09-12T14:40:00+08:00
 updated_at: 2026-09-15T15:50:00+08:00
 priority: high
 keywords: [v3 detail, fileCtx, res_lc_all, 生命周期, LocateIndex, addViews, size 字符串]
-questions:
-  - detail/fileCtx 能不能直接查 res_lc_all，要改哪
-  - /api/v2/detail 为什么报 size 反序列化错误
-summary: 结论——lc 索引结构与 v2 detail/fileCtx 的查询方式兼容（nested filelist、join file、fid/parent、routing 均保留），补 v3 只需换索引 + 去重 + 数字字段容错，并删掉已弃用的 addViews；无需改 mapping
+summary: lc 索引结构与 v2 detail/fileCtx 查询方式兼容（nested 父子），v3 可复用同一 bndApi
 load: on-demand
 related:
   - agent-memory/decisions/decision-2026-09-04-资源索引生命周期改造方案.md

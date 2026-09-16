@@ -3,7 +3,7 @@ title: 任务后备清单（低优先级 / 等人工事项）
 type: task
 status: active
 created_at: 2026-09-12T22:36:00+08:00
-updated_at: 2026-09-16T09:10:00+08:00
+updated_at: 2026-09-16T10:40:00+08:00
 priority: low
 keywords: [backlog, P3, 文档爬虫, FC, 人工事项]
 questions:
@@ -34,7 +34,7 @@ related:
 - [ ] **P1 生命周期 P4 收尾**：2 个 `:cur` 半区窗口已于 09-12 关闭（30/30 抽样父子均在 cur、long=0，「父在 long」前提不成立，不搬）；P6 关双写前须补 v3 detail/fileCtx（结构兼容，`knowledge/api-v3-detail-filectx兼容性分析.md`）；P5 进度见「进行中」。
 - [ ] **P2 排期**：巡检守护提升到 `runBootstrapJob` 级 + heap 阈值可配（0.5~1 人日）；rollout §9 待补写。
 - [ ] **P2 代码待修（配置 v2）**：`LOCAL_CONFIG_PATH` 缺省未回落宿主机 `config.yaml`；删宿主机 `config.yaml` 的时机（回滚现依赖 `spider.old`）留用户决定。
-- [ ] **P2 安全（凭据轮换，待决策）**：`devops_online_env.go` 硬编码 OSS AK/SK 与 ES 口令；`pan_download`/`bnd_download` 测试文件硬编码真实 RefreshToken/BDUSS（建议迁 `.hide.json`）；ali_log ak/sk 曾明文进会话记录，建议评估轮换。
+- [x] **P2 安全（凭据轮换，待决策）**：`devops_online_env.go` 硬编码 OSS AK/SK 与 ES 口令；`pan_download`/`bnd_download` 测试文件硬编码真实 RefreshToken/BDUSS——2026-09-16 secrets 角色（提案9）已在四仓库 `feat/secrets` 分支把当前源码里的硬编码全部改为读本地 `.hide.json`(配 `.example.json` 模板)/环境变量，`t.Skip`/报错而非 panic，未合并 master、未轮换凭据、未改写 git 历史。**轮换本身仍待用户决策**（清单在提交汇报里，未收敛进本记忆库以免明文扩散）；ali_log ak/sk 曾明文进会话记录一事仍待评估轮换。详见 `agent-memory/current/risks.md` R7。
 - [ ] **P1 待用户决策**：`osec-resdb` STORAGE worker 的 `es_endpoint` 指向已下线旧 ES 集群（已回滚，不影响 P3 数据正确性）。
 - [ ] **既有故障**：现网 ES 无 `resource_valid` 索引（404），`checkValid`/`queryValidAndPwd` v2/v3 同样失效。
 - [ ] **P2**：COMMON `common_message.proto` 的 `go_package` 仍是旧仓库名 `PPIO`，`gen.sh` 后要手工 sed；应改 proto 全自动。
@@ -45,11 +45,11 @@ related:
 
 - [ ] **P3** `illuminate/queue-task/queue_test.go` 的 `TestGetTimeoutKeys`/`TestRePush` 既有失败（时间戳断言误差 ~10s）。
 - [ ] **P3** `services/aliyun-drive` 的 `checkRecentUpdate` 用分享 id 而非 `md5(shareLink)` 查 STORAGE，疑似历史 bug，待确认。
-- [ ] **P3 清理** 蜻蜓代理的**现行**凭据在 `services/proxy-provider/change_proxy_config.go`，
-      该文件是 gitignore 的（未提交，处理得当）。但仓库里仍留着**过期**凭据：
-      `proxy-provider.go` 硬编码的 `qtWhitelistLink` 与两份 `config*.yaml` 的
-      `providers[].conf`。这些死值会误导排查（我就据此误判过"凭据全过期"），
-      建议清掉或改成从环境变量读。
+- [x] **P3 清理** 蜻蜓代理的**现行**凭据在 `services/proxy-provider/change_proxy_config.go`，
+      该文件是 gitignore 的（未提交，处理得当）。仓库里仍留着**过期**凭据：
+      `proxy-provider.go` 硬编码的 `qtWhitelistLink`——2026-09-16 secrets 角色已改成从环境变量
+      `QT_WHITELIST_LINK` 读取（`feat/secrets` 分支，未合并 master），不再有死值误导排查。
+      两份 `config*.yaml` 的 `providers[].conf` **未处理**（按约定不改 config*.yaml 内容）。
 - [ ] **P3** `bnd_resolver_check.go:160` 的 `go vet` 告警（`storage.Resource` 按值传递，含 `sync.Mutex`）。
       根因是 `resource.SaveBaiduResource` 的全局签名，要改得整体改。
 - [ ] **P3** `devops_res_reindex` 若要在非本地环境跑，需先约定导出目录挂载点（当前直接 panic 退出）。
@@ -65,5 +65,8 @@ related:
 - [ ] **P2** misoso：一轮全量真实耗时（影响 `SeenTTL`）、626 万去重键 redis 容量。dyyjmax 全量对账未实跑（≈1 h）、feikuai `ali-share` 分支无样本、kuakes ajax `code≠0` 语义、fuxipan `Crawl-delay:10` 归属歧义。
 - [x] **P2** 夸克业务码 `41031` 补进 `quarkInvalidCodes`——2026-09-16 valid-unify 角色随「有效性检测合并为一套实现」一并完成，码表现集中在 COMMON `enfi-resource-common/panvalid/codes.go`，SPIDER/API 两处旧 checker 已废弃改为薄适配层调用 panvalid（分支 `feat/valid-unify`，未合并 master，待用户确认）。
 - [x] **P2** 百度/迅雷 checker 文案匹配——百度 09-12 已改造(见上); 迅雷本来就已用业务码(未做过文案匹配), 2026-09-16 一并搬进 COMMON panvalid, 状态码表默认内置、SPIDER 侧注入 `services/xunlei-pan/share_status.go` 正本表保持同源。详见 `agent-tasks/2026-09-16-ten-proposals/20-valid-unify.md` 与 panvalid README。
-- [ ] **P2** COMMON `Makefile` protoc 目标过期（新增 5 个 proto 未纳入）。
+- [x] **P2** COMMON `Makefile` protoc 目标过期——2026-09-16 ci 角色随「四仓库 CI」一并修复为 `make proto`
+      一条命令(覆盖全部 proto, 含之前未纳入的 5 个), 顺带修正 `common_message.pb.go`/`rpc/storage/rpc.pb.go`
+      内嵌的 PPIO 旧路径描述符。分支 `feat/ci`, 未合并 master, 待用户确认。详见
+      `agent-memory/procedures/workflow-本地构建与验证.md`「重新生成 protobuf」。
 - [ ] **P2 代理池口径**：`keyword_upyunso/funletu/pansearch_me` 近 24 h ok=0，列为下线候选，看一次代理池再定。
