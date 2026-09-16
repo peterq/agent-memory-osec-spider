@@ -26,3 +26,7 @@
 - ✅ 30 startup-selfcheck 验收通过，小修完成：SPIDER `4ee99b1` / API `9d0f7da` / STORAGE `a153eef`（tidy 标注、MustRegister recover）。合并注意：STORAGE go.mod 与 ci 分支同时改动。
 - ✅ 45 NC-JS 前端：`ncjs-wt-health-observe` `66ec854`，验收通过（vitest 19/19、vue-tsc 通过、未跑 build）。未在浏览器接真实网关联调。
 - 📦 60 secrets：COMMON `ab7197e` / SPIDER `43f9836` / API `5da3d97` / STORAGE `cc7b85d`，验收中（重点：运行时代码改读环境变量后线上缺变量的失败模式）。未处理：下载链 AES 密钥（与 CDN 边缘脚本共用，需协调发布）、config*.yaml 明文（按约定不动）。轮换建议清单见其汇报（不落记忆）。
+- ✅ 10 delete-breaker 验收通过（fail-open/去抖/dry-run/API -1 映射均确认）；补充中：lifecycle 包 onCheckInvalid 门控单测、README 写明 Reset 后不立即重放（MaxRetry=3 无退避）。
+- 🔁 60 secrets 验收：机制通过；返工中——按敏感值反查发现 5 处漏网（`web_res/download_url.go`、`download_worker/download_mgr.go` 两处生产代码 + 两个测试 + `tools/devops_note/esRun.mjs`）。**上线前置：FC 函数 download2oss 部署前须在 FC 控制台配置 OSS_ACCESS_KEY_ID/SECRET**。
+- 📦 80 crawler-skeleton 验收中。
+- 🧪 合并预演（`scripts/dev/integration_check.sh`，集成分支 `integration/ten-proposals`，worktree `*-wt-ten-proposals`）：COMMON/SPIDER 零冲突；API 冲突 `services/valid/valid.go`（10 vs 20）、`config/config.go`（10/30/85）、`README.md`（50/60/85）；STORAGE `README.md`（50/60）。均已在集成分支手工解决（并存），`go build`/相关包测试通过。返工分支有新提交后需重新 merge 进集成分支。
