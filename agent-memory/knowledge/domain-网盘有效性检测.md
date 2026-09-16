@@ -92,12 +92,12 @@ body: {"passcode":"", "pwd_id":"<shareId>"}
 - [事实] 2026-09-03 在 site-discovery 任务里评测 `slowread.net` 时，73 条抽样中有
   43 条（近六成！）命中新码 `41031 分享者用户封禁链接查看受限`（分享者账号被封，HTTP 403）。
   `site-discovery/tools/pancheck.py` 的 `QUARK_INVALID_CODES` 已经把它加进去按失效处理。
-  交叉检查发现 `osec-resource-api/services/valid/quark-api.go` 和
+  交叉检查发现当时 `osec-resource-api/services/valid/quark-api.go` 和
   `osec-spider-go/services/gateway/valid/quark_checker.go` 的 `classifyQuarkShare`
-  这两处生产代码**code 白名单里都没有 41031**，但各自的 `quarkInvalidMsgRegexp` 兜底正则
-  已经硬编码了"分享者用户封禁链接查看受限"这句文案，所以暂时不会误判为 unknown/error——
-  只是脆弱：依赖文案不变。建议后续顺手把 41031 也补进两处的 `quarkInvalidCodes`，
-  减少对 message 文案的依赖（本次任务范围只允许改 `site-discovery/tools`，未动这两个仓库）。
+  这两处生产代码**code 白名单里都没有 41031**，只靠各自的 `quarkInvalidMsgRegexp` 兜底正则
+  硬编码"分享者用户封禁链接查看受限"这句文案兜底，依赖文案不变，很脆弱。
+  **`[事实]` 2026-09-16 已随 §0 的 panvalid 合并把 41031 补进正式码表**（`panvalid/codes.go`），
+  两处旧 checker 已废弃改为薄适配层。
 
 ## 3. 阿里云盘（ali-share）
 
@@ -135,6 +135,13 @@ NotFound.Drive            分享者网盘不存在
    真正表示"有密码"的是 `has_pwd`，无密码的分享则**不返回** `has_pwd` 字段。
    `alipan_checker.go` 里 `else if need_check_pwd { noPwd = true }` 的写法看着可疑，
    但结论正确（has_pwd 缺失 ⇒ 无密码），不要"顺手修"。
+
+**`[事实]` 合并后(§0)**：panvalid 统一走 `api.aliyundrive.com` 单请求（API 原来那套），
+SPIDER `bj29.api.aliyunpds.com` 那条 3 次请求(`get_share_by_anonymous` 判code → 换
+`get_share_token` → `file/list` 查文件数)的链路已作废——两边业务码表本来就完全一致，
+差异只在请求次数，少请求的一边更优。SPIDER `AliPanValidChecker.CheckValid2`(历史遗留,
+供 `services/devops/2409/ali_download` 用)因此额外多做一次 `has_pwd` 探测请求来还原
+"是否需要提取码"，其余调用方不受影响。
 
 ## 4. 联网自测
 
