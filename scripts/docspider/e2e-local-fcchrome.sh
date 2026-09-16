@@ -13,6 +13,8 @@ TIMEOUT=${3:-150}
 FC_DIR=/home/peterq/dev/projects/1s/enfi-resource-common/fc-chrome
 LOG_DIR=${LOG_DIR:-/tmp/docspider-e2e}; mkdir -p "$LOG_DIR"
 PORT_HTTP=${PORT_HTTP:-8765}; PORT_FC=${PORT_FC:-9000}
+# 产物文件名: 2026-09-16 飞书接入后改名 doc-cloud.user.js, 旧名 kdoc-cloud.user.js 仍可用; 自动探测
+SCRIPT_FILE=${SCRIPT_FILE:-$( [ -f "$DIST/doc-cloud.user.js" ] && echo doc-cloud.user.js || echo kdoc-cloud.user.js )}
 
 # 1) fc-chrome(已在跑就复用)
 if ! curl -sf "localhost:$PORT_FC/health" >/dev/null 2>&1; then
@@ -25,10 +27,10 @@ curl -sf "localhost:$PORT_FC/health" >/dev/null || { echo "fc-chrome 未就绪, 
 # 2) 托管脚本目录: 每次都重启 http.server, 避免复用仍在托管旧目录的实例
 pkill -f "http.server $PORT_HTTP" 2>/dev/null || true; sleep 0.3
 (cd "$DIST" && nohup python3 -m http.server "$PORT_HTTP" --bind 127.0.0.1 >"$LOG_DIR/http.log" 2>&1 &)
-for _ in $(seq 1 10); do curl -sf "http://127.0.0.1:$PORT_HTTP/kdoc-cloud.user.js" >/dev/null 2>&1 && break; sleep 0.3; done
-curl -sf "http://127.0.0.1:$PORT_HTTP/kdoc-cloud.user.js" >/dev/null || { echo "脚本未托管成功: $DIST/kdoc-cloud.user.js"; exit 2; }
+for _ in $(seq 1 10); do curl -sf "http://127.0.0.1:$PORT_HTTP/$SCRIPT_FILE" >/dev/null 2>&1 && break; sleep 0.3; done
+curl -sf "http://127.0.0.1:$PORT_HTTP/$SCRIPT_FILE" >/dev/null || { echo "脚本未托管成功: $DIST/$SCRIPT_FILE"; exit 2; }
 # fc-chrome 的资产缓存按 URL 键控(命中即不重新下载), 脚本 URL 带上内容哈希做 cache-busting
-SCRIPT_URL="http://127.0.0.1:$PORT_HTTP/kdoc-cloud.user.js?v=$(md5sum "$DIST/kdoc-cloud.user.js" | cut -c1-12)"
+SCRIPT_URL="http://127.0.0.1:$PORT_HTTP/$SCRIPT_FILE?v=$(md5sum "$DIST/$SCRIPT_FILE" | cut -c1-12)"
 
 # 3) localverify(inject 模式), nonce 随机, 输出落盘
 NONCE="e2e-$(date +%s)-$RANDOM"
