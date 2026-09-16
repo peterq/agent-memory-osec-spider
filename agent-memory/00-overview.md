@@ -26,7 +26,7 @@ related:
 ## 2. 当前状态（最近 7 天；更早见 `current/changelog.md`）
 
 - 09-16 **五站爬虫 5/5 验收通过**，`integration/five-sites`@94030a0 待合并 → `knowledge/domain-站点-260916接入批次.md`
-- 09-16 **云端文档脚本迁入 NC-JS 已合入 main/master（OSS 上传待人工）** → `decisions/decision-2026-09-16-云端文档脚本迁入NC-JS.md`；**十项提案待确认合并** → `agent-tasks/2026-09-16-ten-proposals/`
+- 09-16 **云端文档脚本迁入 NC-JS 已合入（OSS 上传待人工）** → `decisions/decision-2026-09-16-云端文档脚本迁入NC-JS.md`；**十项提案待确认合并** → `agent-tasks/2026-09-16-ten-proposals/`
 - 09-16 **文档发现首轮完成**（达标 29 篇，批量待执行）→ `procedures/workflow-文档发现.md`
 - 09-15 **P5 阶段 D 灰度爬坡中**；xlLoadShare 修复上线，失效上报仍 dry run → `current/tasks.md`
 - 09-12 **🔴 事故：lifecycle_checker 误删 115.5 万 quark/ali 资源**，修复已部署，重爬回库 ≈56% → `lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md`
@@ -42,7 +42,7 @@ related:
 - **爬虫一律走 IP 代理池**，禁止本机直连；本地链路与两个坑见 `lessons/success-本地代理池打通.md`。反爬站门槛：单 IP ≥10 条/分钟。
 - 保活 `keepalive` 只在 `CommitResLink` 返回 nil 时续期。→ `lessons/success-爬虫保活语义.md`
 - 全站扫描**禁止启动即全量**（redis 记完成时间跳过）；5 个存量爬虫待改造，`feikuai` 合规。→ `decisions/decision-2026-09-03-全站扫描不在启动时触发.md`
-- 云端文档脚本源码在 NC-JS `apps/doc-cloud-spider`（不再依赖个人仓库）；上传 OSS 前先本机端到端。
+- 云端文档脚本源码在 NC-JS `apps/doc-cloud-spider`；上传 OSS 前先本机端到端。
 - 部署用 SPIDER 的 `deploy.sh`（ssh+docker）；**现役服务只能用 `./deploy.sh ps` 判断**。→ `procedures/workflow-部署.md`
 - NC-JS 是后台前端（qiankun + spiderAdmin 等 3 子应用），**不调 API 仓库 HTTP**，走 WebRTC 上的 gRPC 直连网关 `:7542`；鉴权已改 GitHub OAuth，RtcToken 降为兜底。→ `knowledge/architecture-nc-js.md`
 
