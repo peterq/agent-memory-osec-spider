@@ -19,6 +19,7 @@ related:
 > **原文叙述在各自的 session / decision 文件里**，本文件不复制正文。需要细节就按指针读那一个文件。
 
 ## 2026-09-16
+- 12:13 **[用户裁定「合并上线」] 十项提案 + 五站合入五仓库主分支并 push**（COMMON `0ead6c0`/`cd85518`、SPIDER `7acb24a`/`70bb955`/`7e4206c`、API `7154290`、STORAGE `3e0d490`、NC-JS `3ccd25d`），四仓 CI 全过；用新版 deploy.sh 逐站上线 5 爬虫（duanjuso/jsnoteclub@jenkins、xiaozi/qileso@res2、ddys@res1，三机首次迁到 releases/current 布局），健康检查全过；十项提案服务未重部 → `sessions/2026/2026-09-16-五站爬虫并行开发.md`、`current/risks.md` R5
 - 13:45 **五站爬虫并行开发**：duanjuso/xiaozi/qileso/jsnoteclub/ddys 基于 `integration/ten-proposals` 骨架各开 worktree，5/5 开发+验收通过（2 站返工：测试/probe 直连改走代理池），集成分支 `integration/five-sites` 待用户确认合并 → `sessions/2026/2026-09-16-五站爬虫并行开发.md`、`knowledge/domain-站点-260916接入批次.md`、`decisions/decision-2026-09-16-新站爬虫基于骨架集成分支开发.md`
 - 11:20 **云端文档脚本从个人仓库 userscripts 迁入 NC-JS `apps/doc-cloud-spider`**（源码/单测/验证脚本重排，产物与 OSS 对象名不变，单测 59 + 本机 fc-chrome 端到端通过）；11:45 用户确认后合入 nc-js main / SPIDER master 并 push，OSS 上传待人工 → `decisions/decision-2026-09-16-云端文档脚本迁入NC-JS.md`、`sessions/2026/2026-09-16-云端文档脚本迁入NC-JS.md`
 - 10:45 **站点发现第二轮**（COMMON worktree `site-discovery-260916`）：98 候选→18 深挖→5 站满足（duanjuso/xiaozi/qileso/jsnoteclub/ddys）+ lzpanx 待裁定；新增 `ratetest.py`/`fetchraw.py`，`sitescan` lastmod 统计、`panlink` 解 atob → `sessions/2026/2026-09-16-站点发现第二轮.md`、`lessons/failure-本地代理池薄导致连接失败误判为站点拒绝.md`

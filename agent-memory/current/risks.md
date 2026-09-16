@@ -3,7 +3,7 @@ title: 当前风险与阻塞
 type: risk
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-16T11:20:00+08:00
+updated_at: 2026-09-16T12:20:00+08:00
 priority: high
 keywords: [lifecycle_checker误删, 风险, 阻塞, 密钥, AK/SK, 生产, 测试, 依赖升级, 队列v2, 无回滚, 上线收尾]
 summary: 影响开发与运维安全的已知风险点；最高 R9 lifecycle_checker 误删 115.6 万资源（修复已上线、恢复待决策）
@@ -89,9 +89,10 @@ SPIDER `services/devops/` 下按时间分了 `2408/2409/2511/26/...` 多个目�
 **处理**：部署前确认该服务是否可短暂中断；gateway 有两台（res1/res2），可逐台执行。
 [2026-09-16 进展] 提案10已在三仓库 `feat/deploy-rollback` 分支（`spider/api/storage-wt-deploy-rollback`
 worktree）实现 releases/current 发布目录+`rollback`+部署后健康检查+多机逐台灰度，方案与用法见各仓库
-`scripts/deploy.md`；**只做过 `--dry-run` 验证，未在任何主机上实际执行过**，合并 master 前需要用户在
-`osec-restest` 演练，验收清单见提交汇报。中断窗口本身（`docker rm -f` 后到新容器起来之间）未消除，
+`scripts/deploy.md`。中断窗口本身（`docker rm -f` 后到新容器起来之间）未消除，
 新增的是"起错了/起不来能自动回滚+不再需要人工判断上一版是谁"。
+[2026-09-16 12:07 进展] 新机制已随十项提案合入 master，并在 osec-jenkins/res2/res1 三机上**首次真实执行**（部署 5 个新站爬虫，未经 restest 演练，健康检查全过）；三机顶层旧 `spider`/`spider.old` 保留，存量容器仍用旧布局运行。
+⚠️ 新增注意：`current` 软链是**按主机共享**的——同一台机上每次部署任何 service 都会把 `current` 切到最新发布；已运行容器不受影响，但**容器重启时会加载当时的 `current`**，因此某个 service 的 `rollback` 会连带影响同机其它用 `./current/spider` 起的容器（重启后）。多 service 同机时回滚要一起看。
 
 ## R6 STORAGE 依赖版本被 `go mod tidy` 顺带升级（新增）
 

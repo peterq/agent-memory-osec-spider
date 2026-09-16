@@ -3,10 +3,10 @@ title: 生产部署流程
 type: procedure
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-16T10:50:00+08:00
+updated_at: 2026-09-16T12:25:00+08:00
 priority: medium
-keywords: [auto模式, 权限分类器, 部署, config.yaml 宿主机改配置, fail-fast, lc-check, deploy.sh, docker, ssh, OSS 配置, 主机, supervisor, 主机选型, 负载, 重启前检查, ES, 外部依赖]
-summary: SPIDER deploy.sh 的常规用法、服务到主机的映射、现役服务判据、新服务选主机、配置分发与安全提醒；历次上线踩坑记录已归档到 archive/2026/workflow-部署-历史补充.md
+keywords: [部署, deploy.sh, releases/current, rollback, 健康检查, auto模式, 权限分类器, docker, ssh, OSS 配置, 主机选型, 负载, 重启前检查]
+summary: SPIDER deploy.sh 用法（09-16 起 releases/current + rollback + 健康检查）、服务→主机映射、现役判据、选主机、配置分发与安全提醒
 questions:
   - 部署 / 上线怎么操作，日志在哪看
   - 新服务该放哪台机器
@@ -20,6 +20,10 @@ related:
 # 生产部署流程
 
 主脚本：`/home/peterq/dev/projects/1s/osec-spider-go/deploy.sh`（bash，依赖 ssh 免密 + fzf/whiptail）。
+**[2026-09-16 起新机制已上线]**：`deploy` 把二进制放到远端 `releases/<时间戳>-<sha>/spider`、切 `current` 软链、容器用 `./current/spider <cmd>` 起、20 s 健康检查（容器 running + 进程存活，gateway 另探 :8082），失败自动回滚；新增 `rollback`/`releases`/`health` 子命令与全局 `--dry-run`（放第一个参数位）。正本 SPIDER `scripts/deploy.md`。
+- 首次真实执行：2026-09-16 12:07~12:13 在 osec-jenkins/res2/res1 部署 5 个新站爬虫（未经 restest 演练，全部健康）；三机顶层旧 `spider`/`spider.old` 仍在，存量容器仍按旧布局跑，重部时自然迁移。
+- ⚠️ `current` 按主机共享：同机任一 service 部署都会切 `current`，已运行容器不受影响，但容器**重启时**会加载当时的 `current`；`rollback` 某 service 会连带同机其它 `./current/spider` 容器（重启后）。
+- 部署输出含 `OSS_CONFIG_URL`（ak/sk），管道里务必打码；ssh 到 res1/res2 偶发 `Connection timed out`（瞬时），脚本会继续后续步骤，结束后用 `docker ps` 复核。
 STORAGE / API 各自也有 `deploy.sh`。历次上线的一次性踩坑记录（生命周期上线、网关多次重部、代理池监控上线等）
 已归档到 `archive/2026/workflow-部署-历史补充.md`（只按章节取），本文件只留常规流程与仍普遍适用的判据/提醒。
 

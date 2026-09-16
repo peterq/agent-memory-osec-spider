@@ -3,10 +3,10 @@ title: 未解决的问题
 type: question
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-16T11:45:00+08:00
+updated_at: 2026-09-16T12:25:00+08:00
 priority: high
-keywords: [待确认, 五站爬虫, 合并顺序, 部署主机, doc-cloud-spider, lzpanx, robots, 事故恢复, 用户确认]
-summary: 待确认：五站合并/部署、云端脚本迁移合并、灰度误回落防复发、lzpanx robots、账号池续期
+keywords: [待确认, 十项提案重部, 存量测试代理, duanjuso速率, lzpanx, robots, 灰度误回落, 账号池]
+summary: 待确认：十项提案服务重部、存量测试改代理、duanjuso 速率、lzpanx robots、灰度误回落、账号池
 questions:
   - 当前有哪些待用户确认的问题
 load: on-demand
@@ -28,16 +28,13 @@ related:
 用户答复：
 
 
-## 站点发现第二轮：立项与 robots 裁定（2026-09-16）
+## 站点发现 / 五站爬虫 收尾（2026-09-16）
 
-正本 COMMON worktree `site-discovery-260916` 的 `site-discovery/history.md` 与 `260916/*.md`；摘要 `sessions/2026/2026-09-16-站点发现第二轮.md`。
-
-- ✅ 5 站已按用户指令全部开发并验收通过（`knowledge/domain-站点-260916接入批次.md`）。新增待确认：
-  - [待确认] SPIDER 合并顺序：先合十项提案 `integration/ten-proposals` → 各站点分支撤销 `temp(site) go.mod` 提交 → 合 `integration/five-sites`（结果见 `agent-tasks/2026-09-16-five-sites/97-merge-result.md`）；是否 push。
-  - [待确认] 5 个新爬虫的部署主机与 `deploy.sh` 接入（与 2609 批次 6 站一样尚未接入）。
-  - [待确认] 存量 6 站的联网测试仍是 `NeedDirect:true` 直连，是否也改成走代理池（本批已全部改）。
+- ✅ [用户裁定 09-16「合并上线」] 五站与十项提案已合入并 push，5 爬虫已上线（`current/tasks.md`）。
+- [待确认] 十项提案涉及的网关/API/STORAGE/NC-JS **是否重部**（代码已合，前置项见 `agent-tasks/2026-09-16-ten-proposals/95-merge-plan.md`「上线前置项」）。
+- [待确认] 存量 6 站的联网测试仍是 `NeedDirect:true` 直连，是否也改成走代理池（新 5 站已全部改）。
 - [待确认] `www.lzpanx.com`（67.9 万条、其余 5 条达标）robots 声明 `Crawl-delay: 20`：是否遵守？遵守则单 IP 3 条/分钟需靠代理池多 IP 并行；不遵守则直接满足第 6 条。
-- [待确认] worktree 分支 `worktree-site-discovery-260916`（报告 + 工具改动）是否合并 master。
+- [待确认] duanjuso 线上抓取速率约 1 页/秒级且受代理抖动拖慢，150 万存量按此要数月：是否放宽 `services.duanjuso.minRequestInterval`/并发（需在线上配置加节）。
 
 用户答复：
 

@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-16T12:12:46+08:00
+updated_at: 2026-09-16T12:17:45+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -27,7 +27,7 @@ load: always
 ## current/ (6)
 - current/tasks.md | crit | 2026-09-16 | 仍在推进/阻塞/待决策：五站爬虫待确认合并、站点发现收尾、文档发现待批量执行、腾讯文档与十项提案待确认合并、P5 灰度爬坡、误删事故收尾；… | 任务、进度、待办
   ? 当前该做什么，有哪些待办
-- current/open-questions.md | high | 2026-09-16 | 待确认：五站合并/部署、云端脚本迁移合并、灰度误回落防复发、lzpanx robots、账号池续期 | 待确认、五站爬虫、合并顺序
+- current/open-questions.md | high | 2026-09-16 | 待确认：十项提案服务重部、存量测试改代理、duanjuso 速率、lzpanx robots、灰度误回落、账号池 | 待确认、十项提案重部、存量测试代理
   ? 当前有哪些待用户确认的问题
 - current/risks.md | high | 2026-09-16 | 影响开发与运维安全的已知风险点；最高 R9 lifecycle_checker 误删 115.6 万资源（修复已上线、恢复待决策） | lifecycle_checker误删、风险、阻塞
   ? 密钥、安全相关的风险在哪看
@@ -92,7 +92,7 @@ load: always
 - procedures/troubleshooting-代理池总览无数据.md | medi | 2026-09-16 | 后台代理池页全 0 时三步定位：网关 dataSource → 上报侧是否部署 → tools 探针 | proxy-admin-check、代理池总览、proxy_admin
 - procedures/workflow-密钥治理约定.md | medi | 2026-09-16 | 四仓库密钥约定：测试凭据 *.hide.json、配置 ${VAR} 环境变量覆盖、gitleaks 三件套；自定义规则与 [extend… | 密钥治理、gitleaks、hide.json
 - procedures/workflow-带登录态的浏览器自动化.md | medi | 2026-09-12 | 如何启动/复用一个带登录态的调试Chrome并用CDP脚本驱动它, 含"默认profile会被安全策略拦截"的前提坑 | agent-browser、cdp.py、CDP
-- procedures/workflow-部署.md | medi | 2026-09-16 | SPIDER deploy.sh 的常规用法、服务到主机的映射、现役服务判据、新服务选主机、配置分发与安全提醒；历次上线踩坑记录已归档到 … | auto模式、权限分类器、部署
+- procedures/workflow-部署.md | medi | 2026-09-16 | SPIDER deploy.sh 用法（09-16 起 releases/current + rollback + 健康检查）、服务→主机… | 部署、deploy.sh、releases/current
 
 ## lessons/ (33)
 - lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md | crit | 2026-09-15 | checker 用 task.Id(md5) 而非 ShareId 探测，115.5 万条 quark/ali 误删；bnd 再因「违规」… | lifecycle_checker、误删、dry run
@@ -170,8 +170,8 @@ load: always
   ? 我要改入库逻辑，查资源为什么没写进去 / ES 索引幂等/version 判重是怎么回事
 - knowledge/domain-在线文档免登录取数.md | high | 2026-09-16 | 腾讯 opendoc(sheet 逐 tab、zlib 分块)/飞书 SSR/石墨 lizard-api/金山 WPS JSAPI 四平台… | 腾讯文档、dop-api/opendoc、金山文档
   ? 腾讯文档表格/文档怎么不登录拿到全部内容和修改时间 / 金山文档、飞书、石墨能不能免登录抓正文，各用什么接口 / 腾讯 sheet 多个子表
-- knowledge/domain-站点-260916接入批次.md | high | 2026-09-16 | 第二批 5 站的子命令、全量/增量策略、实测规模与坑；基于 sitecrawler 骨架，待合并未上线 | 站点接入、duanjuso、xiaozi
-  ? duanjuso/xiaozi/qileso/jsnoteclub/ddys 各用什么策略，坑是什么
+- knowledge/domain-站点-260916接入批次.md | high | 2026-09-16 | 第二批 5 站的子命令、全量/增量策略、实测规模与坑；2026-09-16 已上线（jenkins/res2/res1） | 站点接入、duanjuso、xiaozi
+  ? duanjuso/xiaozi/qileso/jsnoteclub/ddys 各用什么策略、部署在哪台机、坑是什么
 - knowledge/domain-站点-2609接入批次.md | high | 2026-09-15 | 本批 5 个站点的形态、子命令、规模、各自的坑与实现状态；详细规格见各自 PRD | dyyjmax、fuxipan、feikuai
   ? dyyjmax/fuxipan/feikuai/kuakes 是什么站，各自的坑是什么 / 2609 批次都接了哪些站
 - knowledge/domain-网盘有效性检测.md | high | 2026-09-16 | 两套有效性检测已合并为 COMMON panvalid 一套实现（分支 feat/valid-unify，未合并 master）；本文件存… | panvalid、有效性检测、validShareLink
