@@ -22,19 +22,20 @@ if ! curl -sf "localhost:$PORT_FC/health" >/dev/null 2>&1; then
 fi
 curl -sf "localhost:$PORT_FC/health" >/dev/null || { echo "fc-chrome 未就绪, 见 $LOG_DIR/fcchrome.log"; exit 2; }
 
-# 2) 托管脚本目录(已在跑就复用)
-if ! curl -sf "http://127.0.0.1:$PORT_HTTP/kdoc-cloud.user.js" >/dev/null 2>&1; then
-  (cd "$DIST" && nohup python3 -m http.server "$PORT_HTTP" --bind 127.0.0.1 >"$LOG_DIR/http.log" 2>&1 &)
-  sleep 0.5
-fi
+# 2) 托管脚本目录: 每次都重启 http.server, 避免复用仍在托管旧目录的实例
+pkill -f "http.server $PORT_HTTP" 2>/dev/null || true; sleep 0.3
+(cd "$DIST" && nohup python3 -m http.server "$PORT_HTTP" --bind 127.0.0.1 >"$LOG_DIR/http.log" 2>&1 &)
+for _ in $(seq 1 10); do curl -sf "http://127.0.0.1:$PORT_HTTP/kdoc-cloud.user.js" >/dev/null 2>&1 && break; sleep 0.3; done
 curl -sf "http://127.0.0.1:$PORT_HTTP/kdoc-cloud.user.js" >/dev/null || { echo "脚本未托管成功: $DIST/kdoc-cloud.user.js"; exit 2; }
+# fc-chrome 的资产缓存按 URL 键控(命中即不重新下载), 脚本 URL 带上内容哈希做 cache-busting
+SCRIPT_URL="http://127.0.0.1:$PORT_HTTP/kdoc-cloud.user.js?v=$(md5sum "$DIST/kdoc-cloud.user.js" | cut -c1-12)"
 
 # 3) localverify(inject 模式), nonce 随机, 输出落盘
 NONCE="e2e-$(date +%s)-$RANDOM"
 OUT="$LOG_DIR/verify-$(echo "$PAGE" | md5sum | cut -c1-8)-$(date +%H%M%S).log"
 set +e
 (cd "$FC_DIR" && go run ./cmd/localverify -mode inject -timeout "$TIMEOUT" \
-   -fc "ws://127.0.0.1:$PORT_FC/chrome" -script "http://127.0.0.1:$PORT_HTTP/kdoc-cloud.user.js" \
+   -fc "ws://127.0.0.1:$PORT_FC/chrome" -script "$SCRIPT_URL" \
    -page "$PAGE" -nonce "$NONCE") 2>&1 | tee "$OUT"
 RC=${PIPESTATUS[0]}
 set -e
