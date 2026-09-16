@@ -3,7 +3,7 @@ title: NC-JS 架构：与 SPIDER 网关的对接方式与鉴权
 type: knowledge
 status: active
 created_at: 2026-09-12T11:25:00+08:00
-updated_at: 2026-09-12T12:10:00+08:00
+updated_at: 2026-09-16T17:10:00+08:00
 priority: high
 keywords:
   - WebRTC
@@ -16,6 +16,7 @@ keywords:
   - RtcToken
   - useGwClient
   - proto 生成
+  - HealthRpc
 summary: NC-JS 后台前端与 SPIDER gateway 之间没有 REST，只有 WebRTC DataChannel 上自实现的 gRPC 传输；鉴权已改 GitHub OAuth（代码已合并，未部署）；含 proto 生成脚本用法与已知坑
 questions:
   - 前端怎么连后端，网关 IP 换了改哪
@@ -78,7 +79,10 @@ related:
 | spiderAdmin(队列监控) | `spider.queueAdmin.QueueAdminRpc` | `overview` / `listTasks` / `getTask` / `getDetailSchemas` / `queueStats` / 批量重推与删除 / 日志与审计查询 |
 | spiderAdmin(资源生命周期) | `spider.lifecycle.LifecycleRpc` | `Overview` / `QueryResource` / `ListResources` / `TableStats` / `ListEvents` / `TableDiagnostics` / `ListJobs`/`GetJob`/`CreateJob`/`ControlJob` / `GetParams`/`UpdateParams` 等，详见 `architecture-api.md` |
 | panShareDownload | `DownloadSchedulerRpc` | `monitorConfig`(返回 grafana url+账号) / `listDownloadGroup` / `queryShareFilePagination` / `getDownloadGroupInfo` / 账号增删改 |
+| spiderAdmin(健康监测, 2026-09-16 新增) | `spider.health.HealthRpc` | `accountHealth`/`recheckAccount`(账号池探测)、`siteHealth`/`setSiteDownlineCandidate`(站点成功率与下线候选) |
 | 全部 | `spider.SpiderRpc` | `pong`(心跳/连通性) / `getDefaultClientName` / `setClientName` |
+
+[事实 2026-09-16] 表里未列出的 `search_admin`(搜索监控) / `proxy_admin`(代理池) 同样已并入网关, 接入方式与上面几个一致(同一条 transport + 各自 mock 开关), 本表未逐一补全, 以代码 `spidergw.ts` 为准。
 
 [事实] 浏览器里直连网盘接口时（panShareDownload 的百度网盘解析）会经过一个 CORS 代理
 `https://fc-resource-node-api.krzb.net/proxy`（`admin/panShareDownload/src/pan/panUtil.ts`）。

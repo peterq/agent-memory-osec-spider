@@ -3,10 +3,10 @@ title: NC-JS 架构：qiankun 微前端机制与后台页面写法
 type: knowledge
 status: active
 created_at: 2026-09-12T11:25:00+08:00
-updated_at: 2026-09-16T08:15:00+08:00
+updated_at: 2026-09-16T17:10:00+08:00
 priority: high
-keywords: [qiankun, 微前端, spiderAdmin, 后台页面, 新增页面, 队列监控, 资源生命周期, 架构图页, res_lc, 分表, 资源列表, 事件流水, 表诊断, qiankun-head, 样式丢失]
-summary: qiankun 主应用注册/子应用生命周期、本地开发流程；spiderAdmin 新增后台页面写法与落点（队列监控、资源生命周期各页、架构图页、res_lc 分表数据只读页面）；页面/样式相关坑
+keywords: [qiankun, 微前端, spiderAdmin, 后台页面, 账号健康, 站点健康, 新增页面, 队列监控, 资源生命周期, 架构图页, res_lc, 分表, absThreshold]
+summary: qiankun 主应用注册/子应用生命周期、本地开发流程；spiderAdmin 新增后台页面写法与落点（队列监控、资源生命周期各页、架构图页、res_lc 分表、账号健康/站点健康页）；页面/样式相关坑
 questions:
   - 后台前端加一个页面该怎么加
   - qiankun 子应用 / apps.json 是什么
@@ -153,6 +153,15 @@ related:
 | `SearchGuard` | 匿名搜索防护（状态/手动开关/参数热更新/事件） | `pages/search/SearchGuardPage.tsx` | `GuardStatus/SetAnonymous/UpdateGuardParams` |
 
 共用 `pages/common/TimeRangeBar.tsx`（快捷档 + 自定义区间 + 桶粒度 + 自动刷新）；`searchAdminRpc` 由 `spidergw.ts useGwClient()` 创建，mock 开关 `searchAdminMock`（localStorage）+ 顶栏 Tag。`source=sls-scan`/`truncated`/`warnings` 都有可见提示（Top10 榜单独提示）。[待确认] 页面只跑过 mock 冒烟测试，未在浏览器实测真实网关。
+
+## 5.1 账号健康 / 站点健康页面（2026-09-16 新增，提案 6/7）
+
+| MenuKeys | 页面 | 组件 | RPC |
+|---|---|---|---|
+| `AccountHealth` | 账号健康（新组「健康监测」`grp-health`）：网盘转存账号探测列表 + 按类型筛选 + 手动重检 | `pages/health/AccountHealthPage.tsx` | `HealthRpc.AccountHealth/RecheckAccount` |
+| `SiteHealth` | 站点健康：队列名/关键词站点近1h/24h成功率、连续零成功时长、确认知悉/忽略重置下线候选 | `pages/health/SiteHealthPage.tsx` | `HealthRpc.SiteHealth/SetSiteDownlineCandidate` |
+
+`healthRpc` 同样在 `spidergw.ts useGwClient()` 里创建，mock 开关 `healthMock`（`spiderGw/health.ts` + `healthMock.ts`），顶栏「健康监测 Mock」紫色 Tag，与 lifecycle/searchAdmin 同款接入方式。两页均无自带时间范围选择，固定 15 秒自动刷新（`isShow` 门控）。写操作（重检/确认候选/忽略重置）都走 `useModalFactory()` 二次确认。`queue_admin_rpc.AlertRuleConfig` 同批新增 `absThreshold`（绝对阈值，无全局缺省，只能按队列覆盖开启），已加进 `pages/queue/AlertRulesPage.tsx` 的字段清单。TS 契约生成需临时把 `packages/catalyst/scripts/devops/protc_gen.sh` 的 proto 来源指向对应 COMMON worktree 并把 `health_rpc/health.proto` 加入生成列表（脚本改动不提交，只提交生成物）。**踩坑**：health.proto 里 `success1h`/`fail1h`/`success24h`/`fail24h` 字段被 protobuf-ts 转成 `success1H`/`fail1H`/`success24H`/`fail24H`（数字后接小写字母会被大写化），不是 `success1h` 原样。
 
 ## 6. 已知坑 / 待确认（页面 / 样式相关）
 

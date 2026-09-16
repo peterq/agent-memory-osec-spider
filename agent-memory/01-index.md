@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-16T08:52:21+08:00
+updated_at: 2026-09-16T08:53:23+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -160,7 +160,7 @@ load: always
   ? 新版 FC Chrome 部署在哪、地址、健康检查 / cdp3 的 NAS 目录/extensions=/profile= 怎么用
 - knowledge/architecture-nc-js-qiankun与后台页面.md | high | 2026-09-16 | qiankun 主应用注册/子应用生命周期、本地开发流程；spiderAdmin 新增后台页面写法与落点（队列监控、资源生命周期各页、架构图页、res_lc … | qiankun、微前端、spiderAdmin
   ? 后台前端加一个页面该怎么加 / qiankun 子应用 / apps.json 是什么 / 后台哪里看 res_lc_* 分表数据
-- knowledge/architecture-nc-js-网关对接.md | high | 2026-09-12 | NC-JS 后台前端与 SPIDER gateway 之间没有 REST，只有 WebRTC DataChannel 上自实现的 gRPC 传输；鉴权已改 G… | WebRTC、gRPC、protobuf-ts
+- knowledge/architecture-nc-js-网关对接.md | high | 2026-09-16 | NC-JS 后台前端与 SPIDER gateway 之间没有 REST，只有 WebRTC DataChannel 上自实现的 gRPC 传输；鉴权已改 G… | WebRTC、gRPC、protobuf-ts
   ? 前端怎么连后端，网关 IP 换了改哪 / 前端 proto 怎么生成 / 后台登录 GitHub OAuth 怎么接的，gwToken / RtcToken 兜底是什么
 - knowledge/architecture-nc-js.md | high | 2026-09-12 | NC-JS 前端 mono repo 的仓库定位、工程栈、分包布局（admin/*、packages/*）与构建/OSS/Cloudflare 部署机制；qi… | NC-JS、前端、pnpm
 - knowledge/architecture-queue-admin.md | high | 2026-09-15 | 队列 v2 的监控管理系统：已并入网关进程的架构、端口、schema 解耦机制、抢主锁、巡检工具与已知数据缺口 | queue-admin、队列监控、QueueAdminRpc
