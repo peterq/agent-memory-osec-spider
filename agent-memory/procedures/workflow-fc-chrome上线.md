@@ -3,13 +3,9 @@ title: fc-chrome 构建/推送/部署/加域名路由的实际可行路径
 type: procedure
 status: active
 created_at: 2026-09-13T11:00:00+08:00
-updated_at: 2026-09-13T16:45:00+08:00
+updated_at: 2026-09-16T09:30:00+08:00
 priority: high
 keywords: [fc-chrome, serverless-devs, ACR, jenkins 中转, fc3-domain, seedprep, 函数计算部署]
-questions:
-  - 本机推不了 ACR 时怎么把 fc-chrome 镜像弄上去
-  - 怎么给共用 FC 域名加路由不碰证书
-  - fc-chrome 只改 Go 代码怎么快速上线/本地联调
 summary: fc-chrome 上线链路：本机构建 → docker save/rsync → ACR 推镜像 → s deploy → 共用域名路由 → 健康检查与真实文档终验
 load: on-demand
 related:

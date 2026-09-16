@@ -3,7 +3,7 @@ title: SPIDER 队列约定（队列 v2，网关统一调度）
 type: knowledge
 status: active
 created_at: 2026-09-12T11:25:00+08:00
-updated_at: 2026-09-12T12:10:00+08:00
+updated_at: 2026-09-16T09:30:00+08:00
 priority: medium
 keywords: [队列, 队列v2, resourcePreCheck, gw_remote_queue, res_scheduler, keywordSubscribed, gateway_v2, QueueDefine, 去重, taskKey, consumer, devops_migrate_legacy_queues]
 summary: SPIDER 队列 v2 的固定队列名、去重键、消费者并发度与通用队列接口约定

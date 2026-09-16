@@ -3,7 +3,7 @@ title: 参考：GitHub OAuth App 配置（后台登录）
 type: knowledge
 status: active
 created_at: 2026-09-08T16:00:00+08:00
-updated_at: 2026-09-12T12:10:00+08:00
+updated_at: 2026-09-16T09:30:00+08:00
 priority: medium
 keywords:
   - GitHub OAuth App

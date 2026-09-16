@@ -3,7 +3,7 @@ title: 项目总览
 type: overview
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-16T09:15:00+08:00
+updated_at: 2026-09-16T09:30:00+08:00
 priority: critical
 keywords: [网盘资源爬取, 版权取证, COMMON, SPIDER, STORAGE, API, NC-JS]
 summary: 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件
@@ -75,14 +75,11 @@ related:
 - 跨包重构切三阶段，hub 代码主控逐行审 → `lessons/patterns-并行重构的分阶段切分.md`
 - 失效判定看业务码不看文案，判不准就报错；样本 15 条起 → `lessons/success-网盘失效判定原则.md`
 - 监控/埋点初始化必须可降级，且要覆盖最彻底的失败路径 → `lessons/failure-旁路能力初始化拖垮主流程.md`
-- 前端验收跑清空 localStorage 的首访 + 桩网关/CDP 联调 → `lessons/success-桩网关加cdp浏览器做登录链路联调.md`
-- 「拆分/隔离」需求先复述拆的对象，护栏做在编译期 → `lessons/failure-把拆配置理解成拆文件.md`
 - NC-JS `pnpm build` 会真实上传生产 OSS，验证前先关 `deploy` → `lessons/failure-ncjs构建脚本会自动上传OSS.md`
 - **FC 上 WebSocket 断开即冻结实例，收尾/写回必须在连接内做（拦截 `Browser.close`）** → `lessons/failure-FC实例在WebSocket断开后立即冻结.md`
 - 新站点调研先挖 JS bundle 接口、`total` 须用 sitemap 对账；**结论有保质期** → `procedures/workflow-新站点调研.md`
 - 在线文档站解析优先 fetch 页面自带接口（performance 资源列表 + bundle 搜路径常量）→ `lessons/success-在线文档解析优先用页面自带接口.md`
 - **SLS `field:value` 是分词匹配，统计口径要用 SQL `where` 等值过滤** → `lessons/failure-SLS字段检索按分词匹配误命中其他stage.md`
-- 生产 API 探针按 res-api 三级漏桶算节奏 → `lessons/failure-v3首页重合度受前缀展开分片彩票影响.md`
 - 邮件脚本直接 `scripts/mail/notify.py` 调用，不用 `python3 x.py`；发送类脚本禁止静默降级 → `lessons/failure-notify脚本静默降级把原始Markdown发成邮件.md`
 
 ## 7. 待解决问题

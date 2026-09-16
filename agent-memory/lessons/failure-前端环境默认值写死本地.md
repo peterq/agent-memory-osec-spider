@@ -3,7 +3,7 @@ title: 失败经验：前端网关地址默认值写死"本地环境"下标
 type: lesson
 status: active
 created_at: 2026-09-08T16:10:00+08:00
-updated_at: 2026-09-08T16:10:00+08:00
+updated_at: 2026-09-16T09:30:00+08:00
 priority: high
 keywords:
   - gwEndpoint

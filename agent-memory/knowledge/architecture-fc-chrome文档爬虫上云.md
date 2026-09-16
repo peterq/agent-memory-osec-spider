@@ -3,7 +3,7 @@ title: fc-chrome（阿里云 FC Chrome 运行环境）与云端金山文档爬�
 type: knowledge
 status: active
 created_at: 2026-09-13T11:00:00+08:00
-updated_at: 2026-09-16T09:15:00+08:00
+updated_at: 2026-09-16T09:30:00+08:00
 priority: high
 keywords: [fc-chrome, nc-app-prod-cdp3, Tampermonkey, kdoc.user.js, fc-resource-node-api.krzb.net, doc_crawler, 函数计算, NAS, CDP3DATA, extensions=, profile=]
 questions:

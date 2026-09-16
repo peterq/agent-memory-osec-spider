@@ -3,7 +3,7 @@ title: 失败经验：品牌版 Chrome 137+ 忽略 --load-extension、138+ 用�
 type: lesson
 status: active
 created_at: 2026-09-13T11:00:00+08:00
-updated_at: 2026-09-16T09:00:00+08:00
+updated_at: 2026-09-16T09:30:00+08:00
 priority: high
 keywords: [Chrome, load-extension, ExtensionSettings, Tampermonkey, @match, 302 重定向, Allow User Scripts, headless, 企业策略]
 questions:

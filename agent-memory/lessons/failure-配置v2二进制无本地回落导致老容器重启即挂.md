@@ -3,7 +3,7 @@ title: 失败经验：配置 v2 二进制无本地回落，换宿主机 spider �
 type: lesson
 status: active
 created_at: 2026-09-08T15:10:00+08:00
-updated_at: 2026-09-09T11:05:00+08:00
+updated_at: 2026-09-16T09:30:00+08:00
 priority: high
 keywords: [配置 v2, OSS_CONFIG_URL, config.yaml, 回落, crash-loop, deploy.sh, set -e, 半完成态, url_check, dl_download]
 summary: v2 二进制只认 OSS_CONFIG_URL/LOCAL_CONFIG_PATH 不读宿主机旧配置，老容器重启即挂；需本地回落

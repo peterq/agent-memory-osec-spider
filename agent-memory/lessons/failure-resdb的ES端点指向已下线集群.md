@@ -3,7 +3,7 @@ title: 失败经验：osec-resdb 的 ES 端点指向已下线集群，fail-fast 
 type: lesson
 status: active
 created_at: 2026-09-05T12:20:00+08:00
-updated_at: 2026-09-05T12:20:00+08:00
+updated_at: 2026-09-16T09:30:00+08:00
 priority: high
 keywords:
   - osec-resdb

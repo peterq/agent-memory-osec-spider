@@ -3,13 +3,9 @@ title: 记忆仓库 scripts/ 脚本清单
 type: procedure
 status: active
 created_at: 2026-09-13T20:10:00+08:00
-updated_at: 2026-09-15T15:50:00+08:00
+updated_at: 2026-09-16T09:30:00+08:00
 priority: medium
 keywords: [scripts, 邮件汇报, notify.py, git-hooks, commit-msg, 违禁词, claude-rc, remote-control, systemd, notify-admin, agent-browser, cdp]
-questions:
-  - 记忆仓库 scripts/ 有哪些脚本，各做什么
-  - 怎么给用户发进度/异常邮件, Markdown 怎么渲染成邮件
-  - 怎么后台启动 Claude Remote Control 会话
 summary: MEMORY 仓库 scripts/ 下可复用脚本一览（git-hooks 提交信息违禁词钩子、claude-rc systemd 托管 Remote Control、notify-admin 裸 HTML 邮件、mail/notify.py Markdown 渲染邮件汇报、agent-browser/cdp 浏览器、mem 记忆工具、xl_share_probe 迅雷分享探针）
 load: on-demand
 related:

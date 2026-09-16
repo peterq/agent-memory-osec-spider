@@ -3,12 +3,9 @@ title: 失败经验：FC 在 WebSocket 断开、调用结束后立刻冻结实�
 type: lesson
 status: active
 created_at: 2026-09-13T14:40:00+08:00
-updated_at: 2026-09-13T16:45:00+08:00
+updated_at: 2026-09-16T09:30:00+08:00
 priority: high
 keywords: [FC 冻结, WebSocket, Browser.close, 持久化 profile, 冻结实例, 断开即冻结, custom-container, instanceConcurrency]
-questions:
-  - FC 上 WebSocket 断开后 handler 收尾代码为什么不执行
-  - fc-chrome profile= 为什么要求客户端先发 Browser.close
 summary: 客户端断开 WebSocket 后 FC 立即冻结实例，收尾/写回必须在连接内完成（拦截 Browser.close）
 load: on-demand
 related:

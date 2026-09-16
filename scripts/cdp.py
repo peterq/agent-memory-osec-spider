@@ -6,6 +6,7 @@
 用法:
     ./scripts/cdp.py tabs                        # 列出页面标签(序号/标题/地址)
     ./scripts/cdp.py nav <url> [--tab N]         # 当前(或第 N 个)标签导航到 url 并等加载完成
+                                                 # --tab 也可给 tabs 输出的 target id(前缀即可), 多会话共用浏览器时序号会漂移
     ./scripts/cdp.py new <url>                   # 新开标签
     ./scripts/cdp.py eval '<js 表达式>' [--tab N] # 在页面里求值, 打印 JSON 结果(支持 await)
     ./scripts/cdp.py text [--tab N] [--max 4000] # 打印 body.innerText
@@ -53,7 +54,14 @@ async def with_page(idx, fn):
     ps = pages()
     if not ps:
         raise SystemExit("没有可用的页面标签, 先跑 ./scripts/agent-browser.sh start")
-    target = ps[idx]
+    # --tab 既可以是序号, 也可以是 /json/list 里的 target id(浏览器被多个会话共用时序号会漂移, 用 id 更稳)
+    if isinstance(idx, str):
+        found = [t for t in ps if t["id"] == idx or t["id"].startswith(idx)]
+        if not found:
+            raise SystemExit("找不到 id 为 %s 的标签, 用 tabs 命令查看" % idx)
+        target = found[0]
+    else:
+        target = ps[idx]
     async with websockets.connect(target["webSocketDebuggerUrl"], max_size=64 * 1024 * 1024) as ws:
         return await fn(ws)
 
@@ -95,11 +103,12 @@ def main():
         print(__doc__)
         return
     cmd = sys.argv[1]
-    tab = arg("--tab", 0, int)
+    tab_raw = arg("--tab", "0")
+    tab = int(tab_raw) if tab_raw.isdigit() else tab_raw
 
     if cmd == "tabs":
         for i, t in enumerate(pages()):
-            print(i, "|", (t.get("title") or "")[:60], "|", (t.get("url") or "")[:120])
+            print(i, "|", t["id"][:8], "|", (t.get("title") or "")[:60], "|", (t.get("url") or "")[:120])
         return
 
     if cmd == "new":

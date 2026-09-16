@@ -3,7 +3,7 @@ title: 失败经验：握手回包附加字段被 RTC 传输层丢弃 / 失败�
 type: lesson
 status: active
 created_at: 2026-09-08T16:00:00+08:00
-updated_at: 2026-09-12T22:36:00+08:00
+updated_at: 2026-09-16T09:30:00+08:00
 priority: high
 keywords:
   - RtcTransport

@@ -3,7 +3,7 @@ title: 失败经验：notify.py 因解释器不同静默降级，把原始 Markd
 type: lesson
 status: active
 created_at: 2026-09-16T08:30:00+08:00
-updated_at: 2026-09-16T08:30:00+08:00
+updated_at: 2026-09-16T09:30:00+08:00
 priority: high
 keywords:
   - notify.py

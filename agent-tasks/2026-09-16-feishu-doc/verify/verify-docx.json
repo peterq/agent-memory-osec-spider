@@ -1,0 +1,568 @@
+[
+ {
+  "url": "https://mi6gd8l8fvo.feishu.cn/wiki/PqdDwDNFhiN986kzAiacziy3nsb",
+  "status": "ok",
+  "elapsed": 2.4,
+  "hops": [
+   "https://mi6gd8l8fvo.feishu.cn/wiki/PqdDwDNFhiN986kzAiacziy3nsb"
+  ],
+  "docType": "feishuDocx",
+  "version": "eee34c3ad1c247d33dc63f22a80e25aa8415260d",
+  "linkCount": 8,
+  "links_collected": 8,
+  "by_type": {
+   "quark": 5,
+   "xunleipan": 3
+  },
+  "warning": null,
+  "message": null,
+  "permanent": null,
+  "events": [
+   {
+    "event": "start",
+    "site": "feishu",
+    "t": 0.7
+   },
+   {
+    "event": "progress",
+    "scanned": 0,
+    "stage": "docx-fetch",
+    "calls": 1,
+    "blocks": 38,
+    "pending": 0,
+    "t": 2.4
+   },
+   {
+    "event": "progress",
+    "scanned": 33,
+    "t": 2.4
+   },
+   {
+    "event": "result",
+    "ok": true,
+    "docType": "feishuDocx",
+    "seq": 0,
+    "final": true,
+    "docMtime": "2026-09-16T00:43:46.359Z",
+    "version": "eee34c3ad1c247d33dc63f22a80e25aa8415260d",
+    "linkCount": 8,
+    "t": 2.4,
+    "chunk_links": 8
+   }
+  ],
+  "links_sample": [
+   {
+    "url": "https://pan.quark.cn/s/955fef0fb943",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/a201724613a6",
+    "pwd": "pgcq",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/58c4802f2f04",
+    "pwd": "6k7a",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/4bef15fda8c0",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/423717faaf58",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.xunlei.com/s/VNi8bnbHsDV_A7Ct62oa_QhtA1",
+    "pwd": "78vs",
+    "type": "xunleipan"
+   },
+   {
+    "url": "https://pan.xunlei.com/s/VNiDnn2_ml6S0EXrlFZSf7RfA1",
+    "pwd": "ef5w",
+    "type": "xunleipan"
+   },
+   {
+    "url": "https://pan.xunlei.com/s/VNibn78ojumLcmt6EVENBgGxA1",
+    "pwd": "fchk",
+    "type": "xunleipan"
+   }
+  ]
+ },
+ {
+  "url": "https://mi6gd8l8fvo.feishu.cn/wiki/MpO7wcfoniqCU3kCHSlc81F6nEh",
+  "status": "ok",
+  "elapsed": 1.8,
+  "hops": [
+   "https://mi6gd8l8fvo.feishu.cn/wiki/MpO7wcfoniqCU3kCHSlc81F6nEh"
+  ],
+  "docType": "feishuDocx",
+  "version": "de6ca78d84c133be0b71cd5cd5fa7b810d7cb905",
+  "linkCount": 48,
+  "links_collected": 48,
+  "by_type": {
+   "quark": 48
+  },
+  "warning": null,
+  "message": null,
+  "permanent": null,
+  "events": [
+   {
+    "event": "start",
+    "site": "feishu",
+    "t": 0.6
+   },
+   {
+    "event": "progress",
+    "scanned": 0,
+    "stage": "docx-fetch",
+    "calls": 1,
+    "blocks": 63,
+    "pending": 0,
+    "t": 1.8
+   },
+   {
+    "event": "progress",
+    "scanned": 61,
+    "t": 1.8
+   },
+   {
+    "event": "result",
+    "ok": true,
+    "docType": "feishuDocx",
+    "seq": 0,
+    "final": true,
+    "docMtime": "2026-09-16T00:43:48.175Z",
+    "version": "de6ca78d84c133be0b71cd5cd5fa7b810d7cb905",
+    "linkCount": 48,
+    "t": 1.8,
+    "chunk_links": 48
+   }
+  ],
+  "links_sample": [
+   {
+    "url": "https://pan.quark.cn/s/a9490f741e13",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/1e8a502ac2c2",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/da0812137b20",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/5ed4f0b2655e",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/796df445fd2f",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/98a26b726e93",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/7f62f1b99277",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/56284d11a5f7",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/61d1915e59d5",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/bcee27fcdfde",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/25494cb325de",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/76116bbb5260",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/ec5124192485",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/bfb775e64378",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/21dd052f33f4",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/17b320f3eb04",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/02ffb3c83a9c",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/ca325efe6d78",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/b221adeba300",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/e33a1a6b6cbf",
+    "pwd": "",
+    "type": "quark"
+   }
+  ]
+ },
+ {
+  "url": "https://docs.feishu.cn/article/wiki/UKoZwZBx9iLoMDkcnLfcDcGGntc",
+  "status": "ok",
+  "elapsed": 7.6,
+  "hops": [
+   "https://dvh6tpq41qv.feishu.cn/wiki/UKoZwZBx9iLoMDkcnLfcDcGGntc"
+  ],
+  "docType": "feishuDocx",
+  "version": "80e849e6099b83ce45a43b1e86e65c1e57119279",
+  "linkCount": 1364,
+  "links_collected": 1364,
+  "by_type": {
+   "quark": 1364
+  },
+  "warning": null,
+  "message": null,
+  "permanent": null,
+  "events": [
+   {
+    "event": "start",
+    "site": "feishu",
+    "t": 1.7
+   },
+   {
+    "event": "progress",
+    "scanned": 0,
+    "stage": "docx-fetch",
+    "calls": 1,
+    "blocks": 200,
+    "pending": 7,
+    "t": 2.8
+   },
+   {
+    "event": "progress",
+    "scanned": 0,
+    "stage": "docx-fetch",
+    "calls": 2,
+    "blocks": 400,
+    "pending": 6,
+    "t": 3.5
+   },
+   {
+    "event": "progress",
+    "scanned": 0,
+    "stage": "docx-fetch",
+    "calls": 3,
+    "blocks": 600,
+    "pending": 5,
+    "t": 4.2
+   },
+   {
+    "event": "progress",
+    "scanned": 0,
+    "stage": "docx-fetch",
+    "calls": 4,
+    "blocks": 800,
+    "pending": 4,
+    "t": 4.9
+   },
+   {
+    "event": "progress",
+    "scanned": 0,
+    "stage": "docx-fetch",
+    "calls": 5,
+    "blocks": 1000,
+    "pending": 3,
+    "t": 5.8
+   },
+   {
+    "event": "progress",
+    "scanned": 0,
+    "stage": "docx-fetch",
+    "calls": 6,
+    "blocks": 1200,
+    "pending": 2,
+    "t": 6.5
+   },
+   {
+    "event": "progress",
+    "scanned": 0,
+    "stage": "docx-fetch",
+    "calls": 7,
+    "blocks": 1400,
+    "pending": 1,
+    "t": 6.9
+   },
+   {
+    "event": "progress",
+    "scanned": 0,
+    "stage": "docx-fetch",
+    "calls": 8,
+    "blocks": 1484,
+    "pending": 0,
+    "t": 7.6
+   },
+   {
+    "event": "progress",
+    "scanned": 200,
+    "t": 7.6
+   },
+   {
+    "event": "progress",
+    "scanned": 400,
+    "t": 7.6
+   },
+   {
+    "event": "progress",
+    "scanned": 600,
+    "t": 7.6
+   },
+   {
+    "event": "progress",
+    "scanned": 800,
+    "t": 7.6
+   },
+   {
+    "event": "progress",
+    "scanned": 1000,
+    "t": 7.6
+   },
+   {
+    "event": "progress",
+    "scanned": 1200,
+    "t": 7.6
+   },
+   {
+    "event": "progress",
+    "scanned": 1400,
+    "t": 7.6
+   },
+   {
+    "event": "progress",
+    "scanned": 1425,
+    "t": 7.6
+   },
+   {
+    "event": "result",
+    "ok": true,
+    "docType": "feishuDocx",
+    "seq": 0,
+    "final": false,
+    "t": 7.6,
+    "chunk_links": 500
+   },
+   {
+    "event": "result",
+    "ok": true,
+    "docType": "feishuDocx",
+    "seq": 1,
+    "final": false,
+    "t": 7.6,
+    "chunk_links": 500
+   },
+   {
+    "event": "result",
+    "ok": true,
+    "docType": "feishuDocx",
+    "seq": 2,
+    "final": true,
+    "docMtime": "2026-09-16T00:43:55.799Z",
+    "version": "80e849e6099b83ce45a43b1e86e65c1e57119279",
+    "linkCount": 1364,
+    "t": 7.6,
+    "chunk_links": 364
+   }
+  ],
+  "links_sample": [
+   {
+    "url": "https://pan.quark.cn/s/3b800c343bb5",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/7f22003677ae",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/5e98dd394543",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/1541130b96bb",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/0e8cf3519084",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/6cc4b27c59ef",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/e2e078c41603",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/437c2b05e55f",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/fc3d2a5511a1",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/d29a554783f3",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/6923d2d3e7e0",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/08c0db6a7b18",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/e887dd0d6a25",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/c2170534826a",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/44f714929c91",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/b82762d0df75",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/8ab859281830",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/08bd22971c5c",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/7387c9d60fa4",
+    "pwd": "",
+    "type": "quark"
+   },
+   {
+    "url": "https://pan.quark.cn/s/cc564add8d65",
+    "pwd": "",
+    "type": "quark"
+   }
+  ]
+ },
+ {
+  "url": "https://docs.feishu.cn/v/wiki/EVuawdO9Ui8TFgk7hvacY5DFnnf/ac",
+  "status": "ok",
+  "elapsed": 3.0,
+  "hops": [
+   "https://my.feishu.cn/wiki/EVuawdO9Ui8TFgk7hvacY5DFnnf"
+  ],
+  "docType": "feishuDocx",
+  "version": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+  "linkCount": 0,
+  "links_collected": 0,
+  "by_type": {},
+  "warning": null,
+  "message": null,
+  "permanent": null,
+  "events": [
+   {
+    "event": "start",
+    "site": "feishu",
+    "t": 1.8
+   },
+   {
+    "event": "progress",
+    "scanned": 0,
+    "stage": "docx-fetch",
+    "calls": 1,
+    "blocks": 38,
+    "pending": 0,
+    "t": 3.0
+   },
+   {
+    "event": "progress",
+    "scanned": 17,
+    "t": 3.0
+   },
+   {
+    "event": "result",
+    "ok": true,
+    "docType": "feishuDocx",
+    "docMtime": "2026-09-16T00:43:58.833Z",
+    "version": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "linkCount": 0,
+    "seq": 0,
+    "final": true,
+    "t": 3.0,
+    "chunk_links": 0
+   }
+  ],
+  "links_sample": []
+ }
+]

@@ -3,7 +3,7 @@ title: NC-JS 架构：与 SPIDER 网关的对接方式与鉴权
 type: knowledge
 status: active
 created_at: 2026-09-12T11:25:00+08:00
-updated_at: 2026-09-16T17:10:00+08:00
+updated_at: 2026-09-16T09:30:00+08:00
 priority: high
 keywords:
   - WebRTC
@@ -18,10 +18,6 @@ keywords:
   - proto 生成
   - HealthRpc
 summary: NC-JS 后台前端与 SPIDER gateway 之间没有 REST，只有 WebRTC DataChannel 上自实现的 gRPC 传输；鉴权已改 GitHub OAuth（代码已合并，未部署）；含 proto 生成脚本用法与已知坑
-questions:
-  - 前端怎么连后端，网关 IP 换了改哪
-  - 前端 proto 怎么生成
-  - 后台登录 GitHub OAuth 怎么接的，gwToken / RtcToken 兜底是什么
 load: on-demand
 related:
   - agent-memory/knowledge/architecture-nc-js.md

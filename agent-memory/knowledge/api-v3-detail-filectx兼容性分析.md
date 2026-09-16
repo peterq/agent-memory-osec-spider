@@ -3,7 +3,7 @@ title: v3 detail/fileCtx 对 lc 索引结构的兼容性分析
 type: knowledge
 status: active
 created_at: 2026-09-12T14:40:00+08:00
-updated_at: 2026-09-15T15:50:00+08:00
+updated_at: 2026-09-16T09:30:00+08:00
 priority: high
 keywords: [v3 detail, fileCtx, res_lc_all, 生命周期, LocateIndex, addViews, size 字符串]
 summary: lc 索引结构与 v2 detail/fileCtx 查询方式兼容（nested 父子），v3 可复用同一 bndApi

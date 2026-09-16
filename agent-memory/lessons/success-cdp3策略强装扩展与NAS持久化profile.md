@@ -3,7 +3,7 @@ title: 成功经验：品牌版 Chrome 用企业策略 + 本机 update_url 装 N
 type: lesson
 status: active
 created_at: 2026-09-13T14:40:00+08:00
-updated_at: 2026-09-16T09:00:00+08:00
+updated_at: 2026-09-16T09:30:00+08:00
 priority: medium
 keywords: [扩展安装, ExtensionSettings, override_update_url, pack-extension, disable-background-networking, developerPrivate.autoUpdate, NAS, tar, profile 持久化, NFS 性能]
 questions:
