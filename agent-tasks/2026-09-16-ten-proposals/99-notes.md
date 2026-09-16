@@ -35,3 +35,4 @@
 - ✅ 80 crawler-skeleton 返工完成：`3805fb0`（4 站补 MinRequestInterval；EngineConfig 抽纯函数 + 6 站防回归测试 `TestEngineConfigMinRequestIntervalNotDropped`）。主控复核测试通过，已合入集成分支。
 - ✅ 60 secrets 返工完成：COMMON `4585cc0` / SPIDER `bb9643c` / API `13ee22f` / STORAGE `10d5615`（5 处漏网已清、反查计数 0、pre-commit grep 兜底、FC 前置项写入 README）。
 - 🏁 2026-09-16 全部 9 条开发线 + 前端完成并验收；四仓库集成分支断网 CI 全绿；合并清单见 `95-merge-plan.md`。**等待用户确认合并。**
+- ✅ 2026-09-16 用户确认「合并」。核实五仓库 master/main 已于 12:01~12:02 合入全部集成分支最终提交（另一会话按同一清单执行），临时 replace 已撤销，master 与 origin 一致，四仓库 `go build ./...` 通过。本会话完成收尾：删除 26 个 worktree 与 feat/*、integration/ten-proposals 分支。任务结束，上线前置项见 95-merge-plan.md。

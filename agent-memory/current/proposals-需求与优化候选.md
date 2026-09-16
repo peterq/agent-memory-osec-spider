@@ -1,14 +1,14 @@
 ---
 title: 需求与优化候选清单（2026-09-16 提出，待用户挑选）
 type: task
-status: draft
+status: active
 created_at: 2026-09-16T10:30:00+08:00
-updated_at: 2026-09-16T10:30:00+08:00
+updated_at: 2026-09-16T19:30:00+08:00
 priority: medium
 keywords: [需求候选, 优化提案, 取证包, 软删除, 熔断, 密钥治理, CI]
 questions:
   - 项目下一步有哪些值得做的需求或优化
-summary: 12 条候选需求；09-16 用户裁定第 3~12 项已开发，取证包/软删两项未做
+summary: 12 条候选需求；第 3~12 项已于 09-16 合入 master，取证包/软删两项仍是候选
 load: on-demand
 related:
   - agent-memory/current/risks.md
