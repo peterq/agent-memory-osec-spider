@@ -3,7 +3,7 @@ title: 未解决的问题
 type: question
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-16T13:40:00+08:00
+updated_at: 2026-09-16T11:45:00+08:00
 priority: high
 keywords: [待确认, 五站爬虫, 合并顺序, 部署主机, doc-cloud-spider, lzpanx, robots, 事故恢复, 用户确认]
 summary: 待确认：五站合并/部署、云端脚本迁移合并、灰度误回落防复发、lzpanx robots、账号池续期
@@ -19,17 +19,6 @@ related:
    只保留未答复的待确认问题, 以免占用context. 3. `答复`段落由用户编辑, 但可由Agent在合适时随问题一起清理掉.
 
 # 未解决的问题
-
-## 云端文档脚本迁入 NC-JS：合并与个人仓库收尾（2026-09-16 11:20）
-
-正本 `decisions/decision-2026-09-16-云端文档脚本迁入NC-JS.md`，清单 `agent-tasks/2026-09-16-doc-cloud-migrate/00-shared.md`。
-
-- [待确认] NC-JS `feat/doc-cloud-spider`（`4d921bf`）与 SPIDER 同名分支（`8c9b1c0`，仅注释）是否合并 main/master 并 push。
-- [待确认] 个人仓库 `userscripts` 里过时的 `src/cloud/`、`vite.cloud.config.ts`、`scripts/{verify_cloud.py,qqdoc-verify.ts,dev-vite-node.mjs}` 及 `build:cloud/upload:cloud` 脚本是否由用户删除（Agent 不动个人仓库）。
-- [待确认] PC 端油猴调度器插件（`userscripts/src/plugins/{scheduler,kdoc,spiderGw}`，与个人油猴框架耦合）是下线、还是后续单独立项迁入 NC-JS？
-
-用户答复：
-
 
 ## 灰度误回落的防复发（2026-09-16 11:00）
 

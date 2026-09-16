@@ -3,7 +3,7 @@ title: 云端文档爬虫脚本从个人仓库 userscripts 迁入 NC-JS apps/doc
 type: decision
 status: active
 created_at: 2026-09-16T11:20:00+08:00
-updated_at: 2026-09-16T11:20:00+08:00
+updated_at: 2026-09-16T11:45:00+08:00
 priority: high
 keywords: [doc-cloud-spider, userscripts, NC-JS, 云端脚本, fc-chrome, doc-crawler, 迁移, 个人仓库]
 questions:
@@ -37,12 +37,12 @@ related:
 工具链现成、与前端识别逻辑同仓、`apps/` 已有先例；产物与 OSS 对象名不变，SPIDER/COMMON 只改注释，线上零变更。
 
 ## 影响
-- 个人仓库 `userscripts` 的 `src/cloud/`、`vite.cloud.config.ts`、`scripts/{verify_cloud.py,qqdoc-verify.ts,dev-vite-node.mjs}` 成为**过时副本**，后续改动只在 NC-JS 做；个人仓库清理由用户自行决定（[待确认]）。
-- PC 端油猴调度器插件（`userscripts/src/plugins/{scheduler,kdoc,spiderGw,panShareDownload}`，产物 `frontend/pan-admin-prod/doc_spider/userscript.user.js`）**未迁**：它与个人油猴框架（插件系统/Vue UI/xbridge）深度耦合，迁移=搬整个框架；且 doc-crawler 已能独立消费队列，该插件是否下线待裁定 → `current/open-questions.md`。
+- 个人仓库 `userscripts` 的 `src/cloud/`、`vite.cloud.config.ts`、`scripts/{verify_cloud.py,qqdoc-verify.ts,dev-vite-node.mjs}` 成为**过时副本**，后续改动只在 NC-JS 做；[用户裁定 2026-09-16] **不删除**，也不要再去改它。
+- PC 端油猴调度器插件（`userscripts/src/plugins/{scheduler,kdoc,spiderGw,panShareDownload}`，产物 `frontend/pan-admin-prod/doc_spider/userscript.user.js`）**未迁**：它与个人油猴框架（插件系统/Vue UI/xbridge）深度耦合，迁移=搬整个框架；且 doc-crawler 已能独立消费队列，该插件 [用户裁定 2026-09-16] **暂时不动**。
 - 记忆仓库 `scripts/docspider/e2e-local-fcchrome.sh` 缺省脚本目录改为 `nc-js/apps/doc-cloud-spider/dist`。
 
 ## 复盘条件
 若后续云端脚本要复用后台 catalyst 的 RPC 客户端（直接从页面提交而非 console 回传），再评估是否并入 `packages/`。
 
 ## 当前状态
-[事实 2026-09-16] NC-JS 分支 `feat/doc-cloud-spider`（worktree `ncjs-wt-doc-cloud`，commit `4d921bf`）、SPIDER 同名分支（`spider-wt-doc-cloud`，`8c9b1c0`，仅注释）；单测 59 通过、`tsc` 通过、构建 52 KB、`verify:qqdoc` 与本机 fc-chrome 金山文档端到端（193 链接终态）通过。**待用户确认后合并**，未 push。
+[事实 2026-09-16 11:45] 用户确认后已合并：NC-JS `main`（`4d921bf` 合入，与 health-observe 并存）、SPIDER `master`（`8c9b1c0`），均已 push；worktree 与分支已删。合并后冻结 lock 安装 + 单测 59 + 构建复验通过。**待人工**：`apps/doc-cloud-spider` `pnpm build && pnpm upload`。

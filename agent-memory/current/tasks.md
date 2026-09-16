@@ -3,7 +3,7 @@ title: 当前任务与进度
 type: task
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-16T13:35:00+08:00
+updated_at: 2026-09-16T11:45:00+08:00
 priority: critical
 keywords: [任务, 进度, 待办, 五站爬虫, 站点发现, 腾讯文档, 十项提案, P5灰度, lifecycle_checker, xlLoadShare, 队列v2]
 summary: 仍在推进/阻塞/待决策：五站爬虫待确认合并、站点发现收尾、文档发现待批量执行、腾讯文档与十项提案待确认合并、P5 灰度爬坡、误删事故收尾；长尾在 tasks-backlog
@@ -23,7 +23,7 @@ related:
 |---|---|---|---|
 | **五站爬虫并行开发**（duanjuso/xiaozi/qileso/jsnoteclub/ddys） | 🟢 09-16 5/5 开发+验收通过，集成分支 `integration/five-sites`@94030a0 逐站编译/vet/test 全过 | **待用户确认**：合并顺序＝先合十项提案 → 撤销各分支 temp go.mod → 合五站；部署主机与 `deploy.sh` 接入；存量 6 站测试是否也改走代理池 | `knowledge/domain-站点-260916接入批次.md`、`agent-tasks/2026-09-16-five-sites/`（`9x-review-*.md`、`97-merge-result.md`） |
 | **站点发现第二轮** | 🟢 09-16 完成：5 站满足并已全部进入开发 | lzpanx robots `Crawl-delay:20` 是否遵守；COMMON worktree `site-discovery-260916` 待确认合并；1~2 周后复核 xiaojiwo.top | `sessions/2026/2026-09-16-站点发现第二轮.md`，正本 COMMON `site-discovery/history.md` + `260916/` |
-| **云端文档脚本迁入 NC-JS** | 🟡 09-16 11:20 开发+验证完成，worktree `ncjs-wt-doc-cloud`/`spider-wt-doc-cloud` 分支 `feat/doc-cloud-spider` | **待用户确认合并**（清单 `agent-tasks/2026-09-16-doc-cloud-migrate/00-shared.md`），合并后人工 `pnpm build && pnpm upload` | `decisions/decision-2026-09-16-云端文档脚本迁入NC-JS.md` |
+| **云端文档脚本迁入 NC-JS** | 🟢 09-16 11:45 用户确认后已合入 nc-js main、SPIDER master 并 push，worktree/分支已删 | **待人工**：NC-JS `apps/doc-cloud-spider` `pnpm build && pnpm upload`（个人仓库副本不删、PC 油猴插件暂不动，[用户裁定]） | `decisions/decision-2026-09-16-云端文档脚本迁入NC-JS.md` |
 | **腾讯文档(docs.qq.com)表格解析** | 🟢 09-16 10:45 用户确认后已合入 userscripts master@7af9776、nc-js main@997836b（已 push） | **待人工**：云端脚本构建上传（迁移合并后在 NC-JS `apps/doc-cloud-spider` 做 `pnpm build && pnpm upload`）、spiderAdmin `pnpm build` 发版（自动模式拦截生产部署/推送） | `agent-tasks/2026-09-16-qqdoc-sheet/`，知识 `knowledge/domain-腾讯文档表格解析.md` |
 | **文档发现任务（在线文档网盘链接）** | 🟢 09-16 首轮完成：渠道链路+工具打通，达标 29 篇 | 待执行批量抓取（HTTP 122 / 浏览器 591 / 重试 88，命令在 COMMON `site-discovery/doc-discovery/260916/报告.md` §4）；达标文档待提交文档爬虫 | `procedures/workflow-文档发现.md`、`sessions/2026/2026-09-16-文档发现任务.md` |
 | **十项提案并行开发** | 🟡 09-16 启动，9 个 worktree | 合并 master 前必须用户确认 | `agent-tasks/2026-09-16-ten-proposals/`（`99-notes.md` 记重叠文件） |

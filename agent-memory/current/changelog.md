@@ -3,7 +3,7 @@ title: 项目变更记录（总览归档）
 type: knowledge
 status: active
 created_at: 2026-09-12T11:30:00+08:00
-updated_at: 2026-09-16T11:20:00+08:00
+updated_at: 2026-09-16T11:45:00+08:00
 priority: low
 keywords: [变更记录, changelog, 历史, 总览归档, 生命周期改造, 队列v2, queue-admin, 站点接入, 配置v2, GitHub OAuth]
 summary: 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪"
@@ -20,7 +20,7 @@ related:
 
 ## 2026-09-16
 - 13:45 **五站爬虫并行开发**：duanjuso/xiaozi/qileso/jsnoteclub/ddys 基于 `integration/ten-proposals` 骨架各开 worktree，5/5 开发+验收通过（2 站返工：测试/probe 直连改走代理池），集成分支 `integration/five-sites` 待用户确认合并 → `sessions/2026/2026-09-16-五站爬虫并行开发.md`、`knowledge/domain-站点-260916接入批次.md`、`decisions/decision-2026-09-16-新站爬虫基于骨架集成分支开发.md`
-- 11:20 **云端文档脚本从个人仓库 userscripts 迁入 NC-JS `apps/doc-cloud-spider`**（源码/单测/验证脚本重排，产物与 OSS 对象名不变，单测 59 + 本机 fc-chrome 端到端通过），worktree 待用户确认合并 → `decisions/decision-2026-09-16-云端文档脚本迁入NC-JS.md`、`sessions/2026/2026-09-16-云端文档脚本迁入NC-JS.md`
+- 11:20 **云端文档脚本从个人仓库 userscripts 迁入 NC-JS `apps/doc-cloud-spider`**（源码/单测/验证脚本重排，产物与 OSS 对象名不变，单测 59 + 本机 fc-chrome 端到端通过）；11:45 用户确认后合入 nc-js main / SPIDER master 并 push，OSS 上传待人工 → `decisions/decision-2026-09-16-云端文档脚本迁入NC-JS.md`、`sessions/2026/2026-09-16-云端文档脚本迁入NC-JS.md`
 - 10:45 **站点发现第二轮**（COMMON worktree `site-discovery-260916`）：98 候选→18 深挖→5 站满足（duanjuso/xiaozi/qileso/jsnoteclub/ddys）+ lzpanx 待裁定；新增 `ratetest.py`/`fetchraw.py`，`sitescan` lastmod 统计、`panlink` 解 atob → `sessions/2026/2026-09-16-站点发现第二轮.md`、`lessons/failure-本地代理池薄导致连接失败误判为站点拒绝.md`
 - 10:10 **文档发现任务首轮**：逆向 link3 匿名接口、四平台免登录取正文、六渠道脚本化（COMMON `site-discovery/tools/docfind/`），候选 2042→达标 29 篇，批量任务输出为待执行清单 → `sessions/2026/2026-09-16-文档发现任务.md`、`procedures/workflow-文档发现.md`、`knowledge/domain-在线文档免登录取数.md`、`lessons/failure-link3接口按IP限流直连百次即429.md`
 - 十项提案（第 3~12 项）9 条线并行开发 + 逐线验收 + 集成预演完成，待用户确认合并；两个新脚本 `scripts/dev/{new_worktree_all,integration_check}.sh` → `sessions/2026/2026-09-16-十项提案并行开发.md`、`lessons/patterns-并行多角色开发的验收与集成.md`、`procedures/workflow-并行多任务开发与合并预演.md`

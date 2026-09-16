@@ -1,5 +1,7 @@
 # 云端文档脚本迁入 NC-JS —— 合并清单（2026-09-16）
 
+> 状态：2026-09-16 11:45 用户确认后已合并并 push（主分支已前进，用普通 merge），worktree/分支已删。用户裁定：个人仓库副本不删、PC 油猴插件暂不动。剩余人工步骤只有 `pnpm build && pnpm upload`。
+
 背景与决策：`agent-memory/decisions/decision-2026-09-16-云端文档脚本迁入NC-JS.md`。
 
 | 仓库 | worktree | 分支 | commit | 内容 |
