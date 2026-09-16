@@ -3,7 +3,7 @@ title: 当前任务与进度
 type: task
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-16T07:25:00+08:00
+updated_at: 2026-09-16T08:15:00+08:00
 priority: critical
 keywords: [任务, 进度, 待办, P5, 队列v2, queue-admin, 全站扫描, fullsweep, 文档爬虫, doc-crawler, FC Chrome, 凭据轮换, 站点发现, kkpans, misoso, 有效性检测]
 summary: 仍在推进/阻塞/待决策的事项（P0 误删事故重爬中；P5 顺序 阶段C→A'→阶段D）；已上线任务在 archive
@@ -32,7 +32,7 @@ related:
 | 资源生命周期改造 P0~P3 | ✅ 已上线 | es_endpoint / `resource_valid` 索引缺失等 | `current/tasks-backlog.md` |
 | 管理台合并 | ✅ 已上线 | ARMS 指标、浏览器实测待人工 | `current/tasks-backlog.md` |
 | **xlLoadShare 失败率修复** | ✅ 09-15 三机上线 | 失效上报 dry run 待用户开启 | `knowledge/domain-迅雷分享爬取.md` §5 |
-| **P6 分享链接/搜索总览纳入后台 + p90 关匿名搜索** | 09-16 编码中（4 子 Agent） | 契约 COMMON `f2f0881` 已推；网关 lifecycle+search_admin、API guard、前端 4 页开发 → 验收 → 部署网关/API/前端 | `agent-tasks/2026-09-16-share-search-overview/`、`decisions/decision-2026-09-16-搜索p90告警关闭匿名搜索与总览数据源.md` |
+| **P6 分享链接/搜索总览纳入后台 + p90 关匿名搜索** | ✅ 09-16 已上线（网关/API/前端） | 观察防护巡检一周；ES 父文档过滤线上对拍；前端浏览器实测 | `knowledge/architecture-search-admin.md`、`sessions/2026/2026-09-16-分享链接与搜索总览纳入后台.md` |
 | 队列 v2 上线收尾 | 人工进行中 | A~E 待用户执行 | 本文件「待办」 |
 | 5 爬虫全站扫描启动行为改造 | 待办（P0） | 改为 `fullsweep:lastdone` 守卫 | 本文件「待办」 |
 | 安全凭据轮换 | 待用户决策 | 多处硬编码 AK/SK/Token | `current/tasks-backlog.md` |

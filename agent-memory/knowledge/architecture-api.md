@@ -3,7 +3,7 @@ title: API 查询服务结构
 type: knowledge
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-12T12:10:00+08:00
+updated_at: 2026-09-16T08:15:00+08:00
 priority: high
 keywords: [API, osec-resource-api, gin, 路由, 限流, 黑名单, 搜索, res_lc, 分表, 资源列表, 事件流水, 表诊断, LifecycleRpc]
 summary: osec-resource-api 的路由表、中间件链、依赖服务与后台管理模块；另含 SPIDER 网关 LifecycleRpc 新增的 res_lc 分表数据只读接口（资源列表/分表统计/事件流水/表诊断，供 NC-JS 后台用）
@@ -91,3 +91,7 @@ util/           GetClientIP 等
   `lessons/failure-proto3零值与负一哨兵冲突.md`，未知态不能与"有差异"合并处理。
 - 8 个相关 proto 的 `go_package` 一度还是重命名前的 `github.com/PPIO/...`，已统一改为 `github.com/1s/...`；
   重跑 COMMON `rpc/spider/gen.sh` 前确认这一点，否则生成代码会把失效 import 写回去导致 `go build` 报错。
+
+## 搜索接口匿名搜索防护（2026-09-16 新增）
+
+`services/search-guard`：`SearchApi`/`SearchApiV3` 对 `uid=="anonymous"` 读共享 redis 键 `search_guard:anonymous_closed`，存在即 403/50008「请登陆后再搜索」并写 `logData["guard"]="anonymous_closed"`；redis 出错 fail-open，1s 本地缓存；配置节 `search_guard`（缺省启用）。键由网关 `search_admin` 巡检/后台写入，细节见 `architecture-search-admin.md`。

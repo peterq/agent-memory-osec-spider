@@ -28,11 +28,13 @@
 - [ ] redis 出错 fail-open 且有限频日志；本地缓存生效；`enabled=false` 不查 redis。
 - [ ] `go build ./... && go vet ./... && go test ./services/search-guard/... ./services/search-canary/...` 通过。
 
-## NC-JS（分支 `feat/share-search-overview`）
-- [ ] 4 个页面 + 菜单项 + LazyKeepAlive 插槽齐全；mock 开关与 Tag 工作；未跑过 `pnpm build`（检查 `git status` 没有 dist/OSS 相关改动）。
-- [ ] BigInt 处理正确（无 `TypeError: Cannot mix BigInt`）；`truncated/source=sls-scan/warnings` 有可见提示。
-- [ ] 防护页的关闭/开放/保存参数都有二次确认；事件类型有中文标签。
-- [ ] `pnpm exec vitest run` 与 type-check 通过（贴输出尾部）。
+## NC-JS（分支 `feat/share-search-overview`，commit `c29d926`）—— 2026-09-16 验收完成
+- [x] 4 个页面 + 菜单项 + LazyKeepAlive 插槽齐全；mock 开关与 Tag 工作；未跑过 `pnpm build`。
+  证据：`layout/navState.ts` MenuKeys 含 LcShareOverview/SearchOverview/SearchKeywords/SearchGuard；`layout/AppLayout.tsx` 对应 4 个 `<Menu.Item>` + `LazyKeepAlive` 4 个插槽齐全；`searchAdmin.ts`（useSearchAdminMock）+`searchAdminMock.ts`（createMockSearchAdminClient 实现 overview/top/guardStatus/setAnonymous/updateGuardParams 全部 5 个方法）+`spidergw.ts:161-164`（usingSearchAdminMock 三元切换，写法与 usingLifecycleMock 一致）+顶栏"搜索监控 Mock"Tag/Switch。`git status` 干净，无 dist/OSS 改动。
+- [x] BigInt 处理正确（type-check 通过，未见 `Cannot mix BigInt` 风险点）；`truncated/source=sls-scan/warnings` 有可见提示，但**有一处不够完整**：
+  `SearchOverviewPage.tsx:130-132` 只展示 `state.data`（Overview 响应）自身的 source/truncated，**Top10 IP/uid 表格背后的 `top()` 调用各自也有独立的 source/truncated/note（search_admin.proto SearchTopResponse），未单独展示** —— 若 Overview 走 sls-sql 正常但 Top 降级为 sls-scan/truncated，用户看不到 Top10 数据不完整的提示。`ShareOverviewPage.tsx`/`SearchKeywordsPage.tsx` 均正确处理了各自响应的 note/warnings/source/truncated。建议：小改（非必须返工阻塞）—— SearchOverviewPage 的 `loadTop()` 也检查 `ipResp.truncated || uidResp.truncated || source==='sls-scan'` 并额外提示。
+- [x] 防护页（`SearchGuardPage.tsx`）的关闭（`submitClose` 弹表单+`modals.alert`二次确认）/开放（`doOpen`）/保存参数（`saveParams`）均有 `modals.alert` 二次确认；`GUARD_EVENT_LABEL`（`pages/search/format.ts:48-55`）覆盖全部 6 种 `GuardEvent.kind`（auto_close/manual_close/manual_open/auto_expire/alert/params_update）中文标签，表格渲染用 `GUARD_EVENT_LABEL[text] || text` 兜底。
+- [x] `pnpm exec vitest run`：5 个测试文件 15 个用例全部通过（`Test Files 5 passed, Tests 15 passed`，含新增 `shareOverview.test.tsx` 2 例、`pages/search/__tests__/smoke.test.tsx` 4 例）。`vue-tsc --build --force`：exit code 0，无报错。
 
 ## 汇总
 - 按仓库列出：通过项数 / 不通过项 / 建议返工内容（按严重程度排序）。

@@ -3,7 +3,7 @@ title: NC-JS 架构：qiankun 微前端机制与后台页面写法
 type: knowledge
 status: active
 created_at: 2026-09-12T11:25:00+08:00
-updated_at: 2026-09-15T15:50:00+08:00
+updated_at: 2026-09-16T08:15:00+08:00
 priority: high
 keywords: [qiankun, 微前端, spiderAdmin, 后台页面, 新增页面, 队列监控, 资源生命周期, 架构图页, res_lc, 分表, 资源列表, 事件流水, 表诊断, qiankun-head, 样式丢失]
 summary: qiankun 主应用注册/子应用生命周期、本地开发流程；spiderAdmin 新增后台页面写法与落点（队列监控、资源生命周期各页、架构图页、res_lc 分表数据只读页面）；页面/样式相关坑
@@ -143,7 +143,18 @@ related:
 - `TableDiagnostics` 的 DB↔ES 对拍数来自网关 `Service.Stats()` 的 ≤60 秒缓存快照（非实时全量 COUNT），
   页面展示了口径说明（`note` 字段），同类"体检"页面应沿用而非自己发起全量统计。
 
-## 5. 已知坑 / 待确认（页面 / 样式相关）
+## 5. 分享链接总览与搜索监控页面（2026-09-16 新增）
+
+| MenuKeys | 页面 | 组件 | RPC |
+|---|---|---|---|
+| `LcShareOverview` | 分享链接总览（资源生命周期组） | `pages/lifecycle/ShareOverviewPage.tsx` | `LifecycleRpc.ShareOverview` |
+| `SearchOverview` | 搜索总览 + Top10 IP/uid（新组「搜索监控」`grp-search`） | `pages/search/SearchOverviewPage.tsx` | `SearchAdminRpc.Overview/Top` |
+| `SearchKeywords` | 搜索词 Top1000（本地过滤、复制 CSV） | `pages/search/SearchKeywordsPage.tsx` | `SearchAdminRpc.Top(keyword)` |
+| `SearchGuard` | 匿名搜索防护（状态/手动开关/参数热更新/事件） | `pages/search/SearchGuardPage.tsx` | `GuardStatus/SetAnonymous/UpdateGuardParams` |
+
+共用 `pages/common/TimeRangeBar.tsx`（快捷档 + 自定义区间 + 桶粒度 + 自动刷新）；`searchAdminRpc` 由 `spidergw.ts useGwClient()` 创建，mock 开关 `searchAdminMock`（localStorage）+ 顶栏 Tag。`source=sls-scan`/`truncated`/`warnings` 都有可见提示（Top10 榜单独提示）。[待确认] 页面只跑过 mock 冒烟测试，未在浏览器实测真实网关。
+
+## 6. 已知坑 / 待确认（页面 / 样式相关）
 
 - [事实 2026-09-08，已修复] catalyst `initMicroFeApp` 曾把 Vue 挂在 qiankun 包裹层上导致线上样式全失效，已改挂 `#app`（NC-JS `b93922d`），**其它两个子应用要各自重新 build 才生效**。排查方法与细节见 `lessons/failure-qiankun子应用挂到包裹层导致样式被清空.md`。
 - [事实 2026-09-08] antdv 4 Layout 的 header/sider 选择器是两级 `.ant-layout .ant-layout-header`，单类名覆盖不了

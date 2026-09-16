@@ -3,7 +3,7 @@ title: 项目总览
 type: overview
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-15T15:45:00+08:00
+updated_at: 2026-09-16T08:15:00+08:00
 priority: critical
 keywords: [网盘资源爬取, 版权取证, COMMON, SPIDER, STORAGE, API, NC-JS]
 summary: 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件
@@ -25,11 +25,11 @@ related:
 
 ## 2. 当前状态（最近 7 天；更早见 `current/changelog.md`）
 
-- 09-13 **转存下载链路空转**（阿里/百度账号全失效）→ `knowledge/domain-转存下载链路.md`
-- 09-13 **新版 FC Chrome 上线**（`nc-app-prod-cdp3`，`/cdp3/*`，挂 NAS，`profile=` 调用方须发 `Browser.close`）→ `decisions/decision-2026-09-13-cdp3持久化会话与扩展机制.md`
-- 09-12 22:17 **🔴 事故：lifecycle_checker 把资源 md5 当分享 id，115.5 万条有效资源（quark/ali）被误判失效并从新旧索引删除**。修复已部署；**只能重爬**：`tools/lc-recrawl` 09-14 投完，回库 63.8 万（≈55%），ali 尾部排队中。→ `lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md`、`current/open-questions.md`
-- 09-15 **xlLoadShare 修复上线**（`3270e10`）：顶层文件入批次、状态码共用码表、空分享永久失败；重投 288 条历史失败。**失效上报仍 dry run，待复核后开启**；三机已全部上线 → `knowledge/domain-迅雷分享爬取.md` §5
-- 09-15 **P5 阶段 D 灰度已启用**（API 侧 `search_canary` 30% 起、每 2 万 v3 请求 +1%、异常自动回落）；阶段 C 复测过（两处字面超限用户接受，rollout §16/§17）；A' 复检已完成。→ `decisions/decision-2026-09-12-P5切v3准入门槛与失效同步.md`
+- 09-16 **分享链接总览 + 搜索总览（SLS）+ p90 告警自动关闭匿名搜索已上线**（网关/API/前端）；缺省 p90>3000ms 连续 2 次→邮件+关匿名 30 分钟，后台「搜索监控→匿名搜索防护」可开放/调参；上线首日修了 SLS stage 分词误匹配 → `knowledge/architecture-search-admin.md`
+- 09-15 **xlLoadShare 修复上线**（`3270e10`）；**失效上报仍 dry run，待复核后开启** → `knowledge/domain-迅雷分享爬取.md` §5
+- 09-15 **P5 阶段 D 灰度已启用**（API 侧 `search_canary` 30% 起、异常自动回落）→ `decisions/decision-2026-09-12-P5切v3准入门槛与失效同步.md`
+- 09-13 **新版 FC Chrome 上线**（`nc-app-prod-cdp3`，`profile=` 调用方须发 `Browser.close`）→ `decisions/decision-2026-09-13-cdp3持久化会话与扩展机制.md`
+- 09-12 **🔴 事故：lifecycle_checker 误删 115.5 万 quark/ali 资源**，修复已部署，`tools/lc-recrawl` 重爬回库 ≈55% → `lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md`
 - 阻塞：无；风险见 `current/risks.md` R9。
 
 ## 3. 核心事实
@@ -80,6 +80,7 @@ related:
 - NC-JS `pnpm build` 会真实上传生产 OSS，验证前先关 `deploy` → `lessons/failure-ncjs构建脚本会自动上传OSS.md`
 - **FC 上 WebSocket 断开即冻结实例，收尾/写回必须在连接内做（拦截 `Browser.close`）** → `lessons/failure-FC实例在WebSocket断开后立即冻结.md`
 - 新站点调研先挖 JS bundle 接口、`total` 须用 sitemap 对账；**结论有保质期** → `procedures/workflow-新站点调研.md`
+- **SLS `field:value` 是分词匹配，统计口径要用 SQL `where` 等值过滤** → `lessons/failure-SLS字段检索按分词匹配误命中其他stage.md`
 - 生产 API 探针按 res-api 三级漏桶算节奏；排序差异用 `explain` 看 idf → `lessons/failure-v3首页重合度受前缀展开分片彩票影响.md`
 
 ## 7. 待解决问题

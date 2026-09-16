@@ -3,7 +3,7 @@ title: 项目变更记录（总览归档）
 type: knowledge
 status: active
 created_at: 2026-09-12T11:30:00+08:00
-updated_at: 2026-09-15T15:50:00+08:00
+updated_at: 2026-09-16T08:15:00+08:00
 priority: low
 keywords: [变更记录, changelog, 历史, 总览归档, 生命周期改造, 队列v2, queue-admin, 站点接入, 配置v2, GitHub OAuth]
 summary: 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪"
@@ -17,6 +17,10 @@ related:
 
 > `00-overview.md` §2 只保留最近 7 天。更早的条目压缩成「日期 + 一句话 + 指针」放这里，
 > **原文叙述在各自的 session / decision 文件里**，本文件不复制正文。需要细节就按指针读那一个文件。
+
+## 2026-09-16
+
+- 08:05 **分享链接总览 + 搜索总览（SLS）+ p90 告警自动关闭匿名搜索** 上线（COMMON `f2f0881`、SPIDER `2e34623`/`65a1bf8`/`6cb69db`、API `2458a52`、NC-JS `dbbbbcc`）；上线首日修 SLS stage 分词误匹配 → `knowledge/architecture-search-admin.md`、`decisions/decision-2026-09-16-搜索p90告警关闭匿名搜索与总览数据源.md`、`lessons/failure-SLS字段检索按分词匹配误命中其他stage.md`、`sessions/2026/2026-09-16-分享链接与搜索总览纳入后台.md`
 
 ## 2026-09-15
 

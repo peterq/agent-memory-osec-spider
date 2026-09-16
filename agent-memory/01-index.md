@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-16T06:54:18+08:00
+updated_at: 2026-09-16T08:02:18+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -16,10 +16,10 @@ load: always
 定位到文件后 `mem.py outline <file>` 看章节，再 `mem.py body <file> --section <标题>` 只读需要的一段。
 维护方式：改目标文件 Front Matter（summary / keywords / questions），然后运行 `scripts/mem/mem.py index --write`。
 
-# agent-memory 启动包（脚本生成, 138 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
+# agent-memory 启动包（脚本生成, 142 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
 
 ## 根目录 (3)
-- 00-overview.md | crit | 2026-09-15 | 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件 | 网盘资源爬取、版权取证、COMMON
+- 00-overview.md | crit | 2026-09-16 | 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件 | 网盘资源爬取、版权取证、COMMON
 - 03-project-context.md | crit | 2026-09-15 | 五个仓库（4 个 Go + 1 个前端）的磁盘路径、module 名、职责、相互依赖与 go.mod replace 现状 | 仓库、module、replace
   ? 各仓库的职责分别是什么 / go.mod replace 现状是怎样的
 - 02-user-preferences.md | high | 2026-09-15 | 用户对语言、脚本沉淀、记忆维护、thinking 长度、敏感信息禁写、任务进度与异常必须及时邮件汇报（scripts/mail/notify.py），以及删除… | 偏好、中文、邮件汇报
@@ -33,11 +33,11 @@ load: always
   ? 密钥、安全相关的风险在哪看
 - current/proposals-需求与优化候选.md [draft] | medi | 2026-09-16 | Agent 基于事故/风险/待办提出的 12 条候选需求与优化（取证包、软删可回滚、删除熔断、checker 统一、CI、密钥治理、部署回滚等），每条附依据与… | 需求候选、优化提案、取证包
   ? 项目下一步有哪些值得做的需求或优化 / 取证证据链、软删除、删除熔断这些提案的依据是什么
-- current/changelog.md | low | 2026-09-15 | 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪 | 变更记录、changelog、历史
+- current/changelog.md | low | 2026-09-16 | 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪 | 变更记录、changelog、历史
 - current/tasks-backlog.md | low | 2026-09-13 | 从 tasks.md 拆出的低优先级/等人工/归档遗留事项：文档爬虫 FC 6 项人工步骤、归档任务遗留待办、P3 代码小修 | backlog、P3、文档爬虫
   ? 文档爬虫 FC 自动化还差哪些人工步骤 / 有哪些 P3 低优先级待办
 
-## decisions/ (17)
+## decisions/ (18)
 - decisions/decision-2026-09-02-停止磁力资源采集.md | crit | 2026-09-02 | 项目现只采集 4 种网盘类型资源，不再采集或入库磁力/BT 资源；存量索引与接口保留 | 磁力、torrent、magnet
 - decisions/decision-2026-09-03-全站扫描不在启动时触发.md | crit | 2026-09-03 | 全量扫描完成后把时间写进 redis；启动时检查该时间，有则跳过全量，只跑增量 | 全站扫描、全量、启动
 - decisions/decision-2026-09-04-资源索引生命周期改造方案.md | crit | 2026-09-12 | 用短周期(cur/prev)+长周期三索引与 MySQL 分表元数据替代单大索引的失效清理方式；两套方案共存、v3 接口切换、双写保回滚 | 生命周期、lifecycle、三索引
@@ -66,6 +66,8 @@ load: always
   ? cdp3 的扩展和会话数据放在哪、目录怎么约定 / 调用方用 profile= 时要注意什么
 - decisions/decision-2026-09-13-lint长度双阈值.md | high | 2026-09-13 | 超长改为 >12,000 触发、触发后必须压到 <6,000，9,000 起只提示；避免 8,000 单线反复报警 | lint、超长、双阈值
   ? lint 报超长该压到多少字，上限为什么不是 8000 / tasks.md 反复超长怎么办
+- decisions/decision-2026-09-16-搜索p90告警关闭匿名搜索与总览数据源.md | high | 2026-09-16 | 2026-09-16 用户需求裁定：搜索总览走 SLS(SQL 优先、拉日志降级)；p90 超阈值由网关 leader 巡检→邮件+共享 redis 键关闭匿… | search_guard、匿名搜索、p90
+  ? 匿名搜索为什么会被关闭, 谁关的, 怎么手动开放 / 搜索总览/Top 榜的数据从哪来, SLS SQL 不可用怎么办 / 分享链接总览的新增/检测/更新/失效各是什么口径 / search_guard 的 redis 键约定是什么
 - decisions/decision-2026-09-04-合并sweep-guard分支冲突取舍.md | medi | 2026-09-04 | 合并遗留分支时，master 已修正的旧逻辑不应因"冲突两边都保留"而被恢复，需先判断冲突是否为真实的两个功能重叠 | sweep-guard、全量扫描守卫、merge 冲突
 
 ## procedures/ (13)
@@ -95,11 +97,13 @@ load: always
   ? 部署 / 上线怎么操作，日志在哪看 / 新服务该放哪台机器 / 队列 v2 上线收尾脚本是哪个
 - procedures/workflow-部署-历史补充.md | low | 2026-09-12 | 历次生产上线（2026-09-05~09-10 生命周期 P3/P4 网关多次重部、代理池监控上线等）的一次性踩坑与已固化到 deploy.sh 的加固记录；… | 生命周期上线、网关重部、dryRun
 
-## lessons/ (25)
+## lessons/ (26)
 - lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md | crit | 2026-09-15 | checker 用 task.Id(md5) 而非 ShareId 探测，115.5 万条 quark/ali 误删；bnd 再因「违规」tooltip 误判… | lifecycle_checker、误删、dry run
   ? lifecycle_checker 为什么把夸克资源全判失效 / 116 万条资源误删是怎么回事，怎么恢复
 - lessons/failure-FC实例在WebSocket断开后立即冻结.md | high | 2026-09-13 | 2026-09-13 线上实测：客户端断开 WebSocket 后 FC 视为调用结束并立刻冻结实例，handler 中 kill Chrome→写回 NAS… | FC 冻结、WebSocket、Browser.close
   ? FC 上 WebSocket 断开后 handler 收尾代码为什么不执行 / fc-chrome profile= 为什么要求客户端先发 Browser.close
+- lessons/failure-SLS字段检索按分词匹配误命中其他stage.md | high | 2026-09-16 | SLS 检索 `field:value` 是分词匹配，同一 logstore 里 `stage=GET:/api/v2/search` 的访问日志会被 `st… | SLS、分词、字段检索
+  ? 用 SLS 按 stage/字段值统计时为什么数字翻倍或出现 null 行 / SLS 检索语句怎么做字段精确匹配
 - lessons/failure-ncjs构建脚本会自动上传OSS.md | high | 2026-09-04 | admin/*子应用的标准 `pnpm build` 脚本默认会把 dist 上传到生产 OSS 并改写 apps.json, 验证构建前必须先用 { dep… | NC-JS、pnpm build、mfe插件
 - lessons/failure-proto3零值与负一哨兵冲突.md | high | 2026-09-12 | proto3 标量字段不传时零值是 0，若 0 恰好是合法业务值、而"不过滤"哨兵定成 -1，前端漏传就会静默查错数据且不报错 | proto3、零值、哨兵
   ? 筛选参数传了 0 却查不出数据 / proto3 不传字段被当成过滤条件是什么坑
@@ -137,25 +141,27 @@ load: always
 - lessons/success-cdp3策略强装扩展与NAS持久化profile.md | medi | 2026-09-15 | 2026-09-13 fc-chrome 实测可行的扩展启用链路（解包目录→chrome --pack-extension→本机 /cdp3-ext upda… | 扩展安装、ExtensionSettings、override_update_url
   ? 怎么让 headless Chrome 装 NAS 上的自定义扩展 / 策略强装的扩展改了版本为什么不更新
 
-## knowledge/ (21)
+## knowledge/ (22)
 - knowledge/architecture-系统总览.md | crit | 2026-09-02 | 从爬取到入库到检索的完整链路、各服务端口与中间件分工 | 架构、数据链路、网关
 - knowledge/api-rpc契约.md | high | 2026-09-12 | COMMON 仓库中各 proto 服务的方法清单、核心消息结构与代码生成流程 | proto、gRPC、StorageRpc
   ? 我要改 gRPC 协议 / proto，改完怎么生成 / 某个 rpc 方法的入参/出参消息结构是什么 / proto 改完要同步哪些下游仓库
 - knowledge/api-v3-detail-filectx兼容性分析.md | high | 2026-09-15 | 结论——lc 索引结构与 v2 detail/fileCtx 的查询方式兼容（nested filelist、join file、fid/parent、rou… | v3 detail、fileCtx、res_lc_all
   ? detail/fileCtx 能不能直接查 res_lc_all，要改哪 / /api/v2/detail 为什么报 size 反序列化错误
-- knowledge/architecture-api.md | high | 2026-09-12 | osec-resource-api 的路由表、中间件链、依赖服务与后台管理模块；另含 SPIDER 网关 LifecycleRpc 新增的 res_lc 分表… | API、osec-resource-api、gin
+- knowledge/architecture-api.md | high | 2026-09-16 | osec-resource-api 的路由表、中间件链、依赖服务与后台管理模块；另含 SPIDER 网关 LifecycleRpc 新增的 res_lc 分表… | API、osec-resource-api、gin
   ? 我要改查询接口/限流/搜索 / 后台怎么看 res_lc_* 分表数据
 - knowledge/architecture-es索引现状.md | high | 2026-09-12 | 阿里云 ES 6.7 单索引的分片/容量/父子文档结构/入库增速与读写清理链路代码位置，是生命周期改造方案的事实基线 | ES、Elasticsearch、6.7
   ? 生产 ES 有多大，怎么查生产 ES / 无 join 索引和 join 父子索引的区别
 - knowledge/architecture-fc-chrome文档爬虫上云.md | high | 2026-09-15 | 2026-09-13 上线的 nc-app-prod-cdp3（14:30 起挂 NAS：CDP3DATA/CDP3TEMP、extensions=、prof… | fc-chrome、nc-app-prod-cdp3、Tampermonkey
   ? 新版 FC Chrome 部署在哪、地址、健康检查 / cdp3 的 NAS 目录/extensions=/profile= 怎么用
-- knowledge/architecture-nc-js-qiankun与后台页面.md | high | 2026-09-15 | qiankun 主应用注册/子应用生命周期、本地开发流程；spiderAdmin 新增后台页面写法与落点（队列监控、资源生命周期各页、架构图页、res_lc … | qiankun、微前端、spiderAdmin
+- knowledge/architecture-nc-js-qiankun与后台页面.md | high | 2026-09-16 | qiankun 主应用注册/子应用生命周期、本地开发流程；spiderAdmin 新增后台页面写法与落点（队列监控、资源生命周期各页、架构图页、res_lc … | qiankun、微前端、spiderAdmin
   ? 后台前端加一个页面该怎么加 / qiankun 子应用 / apps.json 是什么 / 后台哪里看 res_lc_* 分表数据
 - knowledge/architecture-nc-js-网关对接.md | high | 2026-09-12 | NC-JS 后台前端与 SPIDER gateway 之间没有 REST，只有 WebRTC DataChannel 上自实现的 gRPC 传输；鉴权已改 G… | WebRTC、gRPC、protobuf-ts
   ? 前端怎么连后端，网关 IP 换了改哪 / 前端 proto 怎么生成 / 后台登录 GitHub OAuth 怎么接的，gwToken / RtcToken 兜底是什么
 - knowledge/architecture-nc-js.md | high | 2026-09-12 | NC-JS 前端 mono repo 的仓库定位、工程栈、分包布局（admin/*、packages/*）与构建/OSS/Cloudflare 部署机制；qi… | NC-JS、前端、pnpm
 - knowledge/architecture-queue-admin.md | high | 2026-09-15 | 队列 v2 的监控管理系统：已并入网关进程的架构、端口、schema 解耦机制、抢主锁、巡检工具与已知数据缺口 | queue-admin、队列监控、QueueAdminRpc
   ? 队列告警怎么配，阈值多少，历史在哪看 / queue-admin 队列出问题怎么看，端口连不上怎么办
+- knowledge/architecture-search-admin.md | high | 2026-09-16 | 网关 search_admin 模块（SLS 搜索日志聚合、p90 巡检→邮件+关闭匿名搜索、redis 键约定、SQL/扫描双路径）与 lifecycle.… | search_admin、SearchAdminRpc、搜索总览
+  ? 后台搜索总览/Top 榜数据从哪来, source=sls-scan 是什么意思 / 匿名搜索被关闭了怎么回事, 在哪手动开放/调阈值 / 分享链接总览的检测数为什么早期是 0, 新增按来源怎么算 / 上线后怎么验证 search_admin 和 ShareOverview
 - knowledge/architecture-spider.md | high | 2026-09-15 | osec-spider-go 的入口子命令、目录分层、编译状态、bnd_resolver 关键类型、写新爬虫可复用要点（含配置节 yaml/Duration/… | SPIDER、osec-spider-go、爬虫
   ? 我要改爬虫/加站点，该看哪个子命令 / 新增配置节 yaml 怎么解析 Duration / 泛型队列 PushTask 怎么写，seq/永久失败是什么
 - knowledge/architecture-storage.md | high | 2026-09-12 | enfi-resource-storage 的三个子命令、写入流程、ES 索引名与幂等策略 | STORAGE、enfi-resource-storage、入库
@@ -179,7 +185,7 @@ load: always
 - knowledge/reference-github-oauth配置.md | medi | 2026-09-12 | 两个GitHub OAuth App(prod/dev)的名称、client_id、管理页、已注册回调列表与组织第三方应用策略, 不含任何secret | GitHub OAuth App、client_id、redirect_uri
   ? GitHub OAuth App 的 client_id 在哪查 / 1second 组织的回调地址怎么配置
 
-## sessions/ (35 个, 仅列最近 3 个; 其余用 mem.py search 找)
+## sessions/ (36 个, 仅列最近 3 个; 其余用 mem.py search 找)
 - sessions/2026/2026-09-05-生命周期P4启动失败.md | high | 2026-09-16 | STORAGE 双机重部并核验首写继承生效, 用新工具补齐双写窗口 3551 条文档, P4 bootstrap 启动 10 分钟后因两个实现缺陷失败并停止(… | 生命周期、P4、bootstrap
 - sessions/2026/2026-09-05-生命周期P4演练.md | high | 2026-09-16 | 网关双机重部热修分支成功；缺陷 A/B 在生产验证通过；新发现 copy_child 轮询瓶颈，全量未启动 | P4、bootstrap、演练
 - sessions/2026/2026-09-03-并行开发6站爬虫.md | medi | 2026-09-16 | 用 4 并发子 Agent + worktree 接入 6 个站点，5 站验收通过并合并，haisou 因站点收紧未能验收 | 并行开发、worktree、6站爬虫
