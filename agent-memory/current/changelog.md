@@ -3,7 +3,7 @@ title: 项目变更记录（总览归档）
 type: knowledge
 status: active
 created_at: 2026-09-12T11:30:00+08:00
-updated_at: 2026-09-16T10:10:00+08:00
+updated_at: 2026-09-16T09:45:00+08:00
 priority: low
 keywords: [变更记录, changelog, 历史, 总览归档, 生命周期改造, 队列v2, queue-admin, 站点接入, 配置v2, GitHub OAuth]
 summary: 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪"
@@ -23,7 +23,7 @@ related:
 - 十项提案（第 3~12 项）9 条线并行开发 + 逐线验收 + 集成预演完成，待用户确认合并；两个新脚本 `scripts/dev/{new_worktree_all,integration_check}.sh` → `sessions/2026/2026-09-16-十项提案并行开发.md`、`lessons/patterns-并行多角色开发的验收与集成.md`、`procedures/workflow-并行多任务开发与合并预演.md`
 - 文档爬虫新增腾讯文档表格解析（云端脚本双格式 + 前端识别），本地端到端 6 文档全通，待用户确认合并 → `sessions/2026/2026-09-16-腾讯文档表格解析.md`、`knowledge/domain-腾讯文档表格解析.md`
 
-- 2026-09-16 飞书文档解析接入开发完成（docx + 多维表格，云端脚本拆 runtime/站点，14 条真实文档验证），待用户确认合并 → `sessions/2026/2026-09-16-飞书文档解析接入.md`、`knowledge/domain-飞书文档解析.md`
+- 2026-09-16 飞书文档解析接入开发完成并经用户确认合入三仓库主分支（docx + 多维表格，云端脚本拆 runtime/站点，14 条真实文档验证；OSS 上传与前端发布待人工） → `sessions/2026/2026-09-16-飞书文档解析接入.md`、`knowledge/domain-飞书文档解析.md`
 - 08:30 修 `scripts/mail/notify.py` 邮件正文未渲染（`env python3` 命中 miniforge 无 markdown 模块，静默退化 `<pre>`）：shebang 固定系统 python + 自动换解释器 + 内置兜底渲染器 → `lessons/failure-notify脚本静默降级把原始Markdown发成邮件.md`
 - 08:05 **分享链接总览 + 搜索总览（SLS）+ p90 告警自动关闭匿名搜索** 上线（COMMON `f2f0881`、SPIDER `2e34623`/`65a1bf8`/`6cb69db`、API `2458a52`、NC-JS `dbbbbcc`）；上线首日修 SLS stage 分词误匹配 → `knowledge/architecture-search-admin.md`、`decisions/decision-2026-09-16-搜索p90告警关闭匿名搜索与总览数据源.md`、`lessons/failure-SLS字段检索按分词匹配误命中其他stage.md`、`sessions/2026/2026-09-16-分享链接与搜索总览纳入后台.md`
 

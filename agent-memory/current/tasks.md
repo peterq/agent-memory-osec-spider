@@ -3,7 +3,7 @@ title: 当前任务与进度
 type: task
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-16T10:10:00+08:00
+updated_at: 2026-09-16T09:45:00+08:00
 priority: critical
 keywords: [任务, 进度, 待办, 腾讯文档, qqdoc, 十项提案, P5灰度, lifecycle_checker, xlLoadShare, 队列v2, 全站扫描]
 summary: 仍在推进/阻塞/待决策的事项：文档发现首轮完成待批量执行、腾讯文档表格解析已完成待用户确认合并、十项提案并行开发、P5 阶段 D 灰度爬坡、误删事故收尾；长尾待办在 tasks-backlog，历史原文在 archive
@@ -35,7 +35,7 @@ related:
 
 ## 进行中
 
-- [ ] **飞书文档解析接入（2026-09-16 开发完成，待用户确认合并）**：三个 worktree 已提交未 push——userscripts `feat/feishu-cloud`(`bf4c36d`, 云端脚本拆 runtime/kdoc/feishu, 产物改名 `doc-cloud.user.js`)、NC-JS `feat/feishu-doc`(`c10ce3e`, 提交框识别飞书链接)、SPIDER `feat/feishu-doc`(`bc4b25f`, doc_crawler 默认脚本地址)。真实文档验证 14 条全部符合预期。**合并 master 前须用户确认**；合并后人工 `pnpm build:cloud && pnpm upload:cloud`、发布 spiderAdmin。风险：PC 端油猴调度器不过滤飞书任务。→ `knowledge/domain-飞书文档解析.md`、`agent-tasks/2026-09-16-feishu-doc/99-notes.md`
+- [x] **飞书文档解析接入（2026-09-16 已合并）**：[用户裁定 09-16 合并] userscripts master `bf4c36d`、NC-JS main `39c145a`、SPIDER master `bc4b25f` 均已 fast-forward 合入（未 push），worktree 已删。**待人工**：userscripts `pnpm build:cloud && pnpm upload:cloud`（OSS doc-cloud.user.js + 旧名 kdoc.user.js）、spiderAdmin 发布、三仓库 push；PC 端油猴调度器仍不过滤飞书任务。→ `knowledge/domain-飞书文档解析.md`
 
 - [ ] **P1 腾讯文档表格解析（09-16，待用户确认合并）**：方案 = 同一份云端脚本（userscripts `src/cloud/kdocCloud.ts`）按 host 分派，页面内同源 fetch `dop-api/opendoc` 解两种格式（3.0.0 protobuf 区块 / 2.x JSON op），前端 `spiderUtil.ts` 识别 `docs.qq.com/sheet/*`；网关/doc-crawler/契约不改。工作树 `userscripts-wt-qqdoc`(`feat/qqdoc-cloud`)、`ncjs-wt-qqdoc`(`feat/qqdoc`)。上线动作：合并 → `pnpm build:cloud && pnpm upload:cloud`（覆盖线上 `fc-chrome/userscripts/kdoc.user.js`）→ 前端发版。本地 fc-chrome 端到端方法见 `procedures/workflow-fc-chrome上线.md`。
 - [ ] **P1 十项提案并行开发（09-16 全部完成，待用户确认合并）**：9 条线 + NC-JS 前端全部交付并验收通过（4 条经返工）；四仓库集成分支 `integration/ten-proposals`（COMMON `c0dca69`/SPIDER `7e79501`/API `6c413b6`/STORAGE `1a47033`）+ nc-js `feat/health-observe`(`66ec854`) 断网 CI 全绿。合并步骤、上线前置项（GitHub 4 个 secret、FC 函数 OSS 环境变量、restest 演练 deploy.sh、熔断器 dry_run 观察）见 `agent-tasks/2026-09-16-ten-proposals/95-merge-plan.md`。**未合并、未 push。**
