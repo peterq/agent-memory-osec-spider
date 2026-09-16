@@ -3,7 +3,7 @@ title: 当前任务与进度
 type: task
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-16T14:05:00+08:00
+updated_at: 2026-09-16T14:30:00+08:00
 priority: critical
 keywords: [任务, 进度, 待办, 五站爬虫, 站点发现, 腾讯文档, 十项提案, P5灰度, lifecycle_checker, xlLoadShare, 队列v2]
 summary: 仍在推进/阻塞/待决策：五站爬虫待确认合并、站点发现收尾、文档发现待批量执行、腾讯文档与十项提案待确认合并、P5 灰度爬坡、误删事故收尾；长尾在 tasks-backlog
@@ -43,7 +43,7 @@ related:
 
 - [ ] **P1 腾讯文档表格解析（09-16，已合并并 push，待人工上传/发版）**：方案 = 同一份云端脚本（现 NC-JS `apps/doc-cloud-spider`，原 userscripts `src/cloud/`）按 host 分派，页面内同源 fetch `dop-api/opendoc` 解两种格式（3.0.0 protobuf 区块 / 2.x JSON op），前端 `spiderUtil.ts` 识别 `docs.qq.com/sheet/*`；网关/doc-crawler/契约不改。工作树 `userscripts-wt-qqdoc`(`feat/qqdoc-cloud`)、`ncjs-wt-qqdoc`(`feat/qqdoc`)。上线动作：合并 → `pnpm build:cloud && pnpm upload:cloud`（覆盖线上 `fc-chrome/userscripts/kdoc.user.js`）→ 前端发版。本地 fc-chrome 端到端方法见 `procedures/workflow-fc-chrome上线.md`。
 - [ ] **P1 十项提案并行开发（09-16 全部完成，待用户确认合并）**：9 条线 + NC-JS 前端全部交付并验收通过（4 条经返工）；四仓库集成分支 `integration/ten-proposals`（COMMON `c0dca69`/SPIDER `7e79501`/API `6c413b6`/STORAGE `1a47033`）+ nc-js `feat/health-observe`(`66ec854`) 断网 CI 全绿。合并步骤、上线前置项（GitHub 4 个 secret、FC 函数 OSS 环境变量、restest 演练 deploy.sh、熔断器 dry_run 观察）见 `agent-tasks/2026-09-16-ten-proposals/95-merge-plan.md`。**09-16 12:00 已按计划合入四仓库主分支并 push（COMMON `0ead6c0`、SPIDER `7acb24a`、API `7154290`、STORAGE `3e0d490`、NC-JS `3ccd25d`），CI 全过；相关服务未重部，上线前置项未做。**
-- [ ] **P0 P5 阶段 D**：阶段 C 复测 09-15 通过（G1 字面超限用户接受）；灰度 09-15 08:1x 起 30%，09-16 改 `step_every_v3_requests: 500 / step_percent: 2`（两台 res-api 宿主机 `config.yaml` + restart）。半小时邮件由 API `scripts/search_canary_report.sh 30` 发。09-16 白天 35→43%；**10:51 误回落 0%**（v3 错误 1/597 = 深翻页 page=3678 触发 ES max_result_window，v2 同样 500），11:00 用 res2 上的 `search-canary -config config.yaml -set 43 -resume` 恢复；**13:53 第二次误回落**（`kw=test page=1525` 深翻页 5/597），14:00 恢复 53%；防复发方案 A（API 深翻页护栏，简报 `agent-tasks/2026-09-16-api-deep-page-guard/`）代码先做、部署等用户确认。A' 存量复检 84,791 条已入队完成。过程原文见快照 archive。
+- [ ] **P0 P5 阶段 D**：阶段 C 复测 09-15 通过（G1 字面超限用户接受）；灰度 09-15 08:1x 起 30%，09-16 改 `step_every_v3_requests: 500 / step_percent: 2`（两台 res-api 宿主机 `config.yaml` + restart）。半小时邮件由 API `scripts/search_canary_report.sh 30` 发。09-16 白天 35→43%；**10:51 误回落 0%**（v3 错误 1/597 = 深翻页 page=3678 触发 ES max_result_window，v2 同样 500），11:00 用 res2 上的 `search-canary -config config.yaml -set 43 -resume` 恢复；**13:53 第二次误回落**（`kw=test page=1525` 深翻页 5/597），14:00 恢复 53%；**[用户裁定 09-16 14:2x] 深翻页护栏三档**（前端已限前 300 条）：rows=page*pageSize >400 → HTTP 400 报错；>320 → 记 uid 并按 uid(匿名按 ip) 小时计数；1 h 内 >10 次 → 疑似机器人邮件告警。v1 `94d91f7`（>10000 返空）已由 sonnet 改版中（简报 `20-api-v2.md`），完成后部署 API 双机。A' 存量复检 84,791 条已入队完成。过程原文见快照 archive。
 - [ ] **🔴 P0 误删事故收尾**：重爬 1,152,617 条 09-14 10:21 终态回库 637,886（quark 56.2%），解析器判失效经 1,000 条 CDP 复核 100% 一致；bnd 并发按类型拆分（`consumer_number_by_type`，bnd 150）与按类型背压均已上线。待办：API `0ad7bb3`（bnd 判定对齐）下次发版带上；告警阈值放宽待用户决定。
 - [ ] **P1 xlLoadShare 收尾**：`submitInvalidDryRun=true` 日志清单 → `scripts/xl_share_probe.sh` 抽样 → 用户拍板改 false 重部；6h 后 `tools/xl-fail-export` 补投。
 

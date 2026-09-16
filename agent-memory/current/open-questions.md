@@ -3,10 +3,10 @@ title: 未解决的问题
 type: question
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-16T12:25:00+08:00
+updated_at: 2026-09-16T14:30:00+08:00
 priority: high
 keywords: [待确认, 十项提案重部, 存量测试代理, duanjuso速率, lzpanx, robots, 灰度误回落, 账号池]
-summary: 待确认：十项提案服务重部、存量测试改代理、duanjuso 速率、lzpanx robots、灰度误回落、账号池
+summary: 待用户确认：站点发现第二轮立项；账号池续期（深翻页护栏方案已裁定，见 tasks）
 questions:
   - 当前有哪些待用户确认的问题
 load: on-demand
@@ -19,14 +19,6 @@ related:
    只保留未答复的待确认问题, 以免占用context. 3. `答复`段落由用户编辑, 但可由Agent在合适时随问题一起清理掉.
 
 # 未解决的问题
-
-## 灰度误回落的防复发（2026-09-16 11:00）
-
-10:51 canary 因 1 条 v3 500（深翻页 page=3678×15 > ES max_result_window 10,000；同参数 v2 同样 500）回落到 0%，11:00 已 `search-canary -set 43 -resume` 恢复。同类深翻页请求（机器人）会再次触发误回落。
-- [待确认] 方案 A：API 层拦截 `page*pageSize > 10000`（返回空结果或 400），v2/v3 同改并重部——根治并修掉既有 500；方案 B：放宽 `error_ratio_max` 0.001→0.005、`min_sample` 200→1000（宿主机配置 + restart）；C：A+B。
-
-用户答复：
-
 
 ## 站点发现 / 五站爬虫 收尾（2026-09-16）
 

@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-16T14:01:07+08:00
+updated_at: 2026-09-16T14:18:49+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -27,7 +27,7 @@ load: always
 ## current/ (6)
 - current/tasks.md | crit | 2026-09-16 | 仍在推进/阻塞/待决策：五站爬虫待确认合并、站点发现收尾、文档发现待批量执行、腾讯文档与十项提案待确认合并、P5 灰度爬坡、误删事故收尾；… | 任务、进度、待办
   ? 当前该做什么，有哪些待办
-- current/open-questions.md | high | 2026-09-16 | 待确认：十项提案服务重部、存量测试改代理、duanjuso 速率、lzpanx robots、灰度误回落、账号池 | 待确认、十项提案重部、存量测试代理
+- current/open-questions.md | high | 2026-09-16 | 待用户确认：站点发现第二轮立项；账号池续期（深翻页护栏方案已裁定，见 tasks） | 待确认、十项提案重部、存量测试代理
   ? 当前有哪些待用户确认的问题
 - current/risks.md | high | 2026-09-16 | 影响开发与运维安全的已知风险点；最高 R9 lifecycle_checker 误删 115.6 万资源（修复已上线、恢复待决策） | lifecycle_checker误删、风险、阻塞
 - current/proposals-需求与优化候选.md [draft] | medi | 2026-09-16 | 12 条候选需求；09-16 用户裁定第 3~12 项已开发，取证包/软删两项未做 | 需求候选、优化提案、取证包
