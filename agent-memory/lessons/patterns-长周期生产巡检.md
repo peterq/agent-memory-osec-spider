@@ -3,7 +3,7 @@ title: 可迁移模式：长周期生产巡检（全量 bootstrap 实战）
 type: lesson
 status: active
 created_at: 2026-09-06T05:50:00+08:00
-updated_at: 2026-09-15T15:50:00+08:00
+updated_at: 2026-09-17T01:50:00+08:00
 priority: high
 keywords: [巡检, bootstrap, 子Agent, 后台进程, 隧道, keepalive, progress, _count 差分, lc-check, watch 脚本, reindex, 吞吐, verify, repair, 对拍, rethrottle, heap]
 summary: 派子 Agent 做数小时生产巡检的可操作清单（原 98 条经验按主题压缩）：前台等待、隧道 keepalive、复制阶段用 _count 差分而非 progress、watch 脚本静默降级要识别；具体吞吐数值另见 archive/2026/domain-bootstrap吞吐实测数据.md
@@ -94,3 +94,6 @@ P4 全量 bootstrap（作业 id=8，约 2 天）需要主控派子 Agent 分轮�
 ## 补记 2026-09-13：长时投递作业的两条护栏
 - 经 ssh 隧道访问网关的长时作业，隧道必须有守护（断开自动重连 + `ServerAliveInterval`），本机到跳板机的网络抖动（00:30~00:47 res2 SSH 超时 17 min，主机本身正常）会让隧道静默消失。
 - 投递/写入类工具对「对端不可达」要原地退避等待而不是记失败跳过（`tools/lc-recrawl` `77e92bb`），否则断连期间的行全靠事后补投；且 `pkill -f <模式>` 会连同自己的 shell 一起杀掉（模式出现在当前命令行里），改用 `pgrep -f | grep -vx $$` 逐个 kill。**后台等待循环里也不能用 `until ! pgrep -f <模式>`**——循环所在 shell 的命令行本身含该模式，永远匹配自己（09-14 阶段 C 编排因此卡了 19 小时）；改判产物/日志（如 `grep -q 完成 run.log`）或用 PID 文件。
+
+## 补记 2026-09-17：灰度自动回落的误判来源
+灰度分流器按"v3 5xx 率"回落时，v2/v3 **共有**的 5xx（参数错误却回 500：深翻页超 max_result_window、非法 resType）会在 100% 阶段（窗口无 v2 样本）反复触发误回落。处理原则：先用同参数打 v2 对拍，确认共有缺陷后把该路径改成 4xx（API `6062fb5`/`8ed53a8`），而不是放宽阈值；恢复用 res2 上的 `search-canary -config config.yaml -set N -resume`。
