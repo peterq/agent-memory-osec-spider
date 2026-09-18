@@ -3,7 +3,7 @@ title: 失败经验：握手回包附加字段被 RTC 传输层丢弃 / 失败�
 type: lesson
 status: active
 created_at: 2026-09-08T16:00:00+08:00
-updated_at: 2026-09-16T09:30:00+08:00
+updated_at: 2026-09-18T10:50:00+08:00
 priority: high
 keywords:
   - RtcTransport
@@ -15,7 +15,7 @@ keywords:
   - 自研RPC传输
   - 重试覆盖错误信息
 summary: 网关握手 403 回包的附加字段被 RTC-gRPC 传输层丢弃；附加信息要走独立通道
-load: on-demand
+load: rarely
 related:
   - agent-memory/decisions/decision-2026-09-08-后台登录改为github-oauth.md
   - agent-memory/lessons/success-桩网关加cdp浏览器做登录链路联调.md

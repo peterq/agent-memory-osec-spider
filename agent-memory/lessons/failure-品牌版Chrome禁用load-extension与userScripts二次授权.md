@@ -3,14 +3,14 @@ title: 失败经验：品牌版 Chrome 137+ 忽略 --load-extension、138+ 用�
 type: lesson
 status: active
 created_at: 2026-09-13T11:00:00+08:00
-updated_at: 2026-09-16T11:30:00+08:00
+updated_at: 2026-09-18T10:50:00+08:00
 priority: high
 keywords: [Chrome, load-extension, ExtensionSettings, Tampermonkey, @match, 302 重定向, Allow User Scripts, headless, 企业策略]
 questions:
   - headless Chrome 加了 --load-extension 为什么看不到扩展
   - 油猴脚本装上了但页面不执行是怎么回事
 summary: 品牌版 Chrome 不吃 --load-extension、userScripts 需二次授权；改企业策略强装 + 预热 profile
-load: on-demand
+load: rarely
 related:
   - agent-memory/knowledge/architecture-fc-chrome文档爬虫上云.md
   - agent-memory/procedures/workflow-fc-chrome上线.md

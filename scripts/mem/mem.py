@@ -188,7 +188,12 @@ def render_boot(docs: list[Doc], kw: int = 3, sessions: bool = False, recent_ses
             out.append(f"\n## sessions/ ({len(items)} 个, 仅列最近 {len(recent)} 个; 其余用 mem.py search 找)")
             items = recent
         else:
-            out.append(f"\n## {top + '/' if top else '根目录'} ({len(items)})")
+            # 2026-09-18: load: rarely 的窄主题/一次性文件不列入启动包(只计数), 仍参与 mem.py search;
+            # 与 sessions 同口径, 用于把启动包压回 17,000 提示线以下
+            rare = [d for d in items if str(d.fm.get("load")) == "rarely"]
+            items = [d for d in items if d not in rare]
+            note = f"; 另 {len(rare)} 个 load: rarely 未列, mem.py search 可检索" if rare else ""
+            out.append(f"\n## {top + '/' if top else '根目录'} ({len(items)}{note})")
         items = sorted(items, key=lambda d: (PRIORITY_RANK.get(str(d.fm.get("priority")), 9), d.mrel))
         for d in items:
             st = d.fm.get("status", "")

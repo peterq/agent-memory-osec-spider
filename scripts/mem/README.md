@@ -58,3 +58,7 @@ scripts/mem/mem.py recent --days 7       # 用 git 历史代替手工"最近更�
 - `search_bench.py`：对比检索配置（模型/切块/RRF 参数/boost），输出 Hit@k 与 MRR。
 - `score_routing.py`：给「Agent 只看某份启动上下文选文件」实验打分。
 - 结果与结论：`agent-tasks/2026-09-12-memory-optimization-bench/results-*.md`（`results-summary.md` 为汇总）。
+
+## load: rarely 的文件不进启动包（2026-09-18）
+
+`boot`/`index` 对 `load: rarely` 的文件只计数不列条目（sessions 之外的目录同样适用），`search` 仍能检索到。用途：窄主题、一次性的 lessons/decisions 标成 rarely，把启动包压回 17,000 提示线以下，而不用归档。

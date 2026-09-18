@@ -3,11 +3,11 @@ title: 可迁移模式：统计/迁移 ES 索引前先分清文档形态
 type: lesson
 status: active
 created_at: 2026-09-05T11:00:00+08:00
-updated_at: 2026-09-05T11:00:00+08:00
+updated_at: 2026-09-18T10:50:00+08:00
 priority: high
 keywords: [ES, join, nested, must_not exists, 文档形态, 统计漏算, 迁移前核查]
 summary: 同一索引可能混着两代写入形态；只按 join=resource 统计会漏掉三分之二资源，任何统计/迁移前先做 exists/must_not exists 对账
-load: on-demand
+load: rarely
 related:
   - agent-memory/knowledge/architecture-es索引现状.md
   - agent-memory/sessions/2026/2026-09-04-资源生命周期改造PRD.md

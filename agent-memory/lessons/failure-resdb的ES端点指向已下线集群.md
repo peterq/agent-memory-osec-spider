@@ -3,7 +3,7 @@ title: 失败经验：osec-resdb 的 ES 端点指向已下线集群，fail-fast 
 type: lesson
 status: active
 created_at: 2026-09-05T12:20:00+08:00
-updated_at: 2026-09-16T09:30:00+08:00
+updated_at: 2026-09-18T10:50:00+08:00
 priority: high
 keywords:
   - osec-resdb
@@ -14,7 +14,7 @@ keywords:
   - 哑故障
   - 部署前置检查
 summary: STORAGE worker 所在 osec-resdb 的 ES 地址指向已下线集群，旧代码静默失败；排查与修法见正文
-load: on-demand
+load: rarely
 related:
   - agent-memory/lessons/failure-网关重启暴露ES集群已更换.md
   - agent-memory/procedures/workflow-部署.md

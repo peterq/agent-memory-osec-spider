@@ -3,7 +3,7 @@ title: 项目总览
 type: overview
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-16T21:10:00+08:00
+updated_at: 2026-09-18T10:45:00+08:00
 priority: critical
 keywords: [网盘资源爬取, 版权取证, COMMON, SPIDER, STORAGE, API, NC-JS]
 summary: 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件
@@ -26,11 +26,11 @@ related:
 ## 2. 当前状态（最近 7 天；更早见 `current/changelog.md`）
 
 - 09-16 **五站爬虫已上线**（jenkins/res2/res1，新版 deploy.sh 首次实跑），首日观察速率与类型 → `knowledge/domain-站点-260916接入批次.md`
-- 09-16 **十项提案已合入五仓库并 push，服务未重部**（前置项见 `agent-tasks/2026-09-16-ten-proposals/95-merge-plan.md`）；云端文档脚本迁入 NC-JS 已合入（OSS 上传待人工）
-- 09-16 **文档发现首轮完成**（达标 29 篇，批量待执行）→ `procedures/workflow-文档发现.md`
-- 09-15 **P5 阶段 D 灰度爬坡中**；xlLoadShare 修复上线，失效上报仍 dry run → `current/tasks.md`
+- 09-16 **十项提案已合入五仓库并 push，服务未重部**（前置项 `agent-tasks/2026-09-16-ten-proposals/95-merge-plan.md`）；云端文档脚本迁入 NC-JS 已合入（OSS 上传待人工）
+- 09-16 **文档发现首轮完成**（29 篇，批量待执行）→ `procedures/workflow-文档发现.md`
+- 09-15 **P5 阶段 D 灰度爬坡中**；失效上报仍 dry run → `current/tasks.md`
 - 09-12 **🔴 事故：lifecycle_checker 误删 115.5 万 quark/ali 资源**，修复已部署，重爬回库 ≈56% → `lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md`
-- 阻塞：无；风险见 `current/risks.md` R9。
+- 阻塞：无；风险 `current/risks.md` R9。
 
 ## 3. 核心事实
 
@@ -86,7 +86,8 @@ related:
 
 ## 7. 待解决问题
 
-- 事故止血/部署/恢复方案（人工 + 决策）→ `current/open-questions.md`；恢复期间 P5 是否顺延；风险 `current/risks.md`。
+- 事故恢复方案、P5 是否顺延 → `current/open-questions.md`；风险 `current/risks.md`。
+- 爬虫运行时选型（FC+Lua/WASM vs 单进程宿主）→ `knowledge/architecture-站点爬虫运行时方案对比.md`
 
 ## 8. 怎么找记忆文件
 

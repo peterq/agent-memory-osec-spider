@@ -3,14 +3,14 @@ title: 失败经验：端到端验证复用了仍在托管旧目录的 http.serv
 type: lesson
 status: active
 created_at: 2026-09-16T09:20:00+08:00
-updated_at: 2026-09-16T09:20:00+08:00
+updated_at: 2026-09-18T10:50:00+08:00
 priority: medium
 keywords: [fc-chrome, 端到端验证, 缓存, http.server, inject, DOC_SPIDER, 无回传]
 questions:
   - 新构建的云端脚本经 fc-chrome 注入后为什么一条 [[DOC_SPIDER]] 都没有
   - 端到端脚本"复用已在跑的服务"有什么坑
 summary: 2026-09-16 验证腾讯文档脚本时 fc-chrome 路径无任何回传、直连 CDP 却全通——根因是 e2e 脚本"端口有响应就复用"复用了托管旧 dist-cloud 的 http.server，注入的是只认 kdocs 的旧脚本；修法是每次重启托管进程并给脚本 URL 加内容哈希
-load: on-demand
+load: rarely
 related:
   - agent-memory/knowledge/domain-腾讯文档表格解析.md
   - agent-memory/lessons/failure-注入脚本用consolelog回传被页面自身替换吞掉.md

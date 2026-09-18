@@ -3,14 +3,14 @@ title: 成功经验：品牌版 Chrome 用企业策略 + 本机 update_url 装 N
 type: lesson
 status: active
 created_at: 2026-09-13T14:40:00+08:00
-updated_at: 2026-09-16T09:30:00+08:00
+updated_at: 2026-09-18T10:50:00+08:00
 priority: medium
 keywords: [扩展安装, ExtensionSettings, override_update_url, pack-extension, disable-background-networking, developerPrivate.autoUpdate, NAS, tar, profile 持久化, NFS 性能]
 questions:
   - 怎么让 headless Chrome 装 NAS 上的自定义扩展
   - 策略强装的扩展改了版本为什么不更新
 summary: 品牌版 Chrome 用企业策略 force_installed 装扩展 + 预热 profile 存 NAS 复用登录态
-load: on-demand
+load: rarely
 related:
   - agent-memory/lessons/failure-品牌版Chrome禁用load-extension与userScripts二次授权.md
   - agent-memory/lessons/failure-FC实例在WebSocket断开后立即冻结.md

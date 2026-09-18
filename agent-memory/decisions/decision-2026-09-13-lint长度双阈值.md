@@ -3,14 +3,14 @@ title: lint 文件长度改为双阈值（12,000 触发、压到 <6,000）
 type: decision
 status: active
 created_at: 2026-09-13T07:55:00+08:00
-updated_at: 2026-09-13T07:55:00+08:00
+updated_at: 2026-09-18T10:50:00+08:00
 priority: high
 keywords: [lint, 超长, 双阈值, max-chars, target-chars, warn-chars, mem.py, tasks.md, 压缩, 归档]
 questions:
   - lint 报超长该压到多少字，上限为什么不是 8000
   - tasks.md 反复超长怎么办
 summary: 超长改为 >12,000 触发、触发后必须压到 <6,000，9,000 起只提示；避免 8,000 单线反复报警
-load: on-demand
+load: rarely
 related:
   - agent-memory/decisions/decision-2026-09-12-记忆系统瘦身与脚本化加载.md
   - agent-memory/02-user-preferences.md

@@ -3,11 +3,11 @@ title: 失败经验：把"配置按服务拆分"理解成拆配置文件
 type: lesson
 status: active
 created_at: 2026-09-09T01:30:00+08:00
-updated_at: 2026-09-09T01:30:00+08:00
+updated_at: 2026-09-18T10:50:00+08:00
 priority: high
 keywords: [需求理解, 拆分对象, 复述确认, 配置拆分, 拆文件, 拆代码, 运行时断言, 数据层绕行]
 summary: 用户说"拆分"时先确认拆的是什么(代码结构/文件/进程); 用运行时断言或"文件里不写某项"来保证隔离, 通常说明方案层级选错了
-load: on-demand
+load: rarely
 related:
   - agent-memory/decisions/decision-2026-09-09-配置按进程拆代码而非文件.md
   - agent-memory/02-user-preferences.md

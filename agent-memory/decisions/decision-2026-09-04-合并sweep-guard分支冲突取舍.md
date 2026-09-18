@@ -3,7 +3,7 @@ title: 决策：合并 feat/sweep-guard-a/b 时冲突不套用"两边全保留"�
 type: decision
 status: active
 created_at: 2026-09-04T15:30:00+08:00
-updated_at: 2026-09-04T15:30:00+08:00
+updated_at: 2026-09-18T10:50:00+08:00
 priority: medium
 keywords:
   - sweep-guard
@@ -13,7 +13,7 @@ keywords:
   - 保活语义
   - runRound
 summary: 合并遗留分支时，master 已修正的旧逻辑不应因"冲突两边都保留"而被恢复，需先判断冲突是否为真实的两个功能重叠
-load: on-demand
+load: rarely
 related:
   - agent-memory/lessons/success-爬虫保活语义.md
   - agent-memory/current/tasks.md

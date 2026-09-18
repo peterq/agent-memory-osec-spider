@@ -3,14 +3,14 @@ title: 决策：cdp3 数据目录约定（NAS）、extensions= 走策略强装�
 type: decision
 status: active
 created_at: 2026-09-13T14:40:00+08:00
-updated_at: 2026-09-16T09:30:00+08:00
+updated_at: 2026-09-18T10:50:00+08:00
 priority: high
 keywords: [cdp3, CDP3DATA, CDP3TEMP, NAS, extensions=, profile=, Browser.close, 定时清理, nc-app-prod-cdp3]
 questions:
   - cdp3 的扩展和会话数据放在哪、目录怎么约定
   - 调用方用 profile= 时要注意什么
 summary: cdp3 的 profile=<ns>/<name> 持久化会话（NAS 锁）、extensions= 扩展机制与 Browser.close 收尾约定
-load: on-demand
+load: rarely
 related:
   - agent-memory/lessons/failure-FC实例在WebSocket断开后立即冻结.md
   - agent-memory/lessons/success-cdp3策略强装扩展与NAS持久化profile.md

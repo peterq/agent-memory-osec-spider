@@ -3,10 +3,10 @@ title: 未解决的问题
 type: question
 status: active
 created_at: 2026-09-02T10:50:00+08:00
-updated_at: 2026-09-16T14:30:00+08:00
+updated_at: 2026-09-18T10:45:00+08:00
 priority: high
 keywords: [待确认, 十项提案重部, 存量测试代理, duanjuso速率, lzpanx, robots, 灰度误回落, 账号池]
-summary: 待用户确认：站点发现第二轮立项；账号池续期（深翻页护栏方案已裁定，见 tasks）
+summary: 待用户确认：站点爬虫运行时重构走哪条路（推荐先做单进程多站点宿主）；站点发现第二轮立项；账号池续期
 questions:
   - 当前有哪些待用户确认的问题
 load: on-demand
@@ -39,3 +39,8 @@ related:
 
 用户答复：
 
+## 站点爬虫运行时重构选型（2026-09-18）
+
+- 用户提出用 FC + Lua/WASM 重构站点爬虫以压进程数/服务器成本；分析结论与四方案对比见 `knowledge/architecture-站点爬虫运行时方案对比.md`。
+- 推荐先做 B「单进程多站点宿主」（3~5 天，零新增成本），FC 路线卡在蜻蜓代理 IP 白名单（需 NAT 固定出口）与按时长计费。
+- 待用户裁定：走 B / 直接 A / 先做 B 再评估 D；并确认蜻蜓代理是否支持非 IP 鉴权、哪几台主机可退。

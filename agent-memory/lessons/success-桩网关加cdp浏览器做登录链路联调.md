@@ -3,7 +3,7 @@ title: 成功经验：桩网关 + CDP 浏览器做登录链路真实联调
 type: lesson
 status: active
 created_at: 2026-09-08T16:00:00+08:00
-updated_at: 2026-09-12T12:10:00+08:00
+updated_at: 2026-09-18T10:50:00+08:00
 priority: high
 keywords:
   - 桩网关
@@ -17,7 +17,7 @@ keywords:
 summary: 涉及浏览器交互的改造仅靠静态审查+单测不足以验收, 要造一个只保留被测链路的桩服务并用带登录态的调试浏览器实测, 本次靠它抓到两个"代码看起来完全正确"的阻断级问题
 questions:
   - 桩服务验收怎么做，为什么静态审查+单测不够
-load: on-demand
+load: rarely
 related:
   - agent-memory/lessons/failure-握手回包附加字段被传输层丢弃.md
   - agent-memory/procedures/workflow-带登录态的浏览器自动化.md

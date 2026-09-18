@@ -3,7 +3,7 @@ title: 失败经验：qiankun 子应用把 Vue 挂到包裹层上, 线上静态 
 type: lesson
 status: active
 created_at: 2026-09-08T07:20:00+08:00
-updated_at: 2026-09-12T22:36:00+08:00
+updated_at: 2026-09-18T10:50:00+08:00
 priority: high
 keywords:
   - NC-JS
@@ -19,7 +19,7 @@ keywords:
   - 选择器特异性
   - 无头 Chrome 验证
 summary: 子应用 Vue app.mount 直接挂 qiankun 包裹层会把 <qiankun-head> 内联的全部静态 CSS 删掉(只在线上/被 qiankun 加载时出现); antd Layout header 深色底是 .ant-layout .ant-layout-header 两级选择器压过单类名; 附无头 Chrome 核对法
-load: on-demand
+load: rarely
 related:
   - agent-memory/knowledge/architecture-nc-js.md
   - agent-memory/lessons/failure-ncjs构建脚本会自动上传OSS.md

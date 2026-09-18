@@ -3,7 +3,7 @@ title: 项目变更记录（总览归档）
 type: knowledge
 status: active
 created_at: 2026-09-12T11:30:00+08:00
-updated_at: 2026-09-16T19:30:00+08:00
+updated_at: 2026-09-18T10:45:00+08:00
 priority: low
 keywords: [变更记录, changelog, 历史, 总览归档, 生命周期改造, 队列v2, queue-admin, 站点接入, 配置v2, GitHub OAuth]
 summary: 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪"
@@ -17,6 +17,9 @@ related:
 
 > `00-overview.md` §2 只保留最近 7 天。更早的条目压缩成「日期 + 一句话 + 指针」放这里，
 > **原文叙述在各自的 session / decision 文件里**，本文件不复制正文。需要细节就按指针读那一个文件。
+
+## 2026-09-18
+- 10:45 站点爬虫运行时重构可行性分析：FC+Lua/WASM 可行但卡在代理白名单与计费模型，推荐先做单进程多站点宿主，待用户裁定 → `knowledge/architecture-站点爬虫运行时方案对比.md`、`current/open-questions.md`
 
 ## 2026-09-16
 - 12:13 **[用户裁定「合并上线」] 十项提案 + 五站合入五仓库主分支并 push**（COMMON `0ead6c0`/`cd85518`、SPIDER `7acb24a`/`70bb955`/`7e4206c`、API `7154290`、STORAGE `3e0d490`、NC-JS `3ccd25d`），四仓 CI 全过；用新版 deploy.sh 逐站上线 5 爬虫（duanjuso/jsnoteclub@jenkins、xiaozi/qileso@res2、ddys@res1，三机首次迁到 releases/current 布局），健康检查全过；十项提案服务未重部 → `sessions/2026/2026-09-16-五站爬虫并行开发.md`、`current/risks.md` R5

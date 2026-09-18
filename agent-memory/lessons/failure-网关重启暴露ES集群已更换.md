@@ -3,14 +3,14 @@ title: 失败经验：重新部署网关时发现 ES 配置指向已下线集群
 type: lesson
 status: active
 created_at: 2026-09-04T15:10:00+08:00
-updated_at: 2026-09-12T12:10:00+08:00
+updated_at: 2026-09-18T10:50:00+08:00
 priority: high
 keywords: [网关, gateway, ES, elasticsearch, 集群更换, 配置过期, 长期不重启, 上线前检查, es_addr, spider.gateway.prod.yaml]
 summary: 线上网关自 1 月未重启，期间 ES 集群已更换；队列 v2 上线一重启就 panic。教训：长期不重启的服务会掩盖外部依赖变更，重启前先在目标主机验证配置里的每个外部地址
 questions:
   - 网关起不来，报 no such host 怎么查
   - 重启网关前要检查什么
-load: on-demand
+load: rarely
 related:
   - agent-memory/sessions/2026/2026-09-04-队列v2改造.md
   - agent-memory/procedures/workflow-部署.md

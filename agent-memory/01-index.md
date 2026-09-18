@@ -3,7 +3,7 @@ title: 记忆索引（脚本生成）
 type: index
 status: active
 created_at: 2026-09-02T10:55:00+08:00
-updated_at: 2026-09-17T01:43:39+08:00
+updated_at: 2026-09-18T14:59:34+08:00
 priority: critical
 keywords: [索引, 导航, 启动包, mem.py]
 summary: 由 scripts/mem/mem.py index --write 从各文件 Front Matter 自动生成，禁止手工编辑；改 summary/keywords/questions 后重新生成
@@ -16,25 +16,23 @@ load: always
 定位到文件后 `mem.py outline <file>` 看章节，再 `mem.py body <file> --section <标题>` 只读需要的一段。
 维护方式：改目标文件 Front Matter（summary / keywords / questions），然后运行 `scripts/mem/mem.py index --write`。
 
-# agent-memory 启动包（脚本生成, 169 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
+# agent-memory 启动包（脚本生成, 170 文件）— 格式: 路径 | 优先级 | 更新 | summary | 关键词; ? 后为该文件能回答的问题
 
 ## 根目录 (3)
-- 00-overview.md | crit | 2026-09-16 | 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件 | 网盘资源爬取、版权取证、COMMON
+- 00-overview.md | crit | 2026-09-18 | 网盘资源取证系统的最小启动上下文：五仓库职责、数据链路、最近 7 天状态、在生效的决策与经验，以及怎么用 mem.py 找其余记忆文件 | 网盘资源爬取、版权取证、COMMON
 - 03-project-context.md | crit | 2026-09-16 | 五个仓库（4 个 Go + 1 个前端）的磁盘路径、module 名、职责、相互依赖与 go.mod replace 现状 | 仓库、module、replace
   ? 各仓库的职责分别是什么 / go.mod replace 现状是怎样的
 - 02-user-preferences.md | high | 2026-09-15 | 用户对语言、脚本沉淀、记忆维护、thinking 长度、敏感信息禁写、任务进度与异常必须及时邮件汇报（scripts/mail/notif… | 偏好、中文、邮件汇报
 
-## current/ (6)
+## current/ (4; 另 2 个 load: rarely 未列, mem.py search 可检索)
 - current/tasks.md | crit | 2026-09-17 | 仍在推进/阻塞/待决策：五站爬虫待确认合并、站点发现收尾、文档发现待批量执行、腾讯文档与十项提案待确认合并、P5 灰度爬坡、误删事故收尾；… | 任务、进度、待办
   ? 当前该做什么，有哪些待办
-- current/open-questions.md | high | 2026-09-16 | 待用户确认：站点发现第二轮立项；账号池续期（深翻页护栏方案已裁定，见 tasks） | 待确认、十项提案重部、存量测试代理
+- current/open-questions.md | high | 2026-09-18 | 待用户确认：站点爬虫运行时重构走哪条路（推荐先做单进程多站点宿主）；站点发现第二轮立项；账号池续期 | 待确认、十项提案重部、存量测试代理
   ? 当前有哪些待用户确认的问题
 - current/risks.md | high | 2026-09-16 | 影响开发与运维安全的已知风险点；最高 R9 lifecycle_checker 误删 115.6 万资源（修复已上线、恢复待决策） | lifecycle_checker误删、风险、阻塞
 - current/proposals-需求与优化候选.md | medi | 2026-09-16 | 12 条候选需求；第 3~12 项已于 09-16 合入 master，取证包/软删两项仍是候选 | 需求候选、优化提案、取证包
-- current/changelog.md | low | 2026-09-16 | 按日期倒序的一句话变更流水，每条指向 session/decision 文件；回答"某事哪天做的、细节在哪 | 变更记录、changelog、历史
-- current/tasks-backlog.md | low | 2026-09-16 | 从 tasks.md 拆出的低优先级/等人工事项：文档爬虫 FC 人工步骤、P3 小修、站点复议、checker 业务码、STORAGE … | backlog、P3、文档爬虫
 
-## decisions/ (21)
+## decisions/ (17; 另 4 个 load: rarely 未列, mem.py search 可检索)
 - decisions/decision-2026-09-02-停止磁力资源采集.md | crit | 2026-09-02 | 项目现只采集 4 种网盘类型资源，不再采集或入库磁力/BT 资源；存量索引与接口保留 | 磁力、torrent、magnet
 - decisions/decision-2026-09-03-全站扫描不在启动时触发.md | crit | 2026-09-03 | 全量扫描完成后把时间写进 redis；启动时检查该时间，有则跳过全量，只跑增量 | 全站扫描、全量、启动
 - decisions/decision-2026-09-04-资源索引生命周期改造方案.md | crit | 2026-09-12 | 用短周期(cur/prev)+长周期三索引与 MySQL 分表元数据替代单大索引的失效清理方式；两套方案共存、v3 接口切换、双写保回滚 | 生命周期、lifecycle、三索引
@@ -56,19 +54,13 @@ load: always
 - decisions/decision-2026-09-12-弃用文档更新类接口.md | high | 2026-09-16 | 用户 2026-09-12 确认——report/likes/dislikes/addViews 这类频繁 update ES 文档的接口… | 弃用、addViews、likes
 - decisions/decision-2026-09-12-阶段D改由API侧自动灰度分流.md | high | 2026-09-15 | 用户 09-12 裁定：API 在 /api/v2/search 服务端按比例走 v3，30% 起、无异常每 100 个 v3 请求 +1… | 阶段D、灰度、分流
   ? 搜索流量怎么从 v2 切到 v3，谁来切 / search_canary 是什么，比例怎么涨、异常怎么回滚
-- decisions/decision-2026-09-13-cdp3持久化会话与扩展机制.md | high | 2026-09-16 | cdp3 的 profile=<ns>/<name> 持久化会话（NAS 锁）、extensions= 扩展机制与 Browser.clo… | cdp3、CDP3DATA、CDP3TEMP
-  ? cdp3 的扩展和会话数据放在哪、目录怎么约定 / 调用方用 profile= 时要注意什么
-- decisions/decision-2026-09-13-lint长度双阈值.md | high | 2026-09-13 | 超长改为 >12,000 触发、触发后必须压到 <6,000，9,000 起只提示；避免 8,000 单线反复报警 | lint、超长、双阈值
-  ? lint 报超长该压到多少字，上限为什么不是 8000 / tasks.md 反复超长怎么办
 - decisions/decision-2026-09-16-云端文档脚本迁入NC-JS.md | high | 2026-09-16 | 云端文档脚本从个人仓库迁入 NC-JS apps/doc-cloud-spider(独立 vite 包), 产物与 OSS 对象名不变; … | doc-cloud-spider、userscripts、NC-JS
   ? 云端文档爬虫脚本 doc-cloud.user.js 源码在哪个仓库, 为什么迁到 nc-js
 - decisions/decision-2026-09-16-搜索p90告警关闭匿名搜索与总览数据源.md | high | 2026-09-16 | 2026-09-16 用户需求裁定：搜索总览走 SLS(SQL 优先、拉日志降级)；p90 超阈值由网关 leader 巡检→邮件+共享 … | search_guard、匿名搜索、p90
   ? 为什么 p90 告警要自动关匿名搜索, 为什么总览用 SLS 扫描而非 SQL / search_guard 的 redis 键约定是什么
 - decisions/decision-2026-09-16-新站爬虫基于骨架集成分支开发.md | high | 2026-09-16 | 5 站基于骨架集成分支开发，各带 temp go.mod 提交；须在十项提案合并后撤销再合 | 新站爬虫、sitecrawler、integration/ten-proposals
-- decisions/decision-2026-09-16-阿里云盘空目录分享判定为有效.md | high | 2026-09-16 | 阿里云盘 file_count==0 时新旧实现结论不同，裁定判 Valid（无业务码不主动认定失效） | panvalid、阿里云盘、file_count
-- decisions/decision-2026-09-04-合并sweep-guard分支冲突取舍.md | medi | 2026-09-04 | 合并遗留分支时，master 已修正的旧逻辑不应因"冲突两边都保留"而被恢复，需先判断冲突是否为真实的两个功能重叠 | sweep-guard、全量扫描守卫、merge 冲突
 
-## procedures/ (15)
+## procedures/ (14; 另 1 个 load: rarely 未列, mem.py search 可检索)
 - procedures/checklist-不可逆操作上线.md | crit | 2026-09-13 | [用户确认 2026-09-13] 数据误删事故后的硬规则：任何删除/清理/判失效等无法撤销的功能，上线前必须先在线上跑 dry run，… | 不可逆操作、dry run、二次复核
   ? 要上线一个会删数据/判失效/清理的功能，上线前必须做什么 / dry run 的结果怎么复核，能不能用新功能自己的日志当依据 / 什么时候才允许正式开启删除类功能
 - procedures/workflow-fc-chrome上线.md | high | 2026-09-16 | fc-chrome 上线链路：本机构建 → docker save/rsync → ACR 推镜像 → s deploy → 共用域名路由… | fc-chrome、serverless-devs、ACR
@@ -90,10 +82,9 @@ load: always
 - procedures/checklist-仓库脚本清单.md | medi | 2026-09-16 | MEMORY 仓库 scripts/ 下可复用脚本一览（git-hooks 提交信息违禁词钩子、claude-rc systemd 托管 … | scripts、邮件汇报、notify.py
 - procedures/troubleshooting-代理池总览无数据.md | medi | 2026-09-16 | 后台代理池页全 0 时三步定位：网关 dataSource → 上报侧是否部署 → tools 探针 | proxy-admin-check、代理池总览、proxy_admin
 - procedures/workflow-密钥治理约定.md | medi | 2026-09-16 | 四仓库密钥约定：测试凭据 *.hide.json、配置 ${VAR} 环境变量覆盖、gitleaks 三件套；自定义规则与 [extend… | 密钥治理、gitleaks、hide.json
-- procedures/workflow-带登录态的浏览器自动化.md | medi | 2026-09-12 | 如何启动/复用一个带登录态的调试Chrome并用CDP脚本驱动它, 含"默认profile会被安全策略拦截"的前提坑 | agent-browser、cdp.py、CDP
 - procedures/workflow-部署.md | medi | 2026-09-16 | SPIDER deploy.sh 用法（09-16 起 releases/current + rollback + 健康检查）、服务→主机… | 部署、deploy.sh、releases/current
 
-## lessons/ (33)
+## lessons/ (19; 另 14 个 load: rarely 未列, mem.py search 可检索)
 - lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md | crit | 2026-09-16 | checker 用 task.Id(md5) 而非 ShareId 探测致 115.5 万条 quark/ali 误删，bnd 又因「违规… | lifecycle_checker、误删、dry run
   ? lifecycle_checker 为什么把夸克资源全判失效 / 116 万条资源误删是怎么回事，怎么恢复
 - lessons/failure-FC实例在WebSocket断开后立即冻结.md | high | 2026-09-16 | 客户端断开 WebSocket 后 FC 立即冻结实例，收尾/写回必须在连接内完成（拦截 Browser.close） | FC 冻结、WebSocket、Browser.close
@@ -104,47 +95,27 @@ load: always
 - lessons/failure-ncjs构建脚本会自动上传OSS.md | high | 2026-09-04 | admin/*子应用的标准 `pnpm build` 脚本默认会把 dist 上传到生产 OSS 并改写 apps.json, 验证构建前… | NC-JS、pnpm build、mfe插件
 - lessons/failure-notify脚本静默降级把原始Markdown发成邮件.md | high | 2026-09-16 | notify.py 被 miniforge python 执行时缺 markdown 模块静默降级，原文当 <pre> 发出；一律走 sh… | notify.py、邮件汇报、Markdown未渲染
   ? 邮件里为什么收到的是原始 Markdown 而不是渲染后的卡片 / 脚本用 env python3 有什么坑 / 依赖缺失时脚本该怎么降级才不会坑用户
-- lessons/failure-proto3零值与负一哨兵冲突.md | high | 2026-09-12 | proto3 标量字段不传时零值是 0，若 0 恰好是合法业务值、而"不过滤"哨兵定成 -1，前端漏传就会静默查错数据且不报错 | proto3、零值、哨兵
-  ? 筛选参数传了 0 却查不出数据 / proto3 不传字段被当成过滤条件是什么坑
-- lessons/failure-qiankun子应用挂到包裹层导致样式被清空.md | high | 2026-09-12 | 子应用 Vue app.mount 直接挂 qiankun 包裹层会把 <qiankun-head> 内联的全部静态 CSS 删掉(只在线… | NC-JS、qiankun、微前端
-- lessons/failure-resdb的ES端点指向已下线集群.md | high | 2026-09-16 | STORAGE worker 所在 osec-resdb 的 ES 地址指向已下线集群，旧代码静默失败；排查与修法见正文 | osec-resdb、es_endpoint、ES 集群更换
-- lessons/failure-v3首页重合度受前缀展开分片彩票影响.md | high | 2026-09-16 | P5 对拍首页重合度 84%<95% 的两个根因——4% 坑位是 legacy 已删 lc 未删的死链（无反向失效同步）；其余是 matc… | P5、重合度、match_phrase_prefix
-  ? P5 对拍为什么没通过，dfs 能不能让 v3/v2 排序一致 / 旧索引 url_check 删掉的文档新方案会同步失效吗
 - lessons/failure-前端环境默认值写死本地.md | high | 2026-09-16 | 子应用把 gwEndpoint 默认值写死成本地地址导致线上首访连错；默认值必须由 location.hostname 推导 | gwEndpoint、gwAddrs、defaultGwAddr
-- lessons/failure-品牌版Chrome禁用load-extension与userScripts二次授权.md | high | 2026-09-16 | 品牌版 Chrome 不吃 --load-extension、userScripts 需二次授权；改企业策略强装 + 预热 profile | Chrome、load-extension、ExtensionSettings
-  ? headless Chrome 加了 --load-extension 为什么看不到扩展 / 油猴脚本装上了但页面不执行是怎么回事
-- lessons/failure-把拆配置理解成拆文件.md | high | 2026-09-09 | 用户说"拆分"时先确认拆的是什么(代码结构/文件/进程); 用运行时断言或"文件里不写某项"来保证隔离, 通常说明方案层级选错了 | 需求理解、拆分对象、复述确认
-- lessons/failure-握手回包附加字段被传输层丢弃.md | high | 2026-09-16 | 网关握手 403 回包的附加字段被 RTC-gRPC 传输层丢弃；附加信息要走独立通道 | RtcTransport、cancelAllPendingCalls、UnaryCallResponse
 - lessons/failure-旁路能力初始化拖垮主流程.md | high | 2026-09-09 | 用会 log.Fatal/panic 的基础设施函数去初始化"可有可无"的监控, 会让每个子命令随配置缺失或 redis 抖动一起死; 以… | db.Redis、log.Fatal、panic
 - lessons/failure-本地代理池薄导致连接失败误判为站点拒绝.md | high | 2026-09-16 | 代理池薄时 code=0 像站点拒绝；直连复核 + ratetest 双出口对比，只有 403/429 才算限流 | 代理池、RemoteDisconnected、code=0
-- lessons/failure-注入脚本用consolelog回传被页面自身替换吞掉.md | high | 2026-09-16 | 页面会整体替换 console.log；注入脚本须在最开头抓原生引用回传，否则只见一条 start | console.log、CDP、addScriptToEvaluateOnNewDocument
-  ? CDP 注入脚本为什么只打出第一条日志就沉默 / 用 console.log 回传协议什么情况会全部收不到
-- lessons/failure-网关重启暴露ES集群已更换.md | high | 2026-09-12 | 线上网关自 1 月未重启，期间 ES 集群已更换；队列 v2 上线一重启就 panic。教训：长期不重启的服务会掩盖外部依赖变更，重启前先… | 网关、gateway、ES
-  ? 网关起不来，报 no such host 怎么查 / 重启网关前要检查什么
-- lessons/failure-配置v2二进制无本地回落导致老容器重启即挂.md | high | 2026-09-16 | v2 二进制只认 OSS_CONFIG_URL/LOCAL_CONFIG_PATH 不读宿主机旧配置，老容器重启即挂；需本地回落 | 配置 v2、OSS_CONFIG_URL、config.yaml
 - lessons/failure-验收部署脚本时误连生产主机.md | high | 2026-09-16 | 验收 deploy.sh 时漏加 --dry-run 又用真实主机名，只读命令也真连上了生产；一律用假主机名或 --dry-run，没有只… | deploy.sh、--dry-run、ssh 生产主机
   ? 验收/测试新写的部署脚本子命令要注意什么
 - lessons/patterns-并行多角色开发的验收与集成.md | high | 2026-09-16 | 9 条线 5 仓库并行改造的复盘：断网跑测试、假主机名、逐线验收、合并预演；验收抓到的典型漏项（漏传字段、按字段名盘点漏值、缺 dry-r… | 并行开发、子agent、验收
   ? 多个子 Agent 并行改多个仓库时怎么提前发现冲突、怎么保证测试不连生产 / 验收 Agent 最常抓到开发 Agent 哪些漏项
 - lessons/patterns-并行重构的分阶段切分.md | high | 2026-09-12 | 多个包同时改造且互相引用时，用"主会话先做共享契约 → 子 Agent 只加不删 → 单独清理 Agent 收尾"三阶段避免编译互锁 | 并行重构、子agent、worktree
   ? 多个包同时重构，子 Agent 怎么避免编译互锁 / Phase 0/1/2 怎么切分任务
-- lessons/patterns-统计ES索引先查文档形态.md | high | 2026-09-05 | 同一索引可能混着两代写入形态；只按 join=resource 统计会漏掉三分之二资源，任何统计/迁移前先做 exists/must_no… | ES、join、nested
 - lessons/patterns-长周期生产巡检.md | high | 2026-09-17 | 派子 Agent 做数小时生产巡检的可操作清单（原 98 条经验按主题压缩）：前台等待、隧道 keepalive、复制阶段用 _count… | 巡检、bootstrap、子Agent
 - lessons/success-本地代理池打通.md | high | 2026-09-15 | 本地怎么用上代理池、三个会让人查错方向的坑，以及验证方法 | 代理池、蜻蜓代理、白名单
   ? 代理池连不上怎么办，本地怎么用上代理池 / 蜻蜓白名单/出口IP不对怎么查
-- lessons/success-桩网关加cdp浏览器做登录链路联调.md | high | 2026-09-12 | 涉及浏览器交互的改造仅靠静态审查+单测不足以验收, 要造一个只保留被测链路的桩服务并用带登录态的调试浏览器实测, 本次靠它抓到两个"代码看… | 桩网关、stubgw、CDP
-  ? 桩服务验收怎么做，为什么静态审查+单测不够
 - lessons/success-爬虫保活语义.md | high | 2026-09-12 | 保活续期的唯一判据是"有新链接真正提交成功"，轮次成功不算；顺带修掉 keepalive 包读 nil channel 挂死的隐患 | keepalive、保活、CommitResLink
   ? 保活 keepalive 该在哪调 / 爬虫空跑为什么不告警
 - lessons/success-爬虫联网集成测试.md | high | 2026-09-12 | 用「假 committer + 独立 redis 键前缀 + 环境变量开关」让爬虫的联网测试可重复运行且不污染线上 | 集成测试、爬虫、联网测试
   ? 我要给爬虫写测试，联网测试怎么不污染线上
 - lessons/success-网盘失效判定原则.md | high | 2026-09-12 | 靠 message 文案匹配判定网盘失效必然随站点文案漂移而失灵，应改用业务码并把未知响应升级为 error | 失效判定、业务码、限流
 - lessons/failure-fc-chrome上线踩坑合集.md | medi | 2026-09-16 | fc-chrome 上线一天里踩到的镜像/策略/域名/NAS/超时等坑与各自修法的合集 | /json/list、pkill -f、docker exec
-- lessons/failure-端到端复用旧托管进程导致注入旧脚本.md | medi | 2026-09-16 | 2026-09-16 验证腾讯文档脚本时 fc-chrome 路径无任何回传、直连 CDP 却全通——根因是 e2e 脚本"端口有响应就复… | fc-chrome、端到端验证、缓存
-- lessons/success-cdp3策略强装扩展与NAS持久化profile.md | medi | 2026-09-16 | 品牌版 Chrome 用企业策略 force_installed 装扩展 + 预热 profile 存 NAS 复用登录态 | 扩展安装、ExtensionSettings、override_update_url
 - lessons/success-在线文档解析优先用页面自带接口.md | medi | 2026-09-16 | 解析 SPA 文档站优先 fetch 页面自带接口：performance 资源列表 + 全局变量 + bundle 搜路径常量，比啃 D… | 在线文档、内部接口、performance.getEntriesByType
 
-## knowledge/ (27)
+## knowledge/ (28)
 - knowledge/architecture-系统总览.md | crit | 2026-09-02 | 从爬取到入库到检索的完整链路、各服务端口与中间件分工 | 架构、数据链路、网关
 - knowledge/api-rpc契约.md | high | 2026-09-12 | COMMON 仓库中各 proto 服务的方法清单、核心消息结构与代码生成流程 | proto、gRPC、StorageRpc
   ? 我要改 gRPC 协议 / proto，改完怎么生成 / 某个 rpc 方法的入参/出参消息结构是什么 / proto 改完要同步哪些下游仓库
@@ -167,6 +138,8 @@ load: always
   ? 我要改爬虫/加站点，该看哪个子命令 / 新增配置节 yaml 怎么解析 Duration / 泛型队列 PushTask 怎么写，seq/永久失败是什么
 - knowledge/architecture-storage.md | high | 2026-09-12 | enfi-resource-storage 的三个子命令、写入流程、ES 索引名与幂等策略 | STORAGE、enfi-resource-storage、入库
   ? 我要改入库逻辑，查资源为什么没写进去 / ES 索引幂等/version 判重是怎么回事
+- knowledge/architecture-站点爬虫运行时方案对比.md [draft] | high | 2026-09-18 | 2026-09-18 针对"每站一容器导致进程膨胀"的四套方案对比：A FC+Lua/WASM、B 单进程多站点宿主（推荐先做）、C Go… | 爬虫运行时、FC、Lua
+  ? 站点爬虫越来越多导致进程/容器膨胀，有哪些收敛方案，各自代价是什么 / 用函数计算 FC 加 Lua/WASM 重构站点爬虫可行吗，卡点在哪 / 爬虫上 FC 为什么代理白名单和计费模型是关键
 - knowledge/domain-在线文档免登录取数.md | high | 2026-09-16 | 腾讯 opendoc(sheet 逐 tab、zlib 分块)/飞书 SSR/石墨 lizard-api/金山 WPS JSAPI 四平台… | 腾讯文档、dop-api/opendoc、金山文档
   ? 腾讯文档表格/文档怎么不登录拿到全部内容和修改时间 / 金山文档、飞书、石墨能不能免登录抓正文，各用什么接口 / 腾讯 sheet 多个子表
 - knowledge/domain-站点-260916接入批次.md | high | 2026-09-16 | 第二批 5 站的子命令、全量/增量策略、实测规模与坑；2026-09-16 已上线（jenkins/res2/res1） | 站点接入、duanjuso、xiaozi
