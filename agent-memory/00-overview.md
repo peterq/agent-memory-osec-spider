@@ -29,7 +29,7 @@ related:
 - 09-16 **十项提案已合入五仓库并 push，服务未重部**（前置项 `agent-tasks/2026-09-16-ten-proposals/95-merge-plan.md`）；云端文档脚本迁入 NC-JS 已合入（OSS 上传待人工）
 - 09-16 **文档发现首轮完成**（29 篇，批量待执行）→ `procedures/workflow-文档发现.md`
 - 09-15 **P5 阶段 D 灰度爬坡中**；失效上报仍 dry run → `current/tasks.md`
-- 09-12 **🔴 事故：lifecycle_checker 误删 115.5 万 quark/ali 资源**，修复已部署，重爬回库 ≈56% → `lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md`
+- 09-12 **🔴 事故：lifecycle_checker 误删 115.5 万资源**，修复已部署，重爬回库 ≈56% → `lessons/failure-lifecycle_checker误传资源md5导致116万有效资源误删.md`
 - 阻塞：无；风险 `current/risks.md` R9。
 
 ## 3. 核心事实
